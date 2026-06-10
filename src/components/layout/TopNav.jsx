@@ -37,16 +37,14 @@ export default function TopNav() {
               padding: '4px 0', flexShrink: 0,
             }}
           >
-            <div
+            <img
+              src={`${import.meta.env.BASE_URL}icon.jpg`}
+              alt="ECONOMING"
               style={{
                 width: '32px', height: '32px', borderRadius: '10px',
-                background: 'linear-gradient(135deg, #10B981, #059669)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '16px', boxShadow: '0 2px 8px rgba(16,185,129,0.35)',
+                objectFit: 'cover', boxShadow: '0 2px 8px rgba(16,185,129,0.35)',
               }}
-            >
-              📈
-            </div>
+            />
             <span
               style={{
                 fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
