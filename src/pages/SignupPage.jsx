@@ -8,21 +8,32 @@
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { signInWithKakao } from '../services/authService';
 
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
-import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
 
-  const [nickname, setNickname] = useState('');
-  const [email,    setEmail]    = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm,  setConfirm]  = useState('');
-  const [error,    setError]    = useState('');
-  const [success,  setSuccess]  = useState(false);
-  const [loading,  setLoading]  = useState(false);
+  const [nickname,     setNickname]     = useState('');
+  const [email,        setEmail]        = useState('');
+  const [password,     setPassword]     = useState('');
+  const [confirm,      setConfirm]      = useState('');
+  const [error,        setError]        = useState('');
+  const [success,      setSuccess]      = useState(false);
+  const [loading,      setLoading]      = useState(false);
+  const [kakaoLoading, setKakaoLoading] = useState(false);
+
+  const handleKakao = async () => {
+    setKakaoLoading(true);
+    const { error: kakaoError } = await signInWithKakao();
+    if (kakaoError) {
+      setError('카카오 로그인 중 오류가 발생했어요.');
+      setKakaoLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -227,7 +238,42 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#64748B' }}>
+          {/* 구분선 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
+            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+            <span style={{ fontSize: '12px', color: '#94A3B8', whiteSpace: 'nowrap' }}>또는 간편 가입</span>
+            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+          </div>
+
+          {/* 카카오 버튼 */}
+          <button
+            type="button"
+            onClick={handleKakao}
+            disabled={kakaoLoading || loading}
+            style={{
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              gap:            '10px',
+              width:          '100%',
+              padding:        '13px',
+              borderRadius:   '12px',
+              background:     kakaoLoading ? '#e4d24a' : '#FEE500',
+              color:          '#3A1D1D',
+              border:         'none',
+              fontSize:       '15px',
+              fontWeight:     '700',
+              cursor:         kakaoLoading ? 'not-allowed' : 'pointer',
+              letterSpacing:  '-0.3px',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.748 1.647 5.17 4.134 6.627L5.1 21l5.07-2.674C10.704 18.44 11.345 18.5 12 18.5c5.523 0 10-3.477 10-7.7C22 6.477 17.523 3 12 3z" fill="#3A1D1D"/>
+            </svg>
+            {kakaoLoading ? '카카오 연결 중...' : '카카오로 시작하기'}
+          </button>
+
+          <p style={{ textAlign: 'center', marginTop: '4px', fontSize: '14px', color: '#64748B' }}>
             이미 계정이 있으신가요?{' '}
             <Link to="/login" style={{ color: '#10B981', fontWeight: '700', textDecoration: 'none' }}>
               로그인
