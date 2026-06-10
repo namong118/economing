@@ -20,8 +20,10 @@
 -- ────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS profiles (
   id               UUID        REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email            TEXT,
   nickname         TEXT,
   avatar_url       TEXT,
+  provider         TEXT,
   level            TEXT        DEFAULT 'beginner'
                                CHECK (level IN ('beginner', 'elementary', 'intermediate')),
   current_step     INTEGER     DEFAULT 1,
@@ -31,8 +33,10 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at       TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 이미 테이블이 있는 경우 avatar_url 컬럼 추가
+-- 기존 테이블에 컬럼 추가 (없는 경우에만)
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email      TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS provider   TEXT;
 
 -- ────────────────────────────────────────────────────────────────
 -- 2. vocabulary 테이블 (나만의 경제 사전)
@@ -166,19 +170,23 @@ CREATE POLICY "본인 진행도만 수정" ON roadmap_progress
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, nickname, avatar_url)
+  INSERT INTO public.profiles (id, email, nickname, avatar_url, provider)
   VALUES (
     NEW.id,
+    NEW.email,
     COALESCE(
       NEW.raw_user_meta_data->>'name',
       NEW.raw_user_meta_data->>'full_name',
       NEW.raw_user_meta_data->>'nickname',
+      NEW.raw_user_meta_data->>'preferred_username',
       split_part(NEW.email, '@', 1)
     ),
     COALESCE(
       NEW.raw_user_meta_data->>'avatar_url',
-      NEW.raw_user_meta_data->>'picture'
-    )
+      NEW.raw_user_meta_data->>'picture',
+      NEW.raw_user_meta_data->>'profile_image_url'
+    ),
+    NEW.raw_app_meta_data->>'provider'
   );
   RETURN NEW;
 END;

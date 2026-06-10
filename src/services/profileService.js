@@ -39,12 +39,14 @@ export async function updateCurrentStep(userId, step) {
   return { data, error };
 }
 
-export async function upsertProfile(userId, { nickname, avatarUrl }) {
+export async function upsertProfile(userId, { nickname, avatarUrl, email, provider }) {
   if (MOCK) {
     const existing = getMockProfile(userId);
     const updates = {};
-    if (!existing?.nickname && nickname) updates.nickname = nickname;
-    if (!existing?.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
+    if (!existing?.nickname   && nickname)   updates.nickname   = nickname;
+    if (!existing?.avatar_url && avatarUrl)  updates.avatar_url = avatarUrl;
+    if (!existing?.email      && email)      updates.email      = email;
+    if (!existing?.provider   && provider)   updates.provider   = provider;
     return { data: updateMockProfile(userId, updates), error: null };
   }
 
@@ -57,15 +59,17 @@ export async function upsertProfile(userId, { nickname, avatarUrl }) {
   if (!existing) {
     const { data, error } = await supabase
       .from('profiles')
-      .insert({ id: userId, nickname, avatar_url: avatarUrl })
+      .insert({ id: userId, nickname, avatar_url: avatarUrl, email, provider })
       .select()
       .single();
     return { data, error };
   }
 
   const updates = { updated_at: new Date().toISOString() };
-  if (!existing.nickname && nickname)     updates.nickname   = nickname;
-  if (!existing.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
+  if (!existing.nickname   && nickname)   updates.nickname   = nickname;
+  if (!existing.avatar_url && avatarUrl)  updates.avatar_url = avatarUrl;
+  if (!existing.email      && email)      updates.email      = email;
+  if (!existing.provider   && provider)   updates.provider   = provider;
 
   if (Object.keys(updates).length === 1) return { data: existing, error: null };
 

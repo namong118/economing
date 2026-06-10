@@ -41,6 +41,8 @@ export default function ProfilePage() {
   const profileRows = [
     { label: 'nickname',    value: profile?.nickname   ?? '(없음)' },
     { label: 'avatar_url',  value: profile?.avatar_url ?? '(없음)' },
+    { label: 'email',       value: profile?.email      ?? '(없음)' },
+    { label: 'provider',    value: profile?.provider   ?? '(없음)' },
     { label: 'level',       value: profile?.level      ?? '(없음)' },
     { label: 'created_at',  value: profile?.created_at ?? '(없음)' },
   ];

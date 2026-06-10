@@ -20,7 +20,12 @@ function extractNickname(user) {
 }
 
 function extractAvatarUrl(user) {
-  return user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
+  return (
+    user.user_metadata?.avatar_url ||
+    user.user_metadata?.picture ||
+    user.user_metadata?.profile_image_url ||
+    null
+  );
 }
 
 export function AuthProvider({ children }) {
@@ -35,9 +40,10 @@ export function AuthProvider({ children }) {
       const { data } = await upsertProfile(currentUser.id, {
         nickname:  extractNickname(currentUser),
         avatarUrl: extractAvatarUrl(currentUser),
+        email:     currentUser.email || currentUser.user_metadata?.email || null,
+        provider:  currentUser.app_metadata?.provider || null,
       });
       setProfile(data);
-      console.log('profile:', data);
     } catch (e) {
       console.warn('Profile sync failed:', e.message);
     }
