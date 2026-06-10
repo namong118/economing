@@ -99,14 +99,14 @@ export default function HomePage() {
               padding: '28px 32px',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                <div style={{
-                  width: '40px', height: '40px', borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #10B981, #059669)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '20px', boxShadow: '0 4px 10px rgba(16,185,129,0.3)',
-                }}>
-                  🤖
-                </div>
+                <img
+                  src={`${import.meta.env.BASE_URL}coach.png`}
+                  alt="AI 코치"
+                  style={{
+                    width: '40px', height: '40px', borderRadius: '12px',
+                    objectFit: 'cover', boxShadow: '0 4px 10px rgba(16,185,129,0.3)',
+                  }}
+                />
                 <div>
                   <p style={{ fontSize: '16px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.5px' }}>
                     AI 경제 코치에게 물어보세요
@@ -383,14 +383,14 @@ export default function HomePage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <div style={{
-                      width: '48px', height: '48px', borderRadius: '14px',
-                      background: 'rgba(255,255,255,0.15)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '24px', flexShrink: 0,
-                    }}>
-                      🤖
-                    </div>
+                    <img
+                      src={`${import.meta.env.BASE_URL}coach.png`}
+                      alt="AI 코치"
+                      style={{
+                        width: '48px', height: '48px', borderRadius: '14px',
+                        objectFit: 'cover', flexShrink: 0,
+                      }}
+                    />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '15px', fontWeight: '700', color: '#fff', letterSpacing: '-0.4px', marginBottom: '4px' }}>
                         AI 경제 코치와 대화하기
