@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PageWrapper from '../components/layout/PageWrapper';
-import { askCoach } from '../services/aiService';
+import { useAuth } from '../context/AuthContext';
+import { getCoachResponse } from '../services/coachService';
+import { createConversation } from '../services/conversationService';
 
 /* ── 추천 질문 ────────────────────────────────────────────── */
 const SUGGESTED_QUESTIONS = [
@@ -215,6 +217,7 @@ export default function CoachPage() {
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
 
+  const { user } = useAuth();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
 
@@ -237,9 +240,14 @@ export default function CoachPage() {
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-    const { structured } = await askCoach(q);
+    const { answer, structured } = await getCoachResponse(q);
     setMessages(prev => [...prev, { role: 'noming', structured }]);
     setLoading(false);
+
+    // 로그인 사용자의 대화를 DB에 저장 (fire-and-forget)
+    if (user?.id) {
+      createConversation({ userId: user.id, question: q, answer });
+    }
   };
 
   const handleKeyDown = (e) => {

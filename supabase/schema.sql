@@ -112,6 +112,21 @@ CREATE TABLE IF NOT EXISTS roadmap_progress (
 
 CREATE INDEX IF NOT EXISTS idx_roadmap_user_id ON roadmap_progress(user_id);
 
+-- ────────────────────────────────────────────────────────────────
+-- 5. coach_conversations 테이블 (노밍 대화 기록)
+--    OpenAI 연결 후 질문·응답을 저장합니다.
+-- ────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.coach_conversations (
+  id         UUID        DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id    UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  question   TEXT        NOT NULL,
+  answer     TEXT        NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_conversations_user_id
+  ON coach_conversations(user_id, created_at DESC);
+
 
 -- ================================================================
 --  RLS (Row Level Security) 정책
@@ -186,6 +201,19 @@ CREATE POLICY "본인 진행도만 저장" ON roadmap_progress
 
 CREATE POLICY "본인 진행도만 수정" ON roadmap_progress
   FOR UPDATE USING (auth.uid() = user_id);
+
+
+-- coach_conversations
+ALTER TABLE coach_conversations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "본인 대화만 조회" ON coach_conversations;
+DROP POLICY IF EXISTS "본인 대화만 저장" ON coach_conversations;
+
+CREATE POLICY "본인 대화만 조회" ON coach_conversations
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "본인 대화만 저장" ON coach_conversations
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 
 -- ================================================================
