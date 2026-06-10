@@ -69,6 +69,10 @@ export async function signInWithKakao() {
     provider: 'kakao',
     options: {
       redirectTo: window.location.origin + import.meta.env.BASE_URL,
+      scopes: 'profile_nickname profile_image',
+      queryParams: {
+        scope: 'profile_nickname profile_image',
+      },
     },
   });
   return { data, error };
