@@ -18,9 +18,9 @@ const LEVEL_MAP = { beginner: 'seed', elementary: 'sprout', intermediate: 'leaf'
 
 /* ── 오늘의 미션 더미 데이터 ────────────────────────── */
 const MISSIONS = [
-  { emoji: '✏️', label: '경제 일기 쓰기',       path: '/diary',       done: false },
-  { emoji: '📖', label: '오늘의 경제 개념 읽기', path: '/dictionary',  done: false },
-  { emoji: '🗺️', label: '로드맵 진행하기',       path: '/roadmap',     done: true  },
+  { emoji: '📖', label: '경제 개념 하나 배우기',    path: '/dictionary', done: false },
+  { emoji: '🗺️', label: '로드맵 한 단계 진행하기', path: '/roadmap',    done: true  },
+  { emoji: '✏️', label: '경제 일기 작성하기',       path: '/diary',      done: false },
 ];
 
 export default function HomePage() {
@@ -63,15 +63,18 @@ export default function HomePage() {
 
             <div style={{ position: 'relative', zIndex: 1 }}>
               <p style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.75)', marginBottom: '8px', letterSpacing: '0.3px' }}>
-                🌿 나만의 공간
+                ✨ AI 경제 성장 코치
               </p>
               <h1 style={{
                 fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: '900',
                 color: '#fff', letterSpacing: '-1.2px', lineHeight: '1.25',
-                marginBottom: '20px',
+                marginBottom: '12px',
               }}>
-                {nickname}님의<br />경제 정원
+                {nickname}님의<br />경제 성장 여정
               </h1>
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', marginBottom: '20px', letterSpacing: '-0.2px' }}>
+                작은 배움이 큰 변화를 만듭니다.
+              </p>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: '8px',
                 background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)',
@@ -84,14 +87,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* ══ 2. 정원 성장 진행도 ════════════════════════ */}
+          {/* ══ 2. 성장 단계 진행도 ════════════════════════ */}
           <div style={{
             background: '#fff', borderRadius: '20px',
             border: '1.5px solid #DCF5EB',
             padding: '20px 24px', marginBottom: '20px',
           }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '16px' }}>
-              정원 성장 경로
+              나의 성장 경로
             </p>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               {STAGES.map((s, i) => {
@@ -162,7 +165,7 @@ export default function HomePage() {
                 <p style={{ fontSize: '15px', fontWeight: '700', color: '#78350F', lineHeight: '1.6', letterSpacing: '-0.4px' }}>
                   좋은 아침이에요! 🌅<br />
                   <span style={{ fontWeight: '500', color: '#92400E' }}>
-                    오늘은 경제 정원에<br />물을 줘볼까요?
+                    오늘은 어떤 경제 고민이<br />있으신가요?
                   </span>
                 </p>
               </div>
@@ -192,7 +195,7 @@ export default function HomePage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <p style={{ fontSize: '15px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.5px' }}>
-                  오늘의 성장 미션
+                  오늘의 한 걸음
                 </p>
                 <span style={{
                   fontSize: '11px', fontWeight: '700', color: '#21C58E',
@@ -249,7 +252,7 @@ export default function HomePage() {
             borderRadius: '20px', padding: '24px',
           }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '16px' }}>
-              현재 성장 단계
+              지금 나의 단계
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
               <div style={{
