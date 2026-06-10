@@ -179,6 +179,7 @@ input, textarea { font-family: var(--font); outline: none; }
   .top-nav-inner   { padding: 0 24px; }
   .dashboard-grid  { grid-template-columns: 1fr; }
   .roadmap-steps-grid { grid-template-columns: 1fr; }
+  .home-grid       { grid-template-columns: 1fr !important; }
 }
 
 /* 모바일 드롭다운 메뉴: 기본 숨김 (데스크탑 포함 모든 화면) */
