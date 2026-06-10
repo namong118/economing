@@ -35,17 +35,8 @@ export default function App() {
             <Route path="/diagnosis" element={<DiagnosisPage />} />
             <Route path="/result"    element={<ResultPage />} />
 
-            {/* 보호된 페이지 (로그인 필요) — 홈 포함 */}
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-
             {/* 공개 페이지 (로그인 없이도 볼 수 있음) */}
+            <Route path="/home"    element={<HomePage />} />
             <Route path="/coach"   element={<CoachPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/terms"   element={<TermsPage />} />
