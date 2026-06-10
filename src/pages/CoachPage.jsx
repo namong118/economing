@@ -81,14 +81,14 @@ export default function CoachPage() {
         <div style={{ borderBottom: '1px solid #F1F5F9', background: '#fff', padding: '20px 0 18px', flexShrink: 0 }}>
           <div className="container">
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{
-                width: '44px', height: '44px', borderRadius: '14px',
-                background: 'linear-gradient(135deg, #10B981, #059669)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '22px', boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
-              }}>
-                🤖
-              </div>
+              <img
+                src={`${import.meta.env.BASE_URL}coach.png`}
+                alt="AI 코치"
+                style={{
+                  width: '44px', height: '44px', borderRadius: '14px',
+                  objectFit: 'cover', boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
+                }}
+              />
               <div>
                 <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: 1 }}>
                   AI 경제 코치
@@ -180,14 +180,14 @@ export default function CoachPage() {
               >
                 {/* 아바타 */}
                 {msg.role === 'coach' && (
-                  <div style={{
-                    width: '36px', height: '36px', borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #10B981, #059669)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '18px', flexShrink: 0,
-                  }}>
-                    🤖
-                  </div>
+                  <img
+                    src={`${import.meta.env.BASE_URL}coach.png`}
+                    alt="AI 코치"
+                    style={{
+                      width: '36px', height: '36px', borderRadius: '12px',
+                      objectFit: 'cover', flexShrink: 0,
+                    }}
+                  />
                 )}
 
                 {/* 말풍선 */}
@@ -214,14 +214,14 @@ export default function CoachPage() {
             {/* 로딩 */}
             {loading && (
               <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '20px' }}>
-                <div style={{
-                  width: '36px', height: '36px', borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #10B981, #059669)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '18px', flexShrink: 0,
-                }}>
-                  🤖
-                </div>
+                <img
+                  src={`${import.meta.env.BASE_URL}coach.png`}
+                  alt="AI 코치"
+                  style={{
+                    width: '36px', height: '36px', borderRadius: '12px',
+                    objectFit: 'cover', flexShrink: 0,
+                  }}
+                />
                 <div style={{
                   padding: '16px 20px', borderRadius: '4px 18px 18px 18px',
                   background: '#fff', border: '1px solid #F1F5F9',
