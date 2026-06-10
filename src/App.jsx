@@ -21,7 +21,7 @@ export default function App() {
      * Router 바깥이 아닌 안쪽에 두어도 되지만,
      * Router 안에 두면 내부 컴포넌트에서 useNavigate를 쓸 수 있습니다.
      */
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <div className="app-shell">
           <Routes>
