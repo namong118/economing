@@ -7,6 +7,16 @@
     <meta name="description" content="ECONOMING - AI 기반 경제 학습 서비스. 나만의 경제 성장 코치" />
     <meta name="theme-color" content="#10B981" />
     <title>ECONOMING - AI 경제 성장 코치</title>
+    <script>
+      // GitHub Pages SPA 라우팅 복원
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
