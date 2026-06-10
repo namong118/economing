@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import { getMockProfile, updateMockProfile } from './mockStore';
+import { getLevelByXp } from '../data/levelData';
 
 
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
@@ -80,6 +81,36 @@ export async function upsertProfile(userId, { nickname, avatarUrl, email, provid
     .select()
     .single();
   return { data: data ?? existing, error };
+}
+
+/** XP 추가 후 레벨 자동 계산 */
+export async function addXp(userId, amount) {
+  if (MOCK) {
+    const existing = getMockProfile(userId);
+    const newXp    = (existing?.xp || 0) + amount;
+    const newLevel = getLevelByXp(newXp).key;
+    return { data: updateMockProfile(userId, { xp: newXp, level: newLevel }), error: null };
+  }
+
+  const { data: existing, error: fetchError } = await supabase
+    .from('profiles')
+    .select('xp, level')
+    .eq('id', userId)
+    .single();
+
+  if (fetchError || !existing) return { data: null, error: fetchError };
+
+  const newXp    = (existing.xp || 0) + amount;
+  const newLevel = getLevelByXp(newXp).key;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ xp: newXp, level: newLevel, updated_at: new Date().toISOString() })
+    .eq('id', userId)
+    .select()
+    .single();
+
+  return { data, error };
 }
 
 export async function updateStreak(userId) {

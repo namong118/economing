@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   nickname         TEXT,
   avatar_url       TEXT,
   provider         TEXT,
-  level            TEXT        DEFAULT 'beginner'
-                               CHECK (level IN ('beginner', 'elementary', 'intermediate')),
+  level            TEXT        DEFAULT 'seed',
+  xp               INTEGER     DEFAULT 0,
   current_step     INTEGER     DEFAULT 1,
   streak_days      INTEGER     DEFAULT 0,
   last_active_date DATE,
@@ -37,6 +37,20 @@ CREATE TABLE IF NOT EXISTS profiles (
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email      TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS provider   TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS xp        INTEGER DEFAULT 0;
+
+-- 레벨 컬럼: 기존 CHECK 제약 제거 후 새 단계 시스템으로 마이그레이션
+ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_level_check;
+ALTER TABLE profiles ALTER COLUMN level SET DEFAULT 'seed';
+
+-- 기존 legacy 레벨 값 → 새 단계로 변환
+UPDATE profiles SET level = 'seed'   WHERE level = 'beginner';
+UPDATE profiles SET level = 'sprout' WHERE level = 'elementary';
+UPDATE profiles SET level = 'leaf'   WHERE level = 'intermediate';
+
+-- 새 CHECK 제약 추가
+ALTER TABLE profiles ADD CONSTRAINT profiles_level_check
+  CHECK (level IN ('seed', 'sprout', 'leaf', 'flower', 'fruit', 'tree', 'forest'));
 
 -- ────────────────────────────────────────────────────────────────
 -- 2. vocabulary 테이블 (나만의 경제 사전)
@@ -170,7 +184,7 @@ CREATE POLICY "본인 진행도만 수정" ON roadmap_progress
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, nickname, avatar_url, provider)
+  INSERT INTO public.profiles (id, email, nickname, avatar_url, provider, level, xp)
   VALUES (
     NEW.id,
     NEW.email,
@@ -186,7 +200,9 @@ BEGIN
       NEW.raw_user_meta_data->>'picture',
       NEW.raw_user_meta_data->>'profile_image_url'
     ),
-    NEW.raw_app_meta_data->>'provider'
+    NEW.raw_app_meta_data->>'provider',
+    'seed',
+    0
   );
   RETURN NEW;
 END;
