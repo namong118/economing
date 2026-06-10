@@ -24,12 +24,12 @@ const QUICK_LINKS = [
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user, userProfile } = useAuth();
+  const { user, profile } = useAuth();
   const [localLevel] = useLocalStorage('economing_level', null);
   const [coachInput, setCoachInput] = useState('');
 
-  const level    = userProfile?.level || localLevel;
-  const nickname = userProfile?.nickname || user?.email?.split('@')[0] || null;
+  const level    = profile?.level || localLevel;
+  const nickname = profile?.nickname || null;
 
   // 사용자 시작 스텝 결정 (진단한 경우만)
   const startStep   = level ? levelStartStep[level] ?? 1 : null;

@@ -1,43 +1,84 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { signIn, signUp, signOut } from '../services/authService';
-import { getProfile } from '../services/profileService';
+import { upsertProfile } from '../services/profileService';
 import { getMockSession } from '../services/mockStore';
 
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
 
 const AuthContext = createContext(null);
 
+function extractNickname(user) {
+  return (
+    user.user_metadata?.name ||
+    user.user_metadata?.full_name ||
+    user.user_metadata?.nickname ||
+    user.user_metadata?.preferred_username ||
+    user.email?.split('@')[0] ||
+    '사용자'
+  );
+}
+
+function extractAvatarUrl(user) {
+  return user.user_metadata?.avatar_url || user.user_metadata?.picture || null;
+}
+
 export function AuthProvider({ children }) {
-  const [user,        setUser]        = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [loading,     setLoading]     = useState(true);
+  const [user,    setUser]    = useState(null);
+  const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const syncProfile = async (currentUser) => {
+    if (!currentUser) return;
+    try {
+      const { data } = await upsertProfile(currentUser.id, {
+        nickname:  extractNickname(currentUser),
+        avatarUrl: extractAvatarUrl(currentUser),
+      });
+      setProfile(data);
+      console.log('profile:', data);
+    } catch (e) {
+      console.warn('Profile sync failed:', e.message);
+    }
+  };
 
   useEffect(() => {
     if (MOCK) {
-      const session     = getMockSession();
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) loadProfile(currentUser.id);
+      const sess = getMockSession();
+      const u = sess?.user ?? null;
+      setUser(u);
+      setSession(sess);
+      if (u) syncProfile(u);
       setLoading(false);
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) loadProfile(currentUser.id);
+    supabase.auth.getSession().then(({ data: { session: sess } }) => {
+      const u = sess?.user ?? null;
+      setUser(u);
+      setSession(sess);
+      if (u) {
+        console.log('Supabase user:', u);
+        console.log('user_metadata:', u.user_metadata);
+        console.log('app_metadata:', u.app_metadata);
+        syncProfile(u);
+      }
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        if (event === 'SIGNED_IN' && currentUser) {
-          await loadProfile(currentUser.id);
+      async (event, sess) => {
+        const u = sess?.user ?? null;
+        setUser(u);
+        setSession(sess);
+        if (event === 'SIGNED_IN' && u) {
+          console.log('Supabase user:', u);
+          console.log('user_metadata:', u.user_metadata);
+          console.log('app_metadata:', u.app_metadata);
+          await syncProfile(u);
         } else if (event === 'SIGNED_OUT') {
-          setUserProfile(null);
+          setProfile(null);
         }
         setLoading(false);
       }
@@ -46,47 +87,38 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const loadProfile = async (userId) => {
-    const { data } = await getProfile(userId);
-    setUserProfile(data);
-  };
-
   const handleSignIn = async (email, password) => {
     const result = await signIn(email, password);
     if (MOCK && !result.error && result.data?.user) {
       setUser(result.data.user);
-      await loadProfile(result.data.user.id);
+      setSession({ user: result.data.user, access_token: 'mock-token' });
+      await syncProfile(result.data.user);
     }
     return result;
-  };
-
-  const handleSignUp = async (email, password, nickname) => {
-    return await signUp(email, password, nickname);
   };
 
   const handleSignOut = async () => {
     const result = await signOut();
-    if (MOCK) {
+    if (!result.error) {
       setUser(null);
-      setUserProfile(null);
+      setSession(null);
+      setProfile(null);
     }
     return result;
-  };
-
-  const refreshProfile = async () => {
-    if (user) await loadProfile(user.id);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        userProfile,
+        session,
+        profile,
+        userProfile: profile,   // 하위 호환
         loading,
         signIn:         handleSignIn,
-        signUp:         handleSignUp,
+        signUp:         (email, password, nickname) => signUp(email, password, nickname),
         signOut:        handleSignOut,
-        refreshProfile,
+        refreshProfile: () => syncProfile(user),
       }}
     >
       {children}

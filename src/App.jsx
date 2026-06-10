@@ -12,6 +12,7 @@ import DictionaryPage from './pages/DictionaryPage';
 import DiaryPage      from './pages/DiaryPage';
 import LoginPage      from './pages/LoginPage';
 import SignupPage     from './pages/SignupPage';
+import ProfilePage   from './pages/ProfilePage';
 
 export default function App() {
   return (
@@ -42,6 +43,14 @@ export default function App() {
             <Route path="/terms"   element={<TermsPage />} />
 
             {/* 보호된 페이지 (로그인 필요) */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/dictionary"
               element={

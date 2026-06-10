@@ -17,7 +17,7 @@ export default function TopNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // 로그인 상태 가져오기 (AuthContext)
-  const { user, userProfile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -101,28 +101,38 @@ export default function TopNav() {
               /* ── 로그인된 상태 ── */
               <>
                 {/* 닉네임 표시 */}
-                <div
+                <button
+                  onClick={() => navigate('/profile')}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
                     padding: '6px 12px', borderRadius: '10px',
                     background: '#F0FDF4', border: '1px solid #BBF7D0',
+                    cursor: 'pointer',
                   }}
                 >
-                  <div
-                    style={{
-                      width: '26px', height: '26px', borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #10B981, #059669)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '12px', color: '#fff', fontWeight: '700',
-                      flexShrink: 0,
-                    }}
-                  >
-                    {(userProfile?.nickname || user.email)?.[0]?.toUpperCase() ?? '?'}
-                  </div>
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt="프로필"
+                      style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '26px', height: '26px', borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #10B981, #059669)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '12px', color: '#fff', fontWeight: '700',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {(profile?.nickname || user.email || '?')[0].toUpperCase()}
+                    </div>
+                  )}
                   <span style={{ fontSize: '14px', fontWeight: '600', color: '#064E3B', whiteSpace: 'nowrap' }}>
-                    {userProfile?.nickname || user.email}
+                    {profile?.nickname || user.email || '내 정보'}
                   </span>
-                </div>
+                </button>
 
                 {/* 로그아웃 버튼 */}
                 <button

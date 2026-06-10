@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import { getMockProfile, updateMockProfile } from './mockStore';
 
+
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
 
 export async function getProfile(userId) {
@@ -36,6 +37,45 @@ export async function updateCurrentStep(userId, step) {
     .select()
     .single();
   return { data, error };
+}
+
+export async function upsertProfile(userId, { nickname, avatarUrl }) {
+  if (MOCK) {
+    const existing = getMockProfile(userId);
+    const updates = {};
+    if (!existing?.nickname && nickname) updates.nickname = nickname;
+    if (!existing?.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
+    return { data: updateMockProfile(userId, updates), error: null };
+  }
+
+  const { data: existing } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (!existing) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .insert({ id: userId, nickname, avatar_url: avatarUrl })
+      .select()
+      .single();
+    return { data, error };
+  }
+
+  const updates = { updated_at: new Date().toISOString() };
+  if (!existing.nickname && nickname)     updates.nickname   = nickname;
+  if (!existing.avatar_url && avatarUrl) updates.avatar_url = avatarUrl;
+
+  if (Object.keys(updates).length === 1) return { data: existing, error: null };
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', userId)
+    .select()
+    .single();
+  return { data: data ?? existing, error };
 }
 
 export async function updateStreak(userId) {

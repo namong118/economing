@@ -21,6 +21,7 @@
 CREATE TABLE IF NOT EXISTS profiles (
   id               UUID        REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   nickname         TEXT,
+  avatar_url       TEXT,
   level            TEXT        DEFAULT 'beginner'
                                CHECK (level IN ('beginner', 'elementary', 'intermediate')),
   current_step     INTEGER     DEFAULT 1,
@@ -29,6 +30,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   created_at       TIMESTAMPTZ DEFAULT NOW(),
   updated_at       TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- 이미 테이블이 있는 경우 avatar_url 컬럼 추가
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
 -- ────────────────────────────────────────────────────────────────
 -- 2. vocabulary 테이블 (나만의 경제 사전)
@@ -146,10 +150,19 @@ CREATE POLICY "본인 진행도만 수정" ON roadmap_progress
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, nickname)
+  INSERT INTO public.profiles (id, nickname, avatar_url)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'nickname', split_part(NEW.email, '@', 1))
+    COALESCE(
+      NEW.raw_user_meta_data->>'name',
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.raw_user_meta_data->>'nickname',
+      split_part(NEW.email, '@', 1)
+    ),
+    COALESCE(
+      NEW.raw_user_meta_data->>'avatar_url',
+      NEW.raw_user_meta_data->>'picture'
+    )
   );
   RETURN NEW;
 END;
