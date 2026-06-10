@@ -91,6 +91,10 @@ CREATE INDEX IF NOT EXISTS idx_roadmap_user_id ON roadmap_progress(user_id);
 -- profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "본인 프로필만 조회 가능" ON profiles;
+DROP POLICY IF EXISTS "본인 프로필만 수정 가능" ON profiles;
+DROP POLICY IF EXISTS "본인 프로필만 생성 가능" ON profiles;
+
 CREATE POLICY "본인 프로필만 조회 가능" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
@@ -103,6 +107,10 @@ CREATE POLICY "본인 프로필만 생성 가능" ON profiles
 
 -- vocabulary
 ALTER TABLE vocabulary ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "본인 용어만 조회" ON vocabulary;
+DROP POLICY IF EXISTS "본인 용어만 저장" ON vocabulary;
+DROP POLICY IF EXISTS "본인 용어만 삭제" ON vocabulary;
 
 CREATE POLICY "본인 용어만 조회" ON vocabulary
   FOR SELECT USING (auth.uid() = user_id);
@@ -117,6 +125,10 @@ CREATE POLICY "본인 용어만 삭제" ON vocabulary
 -- diaries
 ALTER TABLE diaries ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "본인 일기만 조회" ON diaries;
+DROP POLICY IF EXISTS "본인 일기만 저장" ON diaries;
+DROP POLICY IF EXISTS "본인 일기만 삭제" ON diaries;
+
 CREATE POLICY "본인 일기만 조회" ON diaries
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -129,6 +141,10 @@ CREATE POLICY "본인 일기만 삭제" ON diaries
 
 -- roadmap_progress
 ALTER TABLE roadmap_progress ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "본인 진행도만 조회" ON roadmap_progress;
+DROP POLICY IF EXISTS "본인 진행도만 저장" ON roadmap_progress;
+DROP POLICY IF EXISTS "본인 진행도만 수정" ON roadmap_progress;
 
 CREATE POLICY "본인 진행도만 조회" ON roadmap_progress
   FOR SELECT USING (auth.uid() = user_id);
