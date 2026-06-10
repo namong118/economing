@@ -46,18 +46,21 @@ export default function TopNav() {
               }}
             />
             <span style={{ fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px', display: 'inline-flex', alignItems: 'center' }}>
-              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                ECON
-              </span>
+              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>EC</span>
               <span style={{
                 display: 'inline-block', width: '13px', height: '13px', borderRadius: '50%',
                 background: 'linear-gradient(135deg, #FCD34D, #F59E0B)',
                 flexShrink: 0, margin: '0 1px',
                 boxShadow: '0 1px 4px rgba(245,158,11,0.4)',
               }} />
-              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                MING
-              </span>
+              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>N</span>
+              <span style={{
+                display: 'inline-block', width: '13px', height: '13px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, #FCD34D, #F59E0B)',
+                flexShrink: 0, margin: '0 1px',
+                boxShadow: '0 1px 4px rgba(245,158,11,0.4)',
+              }} />
+              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MING</span>
             </span>
           </button>
 
