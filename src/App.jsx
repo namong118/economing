@@ -12,7 +12,8 @@ import DictionaryPage from './pages/DictionaryPage';
 import DiaryPage      from './pages/DiaryPage';
 import LoginPage      from './pages/LoginPage';
 import SignupPage     from './pages/SignupPage';
-import ProfilePage   from './pages/ProfilePage';
+import ProfilePage    from './pages/ProfilePage';
+import OnboardingPage from './pages/OnboardingPage';
 
 export default function App() {
   return (
@@ -29,8 +30,9 @@ export default function App() {
             <Route path="/" element={<Navigate to="/home" replace />} />
 
             {/* 인증 페이지 (TopNav 없는 독립 레이아웃) */}
-            <Route path="/login"  element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login"      element={<LoginPage />} />
+            <Route path="/signup"     element={<SignupPage />} />
+            <Route path="/onboarding" element={<OnboardingPage />} />
 
             {/* AI 진단 플로우 */}
             <Route path="/diagnosis" element={<DiagnosisPage />} />
