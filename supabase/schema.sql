@@ -19,25 +19,39 @@
 --    회원가입 시 트리거가 자동으로 행을 생성합니다.
 -- ────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS profiles (
-  id               UUID        REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  email            TEXT,
-  nickname         TEXT,
-  avatar_url       TEXT,
-  provider         TEXT,
-  level            TEXT        DEFAULT 'seed',
-  xp               INTEGER     DEFAULT 0,
-  current_step     INTEGER     DEFAULT 1,
-  streak_days      INTEGER     DEFAULT 0,
-  last_active_date DATE,
-  created_at       TIMESTAMPTZ DEFAULT NOW(),
-  updated_at       TIMESTAMPTZ DEFAULT NOW()
+  id                     UUID        REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email                  TEXT,
+  nickname               TEXT,
+  avatar_url             TEXT,
+  provider               TEXT,
+  -- ── 성장 단계 (ECONOMING 앱 내 활동 진행도) ──────────────────────
+  level                  TEXT        DEFAULT 'seed',   -- seed/sprout/leaf/flower/fruit/tree/forest
+  xp                     INTEGER     DEFAULT 0,
+  -- ── 경제 수준 (사용자 기존 경제 지식 — 온보딩에서 설정) ──────────
+  economic_level         TEXT,                         -- beginner/intermediate/advanced  (NULL = 온보딩 미완료)
+  investment_experience  TEXT,                         -- 투자 경험 (none/some/experienced)
+  occupation             TEXT,                         -- 직업
+  interests              TEXT[]      DEFAULT '{}',     -- 관심 분야 (복수 선택)
+  -- ──────────────────────────────────────────────────────────────────
+  onboarding_completed   BOOLEAN     DEFAULT FALSE,
+  current_step           INTEGER     DEFAULT 1,
+  streak_days            INTEGER     DEFAULT 0,
+  last_active_date       DATE,
+  created_at             TIMESTAMPTZ DEFAULT NOW(),
+  updated_at             TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- 기존 테이블에 컬럼 추가 (없는 경우에만)
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email      TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS provider   TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS xp        INTEGER DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url            TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email                 TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS provider              TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS xp                    INTEGER DEFAULT 0;
+-- 온보딩 / 경제 수준 컬럼 (경제 수준 ≠ 성장 단계)
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS economic_level        TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS investment_experience TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS occupation            TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS interests             TEXT[] DEFAULT '{}';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed  BOOLEAN DEFAULT FALSE;
 
 -- 레벨 컬럼: 기존 CHECK 제약 제거 후 새 단계 시스템으로 마이그레이션
 ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_level_check;

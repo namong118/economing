@@ -5,6 +5,12 @@ import { addXp } from '../services/profileService';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import PageWrapper from '../components/layout/PageWrapper';
 
+const ECONOMIC_LEVEL_MAP = {
+  beginner:     { label: '초급자', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE' },
+  intermediate: { label: '중급자', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
+  advanced:     { label: '고급자', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
+};
+
 const MISSIONS = [
   { emoji: '📖', label: '경제 개념 하나 배우기',    path: '/dictionary', done: false },
   { emoji: '🗺️', label: '로드맵 한 단계 진행하기', path: '/roadmap',    done: true  },
@@ -16,9 +22,11 @@ export default function HomePage() {
   const { user, profile, refreshProfile } = useAuth();
   const [xpLoading, setXpLoading] = useState(false);
 
-  const nickname = profile?.nickname || (user ? '사용자' : '방문자');
-  const xp       = profile?.xp ?? 0;
-  const levelInfo = getNextLevelInfo(xp);
+  const nickname     = profile?.nickname || (user ? '사용자' : '방문자');
+  const xp           = profile?.xp ?? 0;
+  const economicInfo = ECONOMIC_LEVEL_MAP[profile?.economic_level] ?? null;
+  const interests    = profile?.interests ?? [];
+  const levelInfo    = getNextLevelInfo(xp);
   const { currentLevel, nextLevel, xpProgress, xpTotal, xpNeeded, progressPercent } = levelInfo;
   const stageIndex = LEVELS.findIndex(l => l.key === currentLevel.key);
 
@@ -350,15 +358,51 @@ export default function HomePage() {
                 {currentLevel.emoji}
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '4px' }}>
-                  {currentLevel.label} 단계
-                </p>
-                <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.6' }}>
+                {/* 성장 단계 + 경제 수준 배지 (나란히) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                  <p style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px' }}>
+                    {currentLevel.label} 단계
+                  </p>
+                  {economicInfo ? (
+                    <span style={{
+                      fontSize: '12px', fontWeight: '700',
+                      color: economicInfo.color,
+                      background: economicInfo.bg,
+                      border: `1px solid ${economicInfo.border}`,
+                      borderRadius: '100px', padding: '3px 10px',
+                    }}>
+                      경제 수준: {economicInfo.label}
+                    </span>
+                  ) : (
+                    <span style={{
+                      fontSize: '12px', fontWeight: '600', color: '#94A3B8',
+                      background: '#F8FAFC', border: '1px dashed #CBD5E1',
+                      borderRadius: '100px', padding: '3px 10px',
+                    }}>
+                      경제 수준 미설정
+                    </span>
+                  )}
+                </div>
+                <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.6', marginBottom: interests.length > 0 ? '8px' : '0' }}>
                   {xp} XP 획득 · {nextLevel ? `${nextLevel.label} 단계까지 ${xpNeeded} XP` : '최고 단계 달성!'}
                 </p>
+                {/* 관심 분야 태그 */}
+                {interests.length > 0 && (
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {interests.map(tag => (
+                      <span key={tag} style={{
+                        fontSize: '11px', fontWeight: '600', color: '#21C58E',
+                        background: '#F4FAF6', border: '1px solid #DCF5EB',
+                        borderRadius: '100px', padding: '2px 9px',
+                      }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <button
-                onClick={() => navigate('/diagnosis')}
+                onClick={() => navigate('/onboarding')}
                 style={{
                   flexShrink: 0, padding: '10px 18px', borderRadius: '12px',
                   background: '#F4FAF6', color: '#21C58E',
@@ -368,7 +412,7 @@ export default function HomePage() {
                 onMouseEnter={e => { e.currentTarget.style.background = '#21C58E'; e.currentTarget.style.color = '#fff'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6'; e.currentTarget.style.color = '#21C58E'; }}
               >
-                단계 다시 진단 →
+                {economicInfo ? '수준 다시 설정 →' : '온보딩 시작 →'}
               </button>
             </div>
           </div>

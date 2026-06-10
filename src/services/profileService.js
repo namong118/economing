@@ -83,6 +83,39 @@ export async function upsertProfile(userId, { nickname, avatarUrl, email, provid
   return { data: data ?? existing, error };
 }
 
+/**
+ * 온보딩 결과 저장
+ * ⚠️ 이 함수는 절대 level/xp를 변경하지 않습니다.
+ *    경제 수준(economic_level)과 성장 단계(level/xp)는 분리되어 있습니다.
+ */
+export async function saveOnboardingData(userId, {
+  economicLevel,
+  investmentExperience,
+  occupation,
+  interests,
+}) {
+  const updates = {
+    onboarding_completed: true,
+    updated_at: new Date().toISOString(),
+  };
+  if (economicLevel)        updates.economic_level        = economicLevel;
+  if (investmentExperience) updates.investment_experience = investmentExperience;
+  if (occupation)           updates.occupation            = occupation;
+  if (interests?.length)    updates.interests             = interests;
+
+  if (MOCK) {
+    return { data: updateMockProfile(userId, updates), error: null };
+  }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', userId)
+    .select()
+    .single();
+  return { data, error };
+}
+
 /** XP 추가 후 레벨 자동 계산 */
 export async function addXp(userId, amount) {
   if (MOCK) {
