@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <script>
-    // GitHub Pages SPA 라우팅 처리
-    // /economing/home 같은 경로로 새로고침 시 index.html로 리디렉트
+    // GitHub Pages SPA 라우팅: 404를 index.html로 리다이렉트
+    // /economing/home → /economing/?/home 으로 변환 후 index.html에서 복원
     var l = window.location;
     l.replace(
       l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 2).join('/') +
-      '/?p=' + l.pathname.slice(1).replace(/&/g, '~and~') +
-      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.pathname.split('/').slice(0, 2).join('/') + '/' +
+      '?/' + l.pathname.slice(1).split('/').slice(1).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
       l.hash
     );
   </script>

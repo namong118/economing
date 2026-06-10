@@ -9,13 +9,19 @@
     <title>ECONOMING - AI 경제 성장 코치</title>
     <script>
       // GitHub Pages SPA 라우팅 복원
-      (function() {
-        var redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect);
+      // 404.html이 ?/home 형태로 변환한 URL을 원래 경로로 되돌림
+      (function(l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&');
+          });
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded[0] +
+            (decoded[1] ? '?' + decoded[1] : '') +
+            l.hash
+          );
         }
-      })();
+      }(window.location));
     </script>
   </head>
   <body>
