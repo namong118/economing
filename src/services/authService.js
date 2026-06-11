@@ -64,6 +64,16 @@ export async function getSession() {
   return { session: data.session, error };
 }
 
+export async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + '/economing/',
+    },
+  });
+  return { data, error };
+}
+
 export async function signInWithKakao() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'kakao',

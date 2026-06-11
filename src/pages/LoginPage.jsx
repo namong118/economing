@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { signInWithKakao } from '../services/authService';
+import { signInWithKakao, signInWithGoogle } from '../services/authService';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,7 +18,17 @@ export default function LoginPage() {
   const [password,     setPassword]     = useState('');
   const [error,        setError]        = useState('');
   const [loading,      setLoading]      = useState(false);
-  const [kakaoLoading, setKakaoLoading] = useState(false);
+  const [kakaoLoading,  setKakaoLoading]  = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    const { error: googleError } = await signInWithGoogle();
+    if (googleError) {
+      setError('Google 로그인 중 오류가 발생했어요.');
+      setGoogleLoading(false);
+    }
+  };
 
   const handleKakao = async () => {
     setKakaoLoading(true);
@@ -219,11 +229,47 @@ export default function LoginPage() {
             <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
           </div>
 
+          {/* Google 로그인 버튼 */}
+          <button
+            type="button"
+            onClick={handleGoogle}
+            disabled={googleLoading || kakaoLoading || loading}
+            style={{
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              gap:            '10px',
+              width:          '100%',
+              padding:        '13px',
+              borderRadius:   '12px',
+              background:     '#fff',
+              color:          '#3C4043',
+              border:         '1.5px solid #DADCE0',
+              fontSize:       '15px',
+              fontWeight:     '700',
+              cursor:         googleLoading ? 'not-allowed' : 'pointer',
+              letterSpacing:  '-0.3px',
+              opacity:        googleLoading ? 0.7 : 1,
+              transition:     'all 0.15s',
+            }}
+            onMouseEnter={e => { if (!googleLoading) e.currentTarget.style.background = '#F8FAFC'; }}
+            onMouseLeave={e => { if (!googleLoading) e.currentTarget.style.background = '#fff'; }}
+          >
+            {/* Google G 공식 아이콘 */}
+            <svg width="20" height="20" viewBox="0 0 48 48">
+              <path fill="#4285F4" d="M47.53 24.56c0-1.68-.15-3.3-.43-4.86H24v9.19h13.22c-.57 3.07-2.3 5.67-4.9 7.42v6.16h7.93c4.64-4.27 7.28-10.57 7.28-17.91z"/>
+              <path fill="#34A853" d="M24 48c6.64 0 12.21-2.2 16.28-5.96l-7.93-6.16c-2.2 1.48-5.02 2.35-8.35 2.35-6.42 0-11.85-4.33-13.79-10.16H2v6.36C6.05 42.97 14.41 48 24 48z"/>
+              <path fill="#FBBC05" d="M10.21 28.07A14.93 14.93 0 0 1 9.69 24c0-1.41.24-2.78.52-4.07V13.57H2A23.97 23.97 0 0 0 0 24c0 3.87.93 7.53 2 10.43l8.21-6.36z"/>
+              <path fill="#EA4335" d="M24 9.54c3.61 0 6.85 1.24 9.4 3.67l7.05-7.05C36.2 2.2 30.63 0 24 0 14.41 0 6.05 5.03 2 13.57l8.21 6.36C12.15 13.87 17.58 9.54 24 9.54z"/>
+            </svg>
+            {googleLoading ? 'Google 연결 중...' : 'Google로 로그인'}
+          </button>
+
           {/* 카카오 로그인 버튼 */}
           <button
             type="button"
             onClick={handleKakao}
-            disabled={kakaoLoading || loading}
+            disabled={kakaoLoading || googleLoading || loading}
             style={{
               display:        'flex',
               alignItems:     'center',
