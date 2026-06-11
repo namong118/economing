@@ -6,10 +6,13 @@
 --    2. 아래 SQL을 전체 복사해서 붙여넣고 실행 (Run)
 --
 --  테이블 목록:
---    profiles         : 사용자 프로필 (레벨, 닉네임, 연속 학습일)
---    vocabulary       : 나만의 경제 사전 (저장한 용어들)
---    diaries          : 경제 일기
---    roadmap_progress : 학습 로드맵 진행 상태
+--    profiles          : 사용자 프로필 (레벨, 닉네임, 연속 학습일)
+--    vocabulary        : 나만의 경제 사전 (저장한 용어들)
+--    diaries           : 경제 일기
+--    roadmap_progress  : 학습 로드맵 진행 상태
+--    coach_conversations : AI 코치 대화 내역
+--    reading_contents  : 오늘의 경제 읽기 콘텐츠
+--    reading_logs      : 사용자 읽기 완료 기록 및 XP 지급 이력
 -- ================================================================
 
 
@@ -256,3 +259,102 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+-- ────────────────────────────────────────────────────────────────
+-- reading_contents 테이블
+--   오늘의 경제 읽기 콘텐츠 (관리자가 등록, 추후 AI 자동 생성)
+-- ────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.reading_contents (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  title         TEXT        NOT NULL,
+  category      TEXT        NOT NULL,                          -- '경제 기초' | '투자 입문' | '저축 기초' | '재테크 기초'
+  intro         TEXT,                                          -- 한 줄 도입 문장
+  content       TEXT        NOT NULL,                          -- 본문 전체 (마크다운 또는 plain text)
+  summary       TEXT[]      DEFAULT '{}',                      -- 핵심 포인트 배열
+  keywords      JSONB       DEFAULT '[]',                      -- [{ "term": "...", "desc": "..." }]
+  noming_comment TEXT,                                         -- ☀️ 노밍 한마디
+  reading_time  INTEGER     DEFAULT 3,                         -- 예상 읽기 시간(분)
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS: 콘텐츠는 비인증 사용자도 조회 가능
+ALTER TABLE public.reading_contents ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "누구나 읽기 콘텐츠 조회" ON public.reading_contents;
+CREATE POLICY "누구나 읽기 콘텐츠 조회"
+  ON public.reading_contents FOR SELECT
+  USING (true);
+
+
+-- ────────────────────────────────────────────────────────────────
+-- reading_logs 테이블
+--   사용자별 읽기 완료 기록 및 XP 지급 이력
+-- ────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.reading_logs (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  content_id  UUID        NOT NULL REFERENCES public.reading_contents(id) ON DELETE CASCADE,
+  xp_granted  INTEGER     DEFAULT 5,
+  read_at     TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS: 본인 기록만 조회/등록
+ALTER TABLE public.reading_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "본인 읽기 로그 조회" ON public.reading_logs;
+DROP POLICY IF EXISTS "본인 읽기 로그 등록" ON public.reading_logs;
+CREATE POLICY "본인 읽기 로그 조회"
+  ON public.reading_logs FOR SELECT
+  USING (auth.uid() = user_id);
+CREATE POLICY "본인 읽기 로그 등록"
+  ON public.reading_logs FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+
+-- ────────────────────────────────────────────────────────────────
+-- economic_journals 테이블
+--   개인 경제 성장 저널 — 6개 섹션 구조화 입력
+-- ────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.economic_journals (
+  id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id          UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  journal_date     DATE        DEFAULT current_date,  -- 작성 기준 날짜 (캘린더 표시용)
+  learned_today    TEXT,        -- 📚 오늘 배운 것
+  news_title       TEXT,        -- 📰 오늘의 금융 뉴스 제목
+  news_thought     TEXT,        -- 💡 뉴스를 보고 든 생각
+  questions        TEXT,        -- 🤔 아직 궁금한 것
+  consumption_note TEXT,        -- 💸 오늘의 소비 돌아보기
+  next_topic       TEXT,        -- 🎯 다음에 공부할 것
+  created_at       TIMESTAMPTZ DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 기존 테이블에 journal_date 컬럼 추가 (없는 경우에만)
+ALTER TABLE public.economic_journals
+  ADD COLUMN IF NOT EXISTS journal_date DATE DEFAULT current_date;
+
+CREATE INDEX IF NOT EXISTS idx_economic_journals_user_id
+  ON public.economic_journals(user_id, created_at DESC);
+
+-- RLS: 본인 일기만 조회/등록/수정/삭제
+ALTER TABLE public.economic_journals ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "본인 저널 조회" ON public.economic_journals;
+DROP POLICY IF EXISTS "본인 저널 등록" ON public.economic_journals;
+DROP POLICY IF EXISTS "본인 저널 수정" ON public.economic_journals;
+DROP POLICY IF EXISTS "본인 저널 삭제" ON public.economic_journals;
+
+CREATE POLICY "본인 저널 조회"
+  ON public.economic_journals FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "본인 저널 등록"
+  ON public.economic_journals FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "본인 저널 수정"
+  ON public.economic_journals FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "본인 저널 삭제"
+  ON public.economic_journals FOR DELETE
+  USING (auth.uid() = user_id);

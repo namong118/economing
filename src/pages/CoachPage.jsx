@@ -4,6 +4,8 @@ import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse } from '../services/coachService';
 import { createConversation } from '../services/conversationService';
+import { getInfographic } from '../data/infographicData';
+import InfographicCard from '../components/infographic/InfographicCard';
 
 /* ── 추천 질문 ────────────────────────────────────────────── */
 const SUGGESTED_QUESTIONS = [
@@ -26,7 +28,6 @@ function NomingCard({ structured }) {
       borderRadius: '4px 20px 20px 20px',
       overflow: 'hidden',
       boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-      maxWidth: '76%',
     }}>
       {/* 💡 한 줄 조언 */}
       <div style={{
@@ -241,7 +242,8 @@ export default function CoachPage() {
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
     const { answer, structured } = await getCoachResponse(q);
-    setMessages(prev => [...prev, { role: 'noming', structured }]);
+    const infographic = getInfographic(q);
+    setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
     setLoading(false);
 
     // 로그인 사용자의 대화를 DB에 저장 (fire-and-forget)
@@ -374,8 +376,11 @@ export default function CoachPage() {
                         {msg.text}
                       </div>
                     ) : (
-                      /* 노밍 응답 카드 */
-                      <NomingCard structured={msg.structured} />
+                      /* 노밍 응답 + 인포그래픽 */
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '76%' }}>
+                        <NomingCard structured={msg.structured} />
+                        {msg.infographic && <InfographicCard data={msg.infographic} />}
+                      </div>
                     )}
                   </div>
                 ))}

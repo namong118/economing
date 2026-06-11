@@ -379,7 +379,139 @@ CREATE TABLE IF NOT EXISTS public.coach_conversations (
 ### 다음 작업 예정
 
 - [ ] **OpenAI API 연동** — `coachService.js`의 `getCoachResponse()` 내부 교체
+- [x] ~~나의 경제 프로필 (`/my-growth`)~~ → 완료 (2026-06-11)
 - [ ] 온보딩 완료 후 자동 `/onboarding` 안내 (신규 가입자 플로우)
 - [ ] 경제 일기 CRUD (`/diary`)
 - [ ] 경제 사전 CRUD (`/dictionary`)
 - [ ] 대화 히스토리 UI (코치 화면에서 이전 대화 불러오기)
+
+---
+
+## 2026-06-11 (2차) — 나의 경제 프로필 (`/my-growth`)
+
+### 개요
+온보딩 데이터를 확인·활용할 수 있는 "나의 경제 프로필" 화면을 구현했습니다.
+성적표가 아닌 성장 코칭 느낌의 디자인을 목표로 했습니다.
+
+---
+
+### 1. `MyGrowthPage.jsx` (신규)
+
+**라우트**: `/my-growth` — ProtectedRoute 적용
+
+**구성 영역**
+
+| 영역 | 내용 |
+|------|------|
+| 노밍 한 줄 분석 | 옐로우 그라데이션 카드, 규칙 기반 맞춤 메시지 |
+| 경제 수준 + 성장 단계 | 2열 카드, 단계 아이콘 미니 라인 포함 |
+| 투자 경험 + 현재 상황 | 2열 칩 카드 |
+| 관심 분야 | 초록 태그 배열 |
+| 하단 버튼 | 노밍에게 질문하기 · 프로필 다시 설정 |
+
+**규칙 기반 `generateAnalysis()` 함수**
+- `economic_level` × `interests` × `investment_experience` 조합으로 분기
+- beginner: 저축+투자, 투자만, ETF, 소비관리, 세금, 기본값 6가지 분기
+- intermediate: ETF 경험, 주식 경험, 부동산, 세금, 기본값
+- advanced: 세금, 부동산, 주식 경험, 기본값
+- OpenAI 미사용, 순수 규칙 기반
+
+**빈 상태 (온보딩 미완료)**
+- 노밍 이미지 + 안내 문구 + `온보딩 시작하기 →` 버튼
+
+---
+
+### 2. 네비게이션 추가
+
+- `TopNav.jsx` navLinks에 `{ path: '/my-growth', label: '내 성장' }` 추가 (홈 다음)
+- PC 네비 6개 링크: 홈 · 내 성장 · AI 코치 · 로드맵 · 경제일기 · 경제사전
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (자동: `npm run deploy`) |
+| Supabase 프로젝트 | https://ioqkbsurlrgxwyhlqrsf.supabase.co |
+
+---
+
+## 2026-06-11 — 인포그래픽 시스템 + 경제일기 전면 재설계 + 내 성장 탭 구조 개편
+
+### 개요
+세 가지 큰 기능을 추가했습니다.
+1. AI 코치 화면에 "노밍 한눈에 이해하기" 인포그래픽 자동 삽입
+2. 자유 작성형 일기를 6섹션 구조화 저널 + 캘린더 UI로 전면 재설계
+3. 내 성장 페이지를 탭 기반 허브로 개편 (요약 / 경제일기 / 경제사전 / 로드맵)
+
+---
+
+### 1. 노밍 인포그래픽 시스템
+
+AI 코치에 질문할 때 키워드가 감지되면 노밍 답변 아래에 인포그래픽 카드가 자동으로 표시됩니다. 외부 API 없이 순수 React 컴포넌트로 구현했습니다.
+
+**새 파일**
+
+| 파일 | 역할 |
+|------|------|
+| `src/data/infographicData.js` | 키워드 → 인포그래픽 매핑 + `getInfographic(question)` 함수 |
+| `src/components/infographic/InfographicCard.jsx` | 타입별 그래픽 라우팅 래퍼 |
+| `src/components/infographic/FlowGraphic.jsx` | 단계별 흐름도 |
+| `src/components/infographic/CollectionGraphic.jsx` | 항목 집합 → 결과 카드 |
+| `src/components/infographic/CompareGraphic.jsx` | 2열 비교표 |
+
+**지원 토픽 5개**: ETF / 비상금 / 예금vs적금 / 물가·인플레이션 / 기준금리
+
+**CoachPage.jsx**: `send()`에서 키워드 감지 후 노밍 버블 아래 인포그래픽 조건부 렌더링
+
+---
+
+### 2. 경제일기 전면 재설계
+
+자유 작성형 일기 → "개인 경제 성장 저널" 개념으로 완전히 재설계했습니다.
+
+**6섹션 구조**: 오늘 배운 것 📚 / 금융 뉴스 📰 / 뉴스 생각 💡 / 궁금한 것 🤔 / 소비 돌아보기 💸 / 다음 공부 🎯
+
+**캘린더 UI**
+- 월간 7열 그리드, 이전/다음 월 네비게이션
+- 오늘 = 초록 원, 기록 있는 날 = 초록 점
+- 날짜 클릭 → 기록 있으면 상세, 없으면 작성 폼
+- `journal_date DATE` 컬럼으로 날짜 저장 (timezone-safe 문자열 파싱)
+
+**3-뷰 구조**: 목록(캘린더+카드) / 작성·수정 폼 / 상세보기
+
+**Supabase**: `economic_journals` 테이블 신규 생성 (6 섹션 컬럼 + `journal_date` + RLS 4개 정책)
+
+**diaryService.js**: `getJournals`, `createJournal`, `updateJournal`, `deleteJournal` 추가
+
+---
+
+### 3. 내 성장 탭 허브 개편
+
+기존 HubCard 그리드를 제거하고 탭 메뉴로 모든 기능을 페이지 내에서 직접 접근하도록 재구성했습니다.
+
+**탭 4개**
+
+| 탭 | 내용 |
+|----|------|
+| 요약 | 프로필 헤더, 성장 단계 트랙, 경제 프로필, 노밍 분석 배너, 로그아웃 |
+| 경제일기 | `DiaryContent` 인라인 임베드 (캘린더 + CRUD 전체) |
+| 경제사전 | 검색 바 + 2열 용어 카드 그리드 + 삭제 |
+| 로드맵 | 5단계 수직 타임라인, 펼치면 설명·토픽 태그·노밍 질문 버튼 |
+
+**탭 바**: `position: sticky; top: 64px; zIndex: 90` — TopNav 아래 고정
+
+**DiaryPage.jsx 리팩토링**: `export function DiaryContent()` 네임드 익스포트 추가, `DiaryPage`는 얇은 래퍼로 유지
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (자동: `npm run deploy`) |
