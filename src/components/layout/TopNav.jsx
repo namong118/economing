@@ -1,28 +1,90 @@
-/* 상단 네비게이션 바 (PC 웹 메인 네비) */
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const navLinks = [
-  { path: '/home',       label: '홈' },
-  { path: '/coach',      label: 'AI 코치' },
-  { path: '/roadmap',    label: '로드맵' },
-  { path: '/diary',      label: '경제일기' },
-  { path: '/dictionary', label: '경제사전' },
+  { path: '/home',      label: '홈' },
+  { path: '/coach',     label: 'AI 코치' },
+  { path: '/read',      label: '경제 읽기' },
+  { path: '/my-growth', label: '내 성장' },
 ];
+
+/* ── 프로필 드롭다운 ──────────────────────────────────────── */
+function ProfileDropdown({ user, profile, onClose, navigate, signOut }) {
+  return (
+    <div style={{
+      position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+      background: '#fff', borderRadius: '14px',
+      border: '1.5px solid #E2E8F0',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+      minWidth: '180px', overflow: 'hidden', zIndex: 200,
+    }}>
+      {/* 사용자 정보 */}
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid #F1F5F9' }}>
+        <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', marginBottom: '2px' }}>
+          {profile?.nickname || user.email || '사용자'}
+        </p>
+        <p style={{ fontSize: '12px', color: '#94A3B8' }}>
+          {user.email || '소셜 로그인'}
+        </p>
+      </div>
+      {/* 메뉴 아이템 */}
+      <DropItem
+        icon="🌱"
+        label="내 성장"
+        onClick={() => { navigate('/my-growth'); onClose(); }}
+      />
+      <DropItem
+        icon="🚪"
+        label="로그아웃"
+        danger
+        onClick={async () => { await signOut(); navigate('/home'); onClose(); }}
+      />
+    </div>
+  );
+}
+
+function DropItem({ icon, label, onClick, danger }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '10px',
+        width: '100%', padding: '11px 16px',
+        background: hov ? (danger ? '#FEF2F2' : '#F8FAFC') : 'transparent',
+        border: 'none', cursor: 'pointer',
+        fontSize: '14px', fontWeight: '600',
+        color: danger ? '#DC2626' : '#374151',
+        textAlign: 'left', transition: 'background 0.1s',
+      }}
+    >
+      <span style={{ fontSize: '16px' }}>{icon}</span>
+      {label}
+    </button>
+  );
+}
 
 export default function TopNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  // 로그인 상태 가져오기 (AuthContext)
   const { user, profile, signOut } = useAuth();
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/home');
-  };
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropOpen, setDropOpen] = useState(false);
+  const dropRef   = useRef(null);
+
+  useEffect(() => {
+    function handleOutside(e) {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setDropOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
 
   return (
     <>
@@ -32,28 +94,28 @@ export default function TopNav() {
           <button
             onClick={() => navigate('/home')}
             style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
+              display: 'flex', alignItems: 'center',
               background: 'none', border: 'none', cursor: 'pointer',
               padding: '4px 0', flexShrink: 0,
             }}
           >
-            <img
-              src={`${import.meta.env.BASE_URL}icon.jpg`}
-              alt="ECONOMING"
-              style={{
-                width: '32px', height: '32px', borderRadius: '10px',
-                objectFit: 'cover', boxShadow: '0 2px 8px rgba(16,185,129,0.35)',
-              }}
-            />
-            <span style={{ fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px', display: 'inline-flex', alignItems: 'center' }}>
-              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ECON</span>
-              <span style={{
-                display: 'inline-block', width: '13px', height: '13px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #FCD34D, #F59E0B)',
-                flexShrink: 0, margin: '0 1px',
-                boxShadow: '0 1px 4px rgba(245,158,11,0.4)',
-              }} />
-              <span style={{ background: 'linear-gradient(135deg, #10B981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MING</span>
+            <span style={{
+              fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
+              display: 'inline-flex', alignItems: 'center', lineHeight: 1,
+            }}>
+              <span style={{ color: '#21C58E' }}>ECON</span>
+              {/* 노란 원(O) + 위에서 자라나는 새싹 잎 2개 */}
+              <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
+                <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* 왼쪽 잎 */}
+                  <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E" />
+                  {/* 오른쪽 잎 */}
+                  <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E" />
+                  {/* 노란 원(O): r=6.5 → 지름 13px = 대문자 cap-height와 동일 */}
+                  <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
+                </svg>
+              </span>
+              <span style={{ color: '#21C58E' }}>MING</span>
             </span>
           </button>
 
@@ -93,20 +155,19 @@ export default function TopNav() {
             })}
           </div>
 
-          {/* 우측: 로그인 상태에 따라 다른 버튼 표시 */}
+          {/* 우측 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-
             {user ? (
-              /* ── 로그인된 상태 ── */
-              <>
-                {/* 닉네임 표시 */}
+              /* ── 로그인 상태: 프로필 드롭다운 ── */
+              <div ref={dropRef} style={{ position: 'relative' }}>
                 <button
-                  onClick={() => navigate('/profile')}
+                  onClick={() => setDropOpen(v => !v)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
                     padding: '6px 12px', borderRadius: '10px',
-                    background: '#F0FDF4', border: '1px solid #BBF7D0',
-                    cursor: 'pointer',
+                    background: dropOpen ? '#ECFDF5' : '#F0FDF4',
+                    border: dropOpen ? '1.5px solid #A7F3D0' : '1px solid #BBF7D0',
+                    cursor: 'pointer', transition: 'all 0.15s',
                   }}
                 >
                   {profile?.avatar_url ? (
@@ -116,47 +177,32 @@ export default function TopNav() {
                       style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
                     />
                   ) : (
-                    <div
-                      style={{
-                        width: '26px', height: '26px', borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #10B981, #059669)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '12px', color: '#fff', fontWeight: '700',
-                        flexShrink: 0,
-                      }}
-                    >
+                    <div style={{
+                      width: '26px', height: '26px', borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '12px', color: '#fff', fontWeight: '700', flexShrink: 0,
+                    }}>
                       {(profile?.nickname || user.email || '?')[0].toUpperCase()}
                     </div>
                   )}
                   <span style={{ fontSize: '14px', fontWeight: '600', color: '#064E3B', whiteSpace: 'nowrap' }}>
                     {profile?.nickname || user.email || '내 정보'}
                   </span>
+                  <span style={{ fontSize: '10px', color: '#64748B', marginLeft: '2px' }}>
+                    {dropOpen ? '▲' : '▼'}
+                  </span>
                 </button>
-
-                {/* 로그아웃 버튼 */}
-                <button
-                  onClick={handleSignOut}
-                  style={{
-                    padding: '8px 14px', borderRadius: '10px',
-                    fontSize: '13px', fontWeight: '600',
-                    color: '#64748B', background: '#F1F5F9',
-                    border: '1px solid #E2E8F0', cursor: 'pointer',
-                    transition: 'all 0.15s', whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FEF2F2';
-                    e.currentTarget.style.color = '#DC2626';
-                    e.currentTarget.style.borderColor = '#FECACA';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#F1F5F9';
-                    e.currentTarget.style.color = '#64748B';
-                    e.currentTarget.style.borderColor = '#E2E8F0';
-                  }}
-                >
-                  로그아웃
-                </button>
-              </>
+                {dropOpen && (
+                  <ProfileDropdown
+                    user={user}
+                    profile={profile}
+                    onClose={() => setDropOpen(false)}
+                    navigate={navigate}
+                    signOut={signOut}
+                  />
+                )}
+              </div>
             ) : (
               /* ── 비로그인 상태 ── */
               <>
@@ -190,7 +236,7 @@ export default function TopNav() {
               </>
             )}
 
-            {/* 모바일 햄버거 버튼 */}
+            {/* 모바일 햄버거 */}
             <button
               className="nav-hamburger"
               onClick={() => setMenuOpen((v) => !v)}
@@ -228,20 +274,32 @@ export default function TopNav() {
           );
         })}
 
-        {/* 모바일 메뉴 하단 - 로그인/로그아웃 */}
         <div style={{ padding: '12px 24px', borderTop: '1px solid #E2E8F0' }}>
           {user ? (
-            <button
-              onClick={() => { handleSignOut(); setMenuOpen(false); }}
-              style={{
-                padding: '12px', width: '100%', borderRadius: '10px',
-                background: '#FEF2F2', color: '#DC2626',
-                border: '1px solid #FECACA', fontSize: '14px',
-                fontWeight: '600', cursor: 'pointer',
-              }}
-            >
-              로그아웃
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button
+                onClick={() => { navigate('/my-growth'); setMenuOpen(false); }}
+                style={{
+                  padding: '12px', width: '100%', borderRadius: '10px',
+                  background: '#F0FDF4', color: '#064E3B',
+                  border: '1px solid #BBF7D0', fontSize: '14px',
+                  fontWeight: '600', cursor: 'pointer',
+                }}
+              >
+                🌱 내 성장
+              </button>
+              <button
+                onClick={async () => { await signOut(); navigate('/home'); setMenuOpen(false); }}
+                style={{
+                  padding: '12px', width: '100%', borderRadius: '10px',
+                  background: '#FEF2F2', color: '#DC2626',
+                  border: '1px solid #FECACA', fontSize: '14px',
+                  fontWeight: '600', cursor: 'pointer',
+                }}
+              >
+                로그아웃
+              </button>
+            </div>
           ) : (
             <button
               onClick={() => { navigate('/login'); setMenuOpen(false); }}

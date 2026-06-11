@@ -515,3 +515,90 @@ AI 코치에 질문할 때 키워드가 감지되면 노밍 답변 아래에 인
 | 서비스 URL | https://namong118.github.io/economing/ |
 | 레포지토리 | https://github.com/namong118/economing |
 | 배포 브랜치 | `gh-pages` (자동: `npm run deploy`) |
+
+---
+
+## 2026-06-11 (4차) — 랜딩 페이지 + 🍃 오늘의 경제 한잎 + 경제 한잎 상세/아카이브
+
+### 개요
+세 가지 큰 기능을 추가했습니다.
+1. `/` 루트에 랜딩 페이지 구축 (비로그인 사용자 대상)
+2. 홈 화면 최상단에 "🍃 오늘의 경제 한잎" 학습 카드 신규 추가
+3. 경제 한잎 상세 페이지 (`/bite/:id`) + 아카이브 페이지 (`/bites`)
+
+---
+
+### 1. 랜딩 페이지 (`/`)
+
+| 파일 | 역할 |
+|------|------|
+| `src/pages/LandingPage.jsx` | 진입점, 로그인 유저 → `/home` 자동 리다이렉트 |
+| `src/components/landing/LandingNav.jsx` | 스크롤 감지 투명→화이트 전환 네비 |
+| `src/components/landing/HeroSection.jsx` | 풀뷰포트 히어로, NomingIcon 140px, 가입/로그인 CTA |
+| `src/components/landing/ProblemSection.jsx` | 5가지 문제 카드 그리드 |
+| `src/components/landing/ValueSection.jsx` | 다크 그린 배경 "AI 경제 성장 코치" 포지셔닝 |
+| `src/components/landing/FeatureSection.jsx` | 4대 기능 카드 |
+| `src/components/landing/GrowthFlowSection.jsx` | 4단계 수직 플로우 + 초록 커넥터 |
+| `src/components/landing/AppPreviewSection.jsx` | 폰 목업 + 탭별 미리보기 |
+| `src/components/landing/ComingSoonSection.jsx` | 앱스토어/플레이스토어 버튼 (비활성) |
+| `src/components/landing/FinalCTASection.jsx` | 카카오(노란)/구글(흰색) 가입 버튼 |
+| `src/components/landing/LandingFooter.jsx` | 다크 배경 푸터 |
+| `src/assets/noming-icon.png` | 앱 아이콘 이미지 (Vite import, base path 자동 처리) |
+
+App.jsx: `<Route path="/" element={<LandingPage />}/>` 로 변경, 로그인 상태면 `/home` 리다이렉트
+
+---
+
+### 2. 🍃 오늘의 경제 한잎
+
+날짜 기반으로 매일 하나의 경제 개념을 홈 화면 최상단에 표시하는 학습 카드입니다.
+
+**`src/data/economicBites.js`** — 60개 경제 개념 시드 데이터
+- 필드: `id`, `title`, `summary`, `description`, `whyImportant`, `realExample`, `relatedTerms`, `category`, `difficulty`
+- 카테고리: 금리 / 투자 / 거시경제 / 저축 / 부동산 / 기초
+- 헬퍼: `getBiteById(id)`
+
+**`src/services/biteService.js`** — 날짜 기반 순환
+```js
+export function getTodaysBite() {
+  const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+  return economicBites[daysSinceEpoch % economicBites.length];
+}
+```
+
+**`src/data/biteInfographics.jsx`** — 총 18개 SVG 인포그래픽
+기준금리 / ETF / 복리 / 인플레이션 / 배당금 / 채권 / 자산배분 / 수요와 공급 / 환율 / 비상금 / 예금 / 유동성 / 레버리지 / 퇴직연금 / GDP / 인덱스 펀드 / 주식 / 적금
+
+**`src/components/home/DailyBiteCard.jsx`** — 홈 카드 UI
+
+컬러 시스템: 🍃 오늘의 경제 한잎 = 초록 계열 / ☀️ 노밍 카드 = 노란 계열 (역할 분리)
+
+| 요소 | 값 |
+|------|------|
+| 카드 배경 | `#F2FFF6` |
+| 테두리 | `#CDEFD7` |
+| 포인트 | `#21C58E` |
+| 버튼 | `linear-gradient(135deg, #21C58E, #16A374)` |
+
+카드 구조: 헤더 → 구분선 → 인포그래픽(흰 박스, max 340px) → 구분선 → 개념명+요약 → "🍃 자세히 배우기"
+
+---
+
+### 3. 경제 한잎 상세/아카이브
+
+**`src/pages/EconomicBitePage.jsx`** (`/bite/:id`)
+- 인포그래픽 + 개념명 + 📝 쉬운 설명 + 💡 왜 알아야 할까요? + 🏠 실생활 예시 + 🔗 연관 개념 버튼
+- 이전/다음 한잎 네비게이션
+
+**`src/pages/EconomicBiteArchivePage.jsx`** (`/bites`)
+- 오늘의 한잎 배너, 카테고리 필터 탭, 60개 카드 목록
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (자동: `npm run deploy`) |

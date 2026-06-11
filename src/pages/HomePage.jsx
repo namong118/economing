@@ -2,35 +2,208 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
-import { LEVELS, getNextLevelInfo } from '../data/levelData';
+import { getNextLevelInfo } from '../data/levelData';
 import PageWrapper from '../components/layout/PageWrapper';
+import DailyBiteCard from '../components/home/DailyBiteCard';
 
-const ECONOMIC_LEVEL_MAP = {
-  beginner:     { label: '초급자', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE' },
-  intermediate: { label: '중급자', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
-  advanced:     { label: '고급자', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
-};
+/* ── 시간대별 인사말 ──────────────────────────────────────── */
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h >= 6  && h < 12) return { text: '좋은 아침이에요!', emoji: '🌅' };
+  if (h >= 12 && h < 18) return { text: '안녕하세요!',     emoji: '☀️' };
+  if (h >= 18 && h < 22) return { text: '오늘도 수고하셨어요!', emoji: '🌆' };
+  return { text: '늦은 시간까지 공부하시네요!', emoji: '🌙' };
+}
 
-const MISSIONS = [
-  { emoji: '📖', label: '경제 개념 하나 배우기',    path: '/dictionary', done: false },
-  { emoji: '🗺️', label: '로드맵 한 단계 진행하기', path: '/roadmap',    done: true  },
-  { emoji: '✏️', label: '경제 일기 작성하기',       path: '/diary',      done: false },
-];
+/* ── 노밍 코치 멘트 (사용자 상태 기반) ────────────────────── */
+function getNomingMessage(profile) {
+  if (!profile?.onboarding_completed) {
+    return '무엇부터 시작해야 할지 모르겠다면, 먼저 경제 프로필을 설정해봐요. 딱 2분이면 돼요.';
+  }
+  const name = profile?.nickname?.split(' ')[0] ?? '';
+  const levelMsgs = {
+    seed:    '첫걸음이 가장 중요해요. 오늘 작은 것 하나씩 시작해봐요.',
+    sprout:  '잘 하고 있어요! 꾸준히 이어가면 금방 성장할 거예요.',
+    leaf:    '경제 공부에 흥미가 생기기 시작했죠? 이제 더 재밌어질 거예요.',
+    flower:  '좋은 흐름이에요. 오늘도 한 가지씩 배워봐요.',
+    fruit:   '실력이 쌓이고 있어요. 꾸준함이 최고의 전략이에요.',
+    tree:    '여기까지 온 것만으로도 대단해요. 계속 나아가봐요!',
+    forest:  '이미 훌륭한 경제 감각을 갖추셨어요. 다음 목표를 세워봐요!',
+  };
+  return levelMsgs[profile?.level] ?? '오늘도 함께 성장해봐요.';
+}
 
+/* ── 추천 행동 목록 (사용자 상태 기반) ────────────────────── */
+function getActions(profile, isLoggedIn) {
+  const onboarded = profile?.onboarding_completed;
+
+  const COACH = {
+    id:    'coach',
+    icon:  '☀️',
+    color: { text: '#92400E', bg: 'linear-gradient(145deg,#FFFBEA,#FFF4CC)', border: '#FFE08A', btn: '#FFC83D', btnText: '#78350F', btnShadow: 'rgba(255,200,61,0.4)' },
+    title: 'AI 코치에게 물어보기',
+    desc:  '지금 궁금한 경제 질문을 노밍에게 바로 물어보세요.',
+    cta:   'AI 코치 시작',
+    path:  '/coach',
+  };
+  const READ = {
+    id:    'read',
+    icon:  '📖',
+    color: { text: '#166534', bg: 'linear-gradient(145deg,#F0FDF4,#DCFCE7)', border: '#A7F3D0', btn: '#21C58E', btnText: '#fff', btnShadow: 'rgba(33,197,142,0.35)' },
+    title: '오늘의 경제 읽기',
+    desc:  '3분 만에 경제 개념 하나를 쉽게 배워봐요.',
+    cta:   '읽기 시작',
+    path:  '/read',
+  };
+  const DIARY = {
+    id:    'diary',
+    icon:  '✏️',
+    color: { text: '#1E40AF', bg: 'linear-gradient(145deg,#EFF6FF,#DBEAFE)', border: '#BFDBFE', btn: '#3B82F6', btnText: '#fff', btnShadow: 'rgba(59,130,246,0.3)' },
+    title: '경제 일기 작성하기',
+    desc:  '오늘 배운 내용을 짧게 기록해두면 오래 기억돼요.',
+    cta:   '기록하기',
+    path:  '/diary',
+    requireLogin: true,
+  };
+  const ONBOARDING = {
+    id:    'onboarding',
+    icon:  '🌱',
+    color: { text: '#166534', bg: 'linear-gradient(145deg,#F0FDF4,#DCFCE7)', border: '#A7F3D0', btn: '#21C58E', btnText: '#fff', btnShadow: 'rgba(33,197,142,0.35)' },
+    title: '경제 프로필 설정하기',
+    desc:  '2분이면 완료돼요. 노밍이 딱 맞는 코칭 방향을 잡아드려요.',
+    cta:   '지금 설정하기',
+    path:  '/onboarding',
+  };
+
+  if (!isLoggedIn) return [COACH, READ];
+  if (!onboarded)  return [ONBOARDING, COACH, READ];
+  return [COACH, READ, DIARY];
+}
+
+/* ── 개별 액션 카드 ───────────────────────────────────────── */
+function ActionCard({ action, index, navigate, profile }) {
+  const c  = action.color;
+  const [hov, setHov] = useState(false);
+
+  return (
+    <div
+      style={{
+        background: c.bg,
+        border: `1.5px solid ${c.border}`,
+        borderRadius: '20px', padding: '22px 24px',
+        display: 'flex', alignItems: 'center', gap: '16px',
+        transition: 'transform 0.15s, box-shadow 0.15s',
+        transform: hov ? 'translateY(-2px)' : 'none',
+        boxShadow: hov ? `0 8px 24px ${c.btnShadow}` : 'none',
+        cursor: 'default',
+      }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+    >
+      {/* 순서 번호 + 아이콘 */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+        <div style={{
+          width: '40px', height: '40px', borderRadius: '14px',
+          background: 'rgba(255,255,255,0.7)',
+          border: `1.5px solid ${c.border}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '20px',
+        }}>
+          {action.icon}
+        </div>
+        <span style={{ fontSize: '10px', fontWeight: '800', color: c.text, opacity: 0.6 }}>
+          {index + 1}순위
+        </span>
+      </div>
+
+      {/* 텍스트 */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px', marginBottom: '4px' }}>
+          {action.title}
+        </h3>
+        <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5', fontWeight: '500' }}>
+          {action.desc}
+        </p>
+      </div>
+
+      {/* CTA 버튼 */}
+      <button
+        onClick={() => navigate(action.path)}
+        style={{
+          flexShrink: 0,
+          padding: '10px 18px', borderRadius: '12px',
+          background: c.btn, color: c.btnText,
+          border: 'none', fontSize: '13px', fontWeight: '800',
+          cursor: 'pointer', whiteSpace: 'nowrap',
+          boxShadow: `0 4px 12px ${c.btnShadow}`,
+          transition: 'all 0.15s', letterSpacing: '-0.3px',
+        }}
+      >
+        {action.cta} →
+      </button>
+    </div>
+  );
+}
+
+/* ── XP 진행 스트립 (컴팩트) ──────────────────────────────── */
+function GrowthStrip({ profile, navigate }) {
+  const xp        = profile?.xp ?? 0;
+  const levelInfo = getNextLevelInfo(xp);
+  const { currentLevel, nextLevel, xpNeeded, progressPercent } = levelInfo;
+
+  return (
+    <button
+      onClick={() => navigate('/profile')}
+      style={{
+        width: '100%', background: '#fff',
+        border: '1.5px solid #DCF5EB', borderRadius: '16px',
+        padding: '16px 20px', cursor: 'pointer', textAlign: 'left',
+        transition: 'all 0.15s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = '#A7F3D0'; e.currentTarget.style.background = '#FAFFFE'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = '#DCF5EB'; e.currentTarget.style.background = '#fff'; }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{ fontSize: '24px' }}>{currentLevel.emoji}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+            <span style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.4px' }}>
+              {currentLevel.label} 단계 · {xp} XP
+            </span>
+            <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '600' }}>
+              내 경제 프로필 →
+            </span>
+          </div>
+          <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', borderRadius: '100px',
+              background: 'linear-gradient(90deg, #21C58E, #1AAD7D)',
+              width: `${progressPercent}%`, transition: 'width 0.6s ease',
+            }} />
+          </div>
+          {nextLevel && (
+            <p style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px', fontWeight: '600' }}>
+              {nextLevel.emoji} {nextLevel.label}까지 {xpNeeded} XP 남음
+            </p>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/* ── 메인 ─────────────────────────────────────────────────── */
 export default function HomePage() {
-  const navigate = useNavigate();
+  const navigate           = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
   const [xpLoading, setXpLoading] = useState(false);
+  const BASE_URL           = import.meta.env.BASE_URL;
 
-  const nickname     = profile?.nickname || (user ? '사용자' : '방문자');
-  const xp           = profile?.xp ?? 0;
-  const economicInfo = ECONOMIC_LEVEL_MAP[profile?.economic_level] ?? null;
-  const interests    = profile?.interests ?? [];
-  const levelInfo    = getNextLevelInfo(xp);
-  const { currentLevel, nextLevel, xpProgress, xpTotal, xpNeeded, progressPercent } = levelInfo;
-  const stageIndex = LEVELS.findIndex(l => l.key === currentLevel.key);
+  const greeting  = getGreeting();
+  const nickname  = profile?.nickname?.split(' ')[0] || (user ? '사용자' : '방문자');
+  const message   = getNomingMessage(profile);
+  const actions   = getActions(profile, !!user);
 
-  /* 개발 테스트용 XP 버튼 */
   const handleAddXp = async () => {
     if (!user || xpLoading) return;
     setXpLoading(true);
@@ -45,377 +218,119 @@ export default function HomePage() {
         className="anim-fade"
         style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}
       >
-        <div style={{ maxWidth: '880px', margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
 
-          {/* ══ 1. HERO ══════════════════════════════════════ */}
+          {/* ══ 오늘의 경제 한잎 ══════════════════════════ */}
+          <DailyBiteCard />
+
+          {/* ══ 노밍 그리팅 ══════════════════════════════ */}
           <div style={{
-            background: 'linear-gradient(135deg, #21C58E 0%, #1AAD7D 60%, #138F68 100%)',
-            borderRadius: '24px', padding: '32px 36px',
-            marginBottom: '16px', position: 'relative', overflow: 'hidden',
+            background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
+            border: '1.5px solid #FFE08A',
+            borderRadius: '22px', padding: '24px',
+            display: 'flex', gap: '16px', alignItems: 'flex-start',
+            marginBottom: '24px',
           }}>
-            {[
-              { w: 200, h: 200, top: '-60px',  right: '80px',  op: 0.08 },
-              { w: 120, h: 120, top: '20px',   right: '-20px', op: 0.12 },
-              { w: 80,  h: 80,  bottom: '-20px', left: '60%',  op: 0.06 },
-            ].map((c, i) => (
-              <div key={i} style={{
-                position: 'absolute', width: c.w, height: c.h, borderRadius: '50%',
-                background: `rgba(255,255,255,${c.op})`,
-                top: c.top, right: c.right, bottom: c.bottom, left: c.left,
-                pointerEvents: 'none',
+            {/* 노밍 아바타 */}
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <img
+                src={`${BASE_URL}coach.png`}
+                alt="노밍"
+                style={{ width: '56px', height: '56px', borderRadius: '16px', objectFit: 'cover' }}
+              />
+              <div style={{
+                position: 'absolute', bottom: '-2px', right: '-2px',
+                width: '14px', height: '14px', borderRadius: '50%',
+                background: '#21C58E', border: '2.5px solid #FFFBEA',
               }} />
-            ))}
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <p style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.75)', marginBottom: '8px' }}>
-                ✨ AI 경제 성장 코치
+            </div>
+
+            {/* 멘트 */}
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '12px', fontWeight: '700', color: '#B45309', marginBottom: '6px', letterSpacing: '0.3px' }}>
+                {greeting.emoji} 노밍 · AI 경제 코치
               </p>
-              <h1 style={{
-                fontSize: 'clamp(22px, 3vw, 34px)', fontWeight: '900',
-                color: '#fff', letterSpacing: '-1.2px', lineHeight: '1.25', marginBottom: '10px',
-              }}>
-                {nickname}님의<br />경제 성장 여정
-              </h1>
-              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.75)', marginBottom: '20px' }}>
-                작은 배움이 큰 변화를 만듭니다.
+              <p style={{ fontSize: '17px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.6px', lineHeight: '1.4', marginBottom: '8px' }}>
+                {greeting.text} {nickname}님.
               </p>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.25)',
-                borderRadius: '100px', padding: '8px 18px',
-              }}>
-                <span style={{ fontSize: '20px' }}>{currentLevel.emoji}</span>
-                <span style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>
-                  {currentLevel.label} 단계
-                </span>
-                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)', marginLeft: '4px' }}>
-                  {xp} XP
-                </span>
-              </div>
+              <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.2px' }}>
+                {message}
+              </p>
             </div>
           </div>
 
-          {/* ══ 2. XP 진행도 카드 ══════════════════════════ */}
-          <div style={{
-            background: '#fff', borderRadius: '20px',
-            border: '1.5px solid #DCF5EB',
-            padding: '20px 24px', marginBottom: '16px',
-          }}>
-            {/* 상단: 현재 단계 & 다음 단계 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '28px' }}>{currentLevel.emoji}</span>
-                <div>
-                  <p style={{ fontSize: '15px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.4px' }}>
-                    {currentLevel.label} 단계
-                  </p>
-                  <p style={{ fontSize: '12px', color: '#64748B', marginTop: '1px' }}>
-                    총 {xp} XP 획득
-                  </p>
-                </div>
-              </div>
-              {nextLevel ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '500' }}>다음 단계</span>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    background: '#F4FAF6', border: '1px solid #DCF5EB',
-                    borderRadius: '100px', padding: '4px 12px',
-                  }}>
-                    <span style={{ fontSize: '16px' }}>{nextLevel.emoji}</span>
-                    <span style={{ fontSize: '13px', fontWeight: '700', color: '#21C58E' }}>
-                      {nextLevel.label}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <span style={{
-                  fontSize: '12px', fontWeight: '700', color: '#FFC83D',
-                  background: '#FFFBEB', border: '1px solid #FFE08A',
-                  borderRadius: '100px', padding: '4px 12px',
-                }}>
-                  ✨ 최고 단계 달성!
-                </span>
-              )}
-            </div>
-
-            {/* 진행률 바 */}
-            <div style={{ marginBottom: '8px' }}>
-              <div style={{
-                height: '10px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden',
-              }}>
-                <div style={{
-                  height: '100%', borderRadius: '100px',
-                  background: 'linear-gradient(90deg, #21C58E, #1AAD7D)',
-                  width: `${progressPercent}%`,
-                  transition: 'width 0.6s ease',
-                  boxShadow: '0 2px 6px rgba(33,197,142,0.4)',
-                }} />
-              </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', color: '#64748B' }}>
-                {nextLevel ? `${xpProgress} / ${xpTotal} XP` : '모든 단계 완료'}
-              </span>
-              {nextLevel && (
-                <span style={{ fontSize: '12px', fontWeight: '700', color: '#21C58E' }}>
-                  {xpNeeded} XP 더 모으면 {nextLevel.label} 단계!
-                </span>
-              )}
-            </div>
-
-            {/* 단계 아이콘 라인 */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              marginTop: '20px', paddingTop: '16px',
-              borderTop: '1px solid #F1F5F9',
+          {/* ══ 추천 행동 카드 ══════════════════════════ */}
+          <div style={{ marginBottom: '24px' }}>
+            <p style={{
+              fontSize: '13px', fontWeight: '800', color: '#64748B',
+              letterSpacing: '0.3px', marginBottom: '12px',
             }}>
-              {LEVELS.map((l, i) => {
-                const isCurrent = l.key === currentLevel.key;
-                const isPast    = i < stageIndex;
-                return (
-                  <div key={l.key} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flex: '0 0 auto' }}>
-                      <div style={{
-                        width: isCurrent ? '44px' : '34px',
-                        height: isCurrent ? '44px' : '34px',
-                        borderRadius: '50%',
-                        background: isCurrent ? '#21C58E' : isPast ? '#DCF5EB' : '#F4FAF6',
-                        border: isCurrent ? '3px solid #fff' : isPast ? '2px solid #A7F3D0' : '2px solid #E2E8F0',
-                        boxShadow: isCurrent ? '0 0 0 4px rgba(33,197,142,0.2)' : 'none',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: isCurrent ? '20px' : '16px',
-                        transition: 'all 0.3s',
-                      }}>
-                        {l.emoji}
-                      </div>
-                      <span style={{
-                        fontSize: '9px', fontWeight: isCurrent ? '800' : '500',
-                        color: isCurrent ? '#21C58E' : '#94A3B8',
-                      }}>
-                        {l.label}
-                      </span>
-                    </div>
-                    {i < LEVELS.length - 1 && (
-                      <div style={{
-                        flex: 1, height: '2px', margin: '0 3px',
-                        background: isPast ? '#21C58E' : '#E2E8F0',
-                        marginBottom: '14px', borderRadius: '2px',
-                      }} />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 개발용 XP 테스트 버튼 */}
-            {user && (
-              <div style={{
-                marginTop: '14px', paddingTop: '14px',
-                borderTop: '1px dashed #E2E8F0',
-                display: 'flex', alignItems: 'center', gap: '10px',
-              }}>
-                <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '600' }}>개발 테스트</span>
-                <button
-                  onClick={handleAddXp}
-                  disabled={xpLoading}
-                  style={{
-                    padding: '6px 14px', borderRadius: '8px',
-                    background: xpLoading ? '#E2E8F0' : '#FFC83D',
-                    color: xpLoading ? '#94A3B8' : '#78350F',
-                    border: 'none', fontSize: '12px', fontWeight: '700',
-                    cursor: xpLoading ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {xpLoading ? '처리 중...' : '⚡ +5 XP 테스트'}
-                </button>
-                <span style={{ fontSize: '11px', color: '#CBD5E1' }}>현재 {xp} XP</span>
-              </div>
-            )}
-          </div>
-
-          {/* ══ 3+4. 노밍 + 미션 2컬럼 ════════════════════ */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }} className="home-grid">
-
-            {/* 노밍 코칭 카드 */}
-            <div style={{
-              background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-              border: '1.5px solid #FFE08A',
-              borderRadius: '20px', padding: '24px',
-              display: 'flex', flexDirection: 'column', gap: '16px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <img
-                  src={`${import.meta.env.BASE_URL}coach.png`}
-                  alt="노밍"
-                  style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover', flexShrink: 0 }}
-                />
-                <div>
-                  <p style={{ fontSize: '13px', fontWeight: '800', color: '#92400E' }}>☀️ 노밍</p>
-                  <p style={{ fontSize: '11px', color: '#B45309', marginTop: '1px' }}>AI 경제 코치</p>
-                </div>
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.6)', borderRadius: '14px', padding: '14px 16px' }}>
-                <p style={{ fontSize: '15px', fontWeight: '700', color: '#78350F', lineHeight: '1.6', letterSpacing: '-0.4px' }}>
-                  좋은 아침이에요! 🌅<br />
-                  <span style={{ fontWeight: '500', color: '#92400E' }}>
-                    오늘은 어떤 경제 고민이<br />있으신가요?
-                  </span>
-                </p>
-              </div>
-              <button
-                onClick={() => navigate('/coach')}
-                style={{
-                  marginTop: 'auto', padding: '12px', borderRadius: '14px',
-                  background: '#FFC83D', color: '#78350F',
-                  border: 'none', fontSize: '14px', fontWeight: '800',
-                  cursor: 'pointer', letterSpacing: '-0.3px',
-                  boxShadow: '0 4px 14px rgba(255,200,61,0.4)',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#FFB800'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#FFC83D'; e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                노밍에게 물어보기 →
-              </button>
-            </div>
-
-            {/* 오늘의 한 걸음 */}
-            <div style={{
-              background: '#fff', border: '1.5px solid #E2E8F0',
-              borderRadius: '20px', padding: '24px',
-              display: 'flex', flexDirection: 'column', gap: '12px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <p style={{ fontSize: '15px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.5px' }}>
-                  오늘의 한 걸음
-                </p>
-                <span style={{
-                  fontSize: '11px', fontWeight: '700', color: '#21C58E',
-                  background: '#F4FAF6', border: '1px solid #DCF5EB',
-                  borderRadius: '100px', padding: '3px 10px',
-                }}>
-                  {MISSIONS.filter(m => m.done).length}/{MISSIONS.length} 완료
-                </span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {MISSIONS.map(m => (
-                  <button
-                    key={m.label}
-                    onClick={() => navigate(m.path)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '12px',
-                      padding: '12px 14px', borderRadius: '12px',
-                      background: m.done ? '#F4FAF6' : '#FAFAFA',
-                      border: `1.5px solid ${m.done ? '#DCF5EB' : '#F1F5F9'}`,
-                      cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
-                    }}
-                    onMouseEnter={e => { if (!m.done) { e.currentTarget.style.borderColor = '#21C58E'; e.currentTarget.style.background = '#F4FAF6'; } }}
-                    onMouseLeave={e => { if (!m.done) { e.currentTarget.style.borderColor = '#F1F5F9'; e.currentTarget.style.background = '#FAFAFA'; } }}
-                  >
-                    <div style={{
-                      width: '24px', height: '24px', borderRadius: '50%', flexShrink: 0,
-                      background: m.done ? '#21C58E' : '#fff',
-                      border: `2px solid ${m.done ? '#21C58E' : '#CBD5E1'}`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '11px', color: '#fff', fontWeight: '800',
-                    }}>
-                      {m.done ? '✓' : ''}
-                    </div>
-                    <span style={{ fontSize: '14px' }}>{m.emoji}</span>
-                    <span style={{
-                      fontSize: '13px', fontWeight: '600',
-                      color: m.done ? '#64748B' : '#0F172A',
-                      textDecoration: m.done ? 'line-through' : 'none',
-                      flex: 1,
-                    }}>
-                      {m.label}
-                    </span>
-                    {!m.done && <span style={{ fontSize: '14px', color: '#CBD5E1' }}>›</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ══ 5. 지금 나의 단계 카드 ══════════════════════ */}
-          <div style={{
-            background: '#fff', border: '1.5px solid #DCF5EB',
-            borderRadius: '20px', padding: '24px',
-          }}>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '16px' }}>
-              지금 나의 단계
+              오늘 노밍이 추천해요
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <div style={{
-                width: '72px', height: '72px', borderRadius: '20px', flexShrink: 0,
-                background: 'linear-gradient(135deg, #F4FAF6, #DCF5EB)',
-                border: '2px solid #A7F3D0',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '36px',
-              }}>
-                {currentLevel.emoji}
-              </div>
-              <div style={{ flex: 1 }}>
-                {/* 성장 단계 + 경제 수준 배지 (나란히) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                  <p style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px' }}>
-                    {currentLevel.label} 단계
-                  </p>
-                  {economicInfo ? (
-                    <span style={{
-                      fontSize: '12px', fontWeight: '700',
-                      color: economicInfo.color,
-                      background: economicInfo.bg,
-                      border: `1px solid ${economicInfo.border}`,
-                      borderRadius: '100px', padding: '3px 10px',
-                    }}>
-                      경제 수준: {economicInfo.label}
-                    </span>
-                  ) : (
-                    <span style={{
-                      fontSize: '12px', fontWeight: '600', color: '#94A3B8',
-                      background: '#F8FAFC', border: '1px dashed #CBD5E1',
-                      borderRadius: '100px', padding: '3px 10px',
-                    }}>
-                      경제 수준 미설정
-                    </span>
-                  )}
-                </div>
-                <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.6', marginBottom: interests.length > 0 ? '8px' : '0' }}>
-                  {xp} XP 획득 · {nextLevel ? `${nextLevel.label} 단계까지 ${xpNeeded} XP` : '최고 단계 달성!'}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {actions.map((action, i) => (
+                <ActionCard
+                  key={action.id}
+                  action={action}
+                  index={i}
+                  navigate={navigate}
+                  profile={profile}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ══ 성장 현황 스트립 (로그인 시) ════════════ */}
+          {user && profile && (
+            <GrowthStrip profile={profile} navigate={navigate} />
+          )}
+
+          {/* ══ 비로그인 CTA ════════════════════════════ */}
+          {!user && (
+            <div style={{
+              background: '#fff', border: '1.5px solid #DCF5EB',
+              borderRadius: '16px', padding: '20px 22px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
+            }}>
+              <div>
+                <p style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.4px', marginBottom: '3px' }}>
+                  XP를 모아 성장해보세요
                 </p>
-                {/* 관심 분야 태그 */}
-                {interests.length > 0 && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {interests.map(tag => (
-                      <span key={tag} style={{
-                        fontSize: '11px', fontWeight: '600', color: '#21C58E',
-                        background: '#F4FAF6', border: '1px solid #DCF5EB',
-                        borderRadius: '100px', padding: '2px 9px',
-                      }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <p style={{ fontSize: '12px', color: '#64748B' }}>
+                  로그인하면 읽기 완료마다 +5 XP 지급
+                </p>
               </div>
               <button
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/login')}
                 style={{
                   flexShrink: 0, padding: '10px 18px', borderRadius: '12px',
-                  background: '#F4FAF6', color: '#21C58E',
-                  border: '1.5px solid #DCF5EB', fontSize: '13px', fontWeight: '700',
-                  cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.15s',
+                  background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                  color: '#fff', border: 'none', fontSize: '13px', fontWeight: '700',
+                  cursor: 'pointer', whiteSpace: 'nowrap',
+                  boxShadow: '0 3px 10px rgba(33,197,142,0.3)',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#21C58E'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6'; e.currentTarget.style.color = '#21C58E'; }}
               >
-                {economicInfo ? '수준 다시 설정 →' : '온보딩 시작 →'}
+                로그인
               </button>
             </div>
-          </div>
+          )}
+
+          {/* ══ 개발 테스트 (XP) ════════════════════════ */}
+          {user && (
+            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+              <button
+                onClick={handleAddXp}
+                disabled={xpLoading}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: '11px', color: '#CBD5E1', fontWeight: '600',
+                  padding: '4px 8px',
+                }}
+              >
+                {xpLoading ? '처리 중...' : `⚡ +5 XP 테스트 (현재 ${profile?.xp ?? 0} XP)`}
+              </button>
+            </div>
+          )}
 
         </div>
       </div>
