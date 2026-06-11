@@ -17,11 +17,13 @@ import ReadingPage     from './pages/ReadingPage';
 import MyGrowthHubPage       from './pages/MyGrowthHubPage';
 import EconomicBitePage      from './pages/EconomicBitePage';
 import EconomicBiteArchivePage from './pages/EconomicBiteArchivePage';
+import { DictionaryProvider } from './context/DictionaryContext';
 
 export default function App() {
   return (
     <Router>
       <AuthProvider>
+        <DictionaryProvider>
         <div className="app-shell">
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -83,6 +85,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </div>
+        </DictionaryProvider>
       </AuthProvider>
     </Router>
   );

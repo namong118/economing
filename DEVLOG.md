@@ -595,6 +595,103 @@ export function getTodaysBite() {
 
 ---
 
+## 2026-06-12 — 경제 한잎 미니 수업 페이지 + 용어 저장 기능
+
+### 개요
+경제 한잎 상세 페이지를 3~5분짜리 미니 경제 수업으로 전면 재설계했습니다.
+동시에 앱 전체에서 경제 용어를 저장·관리할 수 있는 **나만의 경제사전** 기능을 구현했습니다.
+
+---
+
+### 1. 경제 한잎 상세 페이지 전면 재설계 (`/bite/:id`)
+
+**`src/data/biteQuizzes.js`** (신규)
+- 60개 한잎 항목 각각에 대한 노밍 메시지 + 퀴즈(4지선다) 데이터
+- `getBiteQuiz(id)` 헬퍼 함수로 id 기반 접근
+
+**`src/pages/EconomicBitePage.jsx`** (전면 재작성)
+- 10개 섹션 구조: 히어로 카드 → 인포그래픽 → 쉬운 설명 → 왜 중요한가 → 실생활 예시 → 연관 개념 → 노밍의 한마디 → 퀴즈 → 이전/다음 내비게이션
+- CSS keyframe 애니메이션 (`xpFloat`, `correctPop`): 퀴즈 정답 시 +10 XP 플로팅 연출
+- 연관 개념 섹션에 `SaveTermButton` 통합 — 용어별 사전 저장 버튼
+- 난이도·카테고리·예상 시간 배지, 퀴즈 정답/오답 분기 UX
+
+---
+
+### 2. 용어 저장 기능 — 나만의 경제사전
+
+#### 2-1. DB 테이블 (`user_dictionary`)
+```sql
+CREATE TABLE public.user_dictionary (
+  id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     uuid        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  term        text        NOT NULL,
+  meaning     text,
+  source_type text,          -- 'economic_bite' | 'coach' | 'news'
+  source_id   text,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, term)
+);
+-- RLS: 사용자는 본인 행만 SELECT/INSERT/DELETE
+```
+
+#### 2-2. 서비스 레이어
+
+**`src/services/dictionaryService.js`** (신규)
+- `saveTerm({ userId, term, meaning, sourceType, sourceId })` — 중복 체크 후 insert
+- `getTerms(userId)` — 전체 조회, camelCase 정규화
+- `deleteTerm(id)` — 단건 삭제
+- `VITE_MOCK_AUTH` 모드: localStorage(`mock_userdict_${userId}`) 로 동작
+
+#### 2-3. 전역 상태
+
+**`src/context/DictionaryContext.jsx`** (신규)
+- `AuthProvider` 하위에 `DictionaryProvider` 배치 (App.jsx에서 감쌈)
+- 사용자 변경 시 전체 용어 단건 쿼리로 로드
+- 노출 API: `terms`, `loaded`, `isSaved(term)`, `save(...)`, `remove(id)`
+- 낙관적 업데이트(optimistic update): 저장/삭제 즉시 UI 반영
+
+#### 2-4. 공통 버튼 컴포넌트
+
+**`src/components/common/SaveTermButton.jsx`** (신규)
+- Props: `term`, `meaning`, `sourceType`, `sourceId`, `size` (`'sm'` | `'md'`)
+- 비로그인 시 `null` 반환 (auth-gate 없음)
+- 상태: 저장 전 "＋ 사전 저장" → 저장 후 "✓ 저장됨" (토글 불가, 삭제는 경제사전 탭에서만)
+- hover 시 초록색 전환, 로딩 중 비활성화
+
+#### 2-5. 저장 버튼 진입점 3곳
+
+| 화면 | 데이터 출처 | sourceType |
+|---|---|---|
+| 경제 한잎 상세 (`/bite/:id`) | `bite.relatedTerms` → 타이틀/요약 | `economic_bite` |
+| AI 코치 노밍 (`/coach`) | `MOCK_RESPONSES[].terms` | `coach` |
+| 경제 읽기 뉴스 (`/reading`) | `article.keywords[].{term, desc}` | `news` |
+
+**`src/pages/CoachPage.jsx`** (수정)
+- NomingCard 하단 "💾 이 대화의 핵심 용어" 섹션 추가
+- `coachService.js` 각 MOCK_RESPONSE에 `terms: [{term, meaning}]` 필드 추가
+
+**`src/pages/ReadingPage.jsx`** (수정)
+- 뉴스 키워드 행 끝에 `SaveTermButton` 추가
+
+#### 2-6. 나만의 경제사전 탭 재설계
+
+**`src/pages/MyGrowthHubPage.jsx`** (수정)
+- `vocabularyService` 의존성 제거 → `useDictionaryCtx()` 전환
+- `TermCard` 재설계: 새 스키마(`term`, `meaning`, `sourceType`, `savedAt`) + 출처 뱃지 (🍃/☀️/📰)
+- `DictionaryTabContent`: 전역 컨텍스트 구독, 검색 필터, 2열 그리드 카드 레이아웃
+- 삭제 confirm UI (인라인 취소/삭제 버튼)
+
+---
+
+### 주요 설계 결정
+
+- **DictionaryContext 패턴 채택**: 한 페이지에 `SaveTermButton`이 여러 개 렌더링될 때 N+1 쿼리 방지. 사용자 변경 시 단 한 번만 쿼리.
+- **자동 용어 추출 없음**: AI 연결 없이 컨텐츠에 미리 정의된 `relatedTerms` / `keywords` / `terms` 필드를 그대로 사용.
+- **`user_dictionary` 테이블 신규 생성**: 기존 `vocabulary` 테이블과 분리, 이전 코드 영향 없음.
+- **service_role 키 프론트엔드 노출 금지**: anon key + RLS 정책으로만 접근 제어.
+
+---
+
 ### 현재 배포 현황
 
 | 항목 | 값 |

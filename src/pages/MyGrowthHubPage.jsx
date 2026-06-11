@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { roadmap } from '../data/roadmapData';
-import { getVocabulary, deleteVocabulary } from '../services/vocabularyService';
+import { useDictionaryCtx } from '../context/DictionaryContext';
 import { DiaryContent } from './DiaryPage';
 import PageWrapper from '../components/layout/PageWrapper';
 
@@ -279,9 +279,17 @@ function SummaryTab() {
   );
 }
 
-/* ── 용어 카드 ────────────────────────────────────────────── */
+/* ── 출처 뱃지 맵 ─────────────────────────────────────────── */
+const SOURCE_STYLE = {
+  economic_bite: { label: '경제 한잎', icon: '🍃', bg: '#F0FDF4', color: '#15803D', border: '#86EFAC' },
+  coach:         { label: '노밍 대화', icon: '☀️', bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
+  news:          { label: '경제 읽기', icon: '📰', bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
+};
+
+/* ── 용어 카드 (새 스키마) ────────────────────────────────── */
 function TermCard({ term, onDelete, deleting }) {
   const [confirmDel, setConfirmDel] = useState(false);
+  const src = SOURCE_STYLE[term.sourceType] ?? { label: '기타', icon: '📖', bg: '#F8FAFC', color: '#64748B', border: '#E2E8F0' };
 
   return (
     <div style={{
@@ -289,50 +297,49 @@ function TermCard({ term, onDelete, deleting }) {
       borderRadius: '16px', padding: '14px',
       display: 'flex', flexDirection: 'column', gap: '8px',
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-        <div style={{
-          width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
-          background: '#F4FAF6', border: '1.5px solid #DCF5EB',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px',
+      {/* 용어명 + 출처 뱃지 */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
+        <p style={{ fontSize: '15px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.4px', lineHeight: 1.3 }}>
+          {term.term}
+        </p>
+        <span style={{
+          fontSize: '10px', fontWeight: '700', flexShrink: 0,
+          background: src.bg, color: src.color, border: `1px solid ${src.border}`,
+          borderRadius: '100px', padding: '2px 8px', lineHeight: 1.8,
         }}>
-          {term.emoji}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.3px' }}>
-            {term.term}
-          </p>
-          {term.fullName && (
-            <p style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '500', marginTop: '1px' }}>{term.fullName}</p>
-          )}
-        </div>
+          {src.icon} {src.label}
+        </span>
       </div>
 
-      {term.explanation && (
-        <p style={{ fontSize: '12px', color: '#475569', lineHeight: '1.65', paddingLeft: '46px' }}>
-          {term.explanation.length > 80 ? term.explanation.slice(0, 80) + '...' : term.explanation}
+      {/* 뜻 */}
+      {term.meaning && (
+        <p style={{ fontSize: '12px', color: '#475569', lineHeight: '1.65' }}>
+          {term.meaning.length > 90 ? term.meaning.slice(0, 90) + '…' : term.meaning}
         </p>
       )}
 
-      <div style={{ paddingLeft: '46px' }}>
+      {/* 저장일 + 삭제 */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
+        <span style={{ fontSize: '11px', color: '#CBD5E1', fontWeight: '500' }}>{term.savedAt}</span>
         {confirmDel ? (
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '5px' }}>
             <button
               onClick={() => setConfirmDel(false)}
-              style={{ flex: 1, padding: '7px', borderRadius: '8px', background: '#F8FAFC', border: '1.5px solid #E2E8F0', fontSize: '12px', fontWeight: '600', color: '#64748B', cursor: 'pointer' }}
+              style={{ padding: '4px 10px', borderRadius: '7px', background: '#F8FAFC', border: '1.5px solid #E2E8F0', fontSize: '11px', fontWeight: '600', color: '#64748B', cursor: 'pointer' }}
             >
               취소
             </button>
             <button
               onClick={() => onDelete(term.id)} disabled={deleting}
-              style={{ flex: 1, padding: '7px', borderRadius: '8px', background: '#FEF2F2', border: '1.5px solid #FECACA', fontSize: '12px', fontWeight: '700', color: '#DC2626', cursor: deleting ? 'not-allowed' : 'pointer' }}
+              style={{ padding: '4px 10px', borderRadius: '7px', background: '#FEF2F2', border: '1.5px solid #FECACA', fontSize: '11px', fontWeight: '700', color: '#DC2626', cursor: deleting ? 'not-allowed' : 'pointer' }}
             >
-              {deleting ? '삭제 중' : '삭제'}
+              {deleting ? '…' : '삭제'}
             </button>
           </div>
         ) : (
           <button
             onClick={() => setConfirmDel(true)}
-            style={{ padding: '5px 12px', borderRadius: '8px', background: 'none', border: '1px solid #E2E8F0', fontSize: '11px', fontWeight: '600', color: '#94A3B8', cursor: 'pointer' }}
+            style={{ padding: '4px 10px', borderRadius: '7px', background: 'none', border: '1px solid #E2E8F0', fontSize: '11px', fontWeight: '600', color: '#94A3B8', cursor: 'pointer' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#FECACA'; e.currentTarget.style.color = '#EF4444'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#94A3B8'; }}
           >
@@ -346,32 +353,20 @@ function TermCard({ term, onDelete, deleting }) {
 
 /* ── 나만의 경제사전 탭 ────────────────────────────────────── */
 function DictionaryTabContent() {
-  const { user } = useAuth();
-  const [terms, setTerms]         = useState([]);
-  const [search, setSearch]       = useState('');
-  const [loading, setLoading]     = useState(false);
+  const { terms, loaded, remove } = useDictionaryCtx();
+  const [search,     setSearch]     = useState('');
   const [deletingId, setDeletingId] = useState(null);
-
-  useEffect(() => { if (user) loadTerms(); }, [user]);
-
-  async function loadTerms() {
-    setLoading(true);
-    const { data } = await getVocabulary(user.id);
-    setTerms(data || []);
-    setLoading(false);
-  }
 
   async function handleDelete(id) {
     setDeletingId(id);
-    await deleteVocabulary(id);
-    setTerms(prev => prev.filter(t => t.id !== id));
+    await remove(id);
     setDeletingId(null);
   }
 
   const filtered = terms.filter(t =>
     !search ||
     t.term.toLowerCase().includes(search.toLowerCase()) ||
-    (t.fullName || '').toLowerCase().includes(search.toLowerCase())
+    (t.meaning || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -381,15 +376,13 @@ function DictionaryTabContent() {
           📖 나만의 경제사전
         </h2>
         <p style={{ fontSize: '13px', color: '#64748B', fontWeight: '500' }}>
-          알게 된 경제 용어를 내 사전에 차곡차곡 모아요
+          경제 한잎·노밍 대화·경제 읽기에서 저장한 용어를 모아요
         </p>
       </div>
 
       {/* 검색 */}
       <div style={{ position: 'relative', marginBottom: '16px' }}>
-        <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '15px', pointerEvents: 'none' }}>
-          🔍
-        </span>
+        <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '15px', pointerEvents: 'none' }}>🔍</span>
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -405,9 +398,9 @@ function DictionaryTabContent() {
         />
       </div>
 
-      {loading ? (
+      {!loaded ? (
         <div style={{ textAlign: 'center', padding: '48px 0', color: '#94A3B8', fontSize: '13px' }}>
-          불러오는 중...
+          불러오는 중…
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: '18px', border: '1.5px solid #E8F5EF' }}>
@@ -418,7 +411,7 @@ function DictionaryTabContent() {
           <p style={{ fontSize: '13px', color: '#94A3B8', lineHeight: '1.7' }}>
             {search
               ? '다른 검색어를 시도해보세요.'
-              : 'AI 코치나 경제 읽기에서\n경제 용어를 저장할 수 있어요.'}
+              : '경제 한잎·노밍 대화·경제 읽기에서\n용어 옆 ＋ 버튼을 눌러 저장해보세요.'}
           </p>
         </div>
       ) : (

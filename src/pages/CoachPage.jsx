@@ -6,6 +6,7 @@ import { getCoachResponse } from '../services/coachService';
 import { createConversation } from '../services/conversationService';
 import { getInfographic } from '../data/infographicData';
 import InfographicCard from '../components/infographic/InfographicCard';
+import SaveTermButton from '../components/common/SaveTermButton';
 
 /* ── 추천 질문 ────────────────────────────────────────────── */
 const SUGGESTED_QUESTIONS = [
@@ -20,7 +21,7 @@ const INPUT_CHIPS = ['월급 관리', '저축', '투자 입문', '경제 공부'
 
 /* ── 노밍 응답 카드 ─────────────────────────────────────── */
 function NomingCard({ structured }) {
-  const { advice, knowFirst, nextStep } = structured;
+  const { advice, knowFirst, nextStep, terms } = structured;
   return (
     <div style={{
       background: '#fff',
@@ -89,6 +90,42 @@ function NomingCard({ structured }) {
           {nextStep}
         </span>
       </div>
+
+      {/* 💾 핵심 용어 저장 */}
+      {terms && terms.length > 0 && (
+        <div style={{
+          padding: '12px 18px 14px',
+          borderTop: '1px solid #F1F5F9',
+          background: '#FAFBFC',
+        }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.4px', marginBottom: '8px' }}>
+            💾 이 대화의 핵심 용어
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            {terms.map(t => (
+              <div key={t.term} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: '10px', background: '#fff', border: '1px solid #E8F5EF',
+                borderRadius: '10px', padding: '8px 12px',
+              }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.term}</span>
+                  <p style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', lineHeight: '1.5',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {t.meaning}
+                  </p>
+                </div>
+                <SaveTermButton
+                  term={t.term}
+                  meaning={t.meaning}
+                  sourceType="coach"
+                  size="sm"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -229,7 +266,9 @@ export default function CoachPage() {
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0 || loading) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, loading]);
 
   const send = async (question) => {

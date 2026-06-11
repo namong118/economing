@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { CONTENTS, CATEGORY_STYLE, getTodayContent, getOtherContents, markAsRead } from '../services/readingService';
 import PageWrapper from '../components/layout/PageWrapper';
+import SaveTermButton from '../components/common/SaveTermButton';
 
 /* ── 카테고리 배지 ────────────────────────────────────────── */
 function CategoryBadge({ category }) {
@@ -207,7 +208,7 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {content.keywords.map((kw, i) => (
-                <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                   <span style={{
                     fontSize: '12px', fontWeight: '800', color: '#21C58E',
                     background: '#F4FAF6', border: '1.5px solid #DCF5EB',
@@ -216,9 +217,16 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
                   }}>
                     {kw.term}
                   </span>
-                  <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5', margin: 0, fontWeight: '500' }}>
+                  <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5', margin: 0, fontWeight: '500', flex: 1 }}>
                     {kw.desc}
                   </p>
+                  <SaveTermButton
+                    term={kw.term}
+                    meaning={kw.desc}
+                    sourceType="news"
+                    sourceId={content.id}
+                    size="sm"
+                  />
                 </div>
               ))}
             </div>
