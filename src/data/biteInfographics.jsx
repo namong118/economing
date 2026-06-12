@@ -669,6 +669,68 @@ function SavingsGraphic() {
   );
 }
 
+/* ── 19. 금리 인상 ───────────────────────────────── */
+function RateHikeGraphic() {
+  const steps = [
+    { label: '중앙은행', sub: '기준금리 ↑', fill: '#21C58E', textFill: '#fff' },
+    { label: '시중은행', sub: '대출금리 ↑', fill: '#fff',    textFill: '#065F46', stroke: '#21C58E' },
+    { label: '가계·기업', sub: '이자 부담 ↑', fill: '#fff',  textFill: '#065F46', stroke: '#21C58E' },
+    { label: '소비·투자', sub: '지출 감소',   fill: '#FEF9EC', textFill: '#92400E', stroke: '#FFC83D' },
+  ];
+  return (
+    <svg viewBox="0 0 300 148" fill="none" width="100%" style={{ display: 'block' }}>
+      <T x="150" y="13" size={10} weight="800" fill="#374151" anchor="middle">금리 인상이 경제에 미치는 효과</T>
+      {steps.map((s, i) => {
+        const x = 12 + i * 73;
+        return (
+          <g key={s.label}>
+            <rect x={x} y={30} width={62} height={68} rx={10}
+              fill={s.fill} stroke={s.stroke ?? 'none'} strokeWidth={s.stroke ? 1.5 : 0} />
+            <T x={x + 31} y={56} size={10} weight="800" fill={s.textFill} anchor="middle">{s.label}</T>
+            <T x={x + 31} y={72} size={9}  weight="700" fill={s.textFill} anchor="middle">{s.sub}</T>
+            {i < steps.length - 1 && (
+              <Arr x1={x + 63} y1={64} x2={x + 72} y2={64} color="#FFC83D" w={2.5} />
+            )}
+          </g>
+        );
+      })}
+      <rect x="12" y="112" width="276" height="26" rx="8" fill="#F0FDF4" />
+      <T x="150" y="129" size={10} weight="700" fill="#065F46" anchor="middle">→ 결과: 물가 안정 · 경기 냉각</T>
+    </svg>
+  );
+}
+
+/* ── 20. 금리 인하 ───────────────────────────────── */
+function RateCutGraphic() {
+  const steps = [
+    { label: '중앙은행', sub: '기준금리 ↓', fill: '#FFC83D', textFill: '#78350F' },
+    { label: '시중은행', sub: '대출금리 ↓', fill: '#fff',    textFill: '#065F46', stroke: '#21C58E' },
+    { label: '가계·기업', sub: '대출 증가',  fill: '#fff',   textFill: '#065F46', stroke: '#21C58E' },
+    { label: '소비·투자', sub: '지출 증가',  fill: '#E1F5EE', textFill: '#065F46', stroke: '#A7F3D0' },
+  ];
+  return (
+    <svg viewBox="0 0 300 148" fill="none" width="100%" style={{ display: 'block' }}>
+      <T x="150" y="13" size={10} weight="800" fill="#374151" anchor="middle">금리 인하가 경제에 미치는 효과</T>
+      {steps.map((s, i) => {
+        const x = 12 + i * 73;
+        return (
+          <g key={s.label}>
+            <rect x={x} y={30} width={62} height={68} rx={10}
+              fill={s.fill} stroke={s.stroke ?? 'none'} strokeWidth={s.stroke ? 1.5 : 0} />
+            <T x={x + 31} y={56} size={10} weight="800" fill={s.textFill} anchor="middle">{s.label}</T>
+            <T x={x + 31} y={72} size={9}  weight="700" fill={s.textFill} anchor="middle">{s.sub}</T>
+            {i < steps.length - 1 && (
+              <Arr x1={x + 63} y1={64} x2={x + 72} y2={64} color="#21C58E" w={2.5} />
+            )}
+          </g>
+        );
+      })}
+      <rect x="12" y="112" width="276" height="26" rx="8" fill="#FFFBEA" />
+      <T x="150" y="129" size={10} weight="700" fill="#92400E" anchor="middle">→ 결과: 경기 부양 · 물가 상승 위험</T>
+    </svg>
+  );
+}
+
 /* ── 인포그래픽 매핑 ──────────────────────────────── */
 export const BITE_INFOGRAPHICS = {
   '기준금리':   { graphic: KijunGraphic,      bg: '#FFFCEB' },
@@ -689,6 +751,8 @@ export const BITE_INFOGRAPHICS = {
   '인덱스 펀드':  { graphic: IndexFundGraphic,  bg: '#F0FDF4' },
   '주식':        { graphic: StockGraphic,       bg: '#EFF6FF' },
   '적금':        { graphic: SavingsGraphic,     bg: '#F0FDF4' },
+  '금리 인상':   { graphic: RateHikeGraphic,    bg: '#F0FDF4' },
+  '금리 인하':   { graphic: RateCutGraphic,     bg: '#FFFCEB' },
 };
 
 export function getBiteInfographic(title) {
