@@ -162,9 +162,7 @@ export default function HomePage() {
           gap: 16px;
           padding: 8px 24px 60px;
           background: #F4FAF6;
-          min-height: calc(100vh - 90px);
           box-sizing: border-box;
-          align-items: stretch;
           align-content: start;
         }
         .hd-header { align-self: center; }

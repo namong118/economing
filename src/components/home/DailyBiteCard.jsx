@@ -21,7 +21,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
     }}>
 
       {/* 카드 헤더 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontSize: 11, fontWeight: 500, color: '#0F6E56', display: 'flex', alignItems: 'center', gap: 5 }}>
           🍃 오늘의 경제 한잎
         </span>
@@ -36,8 +36,8 @@ export default function DailyBiteCard({ bite, hideButton }) {
       </div>
 
       {/* 제목 영역 */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 26, fontWeight: 700, color: '#085041', lineHeight: 1.2, marginBottom: 3 }}>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 26, fontWeight: 700, color: '#085041', lineHeight: 1.2, marginBottom: 4 }}>
           {bite.title}
         </div>
         <div style={{ fontSize: 13, color: '#0F6E56', lineHeight: 1.5 }}>
@@ -48,9 +48,9 @@ export default function DailyBiteCard({ bite, hideButton }) {
       {/* 픽토그램 영역 */}
       <div style={{
         background: '#F4FAF6', borderRadius: 10, border: '0.5px solid #d4ede3',
-        padding: '20px 16px', marginBottom: 14,
+        padding: '20px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        height: 'auto',
+        height: 'auto', flexShrink: 0,
       }}>
         {InfographicComponent ? (
           <InfographicComponent />
@@ -66,7 +66,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
       </div>
 
       {/* 설명 */}
-      <p style={{ fontSize: 13, color: '#5F5E5A', lineHeight: 1.6, marginBottom: 14 }}>
+      <p style={{ fontSize: 13, color: '#5F5E5A', lineHeight: 1.6, marginBottom: 0 }}>
         {bite.description}
       </p>
 
@@ -79,7 +79,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
             border: 'none', borderRadius: 8, padding: 11,
             fontSize: 13, fontWeight: 500, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            marginTop: 'auto',
+            marginTop: 'auto', paddingTop: 16, flexShrink: 0,
           }}
           onMouseEnter={e => e.currentTarget.style.background = '#1AAD7D'}
           onMouseLeave={e => e.currentTarget.style.background = '#21C58E'}
