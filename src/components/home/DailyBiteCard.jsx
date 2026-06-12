@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { getBiteInfographic } from '../../data/biteInfographics';
+import { BITE_INFOGRAPHICS } from '../../data/biteInfographics';
 
 const CATEGORY_COLOR = {
   '금리':     { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' },
@@ -25,8 +25,7 @@ const CATEGORY_EMOJI = {
 
 export default function DailyBiteCard({ bite, hideButton }) {
   const navigate = useNavigate();
-  const infographic = getBiteInfographic(bite.title);
-  const InfographicComponent = infographic?.graphic ?? null;
+  const InfographicComponent = BITE_INFOGRAPHICS[bite.id] ?? null;
 
   const catColor  = CATEGORY_COLOR[bite.category] ?? { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' };
   const diffColor = DIFF_COLOR[bite.difficulty]   ?? { bg: '#F1EFE8', text: '#888780', border: '#e0f0e8' };
