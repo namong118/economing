@@ -162,7 +162,7 @@ export default function HomePage() {
           gap: 16px;
           padding: 8px 24px 60px;
           background: #F4FAF6;
-          min-height: calc(100vh - 52px);
+          min-height: calc(100vh - 90px);
           box-sizing: border-box;
           align-items: stretch;
           align-content: start;
@@ -172,7 +172,8 @@ export default function HomePage() {
         @media (min-width: 760px) {
           .hd-grid {
             grid-template-columns: 1.2fr 1fr;
-            grid-auto-rows: auto;
+            grid-template-rows: auto 1fr;
+            align-content: stretch;
           }
           .hd-header { grid-column: 1 / -1; align-self: center; }
           .hd-bite, .hd-noming { align-self: stretch; }
