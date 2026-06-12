@@ -78,7 +78,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flex: 1,
       }}>
-        {InfographicComponent ? (
+{InfographicComponent ? (
           <InfographicComponent />
         ) : (
           <div style={{
