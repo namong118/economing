@@ -44,10 +44,10 @@ export default function DailyBiteCard({ bite, hideButton }) {
           🍃 오늘의 경제 한잎
         </span>
         <div style={{ display: 'flex', gap: 5 }}>
-          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: catColor.bg, color: catColor.text, border: `0.5px solid ${catColor.border}` }}>
+          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#21C58E', color: '#fff' }}>
             {bite.category}
           </span>
-          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: diffColor.bg, color: diffColor.text, border: `0.5px solid ${diffColor.border}` }}>
+          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#E1F5EE', color: '#085041', border: '0.5px solid #9FE1CB' }}>
             {DIFF_LABEL[bite.difficulty] ?? bite.difficulty}
           </span>
         </div>
@@ -55,20 +55,12 @@ export default function DailyBiteCard({ bite, hideButton }) {
 
       {/* 히어로 블록 */}
       <div style={{
-        background: '#085041', borderRadius: 10, padding: '22px 20px',
-        marginBottom: 14, display: 'flex', alignItems: 'center', gap: 16,
+        background: 'linear-gradient(to right, #C0EDD8, #ffffff)',
+        border: '0.5px solid #c0e8d4',
+        borderRadius: 10, padding: '18px 20px', marginBottom: 14,
       }}>
-        <div style={{
-          width: 56, height: 56, borderRadius: 12, background: '#21C58E',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 24, flexShrink: 0,
-        }}>
-          {emoji}
-        </div>
-        <div>
-          <div style={{ color: '#fff', fontSize: 20, fontWeight: 500 }}>{bite.title}</div>
-          <div style={{ color: '#9FE1CB', fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{bite.summary}</div>
-        </div>
+        <div style={{ color: '#085041', fontSize: 24, fontWeight: 700, lineHeight: 1.2 }}>{bite.title}</div>
+        <div style={{ color: '#0F6E56', fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>{bite.summary}</div>
       </div>
 
       {/* 픽토그램 영역 */}
