@@ -67,14 +67,14 @@ export default function DailyBiteCard({ bite, hideButton }) {
         </div>
         <div>
           <div style={{ color: '#fff', fontSize: 20, fontWeight: 500 }}>{bite.title}</div>
-          <div style={{ color: '#9FE1CB', fontSize: 12, marginTop: 4 }}>{bite.category}</div>
+          <div style={{ color: '#9FE1CB', fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>{bite.summary}</div>
         </div>
       </div>
 
       {/* 픽토그램 영역 */}
       <div style={{
         background: '#F4FAF6', borderRadius: 10, border: '0.5px solid #d4ede3',
-        padding: '12px', marginBottom: 14,
+        padding: '24px', marginBottom: 14,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flex: 1,
       }}>
