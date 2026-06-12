@@ -3,6 +3,15 @@ import { BITE_INFOGRAPHICS } from '../../data/biteInfographics';
 
 const DIFF_LABEL = { easy: '입문', medium: '기본', hard: '심화' };
 
+function highlightNumbers(text) {
+  const parts = text.split(/(\d[\d,]*(?:\.\d+)?(?:만원|천만원|억원|조원|억달러|만달러|천달러|만|억|조|원|달러|%p|%)?)/g);
+  return parts.map((part, i) =>
+    /^\d/.test(part)
+      ? <span key={i} style={{ color: '#633806', fontWeight: 600 }}>{part}</span>
+      : part
+  );
+}
+
 const CATEGORY_EMOJI = {
   '금리': '📊', '투자': '📈', '거시경제': '🌏',
   '저축': '🏦', '부동산': '🏠', '기초': '💡',
@@ -66,9 +75,24 @@ export default function DailyBiteCard({ bite, hideButton }) {
       </div>
 
       {/* 설명 */}
-      <p style={{ fontSize: 13, color: '#5F5E5A', lineHeight: 1.6, marginBottom: 0 }}>
+      <p style={{ fontSize: 13, color: '#5F5E5A', lineHeight: 1.6, marginBottom: bite.realLifeExample ? 14 : 0 }}>
         {bite.description}
       </p>
+
+      {/* 실생활 예시 */}
+      {bite.realLifeExample && (
+        <div style={{
+          background: '#FFFBEE', borderRadius: 10, border: '0.5px solid #FAC775',
+          padding: '14px 16px', marginBottom: 0, flexShrink: 0,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 500, color: '#854F0B', marginBottom: 8 }}>
+            💡 실생활 예시
+          </div>
+          <div style={{ fontSize: 13, color: '#2C2C2A', lineHeight: 1.7 }}>
+            {highlightNumbers(bite.realLifeExample)}
+          </div>
+        </div>
+      )}
 
       {/* CTA */}
       {!hideButton && (
@@ -79,7 +103,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
             border: 'none', borderRadius: 8, padding: 11,
             fontSize: 13, fontWeight: 500, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            marginTop: 'auto', paddingTop: 16, flexShrink: 0,
+            marginTop: 'auto', flexShrink: 0,
           }}
           onMouseEnter={e => e.currentTarget.style.background = '#1AAD7D'}
           onMouseLeave={e => e.currentTarget.style.background = '#21C58E'}
