@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import economicBites, { getBiteById } from '../data/economicBites';
-import { getBiteInfographic } from '../data/biteInfographics';
+import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import { getBiteQuiz } from '../data/biteQuizzes';
 import PageWrapper from '../components/layout/PageWrapper';
 import SaveTermButton from '../components/common/SaveTermButton';
@@ -101,7 +101,7 @@ export default function EconomicBitePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const bite = getBiteById(Number(id));
-  const infographic = bite ? getBiteInfographic(bite.title) : null;
+  const InfographicComponent = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
   const quizData = bite ? getBiteQuiz(bite.id) : null;
 
   const [quizSelected, setQuizSelected] = useState(null);
@@ -225,8 +225,8 @@ export default function EconomicBitePage() {
             borderRadius: 18, overflow: 'hidden',
             boxShadow: '0 2px 16px rgba(33,197,142,0.08)',
           }}>
-            {infographic
-              ? <div style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}><infographic.graphic /></div>
+            {InfographicComponent
+              ? <div style={{ padding: '20px 16px' }}><InfographicComponent /></div>
               : <ConceptPlaceholder bite={bite} />
             }
           </div>
