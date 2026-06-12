@@ -699,3 +699,131 @@ CREATE TABLE public.user_dictionary (
 | 서비스 URL | https://namong118.github.io/economing/ |
 | 레포지토리 | https://github.com/namong118/economing |
 | 배포 브랜치 | `gh-pages` (자동: `npm run deploy`) |
+
+---
+
+## 2026-06-12 — 홈 화면 v4 리디자인 + Lucide 인포그래픽 시스템 전환
+
+### 개요
+세 가지 작업을 진행했습니다.
+
+1. **홈 화면 v4** — 2열 그리드, DailyBiteCard 다크 히어로 블록, NomingCard 통합 재설계
+2. **애니메이션 버그 수정** — 홈 첫 진입 시 스크롤 점프 현상 제거
+3. **Lucide 인포그래픽 전환** — 기존 SVG 18개 → Lucide 아이콘 기반 60개 전체 교체
+
+---
+
+### 1. 홈 화면 v4 (`HomePage.jsx`, `DailyBiteCard.jsx`)
+
+**2열 그리드 레이아웃**
+
+```css
+.hd-grid {
+  display: grid;
+  grid-template-columns: 1fr;        /* 모바일: 1열 */
+  gap: 16px;
+  padding: 8px 24px 60px;
+  background: #F4FAF6;
+  min-height: calc(100vh - 52px);
+  align-items: stretch;
+  align-content: start;              /* free space 상단 고정 */
+}
+@media (min-width: 760px) {
+  .hd-grid { grid-template-columns: 1.2fr 1fr; }
+}
+```
+
+`align-content: start` 추가 이유: `min-height`가 있는 Grid에서 기본값 `stretch`는 남는 공간을 행 간격으로 분배해 헤더 아래 패딩이 커 보이는 현상이 있었음. `start`로 설정 시 모든 행이 상단으로 밀착.
+
+**DailyBiteCard 다크 히어로 블록**: `#085041` 배경 + `#21C58E` 이모지 박스(56×56). 어두운 배경으로 카드 분위기 강화.
+
+**NomingCard 통합 구조**: 말풍선 + 추천 질문 2개 + 오늘 할 일 3개(경제 프로필 설정 / 한잎 퀴즈 / 경제일기) + "직접 질문하기" 버튼(`marginTop: 'auto'`로 카드 하단 고정).
+
+---
+
+### 2. 홈 진입 스크롤 점프 수정 (`src/index.css`)
+
+**증상**: 홈 화면 첫 접속 시 콘텐츠가 살짝 위로 튀어오르는 현상
+
+**원인**: `fadeIn` 키프레임의 `transform: translateY(12px)`가 애니메이션 시작 시 콘텐츠를 아래로 밀었다가 올리면서 스크롤바가 반응
+
+```css
+/* 수정 전 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 수정 후 — opacity-only */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+```
+
+---
+
+### 3. Lucide 인포그래픽 시스템 전환
+
+**배경**: 기존 `biteInfographics.jsx`는 18개 개념만 커버하는 커스텀 SVG 방식. 나머지 42개 한잎은 fallback(이모지+제목)으로 처리되어 인포그래픽 없이 표시됨. 60개 전체를 통일된 디자인으로 구현.
+
+**패키지 설치**: `npm install lucide-react` (v1.17.0)
+
+**`src/components/infographic/BiteInfographic.jsx`** (신규)
+
+플로우형 인포그래픽 공통 컴포넌트. 개념의 인과관계를 3~4단계 가로 흐름으로 표현.
+
+```jsx
+// steps: [{ icon: LucideIcon, label, sub, color: 'green'|'yellow'|'red'|'blue' }]
+// result: 하단 결과 요약 텍스트
+const colorMap = {
+  green:  { bg:'#21C58E', icon:'#fff',    label:'#085041' },  // 시작·긍정 단계
+  yellow: { bg:'#FFF4D6', icon:'#854F0B', label:'#633806' },  // 중간 전달 단계
+  red:    { bg:'#FAECE7', icon:'#712B13', label:'#712B13' },  // 부정적 결과
+  blue:   { bg:'#E8F4FD', icon:'#1565C0', label:'#1565C0' },  // 외부 지표
+}
+// 아이콘 박스: 48×48px, borderRadius 12
+// 화살표: › 문자, #C0DD97
+// 결과 바: bg #E1F5EE + CheckCircle 아이콘
+```
+
+**`src/data/biteInfographics.jsx`** (전면 교체)
+
+| 항목 | 기존 | 변경 |
+|------|------|------|
+| 커버 개수 | 18개 | **60개** |
+| 키 방식 | title 문자열 | **숫자 id** |
+| 아이콘 | 커스텀 인라인 SVG | **lucide-react** |
+
+```jsx
+// 변경 전: title 키 + graphic 프로퍼티
+'기준금리': { graphic: () => <svg>...</svg> }
+
+// 변경 후: 숫자 id 키 + 컴포넌트 직접 반환
+1: () => <BiteInfographic steps={[...]} result="..." />
+export function getBiteInfographic(id) {
+  return BITE_INFOGRAPHICS[Number(id)] ?? null
+}
+```
+
+**`DailyBiteCard.jsx`, `EconomicBitePage.jsx`** 조회 방식 변경
+
+```jsx
+// 변경 전: title 기반, infographic.graphic 렌더링
+const infographic = getBiteInfographic(bite.title)
+<infographic.graphic />
+
+// 변경 후: id 기반, 컴포넌트 직접 렌더링
+const InfographicComponent = BITE_INFOGRAPHICS[bite.id] ?? null
+<InfographicComponent />
+```
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (GitHub Actions 자동 배포) |
