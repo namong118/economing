@@ -165,6 +165,7 @@ export default function HomePage() {
           min-height: calc(100vh - 52px);
           box-sizing: border-box;
           align-items: stretch;
+          align-content: start;
         }
         .hd-header { align-self: center; }
         .hd-bite, .hd-noming { display: flex; flex-direction: column; }
