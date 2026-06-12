@@ -48,9 +48,9 @@ export default function DailyBiteCard({ bite, hideButton }) {
       {/* 픽토그램 영역 */}
       <div style={{
         background: '#F4FAF6', borderRadius: 10, border: '0.5px solid #d4ede3',
-        padding: 16, marginBottom: 14,
+        padding: '20px 16px', marginBottom: 14,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flex: 1,
+        height: 'auto',
       }}>
         {InfographicComponent ? (
           <InfographicComponent />

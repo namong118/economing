@@ -11,7 +11,7 @@ export function BiteInfographic({ steps, result, title }) {
   return (
     <div style={{ width: '100%' }}>
       {title && (
-        <div style={{ fontSize: 11, color: '#0F6E56', fontWeight: 500, textAlign: 'center', marginBottom: 14 }}>
+        <div style={{ fontSize: 11, color: '#0F6E56', fontWeight: 500, textAlign: 'center', marginBottom: 10 }}>
           {title}
         </div>
       )}
@@ -22,7 +22,7 @@ export function BiteInfographic({ steps, result, title }) {
           const Icon = step.icon
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                 <div style={{
                   width: 64, height: 64, borderRadius: 14,
                   background: c.bg, border: c.border,
@@ -31,17 +31,17 @@ export function BiteInfographic({ steps, result, title }) {
                 }}>
                   <Icon size={30} color={c.icon} />
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: c.label, textAlign: 'center', lineHeight: 1.4 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: c.label, textAlign: 'center', lineHeight: 1.3 }}>
                   {step.label}
                 </div>
                 {step.sub && (
-                  <div style={{ fontSize: 11, color: c.sub, textAlign: 'center', lineHeight: 1.3, marginTop: -3 }}>
+                  <div style={{ fontSize: 11, color: c.sub, textAlign: 'center', lineHeight: 1.2, marginTop: -2 }}>
                     {step.sub}
                   </div>
                 )}
               </div>
               {i < steps.length - 1 && (
-                <div style={{ color: '#C0DD97', fontSize: 26, padding: '0 4px', marginBottom: 34, flexShrink: 0 }}>›</div>
+                <div style={{ color: '#C0DD97', fontSize: 26, padding: '0 4px', marginBottom: 30, flexShrink: 0 }}>›</div>
               )}
             </div>
           )
@@ -51,9 +51,9 @@ export function BiteInfographic({ steps, result, title }) {
       {result && (
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-          marginTop: 14, background: '#E1F5EE', borderRadius: 8, padding: '9px 12px',
+          marginTop: 10, background: '#E1F5EE', borderRadius: 8, padding: '8px 12px',
         }}>
-          <CheckCircle size={14} color="#21C58E" style={{ flexShrink: 0 }} />
+          <CheckCircle size={13} color="#21C58E" style={{ flexShrink: 0 }} />
           <span style={{ fontSize: 11, color: '#085041', fontWeight: 500 }}>{result}</span>
         </div>
       )}
