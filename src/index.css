@@ -36,7 +36,7 @@
   --border:         #E2E8F0;
   --border-light:   #F1F5F9;
 
-  --nav-height: 64px;
+  --nav-height: 52px;
 
   --radius-xs:   6px;
   --radius-sm:   8px;
@@ -118,11 +118,8 @@ input, textarea { font-family: var(--font); outline: none; }
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  background: #fff;
+  border-bottom: 0.5px solid #e0f0e8;
   height: var(--nav-height);
 }
 

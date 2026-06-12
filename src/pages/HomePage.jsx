@@ -4,235 +4,190 @@ import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
 import { getNextLevelInfo, LEVELS } from '../data/levelData';
 import { getTodaysBite } from '../services/biteService';
-import { getBiteInfographic } from '../data/biteInfographics';
 import PageWrapper from '../components/layout/PageWrapper';
+import DailyBiteCard from '../components/home/DailyBiteCard';
 
-/* ── 상수 & 헬퍼 ──────────────────────────────────────────── */
-const CATEGORY_STYLE = {
-  '금리':     { badge: '#FDE68A', text: '#92400E', emoji: '💹', bg: '#FFFCEB' },
-  '투자':     { badge: '#A7F3D0', text: '#065F46', emoji: '📊', bg: '#F0FDF4' },
-  '거시경제': { badge: '#BFDBFE', text: '#1E40AF', emoji: '🌐', bg: '#EFF6FF' },
-  '저축':     { badge: '#A7F3D0', text: '#14532D', emoji: '🏦', bg: '#F0FDF4' },
-  '부동산':   { badge: '#FBCFE8', text: '#831843', emoji: '🏠', bg: '#FDF2F8' },
-  '기초':     { badge: '#DDD6FE', text: '#4C1D95', emoji: '📚', bg: '#F5F3FF' },
+/* ── 공통 카드 스타일 ──────────────────────────────────────── */
+const CARD = {
+  background: '#fff',
+  borderRadius: 12,
+  border: '0.5px solid #d4ede3',
+  padding: 16,
 };
-const DIFF_LABEL = { easy: '입문', medium: '기본', hard: '심화' };
-const DIFF_COLOR = {
-  easy:   { bg: '#F0FDF4', text: '#15803D' },
-  medium: { bg: '#FFFBEA', text: '#92400E' },
-  hard:   { bg: '#FEF2F2', text: '#B91C1C' },
-};
+
+/* ── 경제 수준 배지 ────────────────────────────────────────── */
 const ECON_LEVEL = {
   beginner:     { label: '경제 초보', color: '#2563EB', bg: '#EFF6FF' },
   intermediate: { label: '경제 중급', color: '#7C3AED', bg: '#F5F3FF' },
   advanced:     { label: '경제 고급', color: '#C2410C', bg: '#FFF7ED' },
 };
 
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h >= 6  && h < 12) return { text: '좋은 아침이에요', emoji: '🌅' };
-  if (h >= 12 && h < 18) return { text: '안녕하세요',     emoji: '☀️' };
-  if (h >= 18 && h < 22) return { text: '오늘도 수고하셨어요', emoji: '🌆' };
-  return                         { text: '늦은 시간까지 공부하시네요', emoji: '🌙' };
-}
-
-function getNomingMessage(profile) {
-  if (!profile?.onboarding_completed) {
-    return '무엇부터 시작해야 할지 모르겠다면, 경제 프로필을 먼저 설정해봐요. 딱 2분이면 돼요.';
-  }
-  const msgs = {
-    seed:   '첫걸음이 가장 중요해요. 오늘 작은 것 하나씩 시작해봐요.',
-    sprout: '잘 하고 있어요! 꾸준히 이어가면 금방 성장할 거예요.',
-    leaf:   '경제 공부에 흥미가 생기기 시작했죠? 이제 더 재밌어질 거예요.',
-    flower: '좋은 흐름이에요. 오늘도 한 가지씩 배워봐요.',
-    fruit:  '실력이 쌓이고 있어요. 꾸준함이 최고의 전략이에요.',
-    tree:   '여기까지 온 것만으로도 대단해요. 계속 나아가봐요!',
-    forest: '이미 훌륭한 경제 감각을 갖추셨어요. 다음 목표를 세워봐요!',
-  };
-  return msgs[profile?.level] ?? '오늘도 함께 성장해봐요.';
-}
-
+/* ── 오늘 할 것 목록 생성 ──────────────────────────────────── */
 function getActions(profile, isLoggedIn) {
   const onboarded = profile?.onboarding_completed;
-  const COACH   = { id: 'coach',   icon: '☀️', title: 'AI 코치 노밍에게 질문하기', desc: '지금 궁금한 경제 질문 바로 물어보기',  path: '/coach' };
-  const READ    = { id: 'read',    icon: '📰', title: '경제 읽기',               desc: '오늘의 경제 뉴스·트렌드 살펴보기',      path: '/reading' };
-  const DIARY   = { id: 'diary',   icon: '✏️', title: '경제 일기 작성',           desc: '오늘 배운 것을 짧게 기록해두기',        path: '/diary' };
-  const ONBOARD = { id: 'onboard', icon: '🌱', title: '경제 프로필 설정하기',     desc: '2분이면 완료 — 맞춤 코칭 시작',        path: '/onboarding' };
+  const COACH   = { icon: '☀️', iconBg: '#FFF4D6', title: 'AI 코치 노밍에게 질문하기',  desc: '지금 궁금한 경제 질문 바로 물어보기', path: '/coach'       };
+  const READ    = { icon: '📰', iconBg: '#E1F5EE', title: '경제 읽기',                  desc: '오늘의 경제 뉴스·트렌드 살펴보기',    path: '/reading'     };
+  const DIARY   = { icon: '✏️', iconBg: '#F1EFE8', title: '경제 일기 작성',              desc: '오늘 배운 것을 짧게 기록해두기',      path: '/my-growth'   };
+  const ONBOARD = { icon: '🌱', iconBg: '#E1F5EE', title: '경제 프로필 설정하기',        desc: '2분이면 완료 — 맞춤 코칭 시작',      path: '/onboarding'  };
   if (!isLoggedIn) return [COACH, READ];
   if (!onboarded)  return [ONBOARD, COACH, READ];
   return [COACH, READ, DIARY];
 }
 
-/* ══ 왼쪽: 오늘의 경제 한잎 패널 ════════════════════════════ */
-function EconomicBitePanel({ navigate }) {
-  const [hov, setHov] = useState(false);
-  const bite         = getTodaysBite();
-  const infographic  = getBiteInfographic(bite.title);
-  const catStyle     = CATEGORY_STYLE[bite.category] ?? { badge: '#E2E8F0', text: '#374151', emoji: '📌', bg: '#F8FAFC' };
-  const diffStyle    = DIFF_COLOR[bite.difficulty]   ?? { bg: '#F8FAFC', text: '#64748B' };
+/* ══ 노밍 카드 (2번째 컬럼) ════════════════════════════════ */
+function NomingCard({ bite, profile, navigate }) {
+  const userName = profile?.nickname?.split(' ')[0] || '사용자';
+  const questions = [
+    `${bite.title}이 내 생활에 미치는 영향은?`,
+    `${bite.title} 쉽게 설명해줘`,
+  ];
 
   return (
-    <div style={{
-      background: '#fff', border: '1.5px solid #E2E8F0',
-      borderRadius: '20px', overflow: 'hidden',
-      boxShadow: '0 2px 16px rgba(0,0,0,0.05)',
-      display: 'flex', flexDirection: 'column',
-    }}>
-      {/* 헤더 */}
-      <div style={{ padding: '18px 22px 14px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '16px' }}>🍃</span>
-          <span style={{ fontSize: '13px', fontWeight: '800', color: '#065F46', letterSpacing: '-0.2px' }}>
-            오늘의 경제 한잎
-          </span>
+    <div style={CARD}>
+      {/* 노밍 헤더 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: '50%',
+          background: '#FFC83D',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 18, flexShrink: 0,
+        }}>
+          ☀️
         </div>
-        <div style={{ display: 'flex', gap: '5px' }}>
-          <span style={{ fontSize: '10px', fontWeight: '700', background: catStyle.badge, color: catStyle.text, borderRadius: '100px', padding: '3px 10px' }}>
-            {bite.category}
-          </span>
-          <span style={{ fontSize: '10px', fontWeight: '700', background: diffStyle.bg, color: diffStyle.text, borderRadius: '100px', padding: '3px 10px' }}>
-            {DIFF_LABEL[bite.difficulty]}
-          </span>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 500, color: '#085041' }}>노밍 · AI 경제 코치</p>
+          <p style={{ fontSize: 11, color: '#888780' }}>무엇이든 물어보세요</p>
         </div>
       </div>
 
-      {/* 개념명 */}
-      <div style={{ padding: '16px 22px 12px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: 1.2 }}>
-          {bite.title}
-        </h2>
+      {/* 말풍선 */}
+      <div style={{
+        background: '#F4FAF6',
+        borderRadius: '0 10px 10px 10px',
+        padding: '12px 14px',
+        fontSize: 13,
+        color: '#444441',
+        lineHeight: 1.65,
+        border: '0.5px solid #d4ede3',
+        marginBottom: 12,
+      }}>
+        안녕하세요, {userName}님! 오늘은{' '}
+        <strong style={{ color: '#085041' }}>{bite.title}</strong>
+        이 주제예요. 궁금한 게 있으면 바로 물어보세요.
       </div>
 
-      {/* 인포그래픽 */}
-      <div style={{ background: '#FAFFFE', borderTop: '1px solid #F1F5F9', borderBottom: '1px solid #F1F5F9', padding: '14px 16px' }}>
-        <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(33,197,142,0.12)', background: '#fff' }}>
-          {infographic ? (
-            <div style={{ maxWidth: '520px', margin: '0 auto', width: '100%' }}>
-              <infographic.graphic />
-            </div>
-          ) : (
-            <div style={{ padding: '36px 24px', textAlign: 'center', background: catStyle.bg }}>
-              <div style={{ fontSize: '52px', marginBottom: '12px' }}>{catStyle.emoji}</div>
-              <div style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.6px' }}>{bite.title}</div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 요약 + CTA */}
-      <div style={{ padding: '18px 22px 22px', flex: 1 }}>
-        <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.75', fontWeight: '500', letterSpacing: '-0.2px', marginBottom: '18px' }}>
-          {bite.summary}
-        </p>
+      {/* 추천 질문 */}
+      {questions.map((q, i) => (
         <button
-          onClick={() => navigate(`/bite/${bite.id}`)}
-          onMouseEnter={() => setHov(true)}
-          onMouseLeave={() => setHov(false)}
+          key={i}
+          onClick={() => navigate('/coach', { state: { question: q } })}
           style={{
-            width: '100%', padding: '14px',
-            borderRadius: '12px',
-            background: hov ? 'linear-gradient(135deg, #1AAD7D, #148F68)' : 'linear-gradient(135deg, #21C58E, #16A374)',
-            color: '#fff', border: 'none', cursor: 'pointer',
-            fontSize: '15px', fontWeight: '800', letterSpacing: '-0.4px',
-            boxShadow: hov ? '0 6px 20px rgba(33,197,142,0.45)' : '0 4px 14px rgba(33,197,142,0.28)',
-            transform: hov ? 'translateY(-1px)' : 'none',
-            transition: 'all 0.15s',
+            width: '100%', background: '#F4FAF6',
+            border: '0.5px solid #d4ede3', borderRadius: 8,
+            padding: '8px 12px', fontSize: 12, color: '#085041',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            marginBottom: 6, cursor: 'pointer', textAlign: 'left',
           }}
+          onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
+          onMouseLeave={e => e.currentTarget.style.background = '#F4FAF6'}
         >
-          🍃 오늘의 한잎 배우기 →
+          <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
+          <span style={{ color: '#21C58E', flexShrink: 0 }}>→</span>
         </button>
-      </div>
+      ))}
+
+      {/* 직접 질문 */}
+      <button
+        onClick={() => navigate('/coach')}
+        style={{
+          width: '100%', background: '#F4FAF6',
+          border: '0.5px solid #d4ede3', borderRadius: 8,
+          padding: '8px 12px', fontSize: 12, color: '#888780',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          cursor: 'pointer',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
+        onMouseLeave={e => e.currentTarget.style.background = '#F4FAF6'}
+      >
+        직접 질문하기... <span style={{ color: '#21C58E' }}>→</span>
+      </button>
     </div>
   );
 }
 
-/* ══ 오른쪽: 성장 현황 카드 ════════════════════════════════ */
+/* ══ 성장 단계 카드 (우측 컬럼) ════════════════════════════ */
 function GrowthCard({ profile, navigate, user, xpLoading, onAddXp }) {
-  const xp = profile?.xp ?? 0;
+  const xp  = profile?.xp ?? 0;
   const { currentLevel, nextLevel, xpNeeded, progressPercent } = getNextLevelInfo(xp);
+  const currentIdx = LEVELS.findIndex(l => l.key === currentLevel.key);
   const econLevel  = profile?.economic_level;
   const econStyle  = econLevel ? ECON_LEVEL[econLevel] : null;
-  const currentIdx = LEVELS.findIndex(l => l.key === currentLevel.key);
 
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+    <div style={CARD}>
       {/* 헤더 */}
-      <div style={{ padding: '14px 18px 12px', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '12px', fontWeight: '800', color: '#64748B', letterSpacing: '0.3px' }}>📈 성장 단계</span>
-        <button onClick={() => navigate('/my-growth')} style={{ background: 'none', border: 'none', fontSize: '11px', color: '#94A3B8', fontWeight: '600', cursor: 'pointer', padding: '2px 0' }}>
-          자세히 보기 →
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <span style={{ fontSize: 12, fontWeight: 500, color: '#888780' }}>성장 단계</span>
+        <button
+          onClick={() => navigate('/my-growth')}
+          style={{ background: 'none', border: 'none', fontSize: 11, color: '#21C58E', cursor: 'pointer', fontWeight: 500 }}
+        >
+          자세히 →
         </button>
       </div>
 
-      <div style={{ padding: '16px 18px' }}>
-        {/* 레벨 아이콘 + 이름 + 배지 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-          <div style={{
-            width: '56px', height: '56px', borderRadius: '16px', flexShrink: 0,
-            background: 'linear-gradient(135deg, #F0FDF4, #DCFCE7)',
-            border: '2px solid #A7F3D0',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px',
-          }}>
-            {currentLevel.emoji}
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '4px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.6px' }}>
-                {currentLevel.label}
+      {/* 레벨 행 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: 10,
+          background: '#E1F5EE', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
+        }}>
+          {currentLevel.emoji}
+        </div>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <p style={{ fontSize: 15, fontWeight: 500, color: '#085041' }}>{currentLevel.label}</p>
+            {econStyle && (
+              <span style={{ fontSize: 10, fontWeight: 500, background: econStyle.bg, color: econStyle.color, borderRadius: 4, padding: '1px 7px' }}>
+                {econStyle.label}
               </span>
-              {econStyle && (
-                <span style={{ fontSize: '10px', fontWeight: '700', background: econStyle.bg, color: econStyle.color, borderRadius: '100px', padding: '2px 9px' }}>
-                  {econStyle.label}
-                </span>
-              )}
-            </div>
-            <span style={{ fontSize: '13px', color: '#64748B', fontWeight: '600' }}>총 {xp} XP</span>
+            )}
           </div>
+          <p style={{ fontSize: 12, color: '#888780' }}>
+            총 {xp} XP{nextLevel ? ` · 다음까지 ${xpNeeded} XP` : ' · 최고 단계'}
+          </p>
         </div>
+      </div>
 
-        {/* XP 바 */}
-        <div style={{ marginBottom: '14px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-            <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '600' }}>
-              {nextLevel ? `${nextLevel.emoji} ${nextLevel.label}까지` : '✨ 최고 단계 달성!'}
-            </span>
-            {nextLevel && <span style={{ fontSize: '11px', color: '#21C58E', fontWeight: '700' }}>{xpNeeded} XP 남음</span>}
-          </div>
-          <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', borderRadius: '100px',
-              background: 'linear-gradient(90deg, #21C58E, #FFC83D)',
-              width: `${progressPercent}%`, transition: 'width 0.6s ease',
-            }} />
-          </div>
-        </div>
+      {/* XP 바 */}
+      <div style={{ background: '#E1F5EE', borderRadius: 20, height: 6, marginBottom: 12 }}>
+        <div style={{
+          background: '#21C58E', borderRadius: 20, height: 6,
+          width: `${progressPercent}%`, transition: 'width 0.6s ease',
+        }} />
+      </div>
 
-        {/* 7단계 트랙 */}
-        <div style={{ display: 'flex', gap: '3px' }}>
-          {LEVELS.map((lv, idx) => {
-            const isCurrent = idx === currentIdx;
-            const isDone    = idx < currentIdx;
-            return (
-              <div key={lv.key} style={{
-                flex: 1, textAlign: 'center', padding: '5px 2px', borderRadius: '9px',
-                background: isCurrent ? 'linear-gradient(135deg, #21C58E, #1AAD7D)' : isDone ? '#E8FFF3' : '#F8FAFC',
-                border: isCurrent ? '1.5px solid #21C58E' : isDone ? '1px solid #A7F3D0' : '1px solid #F1F5F9',
-              }}>
-                <div style={{ fontSize: '13px', lineHeight: 1 }}>{lv.emoji}</div>
-                <div style={{ fontSize: '8px', fontWeight: '700', color: isCurrent ? '#fff' : isDone ? '#15803D' : '#CBD5E1', marginTop: '3px', letterSpacing: '-0.1px' }}>
-                  {lv.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* 7단계 아이콘 행 */}
+      <div style={{ display: 'flex', gap: 4 }}>
+        {LEVELS.map((lv, i) => (
+          <div key={lv.key} style={{
+            flex: 1, height: 32, borderRadius: 8, fontSize: 14,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: i < currentIdx ? '#E1F5EE'
+                      : i === currentIdx ? '#21C58E'
+                      : '#F1EFE8',
+          }}>
+            {lv.emoji}
+          </div>
+        ))}
       </div>
 
       {/* dev XP */}
       {user && (
-        <div style={{ borderTop: '1px solid #F8FAFC', padding: '8px 18px', textAlign: 'center' }}>
-          <button onClick={onAddXp} disabled={xpLoading} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', color: '#CBD5E1', fontWeight: '600' }}>
-            {xpLoading ? '처리 중...' : `⚡ +5 XP 테스트 (${xp} XP)`}
+        <div style={{ marginTop: 10, textAlign: 'center' }}>
+          <button onClick={onAddXp} disabled={xpLoading} style={{ background: 'none', border: 'none', fontSize: 10, color: '#d4ede3', cursor: 'pointer', fontWeight: 500 }}>
+            {xpLoading ? '처리 중...' : `⚡ +5 XP 테스트`}
           </button>
         </div>
       )}
@@ -240,116 +195,54 @@ function GrowthCard({ profile, navigate, user, xpLoading, onAddXp }) {
   );
 }
 
-/* ══ 오른쪽: 오늘 해야 할 것 카드 ══════════════════════════ */
-function TodayActionRow({ action, isLast, navigate }) {
-  const [hov, setHov] = useState(false);
-  return (
-    <button
-      onClick={() => navigate(action.path)}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '10px 10px', borderRadius: '12px',
-        background: hov ? '#F4FAF6' : 'transparent',
-        border: 'none', cursor: 'pointer', textAlign: 'left',
-        borderBottom: !isLast ? '1px solid #F8FAFC' : 'none',
-        transition: 'background 0.12s',
-      }}
-    >
-      <div style={{
-        width: '32px', height: '32px', borderRadius: '10px', flexShrink: 0,
-        background: '#F4FAF6', border: '1px solid #DCF5EB',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px',
-      }}>
-        {action.icon}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.3px', marginBottom: '1px' }}>{action.title}</p>
-        <p style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{action.desc}</p>
-      </div>
-      <span style={{ fontSize: '14px', color: hov ? '#21C58E' : '#CBD5E1', flexShrink: 0, transition: 'color 0.12s' }}>→</span>
-    </button>
-  );
-}
-
+/* ══ 오늘 할 것 카드 (우측 컬럼) ═══════════════════════════ */
 function TodayCard({ actions, navigate }) {
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-      <div style={{ padding: '14px 18px 12px', borderBottom: '1px solid #F1F5F9' }}>
-        <span style={{ fontSize: '12px', fontWeight: '800', color: '#64748B', letterSpacing: '0.3px' }}>✅ 오늘 해야 할 것</span>
-      </div>
-      <div style={{ padding: '8px 10px' }}>
-        {actions.map((a, i) => (
-          <TodayActionRow key={a.id} action={a} isLast={i === actions.length - 1} navigate={navigate} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ══ 오른쪽: 노밍 추천 카드 ════════════════════════════════ */
-function NomingBanner({ profile, navigate, BASE_URL }) {
-  const [hov, setHov]   = useState(false);
-  const greeting        = getGreeting();
-  const nickname        = profile?.nickname?.split(' ')[0] || '사용자';
-  const message         = getNomingMessage(profile);
-
-  return (
-    <div style={{
-      background: 'linear-gradient(145deg, #FFFBEA, #FFF7D6)',
-      border: '1.5px solid #FFE08A', borderRadius: '20px', overflow: 'hidden',
-      boxShadow: '0 2px 12px rgba(255,200,61,0.12)',
-    }}>
-      <div style={{ padding: '14px 18px 12px', borderBottom: '1px solid rgba(255,224,138,0.4)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <div style={{ position: 'relative', flexShrink: 0 }}>
-          <img src={`${BASE_URL}coach.png`} alt="노밍" style={{ width: '38px', height: '38px', borderRadius: '11px', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '9px', height: '9px', borderRadius: '50%', background: '#21C58E', border: '2px solid #FFFBEA' }} />
-        </div>
-        <div>
-          <p style={{ fontSize: '10px', fontWeight: '700', color: '#B45309', letterSpacing: '0.3px' }}>{greeting.emoji} 노밍 · AI 경제 코치</p>
-          <p style={{ fontSize: '13px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.4px' }}>{greeting.text}, {nickname}님</p>
-        </div>
-      </div>
-      <div style={{ padding: '14px 18px 16px' }}>
-        <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.2px', marginBottom: '13px' }}>
-          {message}
-        </p>
-        <button
-          onClick={() => navigate('/coach')}
-          onMouseEnter={() => setHov(true)}
-          onMouseLeave={() => setHov(false)}
+    <div style={CARD}>
+      <p style={{ fontSize: 12, fontWeight: 500, color: '#888780', marginBottom: 8 }}>오늘 해야 할 것</p>
+      {actions.map((todo, i) => (
+        <div
+          key={todo.title}
+          onClick={() => navigate(todo.path)}
           style={{
-            width: '100%', padding: '10px', borderRadius: '10px',
-            background: hov ? '#FFBA00' : '#FFC83D',
-            color: '#78350F', border: 'none', cursor: 'pointer',
-            fontSize: '13px', fontWeight: '800', letterSpacing: '-0.3px',
-            boxShadow: hov ? '0 4px 14px rgba(255,200,61,0.5)' : '0 3px 10px rgba(255,200,61,0.3)',
-            transition: 'all 0.15s',
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '8px 0', cursor: 'pointer',
+            borderBottom: i < actions.length - 1 ? '0.5px solid #f0f7f3' : 'none',
           }}
+          onMouseEnter={e => e.currentTarget.style.background = '#FAFFFE'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
-          ☀️ 노밍에게 질문하기
-        </button>
-      </div>
+          <div style={{
+            width: 28, height: 28, borderRadius: 7, fontSize: 14, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: todo.iconBg,
+          }}>
+            {todo.icon}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 12, fontWeight: 500, color: '#2C2C2A' }}>{todo.title}</p>
+            <p style={{ fontSize: 11, color: '#888780', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{todo.desc}</p>
+          </div>
+          <span style={{ color: '#C0DD97', fontSize: 14, flexShrink: 0 }}>→</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-/* ══ 비로그인 성장 안내 카드 ════════════════════════════════ */
+/* ══ 비로그인 성장 안내 카드 ═══════════════════════════════ */
 function GuestGrowthCard({ navigate }) {
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #DCF5EB', borderRadius: '20px', padding: '22px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', textAlign: 'center' }}>
-      <p style={{ fontSize: '36px', marginBottom: '10px' }}>🌱</p>
-      <p style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px', marginBottom: '6px' }}>성장 단계를 시작해보세요</p>
-      <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.65', marginBottom: '16px' }}>로그인하면 XP가 쌓이고<br />경제 성장 단계가 올라가요.</p>
+    <div style={{ ...CARD, textAlign: 'center', padding: '20px 16px' }}>
+      <p style={{ fontSize: 28, marginBottom: 8 }}>🌱</p>
+      <p style={{ fontSize: 14, fontWeight: 500, color: '#085041', marginBottom: 5 }}>성장 단계를 시작해보세요</p>
+      <p style={{ fontSize: 12, color: '#888780', lineHeight: 1.6, marginBottom: 14 }}>로그인하면 XP가 쌓이고<br />경제 성장 단계가 올라가요.</p>
       <button
         onClick={() => navigate('/login')}
         style={{
-          width: '100%', padding: '12px', borderRadius: '12px',
-          background: 'linear-gradient(135deg, #21C58E, #16A374)',
-          color: '#fff', border: 'none', cursor: 'pointer',
-          fontSize: '14px', fontWeight: '800', letterSpacing: '-0.3px',
-          boxShadow: '0 3px 12px rgba(33,197,142,0.3)',
+          width: '100%', padding: '10px', borderRadius: 8,
+          background: '#21C58E', color: '#fff',
+          border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
         }}
       >
         로그인하기 →
@@ -360,11 +253,11 @@ function GuestGrowthCard({ navigate }) {
 
 /* ══ 메인 ════════════════════════════════════════════════════ */
 export default function HomePage() {
-  const navigate                    = useNavigate();
+  const navigate                          = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
-  const [xpLoading, setXpLoading]   = useState(false);
-  const BASE_URL                    = import.meta.env.BASE_URL;
+  const [xpLoading, setXpLoading]         = useState(false);
 
+  const bite     = getTodaysBite();
   const nickname = profile?.nickname?.split(' ')[0] || (user ? '사용자' : '방문자');
   const actions  = getActions(profile, !!user);
 
@@ -386,62 +279,64 @@ export default function HomePage() {
         .hd-grid {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 12px;
         }
-        @media (min-width: 860px) {
-          .hd-grid {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 22px;
+        .hd-col-main {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        @media (min-width: 760px) {
+          .hd-col-main {
+            flex-direction: row;
             align-items: start;
           }
+          .hd-col-main > * { flex: 1; }
         }
-        @media (min-width: 1080px) {
+        @media (min-width: 980px) {
           .hd-grid {
-            grid-template-columns: 1fr 380px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 300px;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            align-items: start;
           }
+          .hd-header   { grid-column: 1 / -1; }
+          .hd-bite     { grid-column: 1; grid-row: 2; }
+          .hd-noming   { grid-column: 2; grid-row: 2; }
+          .hd-sidebar  { grid-column: 3; grid-row: 2; }
+          .hd-col-main { display: contents; }
         }
       `}</style>
 
-      <div className="anim-fade" style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', padding: '28px 0 64px' }}>
-        <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '0 24px' }}>
+      <div className="anim-fade" style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 52px)', padding: '20px 0 60px' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 24px' }}>
 
-          {/* ── 대시보드 헤더 ── */}
-          <div style={{
-            display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-            gap: '12px', flexWrap: 'wrap', marginBottom: '22px',
-          }}>
-            <div>
-              <p style={{ fontSize: '12px', fontWeight: '600', color: '#94A3B8', letterSpacing: '0.3px', marginBottom: '5px' }}>
-                {today}
-              </p>
-              <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.9px', lineHeight: 1.2 }}>
+          <div className="hd-grid">
+
+            {/* ── 헤더 ── */}
+            <div className="hd-header" style={{ paddingBottom: 4 }}>
+              <p style={{ fontSize: 11, color: '#888780' }}>{today}</p>
+              <h1 style={{ fontSize: 20, fontWeight: 500, color: '#085041', marginTop: 2, letterSpacing: '-0.5px' }}>
                 {nickname}님의 경제 성장 대시보드
               </h1>
             </div>
-            {!user && (
-              <button
-                onClick={() => navigate('/login')}
-                style={{
-                  padding: '10px 20px', borderRadius: '12px', flexShrink: 0,
-                  background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
-                  color: '#fff', border: 'none', fontSize: '13px', fontWeight: '700',
-                  cursor: 'pointer', boxShadow: '0 3px 10px rgba(33,197,142,0.3)',
-                }}
-              >
-                로그인하고 시작 →
-              </button>
-            )}
-          </div>
 
-          {/* ── 2열 대시보드 ── */}
-          <div className="hd-grid">
+            {/* 중간 너비에서 bite+noming 가로 묶음, PC에서는 contents로 풀림 */}
+            <div className="hd-col-main">
+              {/* ── 경제 한잎 ── */}
+              <div className="hd-bite">
+                <DailyBiteCard bite={bite} />
+              </div>
 
-            {/* 왼쪽: 경제 한잎 */}
-            <EconomicBitePanel navigate={navigate} />
+              {/* ── 노밍 카드 ── */}
+              <div className="hd-noming">
+                <NomingCard bite={bite} profile={profile} navigate={navigate} />
+              </div>
+            </div>
 
-            {/* 오른쪽: 성장 현황 + 오늘 할 것 + 노밍 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* ── 우측 사이드 컬럼 ── */}
+            <div className="hd-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {user && profile ? (
                 <GrowthCard
                   profile={profile}
@@ -453,10 +348,7 @@ export default function HomePage() {
               ) : (
                 !user && <GuestGrowthCard navigate={navigate} />
               )}
-
               <TodayCard actions={actions} navigate={navigate} />
-
-              <NomingBanner profile={profile} navigate={navigate} BASE_URL={BASE_URL} />
             </div>
 
           </div>

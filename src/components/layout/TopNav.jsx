@@ -103,19 +103,16 @@ export default function TopNav() {
               fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
               display: 'inline-flex', alignItems: 'center', lineHeight: 1,
             }}>
-              <span style={{ color: '#21C58E' }}>ECON</span>
+              <span style={{ color: '#085041' }}>ECON</span>
               {/* 노란 원(O) + 위에서 자라나는 새싹 잎 2개 */}
               <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
                 <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* 왼쪽 잎 */}
                   <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E" />
-                  {/* 오른쪽 잎 */}
                   <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E" />
-                  {/* 노란 원(O): r=6.5 → 지름 13px = 대문자 cap-height와 동일 */}
                   <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
                 </svg>
               </span>
-              <span style={{ color: '#21C58E' }}>MING</span>
+              <span style={{ color: '#085041' }}>MING</span>
             </span>
           </button>
 
@@ -128,12 +125,12 @@ export default function TopNav() {
                   key={link.path}
                   onClick={() => navigate(link.path)}
                   style={{
-                    padding: '8px 16px', borderRadius: '10px',
+                    padding: '6px 14px', borderRadius: '6px',
                     fontSize: '14px',
-                    fontWeight: isActive ? '700' : '500',
-                    color: isActive ? '#10B981' : '#64748B',
-                    background: isActive ? '#ECFDF5' : 'transparent',
-                    transition: 'all 0.15s ease', letterSpacing: '-0.3px',
+                    fontWeight: isActive ? '500' : '400',
+                    color: isActive ? '#085041' : '#64748B',
+                    background: isActive ? '#E1F5EE' : 'transparent',
+                    transition: 'all 0.15s ease', letterSpacing: '-0.2px',
                     whiteSpace: 'nowrap', border: 'none', cursor: 'pointer',
                   }}
                   onMouseEnter={(e) => {
@@ -178,10 +175,10 @@ export default function TopNav() {
                     />
                   ) : (
                     <div style={{
-                      width: '26px', height: '26px', borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      width: '30px', height: '30px', borderRadius: '50%',
+                      background: '#21C58E',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '12px', color: '#fff', fontWeight: '700', flexShrink: 0,
+                      fontSize: '13px', color: '#fff', fontWeight: '700', flexShrink: 0,
                     }}>
                       {(profile?.nickname || user.email || '?')[0].toUpperCase()}
                     </div>
