@@ -79,6 +79,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
             border: 'none', borderRadius: 8, padding: 11,
             fontSize: 13, fontWeight: 500, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            marginTop: 'auto',
           }}
           onMouseEnter={e => e.currentTarget.style.background = '#1AAD7D'}
           onMouseLeave={e => e.currentTarget.style.background = '#21C58E'}
