@@ -1,21 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { BITE_INFOGRAPHICS } from '../../data/biteInfographics';
 
-const CATEGORY_COLOR = {
-  '금리':     { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' },
-  '투자':     { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' },
-  '거시경제': { bg: '#EFF6FF', text: '#1E40AF', border: '#BFDBFE' },
-  '저축':     { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' },
-  '부동산':   { bg: '#FDF2F8', text: '#831843', border: '#F9A8D4' },
-  '기초':     { bg: '#F5F3FF', text: '#4C1D95', border: '#DDD6FE' },
-};
-
-const DIFF_COLOR = {
-  easy:   { bg: '#FFF4D6', text: '#854F0B', border: '#FAC775' },
-  medium: { bg: '#FFF4D6', text: '#854F0B', border: '#FAC775' },
-  hard:   { bg: '#FEF2F2', text: '#B91C1C', border: '#FECACA' },
-};
-
 const DIFF_LABEL = { easy: '입문', medium: '기본', hard: '심화' };
 
 const CATEGORY_EMOJI = {
@@ -26,10 +11,7 @@ const CATEGORY_EMOJI = {
 export default function DailyBiteCard({ bite, hideButton }) {
   const navigate = useNavigate();
   const InfographicComponent = BITE_INFOGRAPHICS[bite.id] ?? null;
-
-  const catColor  = CATEGORY_COLOR[bite.category] ?? { bg: '#E1F5EE', text: '#085041', border: '#9FE1CB' };
-  const diffColor = DIFF_COLOR[bite.difficulty]   ?? { bg: '#F1EFE8', text: '#888780', border: '#e0f0e8' };
-  const emoji     = CATEGORY_EMOJI[bite.category] ?? '📊';
+  const emoji = CATEGORY_EMOJI[bite.category] ?? '📊';
 
   return (
     <div style={{
@@ -53,24 +35,24 @@ export default function DailyBiteCard({ bite, hideButton }) {
         </div>
       </div>
 
-      {/* 히어로 블록 */}
-      <div style={{
-        background: 'linear-gradient(to right, #C0EDD8, #ffffff)',
-        border: '0.5px solid #c0e8d4',
-        borderRadius: 10, padding: '18px 20px', marginBottom: 14,
-      }}>
-        <div style={{ color: '#085041', fontSize: 24, fontWeight: 700, lineHeight: 1.2 }}>{bite.title}</div>
-        <div style={{ color: '#0F6E56', fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>{bite.summary}</div>
+      {/* 제목 영역 */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 26, fontWeight: 700, color: '#085041', lineHeight: 1.2, marginBottom: 3 }}>
+          {bite.title}
+        </div>
+        <div style={{ fontSize: 13, color: '#0F6E56', lineHeight: 1.5 }}>
+          {bite.summary}
+        </div>
       </div>
 
       {/* 픽토그램 영역 */}
       <div style={{
         background: '#F4FAF6', borderRadius: 10, border: '0.5px solid #d4ede3',
-        padding: '24px', marginBottom: 14,
+        padding: 16, marginBottom: 14,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flex: 1,
       }}>
-{InfographicComponent ? (
+        {InfographicComponent ? (
           <InfographicComponent />
         ) : (
           <div style={{
