@@ -176,7 +176,7 @@ export default function HomePage() {
             align-content: stretch;
           }
           .hd-header { grid-column: 1 / -1; align-self: center; }
-          .hd-bite, .hd-noming { align-self: stretch; }
+          .hd-bite, .hd-noming { align-self: stretch; height: 100%; }
         }
         @media (min-width: 1160px) {
           .hd-grid {

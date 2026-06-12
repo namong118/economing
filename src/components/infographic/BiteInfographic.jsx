@@ -16,32 +16,32 @@ export function BiteInfographic({ steps, result, title }) {
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', flexWrap: 'nowrap' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-evenly', flexWrap: 'nowrap', width: '100%' }}>
         {steps.map((step, i) => {
           const c = colorMap[step.color ?? 'green']
           const Icon = step.icon
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 60, maxWidth: 72 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
                 <div style={{
-                  width: 48, height: 48, borderRadius: 12,
+                  width: 64, height: 64, borderRadius: 14,
                   background: c.bg, border: c.border,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}>
-                  <Icon size={22} color={c.icon} />
+                  <Icon size={30} color={c.icon} />
                 </div>
-                <div style={{ fontSize: 10, fontWeight: 600, color: c.label, textAlign: 'center', lineHeight: 1.4, maxWidth: 64 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: c.label, textAlign: 'center', lineHeight: 1.4 }}>
                   {step.label}
                 </div>
                 {step.sub && (
-                  <div style={{ fontSize: 9, color: c.sub, textAlign: 'center', lineHeight: 1.3, maxWidth: 64, marginTop: -3 }}>
+                  <div style={{ fontSize: 11, color: c.sub, textAlign: 'center', lineHeight: 1.3, marginTop: -3 }}>
                     {step.sub}
                   </div>
                 )}
               </div>
               {i < steps.length - 1 && (
-                <div style={{ color: '#C0DD97', fontSize: 18, padding: '0 3px', marginBottom: 28, flexShrink: 0 }}>›</div>
+                <div style={{ color: '#C0DD97', fontSize: 26, padding: '0 4px', marginBottom: 34, flexShrink: 0 }}>›</div>
               )}
             </div>
           )
