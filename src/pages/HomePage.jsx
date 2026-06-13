@@ -6,6 +6,7 @@ import { getNextLevelInfo } from '../data/levelData';
 import { getTodaysBite } from '../services/biteService';
 import PageWrapper from '../components/layout/PageWrapper';
 import DailyBiteCard from '../components/home/DailyBiteCard';
+import { NewsTicker } from '../components/home/NewsTicker';
 
 /* ══ 노밍 카드 ══════════════════════════════════════════════ */
 function NomingCard({ bite, profile, navigate }) {
@@ -188,25 +189,28 @@ export default function HomePage() {
         <div className="hd-grid">
 
           {/* ── 헤더 ── */}
-          <div className="hd-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
-            <div style={{
-              background: '#E1F5EE', border: '0.5px solid #9FE1CB',
-              borderRadius: 20, padding: '4px 12px',
-              fontSize: 11, color: '#085041',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-              🍃 {currentLevel.label} · {xp} XP
-              {user && (
-                <button
-                  onClick={handleAddXp}
-                  disabled={xpLoading}
-                  style={{ background: 'none', border: 'none', fontSize: 9, color: '#9FE1CB', cursor: 'pointer', padding: '0 0 0 4px' }}
-                >
-                  {xpLoading ? '…' : '+5'}
-                </button>
-              )}
+          <div className="hd-header">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
+              <div style={{
+                background: '#E1F5EE', border: '0.5px solid #9FE1CB',
+                borderRadius: 20, padding: '4px 12px',
+                fontSize: 11, color: '#085041',
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}>
+                🍃 {currentLevel.label} · {xp} XP
+                {user && (
+                  <button
+                    onClick={handleAddXp}
+                    disabled={xpLoading}
+                    style={{ background: 'none', border: 'none', fontSize: 9, color: '#9FE1CB', cursor: 'pointer', padding: '0 0 0 4px' }}
+                  >
+                    {xpLoading ? '…' : '+5'}
+                  </button>
+                )}
+              </div>
             </div>
+            <NewsTicker />
           </div>
 
           {/* ── 경제 한잎 ── */}
