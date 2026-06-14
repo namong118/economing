@@ -313,46 +313,14 @@ export default function ReadingPage() {
     <PageWrapper>
       <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
 
-        {/* ── 히어로 헤더 ──────────────────────────────── */}
-        <div style={{
-          background: '#F4FAF6',
-          padding: '36px 20px 28px',
-        }}>
-          <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-              <span style={{ fontSize: '22px' }}>☀️</span>
-              <h1 style={{
-                fontSize: '24px', fontWeight: '900', color: '#085041',
-                letterSpacing: '-0.8px', margin: 0,
-              }}>
-                오늘의 경제 읽기
-              </h1>
-            </div>
-            <p style={{ fontSize: '15px', color: '#888780', lineHeight: '1.7', margin: 0 }}>
-              하루 3분, 경제 감각을 키워보세요.
-            </p>
-            {/* 진행 칩 */}
-            <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
-              {[
-                { label: `총 ${CONTENTS.length}개 아티클`, icon: '📖' },
-                { label: '읽기 완료 시 +5 XP', icon: '⚡' },
-                { label: '매일 새 콘텐츠', icon: '🔄' },
-              ].map(chip => (
-                <div key={chip.label} style={{
-                  display: 'flex', alignItems: 'center', gap: '5px',
-                  fontSize: '12px', fontWeight: '600', color: '#21C58E',
-                  background: '#fff', border: '0.5px solid #d4ede3',
-                  borderRadius: '100px', padding: '5px 12px',
-                }}>
-                  <span>{chip.icon}</span>
-                  {chip.label}
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* 페이지 제목 */}
+        <div style={{ padding: '20px 20px 0', maxWidth: '680px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#085041', letterSpacing: '-0.5px', margin: 0 }}>
+            오늘의 경제 읽기
+          </h1>
         </div>
 
-        <div style={{ maxWidth: '680px', margin: '0 auto', padding: '28px 20px 0' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
 
           {/* ── 오늘의 콘텐츠 ─────────────────────────── */}
           <div style={{ marginBottom: '32px' }}>

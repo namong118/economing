@@ -271,7 +271,7 @@ function SummaryTab() {
       <DevInfo user={user} profile={profile} provider={provider} />
       <button
         onClick={handleSignOut}
-        style={{ width: '100%', padding: '13px', borderRadius: '14px', background: '#FEF2F2', color: '#DC2626', border: '1.5px solid #FECACA', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
+        style={{ width: '100%', padding: '13px', borderRadius: '12px', background: '#F4FAF6', color: '#712B13', border: '0.5px solid #d4ede3', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
       >
         로그아웃
       </button>
@@ -629,7 +629,7 @@ export default function MyGrowthHubPage() {
         {/* 탭 바 (sticky) */}
         <div style={{
           position: 'sticky', top: '64px', zIndex: 90,
-          background: '#fff', borderBottom: '0.5px solid #d4ede3',
+          background: '#fff', borderBottom: '0.5px solid #e0f0e8',
           marginTop: '12px',
         }}>
           <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 20px' }}>
@@ -642,11 +642,11 @@ export default function MyGrowthHubPage() {
                     flex: 1, padding: '10px 4px',
                     border: 'none', cursor: 'pointer',
                     fontSize: '14px',
-                    fontWeight: activeTab === tab.key ? '800' : '500',
-                    color: activeTab === tab.key ? '#21C58E' : '#888780',
+                    fontWeight: '500',
+                    color: activeTab === tab.key ? '#085041' : '#888780',
                     background: activeTab === tab.key ? '#E1F5EE' : 'none',
                     borderRadius: activeTab === tab.key ? '8px' : '0',
-                    borderBottom: `2.5px solid ${activeTab === tab.key ? '#21C58E' : 'transparent'}`,
+                    borderBottom: `2px solid ${activeTab === tab.key ? '#085041' : 'transparent'}`,
                     transition: 'color 0.15s, border-color 0.15s, background 0.15s',
                     letterSpacing: '-0.3px',
                     fontFamily: 'inherit',
