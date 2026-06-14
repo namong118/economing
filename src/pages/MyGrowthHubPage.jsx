@@ -630,32 +630,30 @@ export default function MyGrowthHubPage() {
         <div style={{
           position: 'sticky', top: '64px', zIndex: 90,
           background: '#fff', borderBottom: '0.5px solid #e0f0e8',
-          marginTop: '12px',
+          marginTop: '12px', padding: '8px 16px',
+          maxWidth: '720px', margin: '12px auto 0', boxSizing: 'border-box',
         }}>
-          <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 20px' }}>
-            <div style={{ display: 'flex' }}>
-              {TABS.map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  style={{
-                    flex: 1, padding: '10px 4px',
-                    border: 'none', cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    color: activeTab === tab.key ? '#085041' : '#888780',
-                    background: activeTab === tab.key ? '#E1F5EE' : 'none',
-                    borderRadius: activeTab === tab.key ? '8px' : '0',
-                    borderBottom: `2px solid ${activeTab === tab.key ? '#085041' : 'transparent'}`,
-                    transition: 'color 0.15s, border-color 0.15s, background 0.15s',
-                    letterSpacing: '-0.3px',
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {TABS.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  padding: '6px 16px',
+                  border: 'none', cursor: 'pointer',
+                  fontSize: '14px', fontWeight: '500',
+                  color: activeTab === tab.key ? '#085041' : '#888780',
+                  background: activeTab === tab.key ? '#E1F5EE' : 'transparent',
+                  borderRadius: '8px',
+                  transition: 'color 0.15s, background 0.15s',
+                  letterSpacing: '-0.3px',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
