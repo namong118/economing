@@ -130,81 +130,35 @@ function NomingCard({ structured }) {
   );
 }
 
-/* ── 빈 상태 ─────────────────────────────────────────────── */
-function EmptyState({ onSelect, BASE_URL }) {
+/* ── 노밍 인사 카드 (상단 고정) ────────────────────────────── */
+function NomingGreeting({ BASE_URL }) {
   return (
-    <div className="anim-fade" style={{ padding: '8px 0 24px' }}>
-      {/* 노밍 인사 카드 */}
-      <div style={{
-        background: '#FFF4D6',
-        border: '0.5px solid #FAC775',
-        borderRadius: '12px', padding: '24px',
-        marginBottom: '28px',
-        display: 'flex', gap: '16px', alignItems: 'flex-start',
-      }}>
-        <div style={{ position: 'relative', flexShrink: 0 }}>
-          <img
-            src={`${BASE_URL}coach.png`}
-            alt="노밍"
-            style={{ width: '56px', height: '56px', borderRadius: '16px', objectFit: 'cover' }}
-          />
-          <div style={{
-            position: 'absolute', bottom: '-2px', right: '-2px',
-            width: '14px', height: '14px', borderRadius: '50%',
-            background: '#21C58E', border: '2.5px solid #FFF4D6',
-          }} />
-        </div>
-        <div>
-          <p style={{ fontSize: '14px', fontWeight: '800', color: '#92400E', marginBottom: '6px' }}>
-            ☀️ 노밍이에요!
-          </p>
-          <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', letterSpacing: '-0.3px' }}>
-            안녕하세요. 무엇부터 시작해야 할지<br />
-            모르겠다면 제가 함께 정리해드릴게요.
-          </p>
-        </div>
+    <div className="anim-fade" style={{
+      background: '#FFF4D6',
+      border: '0.5px solid #FAC775',
+      borderRadius: '12px', padding: '24px',
+      display: 'flex', gap: '16px', alignItems: 'flex-start',
+    }}>
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <img
+          src={`${BASE_URL}coach.png`}
+          alt="노밍"
+          style={{ width: '56px', height: '56px', borderRadius: '16px', objectFit: 'cover' }}
+        />
+        <div style={{
+          position: 'absolute', bottom: '-2px', right: '-2px',
+          width: '14px', height: '14px', borderRadius: '50%',
+          background: '#21C58E', border: '2.5px solid #FFF4D6',
+        }} />
       </div>
-
-      {/* 추천 질문 */}
-      <p style={{
-        fontSize: '12px', fontWeight: '700', color: '#888780',
-        letterSpacing: '0.8px', textTransform: 'uppercase',
-        marginBottom: '12px',
-      }}>
-        이런 고민이 있다면 물어보세요
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {SUGGESTED_QUESTIONS.map(q => (
-          <button
-            key={q}
-            onClick={() => onSelect(q)}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '15px 18px', borderRadius: '8px',
-              background: '#fff', border: '0.5px solid #d4ede3',
-              cursor: 'pointer', textAlign: 'left',
-              fontSize: '14px', color: '#5F5E5A', fontWeight: '500',
-              lineHeight: '1.5', transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = '#21C58E';
-              e.currentTarget.style.background  = '#F4FAF6';
-              e.currentTarget.style.color       = '#085041';
-              e.currentTarget.style.transform   = 'translateX(3px)';
-              e.currentTarget.style.boxShadow   = 'none';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = '#d4ede3';
-              e.currentTarget.style.background  = '#fff';
-              e.currentTarget.style.color       = '#5F5E5A';
-              e.currentTarget.style.transform   = 'translateX(0)';
-              e.currentTarget.style.boxShadow   = 'none';
-            }}
-          >
-            <span style={{ flex: 1, paddingRight: '12px' }}>{q}</span>
-            <span style={{ fontSize: '16px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
-          </button>
-        ))}
+      <div>
+        <p style={{ fontSize: '14px', fontWeight: '800', color: '#92400E', marginBottom: '6px' }}>
+          ☀️ 노밍이에요!
+        </p>
+        <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', letterSpacing: '-0.3px' }}>
+          안녕하세요. 무엇부터 시작해야 할지<br />
+          모르겠다면 제가 함께 정리해드릴게요.
+        </p>
       </div>
     </div>
   );
@@ -313,13 +267,20 @@ export default function CoachPage() {
       }}>
 
 
+        {/* ── 노밍 인사 카드 (빈 상태, 스크롤 밖 고정) ──────── */}
+        {isEmpty && (
+          <div style={{ flexShrink: 0, padding: '20px 0 0' }}>
+            <div className="container" style={{ maxWidth: '720px' }}>
+              <NomingGreeting BASE_URL={BASE_URL} />
+            </div>
+          </div>
+        )}
+
         {/* ── 메시지 영역 ─────────────────────────────────── */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px 0' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: isEmpty ? '0' : '24px 0' }}>
           <div className="container" style={{ maxWidth: '720px' }}>
 
-            {isEmpty ? (
-              <EmptyState onSelect={send} BASE_URL={BASE_URL} />
-            ) : (
+            {!isEmpty && (
               <>
                 {messages.map((msg, i) => (
                   <div
@@ -383,6 +344,49 @@ export default function CoachPage() {
           padding: '10px 0 14px',
         }}>
           <div className="container" style={{ maxWidth: '720px' }}>
+
+            {/* 추천 질문 (빈 상태, 입력창 바로 위) */}
+            {isEmpty && (
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{
+                  fontSize: '11px', fontWeight: '700', color: '#888780',
+                  letterSpacing: '0.8px', textTransform: 'uppercase',
+                  marginBottom: '8px',
+                }}>
+                  이런 고민이 있다면 물어보세요
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {SUGGESTED_QUESTIONS.map(q => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '12px 16px', borderRadius: '8px',
+                        background: '#fff', border: '0.5px solid #d4ede3',
+                        cursor: 'pointer', textAlign: 'left',
+                        fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
+                        lineHeight: '1.4', transition: 'all 0.15s',
+                        fontFamily: 'inherit',
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = '#21C58E';
+                        e.currentTarget.style.background  = '#F4FAF6';
+                        e.currentTarget.style.color       = '#085041';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = '#d4ede3';
+                        e.currentTarget.style.background  = '#fff';
+                        e.currentTarget.style.color       = '#5F5E5A';
+                      }}
+                    >
+                      <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
+                      <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* 새 대화 버튼 (대화 중일 때만 표시) */}
             {!isEmpty && (
