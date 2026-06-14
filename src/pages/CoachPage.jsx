@@ -267,11 +267,52 @@ export default function CoachPage() {
       }}>
 
 
-        {/* ── 노밍 인사 카드 (빈 상태, 스크롤 밖 고정) ──────── */}
+        {/* ── 노밍 인사 카드 + 추천 질문 (빈 상태, 스크롤 밖 고정) ── */}
         {isEmpty && (
           <div style={{ flexShrink: 0, padding: '20px 0 0' }}>
             <div className="container" style={{ maxWidth: '720px' }}>
               <NomingGreeting BASE_URL={BASE_URL} />
+
+              {/* 추천 질문 - 노밍 카드 바로 아래 */}
+              <div style={{ marginTop: '16px' }}>
+                <p style={{
+                  fontSize: '11px', fontWeight: '700', color: '#888780',
+                  letterSpacing: '0.8px', textTransform: 'uppercase',
+                  marginBottom: '8px',
+                }}>
+                  이런 고민이 있다면 물어보세요
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {SUGGESTED_QUESTIONS.map(q => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '12px 16px', borderRadius: '8px',
+                        background: '#fff', border: '0.5px solid #d4ede3',
+                        cursor: 'pointer', textAlign: 'left',
+                        fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
+                        lineHeight: '1.4', transition: 'all 0.15s',
+                        fontFamily: 'inherit',
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = '#21C58E';
+                        e.currentTarget.style.background  = '#F4FAF6';
+                        e.currentTarget.style.color       = '#085041';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = '#d4ede3';
+                        e.currentTarget.style.background  = '#fff';
+                        e.currentTarget.style.color       = '#5F5E5A';
+                      }}
+                    >
+                      <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
+                      <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -344,49 +385,6 @@ export default function CoachPage() {
           padding: '10px 0 14px',
         }}>
           <div className="container" style={{ maxWidth: '720px' }}>
-
-            {/* 추천 질문 (빈 상태, 입력창 바로 위) */}
-            {isEmpty && (
-              <div style={{ marginBottom: '12px' }}>
-                <p style={{
-                  fontSize: '11px', fontWeight: '700', color: '#888780',
-                  letterSpacing: '0.8px', textTransform: 'uppercase',
-                  marginBottom: '8px',
-                }}>
-                  이런 고민이 있다면 물어보세요
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {SUGGESTED_QUESTIONS.map(q => (
-                    <button
-                      key={q}
-                      onClick={() => send(q)}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '12px 16px', borderRadius: '8px',
-                        background: '#fff', border: '0.5px solid #d4ede3',
-                        cursor: 'pointer', textAlign: 'left',
-                        fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
-                        lineHeight: '1.4', transition: 'all 0.15s',
-                        fontFamily: 'inherit',
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = '#21C58E';
-                        e.currentTarget.style.background  = '#F4FAF6';
-                        e.currentTarget.style.color       = '#085041';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = '#d4ede3';
-                        e.currentTarget.style.background  = '#fff';
-                        e.currentTarget.style.color       = '#5F5E5A';
-                      }}
-                    >
-                      <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
-                      <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* 새 대화 버튼 (대화 중일 때만 표시) */}
             {!isEmpty && (
