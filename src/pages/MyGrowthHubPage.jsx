@@ -372,14 +372,6 @@ function DictionaryTabContent() {
 
   return (
     <div>
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <BookMarked size={22} color="#085041" /> 나만의 경제사전
-        </h2>
-        <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
-          경제 한잎·노밍 대화·경제 읽기에서 저장한 용어를 모아요
-        </p>
-      </div>
 
       {/* 검색 */}
       <div style={{ position: 'relative', marginBottom: '16px' }}>
@@ -449,14 +441,6 @@ function RoadmapTabContent() {
 
   return (
     <div>
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Map size={22} color="#085041" /> 학습 로드맵
-        </h2>
-        <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
-          기초부터 심화까지, 단계별로 차근차근 나아가요
-        </p>
-      </div>
 
       {/* 노밍 추천 배너 */}
       {econLevel && (
