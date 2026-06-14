@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BookOpen } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getJournals, createJournal, updateJournal, deleteJournal } from '../services/diaryService';
@@ -640,8 +641,8 @@ export function DiaryContent() {
   return (
     <div>
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '3px' }}>
-          📔 경제일기
+        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <BookOpen size={22} color="#0F172A" /> 경제일기
         </h2>
         <p style={{ fontSize: '13px', color: '#64748B', fontWeight: '500' }}>
           배우고, 읽고, 돌아보며 경제 감각을 키워요

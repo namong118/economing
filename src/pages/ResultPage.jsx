@@ -1,5 +1,6 @@
 /* 진단 결과 페이지 — PC 중앙 정렬 */
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Map } from 'lucide-react';
 import { levelInfo } from '../data/diagnosisQuestions';
 import { roadmaps } from '../data/roadmapData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -122,8 +123,8 @@ export default function ResultPage() {
         <div className="anim-slide">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
-              <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '4px' }}>
-                🗺️ 나만의 학습 로드맵
+              <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Map size={20} color="#0F172A" /> 나만의 학습 로드맵
               </h3>
               <p style={{ fontSize: '14px', color: '#64748B' }}>{info.shortDesc}을 위한 4단계 커리큘럼</p>
             </div>

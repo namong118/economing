@@ -1,5 +1,6 @@
 /* 학습 로드맵 페이지 — 5단계 경제 성장 경로 */
 import { useState } from 'react';
+import { Map } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -31,8 +32,8 @@ export default function RoadmapPage() {
                 <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
                   학습 로드맵
                 </p>
-                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px' }}>
-                  경제 성장 5단계 로드맵 🗺️
+                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  경제 성장 5단계 로드맵 <Map size={26} color="#0F172A" />
                 </h1>
                 <p style={{ fontSize: '15px', color: '#64748B' }}>
                   {info

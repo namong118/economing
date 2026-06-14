@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BookOpen, BookMarked, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { CONTENTS, CATEGORY_STYLE, getTodayContent, getOtherContents, markAsRead } from '../services/readingService';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -85,7 +86,7 @@ function CompleteButton({ contentId, userId, navigate, onComplete }) {
         </>
       ) : (
         <>
-          ✅ 읽기 완료 {userId ? '(+5 XP)' : ''}
+          <CheckCircle size={16} color="#fff" /> 읽기 완료 {userId ? '(+5 XP)' : ''}
         </>
       )}
     </button>
@@ -125,12 +126,12 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <CategoryBadge category={content.category} />
-            <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600' }}>
-              📖 {content.readingTime}분 읽기
+            <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <BookOpen size={12} color="#888780" /> {content.readingTime}분 읽기
             </span>
             {done && (
-              <span style={{ fontSize: '11px', color: '#22C55E', fontWeight: '700' }}>
-                ✅ 완료
+              <span style={{ fontSize: '11px', color: '#22C55E', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <CheckCircle size={12} color="#22C55E" /> 완료
               </span>
             )}
           </div>
@@ -203,8 +204,8 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
             background: '#F4FAF6', border: '0.5px solid #d4ede3',
             borderRadius: '12px', padding: '18px 20px', marginBottom: '14px',
           }}>
-            <p style={{ fontSize: '13px', fontWeight: '800', color: '#085041', marginBottom: '12px', letterSpacing: '0.2px' }}>
-              📚 핵심 용어
+            <p style={{ fontSize: '13px', fontWeight: '800', color: '#085041', marginBottom: '12px', letterSpacing: '0.2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <BookMarked size={14} color="#085041" /> 핵심 용어
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {content.keywords.map((kw, i) => (

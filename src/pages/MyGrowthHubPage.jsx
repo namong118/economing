@@ -373,8 +373,8 @@ function DictionaryTabContent() {
   return (
     <div>
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px' }}>
-          📖 나만의 경제사전
+        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <BookMarked size={22} color="#085041" /> 나만의 경제사전
         </h2>
         <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
           경제 한잎·노밍 대화·경제 읽기에서 저장한 용어를 모아요
@@ -405,7 +405,9 @@ function DictionaryTabContent() {
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: '12px', border: '0.5px solid #d4ede3' }}>
-          <p style={{ fontSize: '32px', marginBottom: '12px' }}>📖</p>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            <BookMarked size={32} color="#888780" />
+          </div>
           <p style={{ fontSize: '15px', fontWeight: '800', color: '#085041', marginBottom: '6px', letterSpacing: '-0.3px' }}>
             {search ? '검색 결과가 없어요' : '아직 저장한 용어가 없어요'}
           </p>
@@ -448,8 +450,8 @@ function RoadmapTabContent() {
   return (
     <div>
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px' }}>
-          🗺️ 학습 로드맵
+        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px', marginBottom: '3px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Map size={22} color="#085041" /> 학습 로드맵
         </h2>
         <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
           기초부터 심화까지, 단계별로 차근차근 나아가요

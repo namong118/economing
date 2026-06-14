@@ -1,12 +1,13 @@
 /* 하단 네비게이션 바 */
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Home, Map, Search, BookMarked, Pencil } from 'lucide-react';
 
 const navItems = [
-  { path: '/home', icon: '🏠', label: '홈' },
-  { path: '/roadmap', icon: '🗺️', label: '로드맵' },
-  { path: '/terms', icon: '🔍', label: '용어' },
-  { path: '/dictionary', icon: '📚', label: '사전' },
-  { path: '/diary', icon: '✏️', label: '일기' },
+  { path: '/home',       Icon: Home,       label: '홈' },
+  { path: '/roadmap',    Icon: Map,        label: '로드맵' },
+  { path: '/terms',      Icon: Search,     label: '용어' },
+  { path: '/dictionary', Icon: BookMarked, label: '사전' },
+  { path: '/diary',      Icon: Pencil,     label: '일기' },
 ];
 
 export default function BottomNav() {
@@ -50,7 +51,7 @@ export default function BottomNav() {
               transition: 'all 0.15s ease',
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>{item.icon}</span>
+            <item.Icon size={20} color={isActive ? '#10B981' : '#9CA3AF'} />
             <span
               style={{
                 fontSize: '10px',

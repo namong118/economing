@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { User, Zap, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
 import { getNextLevelInfo } from '../data/levelData';
@@ -13,9 +14,9 @@ function NomingCard({ bite, profile, navigate }) {
   const userName = profile?.nickname?.split(' ')[0] || '사용자';
 
   const todos = [
-    { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: '👤', iconBg: '#E1F5EE', path: '/onboarding' },
-    { title: '한잎 퀴즈 풀기',       description: '+5 XP 획득 가능',               icon: '⚡', iconBg: '#FFF4D6', path: `/bite/${bite.id}` },
-    { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: '📔', iconBg: '#F1EFE8', path: '/diary' },
+    { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#0F6E56" />, iconBg: '#E1F5EE', path: '/onboarding' },
+    { title: '한잎 퀴즈 풀기',       description: '+5 XP 획득 가능',               icon: <Zap size={14} color="#854F0B" />, iconBg: '#FFF4D6', path: `/bite/${bite.id}` },
+    { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
   ];
 
   const questions = [

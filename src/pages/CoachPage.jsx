@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse } from '../services/coachService';
@@ -76,7 +77,7 @@ function NomingCard({ structured }) {
 
       {/* ➡️ 다음에 공부하면 좋은 것 */}
       <div style={{ padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '14px' }}>➡️</span>
+        <ArrowRight size={14} color="#888780" />
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px' }}>
           다음에 공부하면 좋은 것
         </p>

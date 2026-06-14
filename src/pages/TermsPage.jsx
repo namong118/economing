@@ -1,5 +1,6 @@
 /* AI 용어 설명 페이지 — Supabase 저장 연결 버전 */
 import { useState } from 'react';
+import { CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { explainTerm } from '../services/aiService';
 import { popularTerms, termExplanations } from '../data/termData';
@@ -241,8 +242,8 @@ export default function TermsPage() {
                           <p style={{ fontSize: '14px', color: '#374151', lineHeight: '1.6' }}>{result.example}</p>
                         </div>
                         <div style={{ background: '#ECFDF5', borderRadius: '14px', padding: '18px', borderLeft: '3px solid #10B981' }}>
-                          <p style={{ fontSize: '12px', fontWeight: '700', color: '#059669', marginBottom: '8px', letterSpacing: '0.3px' }}>
-                            ✅ 핵심 포인트
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: '#059669', marginBottom: '8px', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <CheckCircle size={13} color="#059669" /> 핵심 포인트
                           </p>
                           <p style={{ fontSize: '14px', color: '#374151', lineHeight: '1.6' }}>{result.point}</p>
                         </div>
