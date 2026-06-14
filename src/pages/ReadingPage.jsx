@@ -317,16 +317,6 @@ export default function ReadingPage() {
 
           {/* ── 오늘의 콘텐츠 ─────────────────────────── */}
           <div style={{ marginBottom: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <div style={{
-                width: '6px', height: '6px', borderRadius: '50%',
-                background: '#21C58E', flexShrink: 0,
-                boxShadow: '0 0 0 3px rgba(33,197,142,0.2)',
-              }} />
-              <p style={{ fontSize: '13px', fontWeight: '800', color: '#21C58E', letterSpacing: '0.3px' }}>
-                오늘의 추천
-              </p>
-            </div>
             <ArticleCard
               content={todayContent}
               userId={user?.id}
