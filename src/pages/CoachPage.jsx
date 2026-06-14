@@ -318,7 +318,7 @@ export default function CoachPage() {
         )}
 
         {/* ── 메시지 영역 ─────────────────────────────────── */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: isEmpty ? '0' : '24px 0' }}>
+        <div style={{ flex: isEmpty ? 0 : 1, overflowY: 'auto', padding: isEmpty ? '0' : '24px 0' }}>
           <div className="container" style={{ maxWidth: '720px' }}>
 
             {!isEmpty && (
