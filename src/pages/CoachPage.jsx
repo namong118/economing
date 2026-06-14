@@ -379,9 +379,6 @@ export default function CoachPage() {
         {/* ── 입력 영역 ───────────────────────────────────── */}
         <div style={{
           flexShrink: 0,
-          background: 'rgba(255,255,255,0.97)',
-          backdropFilter: 'blur(12px)',
-          borderTop: '0.5px solid #d4ede3',
           padding: '10px 0 14px',
         }}>
           <div className="container" style={{ maxWidth: '720px' }}>
