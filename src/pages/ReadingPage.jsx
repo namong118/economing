@@ -313,13 +313,6 @@ export default function ReadingPage() {
     <PageWrapper>
       <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
 
-        {/* 페이지 제목 */}
-        <div style={{ padding: '20px 20px 0', maxWidth: '680px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#085041', letterSpacing: '-0.5px', margin: 0 }}>
-            오늘의 경제 읽기
-          </h1>
-        </div>
-
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
 
           {/* ── 오늘의 콘텐츠 ─────────────────────────── */}
