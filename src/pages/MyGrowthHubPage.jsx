@@ -463,7 +463,7 @@ function RoadmapTabContent() {
           padding: '12px 16px', marginBottom: '20px',
           display: 'flex', alignItems: 'center', gap: '10px',
         }}>
-          <span style={{ fontSize: '18px', flexShrink: 0 }}>☀️</span>
+          <img src={`${import.meta.env.BASE_URL}noming-icon.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }} />
           <p style={{ fontSize: '13px', fontWeight: '700', color: '#78350F', lineHeight: '1.6' }}>
             노밍 추천 — Step {recommendedStep}부터 시작해봐요!
           </p>

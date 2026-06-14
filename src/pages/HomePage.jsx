@@ -32,13 +32,11 @@ function NomingCard({ bite, profile, navigate }) {
 
       {/* 노밍 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <div style={{
-          width: 38, height: 38, borderRadius: '50%', background: '#FFC83D',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18, flexShrink: 0,
-        }}>
-          ☀️
-        </div>
+        <img
+          src={`${import.meta.env.BASE_URL}noming-icon.png`}
+          alt="노밍"
+          style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+        />
         <div>
           <div style={{ fontSize: 14, fontWeight: 500, color: '#085041' }}>노밍 · AI 경제 코치</div>
           <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>언제든 물어보세요</div>

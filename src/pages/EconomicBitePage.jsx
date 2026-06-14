@@ -318,15 +318,11 @@ export default function EconomicBitePage() {
             marginBottom: 16,
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-              <div style={{
-                width: 42, height: 42, borderRadius: '50%',
-                background: 'linear-gradient(135deg,#FFC83D,#F59E0B)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, flexShrink: 0,
-                boxShadow: '0 2px 8px rgba(245,158,11,0.3)',
-              }}>
-                ☀️
-              </div>
+              <img
+                src={`${import.meta.env.BASE_URL}noming-icon.png`}
+                alt="노밍"
+                style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, boxShadow: '0 2px 8px rgba(245,158,11,0.3)' }}
+              />
               <div>
                 <div style={{ fontSize: 12, fontWeight: 800, color: '#92400E', letterSpacing: '-0.1px', marginBottom: 5 }}>
                   노밍의 한마디
