@@ -620,13 +620,6 @@ export default function MyGrowthHubPage() {
     <PageWrapper>
       <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)' }}>
 
-        {/* 페이지 제목 */}
-        <div style={{ padding: '20px 20px 0', maxWidth: '720px', margin: '0 auto' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#085041', letterSpacing: '-0.7px' }}>
-            내 성장
-          </h1>
-        </div>
-
         {/* 탭 카드 + 콘텐츠 */}
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px 20px 80px' }}>
 
