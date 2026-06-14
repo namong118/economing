@@ -136,8 +136,8 @@ function EmptyState({ onSelect, BASE_URL }) {
     <div className="anim-fade" style={{ padding: '8px 0 24px' }}>
       {/* 노밍 인사 카드 */}
       <div style={{
-        background: '#F4FAF6',
-        border: '0.5px solid #d4ede3',
+        background: '#FFF4D6',
+        border: '0.5px solid #FAC775',
         borderRadius: '12px', padding: '24px',
         marginBottom: '28px',
         display: 'flex', gap: '16px', alignItems: 'flex-start',
@@ -151,7 +151,7 @@ function EmptyState({ onSelect, BASE_URL }) {
           <div style={{
             position: 'absolute', bottom: '-2px', right: '-2px',
             width: '14px', height: '14px', borderRadius: '50%',
-            background: '#21C58E', border: '2.5px solid #F4FAF6',
+            background: '#21C58E', border: '2.5px solid #FFF4D6',
           }} />
         </div>
         <div>
@@ -312,62 +312,6 @@ export default function CoachPage() {
         background: '#F4FAF6',
       }}>
 
-        {/* ── 헤더 ────────────────────────────────────────── */}
-        <div style={{
-          background: '#fff',
-          borderBottom: '0.5px solid #d4ede3',
-          padding: '14px 0',
-          flexShrink: 0,
-        }}>
-          <div className="container" style={{ maxWidth: '720px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <img
-                  src={`${BASE_URL}coach.png`}
-                  alt="노밍"
-                  style={{ width: '46px', height: '46px', borderRadius: '13px', objectFit: 'cover' }}
-                />
-                <div style={{
-                  position: 'absolute', bottom: '-2px', right: '-2px',
-                  width: '13px', height: '13px', borderRadius: '50%',
-                  background: '#21C58E', border: '2px solid #fff',
-                }} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '16px', fontWeight: '900', color: '#085041', letterSpacing: '-0.4px' }}>
-                    ☀️ 노밍
-                  </span>
-                  <span style={{
-                    fontSize: '11px', fontWeight: '700', color: '#21C58E',
-                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
-                    borderRadius: '100px', padding: '2px 8px',
-                  }}>
-                    AI 경제 성장 코치
-                  </span>
-                </div>
-                <p style={{ fontSize: '12px', color: '#888780', letterSpacing: '-0.2px' }}>
-                  무엇부터 시작해야 할지 모르겠다면 물어보세요.
-                </p>
-              </div>
-              {!isEmpty && (
-                <button
-                  onClick={() => setMessages([])}
-                  style={{
-                    flexShrink: 0, padding: '6px 12px', borderRadius: '8px',
-                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
-                    fontSize: '12px', color: '#888780', cursor: 'pointer',
-                    fontWeight: '600', transition: 'all 0.15s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#E8F7F1'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6'; }}
-                >
-                  새 대화
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* ── 메시지 영역 ─────────────────────────────────── */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px 0' }}>
@@ -439,6 +383,23 @@ export default function CoachPage() {
           padding: '10px 0 14px',
         }}>
           <div className="container" style={{ maxWidth: '720px' }}>
+
+            {/* 새 대화 버튼 (대화 중일 때만 표시) */}
+            {!isEmpty && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                <button
+                  onClick={() => setMessages([])}
+                  style={{
+                    padding: '5px 12px', borderRadius: '8px',
+                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
+                    fontSize: '12px', color: '#888780', cursor: 'pointer',
+                    fontWeight: '600',
+                  }}
+                >
+                  새 대화
+                </button>
+              </div>
+            )}
 
             {/* 빠른 주제 칩 */}
             <div style={{
