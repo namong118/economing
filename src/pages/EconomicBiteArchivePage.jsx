@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BookMarked } from 'lucide-react';
 import economicBites from '../data/economicBites';
 import { getTodaysBite } from '../services/biteService';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -162,9 +163,9 @@ export default function EconomicBiteArchivePage() {
             <div style={{
               width: '44px', height: '44px', background: 'rgba(255,255,255,0.2)',
               borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '22px', flexShrink: 0,
+              flexShrink: 0,
             }}>
-              📖
+              <BookMarked size={22} color="#fff" />
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 /* 학습 로드맵 페이지 — 5단계 경제 성장 경로 */
 import { useState } from 'react';
-import { Map } from 'lucide-react';
+import { Map, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -94,7 +94,7 @@ export default function RoadmapPage() {
                         boxShadow: expandedStep === idx ? `0 0 0 3px ${step.color}22` : 'none',
                       }}
                     >
-                      {isDone ? '✅' : step.emoji}
+                      {isDone ? <CheckCircle size={18} color="#10B981" /> : step.emoji}
                     </button>
                     {idx < roadmap.length - 1 && (
                       <div style={{
@@ -144,7 +144,7 @@ export default function RoadmapPage() {
                         fontSize: '28px',
                         boxShadow: isCurrent ? `0 4px 14px ${step.color}35` : 'none',
                       }}>
-                        {isDone ? '✅' : step.emoji}
+                        {isDone ? <CheckCircle size={18} color="#10B981" /> : step.emoji}
                       </div>
 
                       <div style={{ flex: 1 }}>

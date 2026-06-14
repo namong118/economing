@@ -361,7 +361,9 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
           textAlign: 'center', padding: '40px 20px',
           background: '#fff', borderRadius: '16px', border: '1.5px solid #E8F5EF',
         }}>
-          <p style={{ fontSize: '32px', marginBottom: '10px' }}>📔</p>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+            <BookOpen size={32} color="#888780" />
+          </div>
           <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', marginBottom: '6px', letterSpacing: '-0.3px' }}>
             이번 달 경제일기가 없어요
           </p>
@@ -451,7 +453,7 @@ function FormView({ form, onFieldChange, onSave, onCancel, saving, editMode, err
           boxShadow: saving ? 'none' : '0 4px 16px rgba(33,197,142,0.3)',
         }}
       >
-        {saving ? '저장 중...' : '📔 경제일기 저장하기'}
+        {saving ? '저장 중...' : <><BookOpen size={15} color="#fff" /> 경제일기 저장하기</>}
       </button>
     </div>
   );
