@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LayoutDashboard, BookOpen, BookMarked, Map } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { roadmap } from '../data/roadmapData';
@@ -588,12 +589,12 @@ function RoadmapTabContent() {
   );
 }
 
-/* ── 탭 설정 ──────────────────────────────────────────────── */
-const TABS = [
-  { key: 'summary',    label: '요약' },
-  { key: 'diary',      label: '경제일기' },
-  { key: 'dictionary', label: '경제사전' },
-  { key: 'roadmap',    label: '로드맵' },
+/* ── 탭 카드 설정 ─────────────────────────────────────────── */
+const TAB_CARDS = [
+  { key: 'summary',    label: '요약',    Icon: LayoutDashboard },
+  { key: 'diary',      label: '경제일기', Icon: BookOpen },
+  { key: 'dictionary', label: '경제사전', Icon: BookMarked },
+  { key: 'roadmap',    label: '로드맵',  Icon: Map },
 ];
 
 /* ── 메인 ─────────────────────────────────────────────────── */
@@ -626,39 +627,50 @@ export default function MyGrowthHubPage() {
           </h1>
         </div>
 
-        {/* 탭 바 (sticky) */}
-        <div style={{
-          position: 'sticky', top: '64px', zIndex: 90,
-          background: '#fff', borderBottom: '0.5px solid #e0f0e8',
-          marginTop: '12px', padding: '8px 16px',
-          maxWidth: '720px', margin: '12px auto 0', boxSizing: 'border-box',
-        }}>
-          <div style={{ display: 'flex', gap: '4px' }}>
-            {TABS.map(tab => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                style={{
-                  padding: '6px 16px',
-                  border: 'none', cursor: 'pointer',
-                  fontSize: '14px', fontWeight: '500',
-                  color: activeTab === tab.key ? '#085041' : '#888780',
-                  background: activeTab === tab.key ? '#E1F5EE' : 'transparent',
-                  borderRadius: '8px',
-                  transition: 'color 0.15s, background 0.15s',
-                  letterSpacing: '-0.3px',
-                  fontFamily: 'inherit',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* 탭 카드 + 콘텐츠 */}
+        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px 20px 80px' }}>
 
-        {/* 탭 콘텐츠 */}
-        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '24px 20px 80px' }}>
+          {/* 카드 그리드 */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '8px', marginBottom: '16px',
+          }}>
+            {TAB_CARDS.map(({ key, label, Icon }) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  style={{
+                    borderRadius: '12px', padding: '14px 12px',
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: '8px',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    border: isActive ? 'none' : '0.5px solid #d4ede3',
+                    background: isActive ? '#21C58E' : '#fff',
+                    transition: 'background 0.15s',
+                  }}
+                >
+                  <div style={{
+                    width: '44px', height: '44px', borderRadius: '12px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isActive ? 'rgba(255,255,255,0.2)' : '#F4FAF6',
+                  }}>
+                    <Icon size={22} color={isActive ? '#fff' : '#0F6E56'} />
+                  </div>
+                  <span style={{
+                    fontSize: '13px',
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? '#fff' : '#085041',
+                  }}>
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 탭 콘텐츠 */}
           {activeTab === 'summary'    && <SummaryTab />}
           {activeTab === 'diary'      && <DiaryContent />}
           {activeTab === 'dictionary' && <DictionaryTabContent />}
