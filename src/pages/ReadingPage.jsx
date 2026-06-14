@@ -7,7 +7,7 @@ import SaveTermButton from '../components/common/SaveTermButton';
 
 /* ── 카테고리 배지 ────────────────────────────────────────── */
 function CategoryBadge({ category }) {
-  const s = CATEGORY_STYLE[category] ?? { color: '#64748B', bg: '#F1F5F9', border: '#E2E8F0' };
+  const s = CATEGORY_STYLE[category] ?? { color: '#888780', bg: '#F1F5F9', border: '#E2E8F0' };
   return (
     <span style={{
       fontSize: '11px', fontWeight: '700',
@@ -35,9 +35,9 @@ function CompleteButton({ contentId, userId, navigate, onComplete }) {
     return (
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-        padding: '16px', borderRadius: '16px',
-        background: 'linear-gradient(135deg, #F0FDF4, #DCFCE7)',
-        border: '1.5px solid #A7F3D0',
+        padding: '16px', borderRadius: '12px',
+        background: '#F4FAF6',
+        border: '0.5px solid #d4ede3',
       }}>
         <span style={{ fontSize: '22px' }}>🌱</span>
         <div>
@@ -65,7 +65,7 @@ function CompleteButton({ contentId, userId, navigate, onComplete }) {
       onClick={handleClick}
       disabled={state === 'loading'}
       style={{
-        width: '100%', padding: '16px', borderRadius: '16px',
+        width: '100%', padding: '16px', borderRadius: '12px',
         background: state === 'loading'
           ? '#A7F3D0'
           : 'linear-gradient(135deg, #21C58E, #1AAD7D)',
@@ -101,12 +101,12 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
   return (
     <div style={{
       background: '#fff',
-      borderRadius: '20px',
+      borderRadius: '12px',
       border: done
-        ? '1.5px solid #A7F3D0'
+        ? '0.5px solid #d4ede3'
         : isToday
-          ? '1.5px solid #DCF5EB'
-          : '1.5px solid #E8F5EF',
+          ? '0.5px solid #d4ede3'
+          : '0.5px solid #d4ede3',
       overflow: 'hidden',
       marginBottom: isToday ? '0' : '10px',
       transition: 'border-color 0.3s',
@@ -116,7 +116,7 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
         onClick={() => !isToday && setOpen(v => !v)}
         style={{
           width: '100%', padding: '20px 22px',
-          background: done ? 'linear-gradient(145deg, #F0FDF4, #DCFCE7)' : 'transparent',
+          background: done ? '#F4FAF6' : 'transparent',
           border: 'none', cursor: isToday ? 'default' : 'pointer',
           textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '10px',
           transition: 'background 0.3s',
@@ -125,7 +125,7 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <CategoryBadge category={content.category} />
-            <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: '600' }}>
+            <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600' }}>
               📖 {content.readingTime}분 읽기
             </span>
             {done && (
@@ -142,12 +142,12 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
         </div>
         <h2 style={{
           fontSize: isToday ? '20px' : '16px',
-          fontWeight: '900', color: '#0F172A',
+          fontWeight: '900', color: '#085041',
           letterSpacing: '-0.6px', lineHeight: '1.35', margin: 0,
         }}>
           {content.title}
         </h2>
-        <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.6', margin: 0 }}>
+        <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.6', margin: 0 }}>
           {content.intro}
         </p>
       </button>
@@ -163,7 +163,7 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '24px' }}>
             {content.paragraphs.map((para, i) => (
               <p key={i} style={{
-                fontSize: '15px', color: '#374151', lineHeight: '1.8',
+                fontSize: '15px', color: '#5F5E5A', lineHeight: '1.8',
                 letterSpacing: '-0.2px', margin: 0,
               }}>
                 {para}
@@ -173,9 +173,9 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
 
           {/* 핵심 포인트 */}
           <div style={{
-            background: 'linear-gradient(145deg, #F0FDF4, #DCFCE7)',
-            border: '1.5px solid #A7F3D0',
-            borderRadius: '16px', padding: '18px 20px', marginBottom: '14px',
+            background: '#F4FAF6',
+            border: '0.5px solid #d4ede3',
+            borderRadius: '12px', padding: '18px 20px', marginBottom: '14px',
           }}>
             <p style={{ fontSize: '13px', fontWeight: '800', color: '#166534', marginBottom: '12px', letterSpacing: '0.2px' }}>
               📌 핵심 포인트
@@ -200,10 +200,10 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
 
           {/* 핵심 용어 */}
           <div style={{
-            background: '#FAFBFC', border: '1.5px solid #E8F5EF',
-            borderRadius: '16px', padding: '18px 20px', marginBottom: '14px',
+            background: '#F4FAF6', border: '0.5px solid #d4ede3',
+            borderRadius: '12px', padding: '18px 20px', marginBottom: '14px',
           }}>
-            <p style={{ fontSize: '13px', fontWeight: '800', color: '#0F172A', marginBottom: '12px', letterSpacing: '0.2px' }}>
+            <p style={{ fontSize: '13px', fontWeight: '800', color: '#085041', marginBottom: '12px', letterSpacing: '0.2px' }}>
               📚 핵심 용어
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -211,13 +211,13 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
                 <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                   <span style={{
                     fontSize: '12px', fontWeight: '800', color: '#21C58E',
-                    background: '#F4FAF6', border: '1.5px solid #DCF5EB',
+                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
                     borderRadius: '100px', padding: '3px 10px',
                     flexShrink: 0, whiteSpace: 'nowrap',
                   }}>
                     {kw.term}
                   </span>
-                  <p style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5', margin: 0, fontWeight: '500', flex: 1 }}>
+                  <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.5', margin: 0, fontWeight: '500', flex: 1 }}>
                     {kw.desc}
                   </p>
                   <SaveTermButton
@@ -234,9 +234,9 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
 
           {/* 노밍 한마디 */}
           <div style={{
-            background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-            border: '1.5px solid #FFE08A',
-            borderRadius: '16px', padding: '16px 18px', marginBottom: '20px',
+            background: '#FFF4D6',
+            border: '0.5px solid #FAC775',
+            borderRadius: '12px', padding: '16px 18px', marginBottom: '20px',
             display: 'flex', gap: '12px', alignItems: 'flex-start',
           }}>
             <div style={{ position: 'relative', flexShrink: 0 }}>
@@ -273,9 +273,9 @@ function ArticleCard({ content, userId, navigate, isToday = false, defaultOpen =
           {done && (
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-              padding: '16px', borderRadius: '16px',
-              background: 'linear-gradient(135deg, #F0FDF4, #DCFCE7)',
-              border: '1.5px solid #A7F3D0',
+              padding: '16px', borderRadius: '12px',
+              background: '#F4FAF6',
+              border: '0.5px solid #d4ede3',
             }}>
               <span style={{ fontSize: '20px' }}>🌱</span>
               <div>
@@ -315,21 +315,20 @@ export default function ReadingPage() {
 
         {/* ── 히어로 헤더 ──────────────────────────────── */}
         <div style={{
-          background: 'linear-gradient(160deg, #F0FDF4 0%, #DCFCE7 50%, #F4FAF6 100%)',
-          borderBottom: '1px solid #DCF5EB',
+          background: '#F4FAF6',
           padding: '36px 20px 28px',
         }}>
           <div style={{ maxWidth: '680px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
               <span style={{ fontSize: '22px' }}>☀️</span>
               <h1 style={{
-                fontSize: '24px', fontWeight: '900', color: '#0F172A',
+                fontSize: '24px', fontWeight: '900', color: '#085041',
                 letterSpacing: '-0.8px', margin: 0,
               }}>
                 오늘의 경제 읽기
               </h1>
             </div>
-            <p style={{ fontSize: '15px', color: '#64748B', lineHeight: '1.7', margin: 0 }}>
+            <p style={{ fontSize: '15px', color: '#888780', lineHeight: '1.7', margin: 0 }}>
               하루 3분, 경제 감각을 키워보세요.
             </p>
             {/* 진행 칩 */}
@@ -342,7 +341,7 @@ export default function ReadingPage() {
                 <div key={chip.label} style={{
                   display: 'flex', alignItems: 'center', gap: '5px',
                   fontSize: '12px', fontWeight: '600', color: '#21C58E',
-                  background: '#fff', border: '1.5px solid #DCF5EB',
+                  background: '#fff', border: '0.5px solid #d4ede3',
                   borderRadius: '100px', padding: '5px 12px',
                 }}>
                   <span>{chip.icon}</span>
@@ -378,7 +377,7 @@ export default function ReadingPage() {
 
           {/* ── 더 읽어보기 ───────────────────────────── */}
           <div>
-            <p style={{ fontSize: '16px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.5px', marginBottom: '12px' }}>
+            <p style={{ fontSize: '16px', fontWeight: '800', color: '#085041', letterSpacing: '-0.5px', marginBottom: '12px' }}>
               더 읽어보기
             </p>
             {otherContents.map(content => (
@@ -396,9 +395,9 @@ export default function ReadingPage() {
           {/* ── 하단 노밍 CTA ─────────────────────────── */}
           <div style={{
             marginTop: '28px',
-            background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-            border: '1.5px solid #FFE08A',
-            borderRadius: '18px', padding: '20px 22px',
+            background: '#FFF4D6',
+            border: '0.5px solid #FAC775',
+            borderRadius: '12px', padding: '20px 22px',
             textAlign: 'center',
           }}>
             <p style={{ fontSize: '14px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>

@@ -25,15 +25,14 @@ function NomingCard({ structured }) {
   return (
     <div style={{
       background: '#fff',
-      border: '1px solid #E8F5EF',
+      border: '0.5px solid #d4ede3',
       borderRadius: '4px 20px 20px 20px',
       overflow: 'hidden',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
     }}>
       {/* 💡 한 줄 조언 */}
       <div style={{
-        background: 'linear-gradient(135deg, #FFFBEA, #FFF4CC)',
-        borderBottom: '1px solid #FFE08A',
+        background: '#F4FAF6',
+        borderBottom: '0.5px solid #d4ede3',
         padding: '14px 18px',
         display: 'flex', gap: '10px',
       }}>
@@ -52,7 +51,7 @@ function NomingCard({ structured }) {
       <div style={{ padding: '14px 18px', borderBottom: '1px solid #F1F5F9' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
           <span style={{ fontSize: '15px' }}>📚</span>
-          <p style={{ fontSize: '11px', fontWeight: '700', color: '#64748B', letterSpacing: '0.5px' }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px' }}>
             먼저 알아두면 좋은 것
           </p>
         </div>
@@ -61,13 +60,13 @@ function NomingCard({ structured }) {
             <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
               <div style={{
                 width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0,
-                background: '#F4FAF6', border: '1.5px solid #A7F3D0',
+                background: '#F4FAF6', border: '0.5px solid #d4ede3',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '10px', fontWeight: '800', color: '#21C58E', marginTop: '1px',
               }}>
                 {i + 1}
               </div>
-              <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.6', fontWeight: '500' }}>
+              <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.6', fontWeight: '500' }}>
                 {item}
               </p>
             </div>
@@ -78,12 +77,12 @@ function NomingCard({ structured }) {
       {/* ➡️ 다음에 공부하면 좋은 것 */}
       <div style={{ padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ fontSize: '14px' }}>➡️</span>
-        <p style={{ fontSize: '11px', fontWeight: '700', color: '#64748B', letterSpacing: '0.5px' }}>
+        <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px' }}>
           다음에 공부하면 좋은 것
         </p>
         <span style={{
           fontSize: '12px', fontWeight: '700', color: '#21C58E',
-          background: '#F4FAF6', border: '1.5px solid #DCF5EB',
+          background: '#F4FAF6', border: '0.5px solid #d4ede3',
           borderRadius: '100px', padding: '3px 12px',
           marginLeft: 'auto', whiteSpace: 'nowrap',
         }}>
@@ -96,21 +95,21 @@ function NomingCard({ structured }) {
         <div style={{
           padding: '12px 18px 14px',
           borderTop: '1px solid #F1F5F9',
-          background: '#FAFBFC',
+          background: '#F4FAF6',
         }}>
-          <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.4px', marginBottom: '8px' }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.4px', marginBottom: '8px' }}>
             💾 이 대화의 핵심 용어
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
             {terms.map(t => (
               <div key={t.term} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                gap: '10px', background: '#fff', border: '1px solid #E8F5EF',
+                gap: '10px', background: '#fff', border: '0.5px solid #d4ede3',
                 borderRadius: '10px', padding: '8px 12px',
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A' }}>{t.term}</span>
-                  <p style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', lineHeight: '1.5',
+                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#085041' }}>{t.term}</span>
+                  <p style={{ fontSize: '11px', color: '#888780', marginTop: '2px', lineHeight: '1.5',
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {t.meaning}
                   </p>
@@ -136,9 +135,9 @@ function EmptyState({ onSelect, BASE_URL }) {
     <div className="anim-fade" style={{ padding: '8px 0 24px' }}>
       {/* 노밍 인사 카드 */}
       <div style={{
-        background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-        border: '1.5px solid #FFE08A',
-        borderRadius: '24px', padding: '24px',
+        background: '#F4FAF6',
+        border: '0.5px solid #d4ede3',
+        borderRadius: '12px', padding: '24px',
         marginBottom: '28px',
         display: 'flex', gap: '16px', alignItems: 'flex-start',
       }}>
@@ -151,7 +150,7 @@ function EmptyState({ onSelect, BASE_URL }) {
           <div style={{
             position: 'absolute', bottom: '-2px', right: '-2px',
             width: '14px', height: '14px', borderRadius: '50%',
-            background: '#21C58E', border: '2.5px solid #FFFBEA',
+            background: '#21C58E', border: '2.5px solid #F4FAF6',
           }} />
         </div>
         <div>
@@ -167,7 +166,7 @@ function EmptyState({ onSelect, BASE_URL }) {
 
       {/* 추천 질문 */}
       <p style={{
-        fontSize: '12px', fontWeight: '700', color: '#94A3B8',
+        fontSize: '12px', fontWeight: '700', color: '#888780',
         letterSpacing: '0.8px', textTransform: 'uppercase',
         marginBottom: '12px',
       }}>
@@ -180,26 +179,25 @@ function EmptyState({ onSelect, BASE_URL }) {
             onClick={() => onSelect(q)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '15px 18px', borderRadius: '14px',
-              background: '#fff', border: '1.5px solid #E2E8F0',
+              padding: '15px 18px', borderRadius: '8px',
+              background: '#fff', border: '0.5px solid #d4ede3',
               cursor: 'pointer', textAlign: 'left',
-              fontSize: '14px', color: '#1E293B', fontWeight: '500',
+              fontSize: '14px', color: '#5F5E5A', fontWeight: '500',
               lineHeight: '1.5', transition: 'all 0.15s',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.borderColor = '#21C58E';
               e.currentTarget.style.background  = '#F4FAF6';
-              e.currentTarget.style.color       = '#0A5C43';
+              e.currentTarget.style.color       = '#085041';
               e.currentTarget.style.transform   = 'translateX(3px)';
-              e.currentTarget.style.boxShadow   = '0 4px 12px rgba(33,197,142,0.12)';
+              e.currentTarget.style.boxShadow   = 'none';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.borderColor = '#E2E8F0';
+              e.currentTarget.style.borderColor = '#d4ede3';
               e.currentTarget.style.background  = '#fff';
-              e.currentTarget.style.color       = '#1E293B';
+              e.currentTarget.style.color       = '#5F5E5A';
               e.currentTarget.style.transform   = 'translateX(0)';
-              e.currentTarget.style.boxShadow   = '0 1px 4px rgba(0,0,0,0.04)';
+              e.currentTarget.style.boxShadow   = 'none';
             }}
           >
             <span style={{ flex: 1, paddingRight: '12px' }}>{q}</span>
@@ -223,10 +221,9 @@ function LoadingBubble({ BASE_URL }) {
         style={{ width: '32px', height: '32px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0, marginTop: '2px' }}
       />
       <div style={{
-        background: '#fff', border: '1px solid #E8F5EF',
+        background: '#fff', border: '0.5px solid #d4ede3',
         borderRadius: '4px 16px 16px 16px',
         padding: '12px 18px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
       }}>
         <p style={{ fontSize: '12px', color: '#21C58E', fontWeight: '600', marginBottom: '7px' }}>
           ☀️ 노밍이 답변을 준비하고 있어요...
@@ -317,7 +314,7 @@ export default function CoachPage() {
         {/* ── 헤더 ────────────────────────────────────────── */}
         <div style={{
           background: '#fff',
-          borderBottom: '1px solid #E8F5EF',
+          borderBottom: '0.5px solid #d4ede3',
           padding: '14px 0',
           flexShrink: 0,
         }}>
@@ -337,18 +334,18 @@ export default function CoachPage() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.4px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: '900', color: '#085041', letterSpacing: '-0.4px' }}>
                     ☀️ 노밍
                   </span>
                   <span style={{
                     fontSize: '11px', fontWeight: '700', color: '#21C58E',
-                    background: '#F4FAF6', border: '1px solid #DCF5EB',
+                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
                     borderRadius: '100px', padding: '2px 8px',
                   }}>
                     AI 경제 성장 코치
                   </span>
                 </div>
-                <p style={{ fontSize: '12px', color: '#64748B', letterSpacing: '-0.2px' }}>
+                <p style={{ fontSize: '12px', color: '#888780', letterSpacing: '-0.2px' }}>
                   무엇부터 시작해야 할지 모르겠다면 물어보세요.
                 </p>
               </div>
@@ -357,12 +354,12 @@ export default function CoachPage() {
                   onClick={() => setMessages([])}
                   style={{
                     flexShrink: 0, padding: '6px 12px', borderRadius: '8px',
-                    background: '#F8FAFC', border: '1px solid #E2E8F0',
-                    fontSize: '12px', color: '#64748B', cursor: 'pointer',
+                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
+                    fontSize: '12px', color: '#888780', cursor: 'pointer',
                     fontWeight: '600', transition: 'all 0.15s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#F1F5F9'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#F8FAFC'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#E8F7F1'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6'; }}
                 >
                   새 대화
                 </button>
@@ -437,7 +434,7 @@ export default function CoachPage() {
           flexShrink: 0,
           background: 'rgba(255,255,255,0.97)',
           backdropFilter: 'blur(12px)',
-          borderTop: '1px solid #E8F5EF',
+          borderTop: '0.5px solid #d4ede3',
           padding: '10px 0 14px',
         }}>
           <div className="container" style={{ maxWidth: '720px' }}>
@@ -453,10 +450,10 @@ export default function CoachPage() {
                   onClick={() => handleChip(chip)}
                   style={{
                     flexShrink: 0, padding: '5px 13px', borderRadius: '100px',
-                    background: input === chip ? '#F4FAF6' : '#F8FAFC',
-                    border: `1.5px solid ${input === chip ? '#21C58E' : '#E2E8F0'}`,
+                    background: '#F4FAF6',
+                    border: `0.5px solid ${input === chip ? '#21C58E' : '#d4ede3'}`,
                     fontSize: '12px', fontWeight: '600',
-                    color: input === chip ? '#0A5C43' : '#64748B',
+                    color: input === chip ? '#085041' : '#888780',
                     cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
                   }}
                 >
@@ -468,18 +465,15 @@ export default function CoachPage() {
             {/* 텍스트 입력 */}
             <div style={{
               display: 'flex', gap: '10px', alignItems: 'flex-end',
-              background: '#fff', border: '1.5px solid #DCF5EB',
-              borderRadius: '16px', padding: '10px 10px 10px 16px',
-              boxShadow: '0 2px 12px rgba(33,197,142,0.08)',
-              transition: 'border-color 0.15s, box-shadow 0.15s',
+              background: '#fff', border: '0.5px solid #d4ede3',
+              borderRadius: '12px', padding: '10px 10px 10px 16px',
+              transition: 'border-color 0.15s',
             }}
             onFocus={e => {
               e.currentTarget.style.borderColor = '#21C58E';
-              e.currentTarget.style.boxShadow  = '0 2px 16px rgba(33,197,142,0.15)';
             }}
             onBlur={e => {
-              e.currentTarget.style.borderColor = '#DCF5EB';
-              e.currentTarget.style.boxShadow  = '0 2px 12px rgba(33,197,142,0.08)';
+              e.currentTarget.style.borderColor = '#d4ede3';
             }}
             >
               <textarea
@@ -492,7 +486,7 @@ export default function CoachPage() {
                 disabled={loading}
                 style={{
                   flex: 1, border: 'none', outline: 'none', resize: 'none',
-                  fontSize: '14px', color: '#0F172A', background: 'transparent',
+                  fontSize: '14px', color: '#085041', background: 'transparent',
                   lineHeight: '1.6', fontFamily: 'inherit', maxHeight: '140px',
                   overflowY: 'auto',
                 }}
