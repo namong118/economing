@@ -11,14 +11,12 @@ serve(async (req) => {
   }
 
   try {
+    const { query = '경제', display = 5 } = await req.json().catch(() => ({}))
     const clientId     = Deno.env.get('NAVER_CLIENT_ID')
     const clientSecret = Deno.env.get('NAVER_CLIENT_SECRET')
 
-    const keywords = ['금리', '환율', '코스피', '경제', '물가']
-    const keyword  = keywords[Math.floor(Math.random() * keywords.length)]
-
     const response = await fetch(
-      `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(keyword)}&display=5&sort=date`,
+      `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=${display}&sort=date`,
       {
         headers: {
           'X-Naver-Client-Id':     clientId!,
@@ -29,14 +27,20 @@ serve(async (req) => {
 
     const data = await response.json()
 
+    const clean = (str: string) =>
+      str.replace(/<[^>]*>/g, '')
+         .replace(/&quot;/g, '"')
+         .replace(/&amp;/g, '&')
+         .replace(/&#39;/g, "'")
+         .replace(/&lt;/g, '<')
+         .replace(/&gt;/g, '>')
+         .trim()
+
     const items = data.items?.map((item: any) => ({
-      title: item.title
-        .replace(/<[^>]*>/g, '')
-        .replace(/&quot;/g, '"')
-        .replace(/&amp;/g, '&')
-        .replace(/&#39;/g, "'"),
-      link:    item.originallink || item.link,
-      pubDate: item.pubDate,
+      title:       clean(item.title),
+      description: clean(item.description),
+      link:        item.originallink || item.link,
+      pubDate:     item.pubDate,
     })) ?? []
 
     return new Response(JSON.stringify({ items }), {

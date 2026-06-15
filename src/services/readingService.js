@@ -1,168 +1,81 @@
-import { addXp } from './profileService';
+import { supabase } from './supabaseClient'
+import { callSolar } from './solarService'
+import { addXp } from './profileService'
 
-/* ── 카테고리 스타일 ──────────────────────────────────────── */
-export const CATEGORY_STYLE = {
-  '경제 기초':   { color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE' },
-  '투자 입문':   { color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
-  '저축 기초':   { color: '#22C55E', bg: '#F0FDF4', border: '#BBF7D0' },
-  '재테크 기초': { color: '#F97316', bg: '#FFF7ED', border: '#FED7AA' },
-};
-
-/* ── 더미 콘텐츠 ──────────────────────────────────────────── */
-export const CONTENTS = [
-  {
-    id: 'base-rate',
-    title: '기준금리는 왜 중요할까요?',
-    category: '경제 기초',
-    readingTime: 3,
-    intro: '뉴스에서 "한국은행이 기준금리를 올렸다"는 말, 들어보셨나요?',
-    paragraphs: [
-      '기준금리는 한국은행이 시중 은행에 돈을 빌려줄 때 적용하는 금리입니다. 쉽게 말하면 "돈의 가격"이에요.',
-      '기준금리가 오르면 은행들이 돈을 빌리는 비용이 높아집니다. 그러면 은행들은 우리에게 빌려주는 대출 금리도 함께 올리게 돼요. 반대로 예금 금리도 함께 올라가서 저축하면 이자를 더 받을 수 있어요.',
-      '기준금리가 내려가면 어떻게 될까요? 대출을 받기는 더 쉬워지지만, 저축으로 얻는 이자는 줄어들어요. 기업들은 싸게 돈을 빌릴 수 있어서 투자를 늘리게 됩니다.',
-      '한국은행은 물가가 너무 오를 것 같으면 금리를 올려 소비를 줄이고, 경기가 너무 침체될 것 같으면 금리를 내려 소비를 늘리는 방식으로 경제를 조절합니다.',
-    ],
-    summary: [
-      '기준금리는 한국은행이 정하는 "돈의 가격"이다',
-      '금리가 오르면 대출 부담이 커지고, 예금 이자는 늘어난다',
-      '금리가 내리면 대출은 쉬워지고, 예금 이자는 줄어든다',
-      '한국은행은 금리로 물가와 경기를 조절한다',
-    ],
-    keywords: [
-      { term: '기준금리', desc: '한국은행이 시중은행에 적용하는 기본 금리' },
-      { term: '한국은행', desc: '우리나라의 중앙은행, 통화정책을 결정한다' },
-      { term: '대출금리', desc: '은행에서 돈을 빌릴 때 내는 이자율' },
-      { term: '예금금리', desc: '은행에 돈을 맡겼을 때 받는 이자율' },
-    ],
-    nomingComment: '뉴스에서 금리 이야기가 나오면 앞으로는 조금 더 쉽게 이해할 수 있을 거예요. 내 대출이나 예금에 어떤 영향을 주는지 생각해보는 습관을 만들어봐요!',
-  },
-  {
-    id: 'inflation',
-    title: '물가가 오르면 내 돈의 가치는 떨어진다',
-    category: '경제 기초',
-    readingTime: 3,
-    intro: '편의점 삼각김밥 가격이 언제부터 이렇게 올랐을까요?',
-    paragraphs: [
-      '인플레이션은 물가가 전반적으로 오르는 현상이에요. 예를 들어 작년에 1,000원이던 물건이 올해 1,100원이 됐다면, 10% 인플레이션이 발생한 거예요.',
-      '인플레이션이 무서운 이유는 돈의 실질 가치가 줄어들기 때문이에요. 통장에 100만 원이 있어도, 물가가 10% 오르면 작년에 살 수 있던 물건들을 올해는 살 수 없게 돼요. 돈이 "녹는" 거예요.',
-      '적당한 인플레이션(연 2% 수준)은 경제에 활력을 줘요. 물가가 오를 것 같으면 사람들이 지금 더 소비하게 되고, 기업도 투자를 늘리게 되거든요.',
-      '하지만 인플레이션이 너무 심하면 문제가 됩니다. 월급이 오르는 속도보다 물가가 오르는 속도가 빠르면, 실질적인 생활 수준이 낮아지게 돼요.',
-    ],
-    summary: [
-      '인플레이션 = 물가가 전반적으로 오르는 현상',
-      '물가가 오르면 같은 돈으로 살 수 있는 것이 줄어든다',
-      '연 2% 정도의 인플레이션은 경제에 건강한 신호',
-      '월급 인상률보다 물가 상승률이 높으면 실질 소득이 줄어든다',
-    ],
-    keywords: [
-      { term: '인플레이션', desc: '물가가 전반적으로 오르는 현상' },
-      { term: '실질 가치', desc: '물가를 고려한 돈의 실제 구매력' },
-      { term: 'CPI', desc: '소비자물가지수, 물가 상승률을 측정하는 지표' },
-      { term: '구매력', desc: '돈으로 살 수 있는 물건이나 서비스의 양' },
-    ],
-    nomingComment: '돈을 그냥 통장에 놔두면 물가 상승만큼 가치가 줄어들어요. 그래서 적어도 물가 상승률 이상의 이자를 주는 곳에 저축하는 게 중요하답니다!',
-  },
-  {
-    id: 'etf-basics',
-    title: 'ETF, 주식인데 분산 투자가 된다고요?',
-    category: '투자 입문',
-    readingTime: 4,
-    intro: 'ETF는 주식처럼 사고팔 수 있는 펀드예요. 어렵지 않아요!',
-    paragraphs: [
-      'ETF(상장지수펀드)는 여러 주식을 묶어서 하나의 상품처럼 거래소에 올려둔 것이에요. 예를 들어 "KODEX 200"은 코스피 200개 기업의 주식을 조금씩 모아놓은 ETF예요.',
-      '개별 주식에 투자하면 한 회사가 망했을 때 큰 손실을 볼 수 있어요. 하지만 ETF는 수십~수백 개 기업에 동시에 투자하는 효과가 있어서 위험을 분산할 수 있어요.',
-      'ETF의 가장 큰 장점은 소액으로 분산 투자가 가능하다는 점이에요. 삼성전자 1주를 사려면 7만 원이 넘지만, 삼성전자가 포함된 ETF는 1~2만 원대에도 살 수 있어요.',
-      '처음 투자를 시작하는 분들이 많이 선택하는 ETF로는 코스피나 S&P500 같은 지수를 추종하는 인덱스 ETF가 있어요. 특별한 종목 분석 없이도 시장 평균 수익률을 따라갈 수 있어요.',
-    ],
-    summary: [
-      'ETF = 여러 주식을 묶어 거래소에 올려놓은 상품',
-      '분산 투자 효과 → 한 종목이 떨어져도 큰 손실 방지',
-      '소액으로도 수백 개 기업에 동시 투자 가능',
-      '인덱스 ETF는 시장 평균 수익률을 추종한다',
-    ],
-    keywords: [
-      { term: 'ETF', desc: '상장지수펀드, 주식처럼 거래되는 펀드 상품' },
-      { term: '분산 투자', desc: '여러 자산에 나눠 투자해 위험을 줄이는 방법' },
-      { term: '인덱스 펀드', desc: '특정 주가지수를 그대로 따라가는 펀드' },
-      { term: 'S&P 500', desc: '미국 상위 500개 기업으로 구성된 주가지수' },
-    ],
-    nomingComment: 'ETF는 처음 투자를 시작하기에 정말 좋은 수단이에요. 매달 일정 금액을 꾸준히 적립식으로 사는 방법을 "적립식 투자"라고 하는데, 장기적으로 좋은 결과를 보여준 전략이에요!',
-  },
-  {
-    id: 'deposit-vs-saving',
-    title: '예금과 적금, 뭐가 다를까요?',
-    category: '저축 기초',
-    readingTime: 3,
-    intro: '은행 앱을 켜면 예금, 적금 두 가지가 있어요. 어떤 걸 선택해야 할까요?',
-    paragraphs: [
-      '예금은 목돈을 한 번에 넣고 일정 기간 후에 이자와 함께 받는 방식이에요. 예를 들어 500만 원을 1년 예금에 넣으면, 1년 후 이자와 함께 돌려받아요.',
-      '적금은 매달 일정 금액을 꾸준히 넣는 방식이에요. 월 10만 원씩 12개월 적금을 하면, 만기에 120만 원과 이자를 받게 돼요.',
-      '이자 면에서 보면 예금이 조금 더 유리해요. 같은 금액이라면 처음부터 전액을 넣는 예금이 적금보다 총 이자를 더 받을 수 있거든요. 하지만 목돈이 없다면 적금이 현실적인 선택이죠.',
-      '목돈이 있으면 예금, 매달 저축할 여유 자금이 있으면 적금이 기본 전략이에요. 둘 다 예금자 보호법으로 1인당 5,000만 원까지 보호받아요.',
-    ],
-    summary: [
-      '예금 = 목돈을 한 번에 넣고 이자를 받는 방식',
-      '적금 = 매달 일정액을 나눠 넣는 방식',
-      '같은 금액이라면 예금이 이자가 더 많다',
-      '예금·적금 모두 5,000만 원까지 예금자 보호',
-    ],
-    keywords: [
-      { term: '정기예금', desc: '목돈을 일정 기간 맡기고 이자를 받는 상품' },
-      { term: '정기적금', desc: '매달 일정 금액을 납입하는 저축 상품' },
-      { term: '예금자 보호', desc: '은행이 망해도 1인당 5,000만 원까지 보호해주는 제도' },
-      { term: '만기', desc: '예금·적금 계약 기간이 끝나는 날' },
-    ],
-    nomingComment: '적금은 강제 저축 효과가 있어서 저축 습관을 만들기에 좋아요. 예금은 이미 목돈이 있을 때 유리하고요. 둘 다 파킹통장과 함께 활용하면 더욱 효과적이에요!',
-  },
-  {
-    id: 'emergency-fund',
-    title: '비상금, 왜 꼭 따로 모아야 할까요?',
-    category: '재테크 기초',
-    readingTime: 3,
-    intro: '갑자기 월급이 끊기거나 큰 지출이 생기면 어떻게 할 것 같으세요?',
-    paragraphs: [
-      '비상금은 갑작스러운 지출이나 수입 감소에 대비해 따로 모아두는 돈이에요. 전문가들은 보통 월 생활비의 3~6개월치를 비상금으로 준비하라고 권고해요.',
-      '비상금이 없으면 예상치 못한 상황에서 고금리 신용 대출을 받거나, 투자 중인 자산을 손해 보면서 팔아야 할 수 있어요. 비상금은 일종의 재정적 안전망이에요.',
-      '비상금은 투자 수익률보다 안전성과 유동성이 중요해요. 언제든 빠르게 꺼낼 수 있어야 하기 때문에 주식이나 펀드에 넣으면 안 돼요.',
-      '비상금을 보관하기 좋은 곳은 파킹통장(수시입출금 통장)이에요. 일반 보통예금보다 이자가 높고, 언제든 입출금이 자유로워요. 요즘은 연 3~4%대 파킹통장도 있어요.',
-    ],
-    summary: [
-      '비상금 목표 = 월 생활비의 3~6개월치',
-      '비상금이 없으면 위기 시 고금리 대출이나 손절 매도를 해야 할 수 있다',
-      '비상금은 투자가 아닌 안전하고 유동성 높은 곳에 보관',
-      '파킹통장이 비상금 보관에 적합하다',
-    ],
-    keywords: [
-      { term: '비상금', desc: '예상치 못한 지출에 대비해 따로 모아두는 돈' },
-      { term: '파킹통장', desc: '수시입출금이 가능하면서 이자도 주는 통장' },
-      { term: '유동성', desc: '필요할 때 빠르게 현금화할 수 있는 정도' },
-      { term: '재정적 안전망', desc: '경제적 위기 상황에서 버틸 수 있는 자금 여유' },
-    ],
-    nomingComment: '비상금을 만들었다면 그 다음부터는 안심하고 투자를 시작할 수 있어요. 비상금 없이 투자하면 급할 때 손해 보면서 팔아야 할 수 있거든요. 순서가 중요해요!',
-  },
-];
-
-/* ── 오늘의 콘텐츠 선택 (일자 기반 로테이션) ─────────────── */
-export function getTodayContent() {
-  const dayIndex = Math.floor(Date.now() / 86400000) % CONTENTS.length;
-  return CONTENTS[dayIndex];
+// 네이버 뉴스 가져오기
+export async function fetchNews(query = '경제', display = 5) {
+  const { data, error } = await supabase.functions.invoke('news', {
+    body: { query, display },
+  })
+  if (error) throw error
+  return data.items ?? []
 }
 
-export function getOtherContents(todayId) {
-  return CONTENTS.filter(c => c.id !== todayId);
-}
+// Solar AI로 뉴스 요약
+export async function summarizeNews(article) {
+  const system = `당신은 ECONOMING의 AI 코치 노밍입니다.
+경제 뉴스를 경제 초보자도 이해할 수 있게 쉽게 요약합니다.
 
-/* ── 읽기 완료 처리 ────────────────────────────────────────
- * TODO: reading_logs 테이블에 INSERT 추가 (DB 준비 후)
- * 지금은 XP 지급만 수행합니다.
- * ─────────────────────────────────────────────────────── */
-export async function markAsRead(userId, contentId) {
-  if (!userId) return { success: false, reason: 'not_logged_in' };
+반드시 아래 JSON 형식으로만 응답하세요 (마크다운 코드블록 없이):
+{
+  "summary": "3문장 이내 쉬운 요약",
+  "keyPoints": ["핵심 포인트 1", "핵심 포인트 2", "핵심 포인트 3"],
+  "keywords": [
+    {"term": "경제 용어", "explanation": "한 줄 쉬운 설명"},
+    {"term": "경제 용어2", "explanation": "한 줄 쉬운 설명"}
+  ],
+  "nomingComment": "노밍이 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지"
+}`
+
+  const content = await callSolar({
+    system,
+    messages: [{
+      role: 'user',
+      content: `제목: ${article.title}\n내용: ${article.description}`,
+    }],
+  })
+
   try {
-    await addXp(userId, 5);
-    return { success: true, xpGranted: 5 };
-  } catch (e) {
-    console.error('markAsRead error:', e);
-    return { success: false, reason: 'error' };
+    const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    return JSON.parse(clean)
+  } catch {
+    return {
+      summary:       article.description,
+      keyPoints:     [],
+      keywords:      [],
+      nomingComment: '이 뉴스를 꼭 읽어보세요!',
+    }
+  }
+}
+
+// 뉴스 5개 가져와서 순차 요약
+export async function fetchAndSummarizeNews(query = '경제') {
+  const articles = await fetchNews(query, 5)
+  const results  = []
+  for (const article of articles) {
+    try {
+      const summary = await summarizeNews(article)
+      results.push({ ...article, ...summary })
+    } catch {
+      results.push({
+        ...article,
+        summary:       article.description,
+        keyPoints:     [],
+        keywords:      [],
+        nomingComment: '',
+      })
+    }
+  }
+  return results
+}
+
+// 읽기 완료 처리 (XP 지급)
+export async function markAsRead(userId) {
+  if (!userId) return { success: false }
+  try {
+    await addXp(userId, 5)
+    return { success: true, xpGranted: 5 }
+  } catch {
+    return { success: false }
   }
 }

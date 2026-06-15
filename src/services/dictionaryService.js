@@ -58,6 +58,20 @@ export async function getTerms(userId) {
   return { data: data ? data.map(normalize) : [], error };
 }
 
+// ── Save keywords from news ──────────────────────────────
+export async function saveKeywordsFromNews(keywords, userId, newsTitle) {
+  if (!keywords?.length || !userId) return
+  for (const kw of keywords) {
+    await saveTerm({
+      userId,
+      term:       kw.term,
+      meaning:    kw.explanation,
+      sourceType: 'news',
+      sourceId:   newsTitle.slice(0, 100),
+    })
+  }
+}
+
 // ── Delete ───────────────────────────────────────────────
 export async function deleteTerm(id) {
   if (MOCK) {
