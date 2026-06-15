@@ -827,3 +827,446 @@ const InfographicComponent = BITE_INFOGRAPHICS[bite.id] ?? null
 | 서비스 URL | https://namong118.github.io/economing/ |
 | 레포지토리 | https://github.com/namong118/economing |
 | 배포 브랜치 | `gh-pages` (GitHub Actions 자동 배포) |
+
+---
+
+## 2026-06-13 — UI 통일 + 노밍 코치 UX 개선
+
+### 개요
+두 가지 작업을 진행했습니다.
+
+1. **이모지 → Lucide 아이콘 전면 교체** — 앱 전체의 이모지를 일관된 벡터 아이콘으로 교체해 크로스 플랫폼 렌더링 통일
+2. **CoachPage 대화 UX 전면 재구성** — 노밍 코치 화면 레이아웃·네이밍·시각 언어 개선
+
+---
+
+### 1. 이모지 → Lucide React 아이콘 교체
+
+**교체 범위**: `BottomNav`, `CoachPage`, `DiaryPage`, `ResultPage`, `RoadmapPage`, `TermsPage`, `MyGrowthHubPage`, `HomePage`, `ReadingPage`, `EconomicBiteArchivePage`
+
+**전략**: data 배열에서 이모지 문자열을 JSX 컴포넌트 참조로 교체해 렌더링 코드 수정 최소화.
+
+```jsx
+// 변경 전 — BottomNav
+const navItems = [
+  { path: '/home', icon: '🏠', label: '홈' },
+  ...
+]
+// 렌더링: <span>{item.icon}</span>
+
+// 변경 후
+import { Home, Map, Search, BookMarked, Pencil } from 'lucide-react'
+const navItems = [
+  { path: '/home', Icon: Home, label: '홈' },
+  ...
+]
+// 렌더링: <item.Icon size={20} color={isActive ? '#10B981' : '#9CA3AF'} />
+```
+
+**주요 교체 대응표**
+
+| 위치 | 이전 | 이후 |
+|---|---|---|
+| BottomNav 탭 아이콘 | 이모지 문자열 | Lucide `Icon` 컴포넌트 참조 |
+| DiaryPage 빈 상태 | `📔` | `<BookOpen size={32} />` |
+| DiaryPage 저장 버튼 | `📔 경제일기 저장하기` | `<BookOpen /> 경제일기 저장하기` |
+| RoadmapPage 단계 완료 | `✅` | `<CheckCircle size={18} color="#10B981" />` |
+| ReadingPage 읽기 완료 | `✅ 읽기 완료` | `<CheckCircle /> 읽기 완료` |
+| ReadingPage 핵심 용어 | `📚 핵심 용어` | `<BookMarked /> 핵심 용어` |
+| EconomicBiteArchive 헤더 | `📖` div | `<BookMarked size={22} color="#fff" />` |
+| CoachPage nextStep 화살표 | `➡️` span | `<ArrowRight size={14} color="#888780" />` |
+| TermsPage 핵심 포인트 | `✅ 핵심 포인트` | `<CheckCircle size={13} /> 핵심 포인트` |
+| HomePage todos 아이콘 | 이모지 문자열 | JSX 컴포넌트 직접 저장 |
+
+---
+
+### 2. CoachPage 대화 UX 재구성
+
+#### 2-1. 헤더 영역 제거
+
+코치 화면 상단의 아바타·이름·뱃지·부제 블록 전체 제거. 불필요한 정보를 줄이고 대화 공간 확보.
+
+제거 요소: 노밍 아바타 이미지 / "노밍" 이름 텍스트 / "AI 경제 성장 코치" 뱃지 / 부제 div
+
+#### 2-2. 레이아웃 구조 재설계
+
+```
+[이전]                          [이후]
+┌─────────────────────┐         ┌─────────────────────┐
+│ 노밍 헤더 (아바타+뱃지) │    →   │ 노밍 인사 카드 (노란색) │  ← flexShrink:0
+├─────────────────────┤         │ 추천 질문 5개         │  ← 카드 바로 아래
+│                     │         ├─────────────────────┤
+│   flex:1 스크롤 영역  │         │ flex: isEmpty?0:1   │  ← 빈 상태 = 0
+│                     │         │   (메시지 영역)       │
+├─────────────────────┤         ├─────────────────────┤
+│ 추천 질문             │         │ 키워드 칩 + 입력창    │  ← flexShrink:0
+│ 키워드 칩 + 입력창    │         └─────────────────────┘
+└─────────────────────┘
+```
+
+핵심 설계: `flex: isEmpty ? 0 : 1` — 메시지가 없을 때 스크롤 영역이 공간을 차지하지 않아 입력창이 추천 질문 바로 아래 붙음.
+
+#### 2-3. 노밍 인사 카드 시각 변경
+
+```jsx
+// 배경색 변경: 흰색 → 노란색 계열 (홈 화면 NomingCard와 통일)
+background: '#FFF4D6'
+border: '0.5px solid #FAC775'
+```
+
+#### 2-4. TopNav 탭 이름 변경
+
+`AI 코치` → `노밍` (브랜드 캐릭터 이름 전면화)
+
+#### 2-5. 탭 섹션 타이틀 제거
+
+경제일기 / 경제사전 / 로드맵 탭의 상단 h2 제목 블록 제거. 탭 자체가 맥락을 제공하므로 중복 불필요.
+
+#### 2-6. 입력창 스타일 정리
+
+입력창 감싸는 흰 배경 div의 `background` / `border` / `borderRadius` 제거 → 배경색(`#F4FAF6`)과 동화.
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (GitHub Actions 자동 배포) |
+
+---
+
+## 2026-06-14 — Solar AI(Upstage) 연결 + Noto Color Emoji 웹폰트
+
+### 개요
+두 가지 작업을 진행했습니다.
+
+1. **Solar AI 연결** — Mock 키워드 매칭을 Upstage Solar AI로 교체. 노밍 코치가 실제 AI로 응답.
+2. **Noto Color Emoji 웹폰트** — 크로스 플랫폼 이모지 렌더링 통일.
+
+---
+
+### 1. Solar AI 연결
+
+#### 1-1. 아키텍처
+
+```
+Frontend
+  └─ solarService.js (callSolar)
+       └─ supabase.functions.invoke('solar')
+            └─ Edge Function: supabase/functions/solar/index.ts
+                 └─ https://api.upstage.ai/v1/solar/chat/completions
+                      model: solar-1-mini-chat
+```
+
+API 키(`SOLAR_API_KEY`)는 Supabase Secrets에만 저장. 프론트엔드에 절대 노출 안 함.
+
+#### 1-2. Edge Function (`supabase/functions/solar/index.ts`)
+
+```typescript
+// 요청: { system: string, messages: {role, content}[] }
+// 응답: { content: string }
+serve(async (req) => {
+  const { messages, system } = await req.json()
+  const apiKey = Deno.env.get('SOLAR_API_KEY')
+  const response = await fetch('https://api.upstage.ai/v1/solar/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${apiKey}`, ... },
+    body: JSON.stringify({
+      model: 'solar-1-mini-chat',
+      messages: [{ role: 'system', content: system }, ...messages],
+      temperature: 0.7,
+      max_tokens: 1000,
+    }),
+  })
+  const content = data.choices?.[0]?.message?.content ?? '응답을 가져올 수 없어요.'
+  return new Response(JSON.stringify({ content }), ...)
+})
+```
+
+#### 1-3. solarService.js (신규)
+
+```js
+export async function callSolar({ system, messages }) {
+  const { data, error } = await supabase.functions.invoke('solar', {
+    body: { system, messages },
+  })
+  if (error) throw error
+  return data.content
+}
+```
+
+#### 1-4. coachService.js 교체
+
+**핵심 설계 결정**: Solar AI 시스템 프롬프트가 JSON 형식을 반환하도록 지시 → `parseStructured()`로 파싱 → 기존 `{ success, answer, structured }` 시그니처 유지 → CoachPage, NomingCard UI 무수정.
+
+```js
+// 시스템 프롬프트 — JSON 응답 강제
+const NOMING_SYSTEM = `...
+반드시 아래 JSON 형식으로만 응답 (마크다운 코드블록 없이 순수 JSON만):
+{
+  "advice": "한 문장 핵심 조언",
+  "knowFirst": ["내용1", "내용2", "내용3"],
+  "nextStep": "다음에 공부하면 좋은 개념",
+  "terms": [{"term": "용어명", "meaning": "쉬운 설명"}]
+}`
+
+// 파싱 — 마크다운 코드블록 strip 후 JSON.parse
+function parseStructured(content) {
+  const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+  return JSON.parse(cleaned)
+}
+
+// 반환 시그니처 유지
+export async function getCoachResponse(question, conversationHistory = []) {
+  try {
+    const content = await callSolar({ system: NOMING_SYSTEM, messages: [...history, {role:'user', content: question}] })
+    const structured = parseStructured(content)
+    return { success: true, answer: structuredToText(structured), structured }
+  } catch {
+    return { success: false, answer: structuredToText(FALLBACK_STRUCTURED), structured: FALLBACK_STRUCTURED }
+  }
+}
+```
+
+**`getRecommendedQuestions(todayBiteTitle)`** (신규): 오늘의 한잎 개념 기반으로 추천 질문 2개 동적 생성. Solar가 `{"questions": ["질문1", "질문2"]}` JSON 반환.
+
+#### 1-5. CoachPage.jsx — 대화 히스토리 연결
+
+```js
+// send() 함수: 이전 메시지를 Solar 형식으로 변환 후 전달
+const history = messages.map(msg =>
+  msg.role === 'user'
+    ? { role: 'user', content: msg.text }
+    : { role: 'assistant', content: [msg.structured?.advice, ...(msg.structured?.knowFirst ?? [])].filter(Boolean).join(' ') }
+)
+const { answer, structured } = await getCoachResponse(q, history)
+```
+
+이전 대화 맥락이 Solar API로 전달돼 멀티턴 대화 지원.
+
+또한 `location.state?.initialQuestion` → `location.state?.question` 키 불일치 버그 수정 (홈의 추천 질문 버튼 클릭 시 자동 전송 정상화).
+
+#### 1-6. aiService.js 교체
+
+`explainTerm(term)`: Solar AI로 100자 이내 경제 용어 설명 생성. 기존 termData 하드코딩 의존성 제거.
+
+#### 1-7. HomePage.jsx — 추천 질문 동적 생성
+
+```jsx
+// NomingCard 내부에 useEffect 추가
+const [questions, setQuestions] = useState([
+  `${bite.title}이 내 적금에 미치는 영향은?`,   // 기본값 (즉시 표시)
+  `${bite.title}이 부동산에 미치는 영향은?`,
+])
+useEffect(() => {
+  getRecommendedQuestions(bite.title)
+    .then(qs => { if (qs?.length) setQuestions(qs) })
+    .catch(() => {})   // 실패 시 기본값 유지
+}, [bite?.title])
+```
+
+Solar AI 응답 전에 기본 질문을 즉시 표시하고, 완료 후 교체.
+
+#### 1-8. 배포 절차
+
+```bash
+# Supabase CLI 설치 (v2.106.0)
+npm install -g supabase
+
+# 프로젝트 링크
+supabase link --project-ref ioqkbsurlrgxwyhlqrsf
+
+# Edge Function 배포
+supabase functions deploy solar
+```
+
+Supabase Secrets: `SOLAR_API_KEY` 추가 (대시보드에서 수동).
+
+---
+
+### 2. Noto Color Emoji 웹폰트
+
+크로스 플랫폼(Windows/macOS/Android)에서 이모지 렌더링을 통일하기 위해 Google Fonts Noto Color Emoji를 추가했습니다.
+
+**`index.html`** — `<head>`에 preconnect + 폰트 링크 추가:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+```
+
+**`src/index.css`** — `--font` CSS 변수에 fallback 추가:
+
+```css
+--font: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
+        'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', 'Noto Color Emoji', sans-serif;
+```
+
+기존 Pretendard 폰트는 그대로 유지. 이모지 문자만 Noto Color Emoji로 렌더링.
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (GitHub Actions 자동 배포) |
+| Solar Edge Function | `supabase/functions/solar` (배포 완료) |
+
+---
+
+## 2026-06-15 — 경제읽기 탭 실시간 뉴스 연동
+
+### 개요
+경제읽기 탭의 하드코딩 더미 데이터를 제거하고 네이버 뉴스 API + Solar AI로 실시간 뉴스 요약을 제공합니다.
+
+전체 흐름:
+```
+ReadingPage.jsx
+  ├─ fetchNews()        → Supabase Edge Function 'news' → 네이버 뉴스 API
+  └─ summarizeNews()    → Supabase Edge Function 'solar' → Solar AI
+       → dictionaryService.saveKeywordsFromNews() → Supabase DB (user_dictionary)
+```
+
+---
+
+### 1. news Edge Function 업데이트
+
+**`supabase/functions/news/index.ts`** 주요 변경:
+
+| 항목 | 이전 | 이후 |
+|---|---|---|
+| 검색어 | 랜덤 키워드 고정 | 요청 body의 `query` 파라미터 사용 |
+| 반환 필드 | `title`, `link`, `pubDate` | `description` 필드 추가 |
+| HTML entity | 일부만 처리 | `&lt;`, `&gt;` 등 전체 처리 |
+
+```typescript
+const { query = '경제', display = 5 } = await req.json().catch(() => ({}))
+const clean = (str: string) =>
+  str.replace(/<[^>]*>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+     .replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim()
+```
+
+배포: `supabase functions deploy news`
+
+---
+
+### 2. readingService.js 전면 교체
+
+더미 `CONTENTS` 배열·`CATEGORY_STYLE`·`getTodayContent()` 등 하드코딩 데이터 전체 제거.
+
+**`fetchNews(query, display)`**: news Edge Function 호출.
+
+**`summarizeNews(article)`**: Solar AI에 뉴스 제목+본문 전송, 아래 JSON 형식 응답 파싱.
+
+```json
+{
+  "summary":       "3문장 이내 쉬운 요약",
+  "keyPoints":     ["핵심 포인트 1", "포인트 2", "포인트 3"],
+  "keywords":      [{"term": "용어명", "explanation": "한 줄 설명"}],
+  "nomingComment": "초보자 관점 한마디"
+}
+```
+
+Solar AI 실패 시 `article.description`을 `summary`로 fallback.
+
+**`markAsRead(userId)`** 유지: XP 지급 기능 보존.
+
+---
+
+### 3. dictionaryService.js — saveKeywordsFromNews 추가
+
+```js
+export async function saveKeywordsFromNews(keywords, userId, newsTitle) {
+  if (!keywords?.length || !userId) return
+  for (const kw of keywords) {
+    // 기존 saveTerm() 재사용 — 중복 자동 건너뜀
+    await saveTerm({ userId, term: kw.term, meaning: kw.explanation,
+                     sourceType: 'news', sourceId: newsTitle.slice(0, 100) })
+  }
+}
+```
+
+기존 `saveTerm()`을 재사용해 중복 용어 자동 건너뜀. 별도 SQL 마이그레이션 불필요.
+
+---
+
+### 4. ReadingPage.jsx 전면 교체
+
+#### 4-1. UI 구조
+
+| 영역 | 내용 |
+|---|---|
+| 카테고리 필터 | 경제 / 금리 / 환율 / 주식 / 부동산 (클릭 시 재검색) |
+| 뉴스 카드 | 날짜 / 제목 / AI 요약 / 핵심 포인트 / 노밍 한마디 / 경제 키워드 태그 |
+| 하단 버튼 | "원문 보기 →" (새 탭) + "경제사전에 저장" |
+| 노밍 CTA | 노밍에게 질문하기 → `/coach` 이동 |
+
+#### 4-2. 프로그레시브 로딩 (핵심 UX 결정)
+
+**문제**: Solar AI 5번 순차 호출이 완료될 때까지 로딩 상태가 유지 → 사용자에게 빈 화면 20초 대기 발생.
+
+**해결**: 뉴스 목록 fetch(1~2초)가 완료되면 즉시 카드를 표시하고, AI 요약은 카드별로 shimmer 스켈레톤으로 표시하다가 완료 시 교체.
+
+```
+1단계 (즉시): 뉴스 제목+날짜 카드 5개 표시, 요약 자리 = shimmer 애니메이션
+2단계 (순차): 기사 i 요약 완료 → setArticles([...result]) → 해당 카드만 업데이트
+```
+
+```js
+const raw = await fetchNews(query, 5)
+setArticles(raw.map(a => ({ ...a, _summarizing: true })))   // 즉시 표시
+setLoading(false)
+
+const result = [...initial]
+for (let i = 0; i < raw.length; i++) {
+  if (abortRef.current) break    // 카테고리 변경 시 중단
+  const summary = await summarizeNews(raw[i])
+  result[i] = { ...raw[i], ...summary, _summarizing: false }
+  setArticles([...result])       // 카드 하나씩 업데이트
+}
+```
+
+**카테고리별 캐시**: 같은 카테고리 재방문 시 API 재호출 없음 (`newsCache` 모듈 변수).
+
+**카테고리 변경 시 중단**: `abortRef.current = true` → `useEffect` cleanup.
+
+#### 4-3. Shimmer 스켈레톤
+
+```jsx
+function SummarySkeleton() {
+  return [100, 85, 70].map((w, i) => (
+    <div style={{
+      height: '14px', borderRadius: '6px', width: `${w}%`,
+      background: 'linear-gradient(90deg, #f0f7f3 25%, #e1f5ee 50%, #f0f7f3 75%)',
+      backgroundSize: '200% 100%',
+      animation: 'shimmer 1.4s infinite',
+    }} />
+  ))
+}
+```
+
+#### 4-4. 경제사전 저장 버튼
+
+- 저장 전: "경제사전에 저장" (초록 배경)
+- 저장 후: "✓ 저장됨" (회색 배경, disabled)
+- 비로그인 시: `/login` 리다이렉트
+
+---
+
+### 현재 배포 현황
+
+| 항목 | 값 |
+|---|---|
+| 서비스 URL | https://namong118.github.io/economing/ |
+| 레포지토리 | https://github.com/namong118/economing |
+| 배포 브랜치 | `gh-pages` (GitHub Actions 자동 배포) |
+| Solar Edge Function | `supabase/functions/solar` (배포 완료) |
+| News Edge Function | `supabase/functions/news` (배포 완료) |
+| Supabase Secrets | `SOLAR_API_KEY`, `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` |
