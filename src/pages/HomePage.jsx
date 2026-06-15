@@ -59,9 +59,15 @@ function NomingCard({ bite, profile, navigate }) {
         padding: '13px 14px', fontSize: 13, color: '#444441',
         lineHeight: 1.7, border: '0.5px solid #d4ede3', marginBottom: 14,
       }}>
-        {userName}님, 오늘의 주제는{' '}
-        <strong style={{ color: '#085041' }}>{bite.title}</strong>이에요.<br />
-        오늘 배운 내용이 내 생활에 어떤 영향이 있는지 같이 알아볼까요?
+        {profile?.noming_intro ? (
+          profile.noming_intro
+        ) : (
+          <>
+            {userName}님, 오늘의 주제는{' '}
+            <strong style={{ color: '#085041' }}>{bite.title}</strong>이에요.<br />
+            오늘 배운 내용이 내 생활에 어떤 영향이 있는지 같이 알아볼까요?
+          </>
+        )}
       </div>
 
       {/* 추천 질문 라벨 */}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { saveOnboardingData } from '../services/profileService';
+import { completeOnboarding } from '../services/onboardingService';
 
 /* ── 설문 데이터 ─────────────────────────────────────────────── */
 const STEPS = [
@@ -120,7 +120,7 @@ function CompletionScreen({ answers, onComplete, saving }) {
           transition: 'all 0.2s',
         }}
       >
-        {saving ? '저장 중...' : '경제 성장 여정 시작하기 →'}
+        {saving ? '노밍이 맞춤 코칭을 준비하고 있어요...' : '노밍과 함께 시작하기 →'}
       </button>
     </div>
   );
@@ -182,17 +182,14 @@ export default function OnboardingPage() {
   /* 최종 저장 */
   const handleComplete = async () => {
     setSaving(true);
-    const { error } = await saveOnboardingData(user.id, {
-      economicLevel:        answers.economic_level,
-      investmentExperience: answers.investment_experience,
-      occupation:           answers.occupation,
-      interests:            answers.interests ?? [],
-    });
-    if (!error) {
+    try {
+      await completeOnboarding(user.id, answers);
       await refreshProfile();
       navigate('/home', { replace: true });
-    } else {
-      console.error('온보딩 저장 실패:', error.message);
+    } catch (err) {
+      console.error('온보딩 완료 실패:', err);
+      navigate('/home', { replace: true });
+    } finally {
       setSaving(false);
     }
   };

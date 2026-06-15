@@ -432,13 +432,121 @@ function DictionaryTabContent() {
 
 /* ── 로드맵 탭 ────────────────────────────────────────────── */
 function RoadmapTabContent() {
-  const navigate  = useNavigate();
+  const navigate    = useNavigate();
   const { profile } = useAuth();
   const [expanded, setExpanded] = useState(null);
 
-  const econLevel = profile?.economic_level;
+  const aiRoadmap   = profile?.roadmap;
+  const econLevel   = profile?.economic_level;
   const recommendedStep = econLevel === 'advanced' ? 4 : econLevel === 'intermediate' ? 3 : 1;
 
+  /* ── AI 맞춤 로드맵 ── */
+  if (aiRoadmap) {
+    const STEP_COLORS = ['#21C58E', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+    return (
+      <div>
+        <div style={{
+          background: '#FFF4D6', border: '0.5px solid #FAC775',
+          borderRadius: '14px', padding: '14px 16px', marginBottom: '20px',
+          display: 'flex', alignItems: 'flex-start', gap: '10px',
+        }}>
+          <img src={`${import.meta.env.BASE_URL}noming-icon.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '8px', objectFit: 'cover', flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '3px' }}>☀️ 노밍이 만든 맞춤 로드맵</p>
+            <p style={{ fontSize: '13px', fontWeight: '600', color: '#78350F', lineHeight: '1.5' }}>{aiRoadmap.currentStage}</p>
+            {aiRoadmap.goal && (
+              <p style={{ fontSize: '12px', color: '#92400E', marginTop: '4px' }}>목표: {aiRoadmap.goal}</p>
+            )}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {(aiRoadmap.steps ?? []).map((step, idx) => {
+            const isExpanded = expanded === step.order;
+            const isLast     = idx === (aiRoadmap.steps.length - 1);
+            const color      = STEP_COLORS[idx % STEP_COLORS.length];
+            return (
+              <div key={step.order} style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '32px', flexShrink: 0, paddingTop: '14px' }}>
+                  <div style={{
+                    width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
+                    background: color, border: `2px solid ${color}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '13px', fontWeight: '800', color: '#fff',
+                    boxShadow: `0 0 0 4px ${color}22`,
+                  }}>
+                    {step.order}
+                  </div>
+                  {!isLast && <div style={{ width: '2px', flex: 1, minHeight: '20px', background: '#E2E8F0', margin: '6px 0' }} />}
+                </div>
+
+                <div
+                  style={{
+                    flex: 1, marginBottom: isLast ? '0' : '8px',
+                    background: '#fff', border: `0.5px solid ${color}40`,
+                    borderRadius: '12px', padding: '14px 16px',
+                    cursor: 'pointer', transition: 'border-color 0.15s',
+                  }}
+                  onClick={() => setExpanded(isExpanded ? null : step.order)}
+                >
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' }}>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: '14px', fontWeight: '800', color: '#085041', letterSpacing: '-0.3px', marginBottom: '2px' }}>
+                        Step {step.order}. {step.title}
+                      </p>
+                      {step.estimatedDays && (
+                        <p style={{ fontSize: '11px', color: '#888780', fontWeight: '500' }}>예상 기간: {step.estimatedDays}일</p>
+                      )}
+                    </div>
+                    <span style={{ fontSize: '12px', color: '#CBD5E1', flexShrink: 0, marginTop: '2px' }}>
+                      {isExpanded ? '▲' : '▼'}
+                    </span>
+                  </div>
+
+                  {isExpanded && (
+                    <div style={{ marginTop: '12px' }}>
+                      <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75', marginBottom: '12px' }}>
+                        {step.description}
+                      </p>
+                      {step.topics?.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
+                          {step.topics.map(topic => (
+                            <span key={topic} style={{
+                              fontSize: '12px', fontWeight: '600',
+                              color, background: color + '12',
+                              border: `1px solid ${color}28`,
+                              borderRadius: '100px', padding: '3px 10px',
+                            }}>
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <button
+                        onClick={e => { e.stopPropagation(); navigate('/coach', { state: { question: `${step.title}에 대해 더 자세히 알려줘` } }); }}
+                        style={{
+                          width: '100%', textAlign: 'left', padding: '9px 12px',
+                          background: '#F4FAF6', border: '0.5px solid #d4ede3',
+                          borderRadius: '10px', fontSize: '12px', color: '#5F5E5A',
+                          cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = '#21C58E'}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = '#d4ede3'}
+                      >
+                        💬 {step.title}에 대해 노밍에게 물어보기 →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  /* ── 기본 정적 로드맵 (AI 로드맵 미생성 시) ── */
   return (
     <div>
 
@@ -466,7 +574,6 @@ function RoadmapTabContent() {
 
           return (
             <div key={step.step} style={{ display: 'flex', gap: '12px' }}>
-              {/* 타임라인 도트 + 선 */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '32px', flexShrink: 0, paddingTop: '14px' }}>
                 <div style={{
                   width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
@@ -483,7 +590,6 @@ function RoadmapTabContent() {
                 )}
               </div>
 
-              {/* 스텝 카드 */}
               <div
                 style={{
                   flex: 1, marginBottom: isLast ? '0' : '8px',
@@ -494,7 +600,6 @@ function RoadmapTabContent() {
                 }}
                 onClick={() => setExpanded(isExpanded ? null : step.step)}
               >
-                {/* 헤더 */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' }}>
                   <div style={{ flex: 1 }}>
                     {isRecommended && (
@@ -517,14 +622,11 @@ function RoadmapTabContent() {
                   </span>
                 </div>
 
-                {/* 펼침 내용 */}
                 {isExpanded && (
                   <div style={{ marginTop: '12px' }}>
                     <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75', marginBottom: '12px' }}>
                       {step.description}
                     </p>
-
-                    {/* 토픽 태그 */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
                       {step.topics.map(topic => (
                         <span key={topic} style={{
@@ -538,8 +640,6 @@ function RoadmapTabContent() {
                         </span>
                       ))}
                     </div>
-
-                    {/* 노밍 질문 */}
                     <div style={{ background: '#F4FAF6', borderRadius: '12px', padding: '12px' }}>
                       <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.4px', marginBottom: '8px' }}>
                         💬 노밍에게 물어봐요
