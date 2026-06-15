@@ -142,7 +142,17 @@ export default function OnboardingPage() {
     if (!user) navigate('/login', { replace: true });
   }, [loading, user, navigate]);
 
-  if (loading || !user) return null;
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#F4FAF6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 40, height: 40, border: '3px solid #d4ede3', borderTop: '3px solid #21C58E', borderRadius: '50%', margin: '0 auto 12px', animation: 'spin 0.8s linear infinite' }} />
+        <p style={{ fontSize: 13, color: '#888780' }}>불러오는 중...</p>
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+
+  if (!user) return null;
 
   const step    = STEPS[stepIdx];
   const isDone  = stepIdx === STEPS.length;
