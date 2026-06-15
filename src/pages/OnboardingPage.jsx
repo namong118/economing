@@ -136,12 +136,11 @@ export default function OnboardingPage() {
   const [saving,   setSaving]   = useState(false);
   const [animKey,  setAnimKey]  = useState(0);    // step 전환 애니메이션 트리거
 
-  /* 미인증 → 로그인 / 온보딩 완료 → 홈 */
+  /* 미인증 → 로그인 */
   useEffect(() => {
     if (loading) return;
-    if (!user)                            navigate('/login',  { replace: true });
-    else if (profile?.onboarding_completed) navigate('/home', { replace: true });
-  }, [loading, user, profile, navigate]);
+    if (!user) navigate('/login', { replace: true });
+  }, [loading, user, navigate]);
 
   if (loading || !user) return null;
 
