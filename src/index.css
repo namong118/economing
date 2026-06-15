@@ -52,7 +52,7 @@
   --shadow-lg: 0 10px 28px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.04);
 
   --font: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
-          'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', sans-serif;
+          'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', 'Noto Color Emoji', sans-serif;
 }
 
 /* ===== 리셋 ===== */
