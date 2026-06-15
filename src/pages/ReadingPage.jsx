@@ -1,26 +1,43 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookMarked } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
-import { fetchAndSummarizeNews } from '../services/readingService';
+import { fetchNews, summarizeNews } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
 
 const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산'];
 
-// 카테고리별 캐시 (페이지 내 유지)
 const newsCache = {};
+
+/* ── 요약 중 스켈레톤 ─────────────────────────────────────── */
+function SummarySkeleton() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+      {[100, 85, 70].map((w, i) => (
+        <div key={i} style={{
+          height: '14px', borderRadius: '6px',
+          background: 'linear-gradient(90deg, #f0f7f3 25%, #e1f5ee 50%, #f0f7f3 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 1.4s infinite',
+          width: `${w}%`,
+        }} />
+      ))}
+    </div>
+  );
+}
 
 /* ── 뉴스 카드 ────────────────────────────────────────────── */
 function NewsCard({ article, isSaved, onSaveKeywords }) {
-  const BASE_URL = import.meta.env.BASE_URL;
+  const BASE_URL    = import.meta.env.BASE_URL;
+  const summarizing = article._summarizing;
 
   return (
     <div style={{
       background: '#fff', borderRadius: '12px',
       border: '0.5px solid #d4ede3', overflow: 'hidden', marginBottom: '12px',
     }}>
-      {/* 날짜 + 제목 + 요약 */}
+      {/* 날짜 + 제목 */}
       <div style={{ padding: '20px 22px 14px' }}>
         <div style={{ fontSize: '11px', color: '#888780', marginBottom: '6px' }}>
           {new Date(article.pubDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -31,13 +48,19 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
         }}>
           {article.title}
         </h2>
-        <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75' }}>
-          {article.summary}
-        </p>
+
+        {/* 요약: 로딩 중이면 스켈레톤, 아니면 텍스트 */}
+        {summarizing ? (
+          <SummarySkeleton />
+        ) : (
+          <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75', marginBottom: 0 }}>
+            {article.summary || article.description}
+          </p>
+        )}
       </div>
 
       {/* 핵심 포인트 */}
-      {article.keyPoints?.length > 0 && (
+      {!summarizing && article.keyPoints?.length > 0 && (
         <div style={{ margin: '0 22px 14px', background: '#F4FAF6', borderRadius: '10px', border: '0.5px solid #d4ede3', padding: '14px 16px' }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', marginBottom: '10px', letterSpacing: '0.2px' }}>
             📌 핵심 포인트
@@ -58,7 +81,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       )}
 
       {/* 노밍 한마디 */}
-      {article.nomingComment && (
+      {!summarizing && article.nomingComment && (
         <div style={{ margin: '0 22px 14px', background: '#FFF4D6', borderRadius: '10px', border: '0.5px solid #FAC775', padding: '12px 16px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
           <img
             src={`${BASE_URL}coach.png`}
@@ -73,7 +96,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       )}
 
       {/* 경제 키워드 태그 */}
-      {article.keywords?.length > 0 && (
+      {!summarizing && article.keywords?.length > 0 && (
         <div style={{ padding: '0 22px 14px' }}>
           <p style={{ fontSize: '11px', color: '#888780', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
             <BookMarked size={11} color="#888780" /> 이 뉴스의 경제 용어
@@ -112,7 +135,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
         >
           원문 보기 →
         </a>
-        {article.keywords?.length > 0 && (
+        {!summarizing && article.keywords?.length > 0 && (
           <button
             onClick={onSaveKeywords}
             disabled={isSaved}
@@ -123,11 +146,11 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
               border: isSaved ? '0.5px solid #d4ede3' : 'none',
               color: isSaved ? '#888780' : '#fff',
               cursor: isSaved ? 'default' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.2s',
             }}
           >
-            {isSaved ? '✓ 경제사전 저장됨' : '경제사전에 저장'}
+            {isSaved ? '✓ 저장됨' : '경제사전에 저장'}
           </button>
         )}
       </div>
@@ -137,37 +160,61 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
 
 /* ── 메인 페이지 ──────────────────────────────────────────── */
 export default function ReadingPage() {
-  const navigate              = useNavigate();
-  const { user }              = useAuth();
-  const [articles,  setArticles]  = useState([]);
-  const [loading,   setLoading]   = useState(true);
-  const [category,  setCategory]  = useState('경제');
-  const [savedMap,  setSavedMap]  = useState({});
-  const [error,     setError]     = useState(null);
+  const navigate             = useNavigate();
+  const { user }             = useAuth();
+  const [articles, setArticles] = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [category, setCategory] = useState('경제');
+  const [savedMap, setSavedMap] = useState({});
+  const [error,    setError]    = useState(null);
+  const abortRef = useRef(false);
 
   const loadNews = useCallback(async (query) => {
     setLoading(true);
     setArticles([]);
     setError(null);
+    abortRef.current = false;
+
+    // 캐시 히트
     if (newsCache[query]) {
       setArticles(newsCache[query]);
       setLoading(false);
       return;
     }
+
     try {
-      const results = await fetchAndSummarizeNews(query);
-      newsCache[query] = results;
-      setArticles(results);
+      // 1단계: 뉴스 목록 먼저 표시 (빠름)
+      const raw = await fetchNews(query, 5);
+      if (!raw.length) { setLoading(false); return; }
+
+      const initial = raw.map(a => ({ ...a, _summarizing: true }));
+      setArticles(initial);
+      setLoading(false);
+
+      // 2단계: 각 기사 AI 요약 순차 처리 (카드별로 채워짐)
+      const result = [...initial];
+      for (let i = 0; i < raw.length; i++) {
+        if (abortRef.current) break;
+        try {
+          const summary = await summarizeNews(raw[i]);
+          result[i] = { ...raw[i], ...summary, _summarizing: false };
+        } catch {
+          result[i] = { ...raw[i], _summarizing: false };
+        }
+        setArticles([...result]);
+      }
+
+      newsCache[query] = result.map(a => ({ ...a, _summarizing: false }));
     } catch (err) {
       console.error(err);
-      setError('뉴스를 가져오는 데 실패했어요. 잠시 후 다시 시도해주세요.');
-    } finally {
       setLoading(false);
+      setError('뉴스를 가져오는 데 실패했어요. 잠시 후 다시 시도해주세요.');
     }
   }, []);
 
   useEffect(() => {
     loadNews(category);
+    return () => { abortRef.current = true; };
   }, [category, loadNews]);
 
   async function handleSaveKeywords(article, idx) {
@@ -178,6 +225,13 @@ export default function ReadingPage() {
 
   return (
     <PageWrapper>
+      <style>{`
+        @keyframes shimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+
       <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
 
@@ -191,8 +245,8 @@ export default function ReadingPage() {
                   padding: '5px 16px', borderRadius: '100px',
                   fontSize: '12px', fontWeight: category === cat ? '700' : '500',
                   border: '0.5px solid',
-                  background: category === cat ? '#21C58E' : '#fff',
-                  color:      category === cat ? '#fff' : '#085041',
+                  background:  category === cat ? '#21C58E' : '#fff',
+                  color:       category === cat ? '#fff' : '#085041',
                   borderColor: category === cat ? '#21C58E' : '#d4ede3',
                   cursor: 'pointer', transition: 'all 0.15s',
                 }}
@@ -202,18 +256,16 @@ export default function ReadingPage() {
             ))}
           </div>
 
-          {/* 로딩 */}
+          {/* 첫 로딩 (뉴스 목록 fetch 중) */}
           {loading && (
             <div style={{
               background: '#FFF4D6', border: '0.5px solid #FAC775',
-              borderRadius: '12px', padding: '28px 24px', textAlign: 'center',
+              borderRadius: '12px', padding: '24px', textAlign: 'center',
             }}>
-              <p style={{ fontSize: '14px', color: '#B45309', fontWeight: '700', marginBottom: '8px' }}>
-                ☀️ 노밍이 오늘의 경제 뉴스를 요약하고 있어요
+              <p style={{ fontSize: '14px', color: '#B45309', fontWeight: '700', marginBottom: '6px' }}>
+                ☀️ 뉴스를 불러오고 있어요
               </p>
-              <p style={{ fontSize: '12px', color: '#92400E', lineHeight: '1.7' }}>
-                뉴스 5개를 AI가 분석 중이에요.<br />약 20초 정도 걸려요.
-              </p>
+              <p style={{ fontSize: '12px', color: '#92400E' }}>잠깐만요...</p>
             </div>
           )}
 
@@ -221,13 +273,13 @@ export default function ReadingPage() {
           {error && (
             <div style={{
               background: '#FEF2F2', border: '0.5px solid #FECACA',
-              borderRadius: '12px', padding: '20px 24px', textAlign: 'center', marginBottom: '12px',
+              borderRadius: '12px', padding: '20px 24px', textAlign: 'center',
             }}>
-              <p style={{ fontSize: '13px', color: '#DC2626' }}>{error}</p>
+              <p style={{ fontSize: '13px', color: '#DC2626', marginBottom: '12px' }}>{error}</p>
               <button
-                onClick={() => loadNews(category)}
+                onClick={() => { delete newsCache[category]; loadNews(category); }}
                 style={{
-                  marginTop: '12px', padding: '8px 20px', borderRadius: '8px',
+                  padding: '8px 20px', borderRadius: '8px',
                   background: '#21C58E', color: '#fff', border: 'none',
                   fontSize: '12px', fontWeight: '700', cursor: 'pointer',
                 }}
@@ -238,7 +290,7 @@ export default function ReadingPage() {
           )}
 
           {/* 뉴스 카드 목록 */}
-          {!loading && articles.map((article, i) => (
+          {articles.map((article, i) => (
             <NewsCard
               key={i}
               article={article}
