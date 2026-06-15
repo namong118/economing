@@ -213,7 +213,7 @@ export default function CoachPage() {
 
   /* 다른 페이지에서 질문 전달 시 자동 전송 */
   useEffect(() => {
-    const q = location.state?.initialQuestion;
+    const q = location.state?.question;
     if (q && !initSent.current) { initSent.current = true; send(q); }
   }, []); // eslint-disable-line
 
@@ -227,12 +227,22 @@ export default function CoachPage() {
     const q = (question ?? input).trim();
     if (!q || loading) return;
 
+    // 현재 메시지를 Solar 형식 history로 변환 (현재 질문 제외)
+    const history = messages.map(msg =>
+      msg.role === 'user'
+        ? { role: 'user', content: msg.text }
+        : {
+            role: 'assistant',
+            content: [msg.structured?.advice, ...(msg.structured?.knowFirst ?? [])].filter(Boolean).join(' '),
+          }
+    );
+
     setMessages(prev => [...prev, { role: 'user', text: q }]);
     setInput('');
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-    const { answer, structured } = await getCoachResponse(q);
+    const { answer, structured } = await getCoachResponse(q, history);
     const infographic = getInfographic(q);
     setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
     setLoading(false);

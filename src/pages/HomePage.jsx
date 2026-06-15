@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Zap, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
 import { getNextLevelInfo } from '../data/levelData';
 import { getTodaysBite } from '../services/biteService';
+import { getRecommendedQuestions } from '../services/coachService';
 import PageWrapper from '../components/layout/PageWrapper';
 import DailyBiteCard from '../components/home/DailyBiteCard';
 import { NewsTicker } from '../components/home/NewsTicker';
@@ -19,10 +20,18 @@ function NomingCard({ bite, profile, navigate }) {
     { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
   ];
 
-  const questions = [
+  const [questions, setQuestions] = useState([
     `${bite.title}이 내 적금에 미치는 영향은?`,
     `${bite.title}이 부동산에 미치는 영향은?`,
-  ];
+  ]);
+
+  useEffect(() => {
+    if (bite?.title) {
+      getRecommendedQuestions(bite.title)
+        .then(qs => { if (qs?.length) setQuestions(qs); })
+        .catch(() => {});
+    }
+  }, [bite?.title]);
 
   return (
     <div style={{
