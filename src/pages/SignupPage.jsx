@@ -177,18 +177,16 @@ export default function SignupPage() {
               boxShadow: '0 6px 20px rgba(33,197,142,0.25)',
             }}
           />
-          <h1 style={{
-            fontSize: '26px', fontWeight: '900', letterSpacing: '-1px',
-            color: '#0F172A', margin: '0 0 8px', lineHeight: 1,
-          }}>
-            ECON
-            <span style={{
-              display: 'inline-block', width: '20px', height: '20px',
-              background: '#FFC83D', borderRadius: '50%',
-              verticalAlign: 'middle', margin: '0 2px',
-              position: 'relative', top: '-2px',
-            }} />
-            MING
+          <h1 style={{ fontSize: '26px', fontWeight: '900', letterSpacing: '-1px', margin: '0 0 8px', lineHeight: 1 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#085041' }}>
+              ECON
+              <svg width="20" height="32" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E" />
+                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E" />
+                <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
+              </svg>
+              MING
+            </span>
           </h1>
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치

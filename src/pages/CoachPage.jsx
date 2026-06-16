@@ -8,6 +8,7 @@ import { createConversation } from '../services/conversationService';
 import { getInfographic } from '../data/infographicData';
 import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
+import { CoachSidebar } from '../components/coach/CoachSidebar';
 
 /* ── 추천 질문 ────────────────────────────────────────────── */
 const SUGGESTED_QUESTIONS = [
@@ -76,16 +77,16 @@ function NomingCard({ structured }) {
       </div>
 
       {/* ➡️ 다음에 공부하면 좋은 것 */}
-      <div style={{ padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <ArrowRight size={14} color="#888780" />
-        <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px' }}>
+      <div style={{ padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'visible' }}>
+        <ArrowRight size={14} color="#888780" style={{ flexShrink: 0 }} />
+        <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px', flexShrink: 0, whiteSpace: 'nowrap' }}>
           다음에 공부하면 좋은 것
         </p>
         <span style={{
           fontSize: '12px', fontWeight: '700', color: '#21C58E',
           background: '#F4FAF6', border: '0.5px solid #d4ede3',
           borderRadius: '100px', padding: '3px 12px',
-          marginLeft: 'auto', whiteSpace: 'nowrap',
+          marginLeft: 'auto', whiteSpace: 'nowrap', wordBreak: 'keep-all', flexShrink: 0,
         }}>
           {nextStep}
         </span>
@@ -200,9 +201,11 @@ function LoadingBubble({ BASE_URL }) {
 /* ── 메인 ─────────────────────────────────────────────────── */
 export default function CoachPage() {
   const location    = useLocation();
-  const [messages,  setMessages]  = useState([]);
-  const [input,     setInput]     = useState('');
-  const [loading,   setLoading]   = useState(false);
+  const [messages,         setMessages]         = useState([]);
+  const [input,            setInput]            = useState('');
+  const [loading,          setLoading]          = useState(false);
+  const [activeConvId,     setActiveConvId]     = useState(null);
+  const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const bottomRef   = useRef(null);
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
@@ -227,17 +230,20 @@ export default function CoachPage() {
     const q = (question ?? input).trim();
     if (!q || loading) return;
 
-    // 현재 메시지를 Solar 형식 history로 변환 (현재 질문 제외)
+    // 현재 메시지를 Solar 형식 history로 변환 (현재 질문 제외, plain text 메시지는 그대로)
     const history = messages.map(msg =>
       msg.role === 'user'
         ? { role: 'user', content: msg.text }
         : {
             role: 'assistant',
-            content: [msg.structured?.advice, ...(msg.structured?.knowFirst ?? [])].filter(Boolean).join(' '),
+            content: msg.isPlainText
+              ? msg.text
+              : [msg.structured?.advice, ...(msg.structured?.knowFirst ?? [])].filter(Boolean).join(' '),
           }
     );
 
     setMessages(prev => [...prev, { role: 'user', text: q }]);
+    setActiveConvId(null);
     setInput('');
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
@@ -247,10 +253,24 @@ export default function CoachPage() {
     setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
     setLoading(false);
 
-    // 로그인 사용자의 대화를 DB에 저장 (fire-and-forget)
+    // 로그인 사용자의 대화를 DB에 저장 후 사이드바 갱신
     if (user?.id) {
-      createConversation({ userId: user.id, question: q, answer });
+      createConversation({ userId: user.id, question: q, answer })
+        .then(() => setSidebarRefreshKey(k => k + 1));
     }
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setActiveConvId(null);
+  };
+
+  const handleSelectConversation = (conv) => {
+    setActiveConvId(conv.id);
+    setMessages([
+      { role: 'user', text: conv.question },
+      { role: 'noming', isPlainText: true, text: conv.answer },
+    ]);
   };
 
   const handleKeyDown = (e) => {
@@ -271,228 +291,233 @@ export default function CoachPage() {
   return (
     <PageWrapper>
       <div style={{
-        display: 'flex', flexDirection: 'column',
+        display: 'flex',
         height: 'calc(100vh - 64px)',
-        background: '#F4FAF6',
+        overflow: 'hidden',
       }}>
 
+        {/* ── 사이드 패널 (데스크탑만) ─────────────────────── */}
+        <div style={{ display: 'none' }} className="coach-sidebar-wrap">
+          <CoachSidebar
+            user={user}
+            onNewChat={handleNewChat}
+            onSelectConversation={handleSelectConversation}
+            activeId={activeConvId}
+            refreshKey={sidebarRefreshKey}
+          />
+        </div>
 
-        {/* ── 노밍 인사 카드 + 추천 질문 (빈 상태, 스크롤 밖 고정) ── */}
-        {isEmpty && (
-          <div style={{ flexShrink: 0, padding: '20px 0 0' }}>
-            <div className="container" style={{ maxWidth: '720px' }}>
-              <NomingGreeting BASE_URL={BASE_URL} />
+        {/* ── 대화 영역 ────────────────────────────────────── */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          background: '#F4FAF6',
+        }}>
 
-              {/* 추천 질문 - 노밍 카드 바로 아래 */}
-              <div style={{ marginTop: '16px' }}>
-                <p style={{
-                  fontSize: '11px', fontWeight: '700', color: '#888780',
-                  letterSpacing: '0.8px', textTransform: 'uppercase',
-                  marginBottom: '8px',
-                }}>
-                  이런 고민이 있다면 물어보세요
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {SUGGESTED_QUESTIONS.map(q => (
-                    <button
-                      key={q}
-                      onClick={() => send(q)}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '12px 16px', borderRadius: '8px',
-                        background: '#fff', border: '0.5px solid #d4ede3',
-                        cursor: 'pointer', textAlign: 'left',
-                        fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
-                        lineHeight: '1.4', transition: 'all 0.15s',
-                        fontFamily: 'inherit',
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = '#21C58E';
-                        e.currentTarget.style.background  = '#F4FAF6';
-                        e.currentTarget.style.color       = '#085041';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = '#d4ede3';
-                        e.currentTarget.style.background  = '#fff';
-                        e.currentTarget.style.color       = '#5F5E5A';
-                      }}
-                    >
-                      <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
-                      <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
-                    </button>
-                  ))}
+          {/* 노밍 인사 카드 + 추천 질문 (빈 상태) */}
+          {isEmpty && (
+            <div style={{ flexShrink: 0, padding: '20px 0 0' }}>
+              <div className="container" style={{ maxWidth: '720px' }}>
+                <NomingGreeting BASE_URL={BASE_URL} />
+
+                <div style={{ marginTop: '16px' }}>
+                  <p style={{
+                    fontSize: '11px', fontWeight: '700', color: '#888780',
+                    letterSpacing: '0.8px', textTransform: 'uppercase',
+                    marginBottom: '8px',
+                  }}>
+                    이런 고민이 있다면 물어보세요
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {SUGGESTED_QUESTIONS.map(q => (
+                      <button
+                        key={q}
+                        onClick={() => send(q)}
+                        style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          padding: '12px 16px', borderRadius: '8px',
+                          background: '#fff', border: '0.5px solid #d4ede3',
+                          cursor: 'pointer', textAlign: 'left',
+                          fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
+                          lineHeight: '1.4', transition: 'all 0.15s',
+                          fontFamily: 'inherit',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.borderColor = '#21C58E';
+                          e.currentTarget.style.background  = '#F4FAF6';
+                          e.currentTarget.style.color       = '#085041';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.borderColor = '#d4ede3';
+                          e.currentTarget.style.background  = '#fff';
+                          e.currentTarget.style.color       = '#5F5E5A';
+                        }}
+                      >
+                        <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
+                        <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
+          )}
+
+          {/* 메시지 영역 */}
+          <div style={{ flex: isEmpty ? 0 : 1, overflowY: 'auto', padding: isEmpty ? '0' : '24px 0' }}>
+            <div className="container" style={{ maxWidth: '720px' }}>
+
+              {messages.length > 0 && (
+                <>
+                  {messages.map((msg, i) => (
+                    <div
+                      key={i}
+                      className="anim-fade"
+                      style={{
+                        display: 'flex',
+                        flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
+                        alignItems: 'flex-start', gap: '10px',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      {msg.role === 'noming' && (
+                        <img
+                          src={`${BASE_URL}coach.png`}
+                          alt="노밍"
+                          style={{
+                            width: '32px', height: '32px', borderRadius: '10px',
+                            objectFit: 'cover', flexShrink: 0, marginTop: '2px',
+                          }}
+                        />
+                      )}
+
+                      {msg.role === 'user' ? (
+                        <div style={{
+                          maxWidth: '72%', padding: '12px 18px',
+                          borderRadius: '18px 4px 18px 18px',
+                          background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                          color: '#fff', fontSize: '14px', lineHeight: '1.7',
+                          fontWeight: '500',
+                          boxShadow: '0 4px 14px rgba(33,197,142,0.3)',
+                        }}>
+                          {msg.text}
+                        </div>
+                      ) : msg.isPlainText ? (
+                        <div style={{
+                          background: '#fff', border: '0.5px solid #d4ede3',
+                          borderRadius: '4px 16px 16px 16px',
+                          padding: '14px 18px', fontSize: '13px', color: '#5F5E5A',
+                          lineHeight: '1.7', whiteSpace: 'pre-wrap',
+                          width: '76%', minWidth: 0,
+                        }}>
+                          {msg.text}
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '76%', minWidth: 0 }}>
+                          <NomingCard structured={msg.structured} />
+                          {msg.infographic && <InfographicCard data={msg.infographic} />}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {loading && <LoadingBubble BASE_URL={BASE_URL} />}
+                </>
+              )}
+
+              <div ref={bottomRef} />
+            </div>
           </div>
-        )}
 
-        {/* ── 메시지 영역 ─────────────────────────────────── */}
-        <div style={{ flex: isEmpty ? 0 : 1, overflowY: 'auto', padding: isEmpty ? '0' : '24px 0' }}>
-          <div className="container" style={{ maxWidth: '720px' }}>
+          {/* 입력 영역 */}
+          <div style={{ flexShrink: 0, padding: '10px 0 14px' }}>
+            <div className="container" style={{ maxWidth: '720px' }}>
 
-            {!isEmpty && (
-              <>
-                {messages.map((msg, i) => (
-                  <div
-                    key={i}
-                    className="anim-fade"
+              {/* 빠른 주제 칩 */}
+              <div style={{
+                display: 'flex', gap: '7px', overflowX: 'auto',
+                paddingBottom: '10px', scrollbarWidth: 'none',
+              }}>
+                {INPUT_CHIPS.map(chip => (
+                  <button
+                    key={chip}
+                    onClick={() => handleChip(chip)}
                     style={{
-                      display: 'flex',
-                      flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
-                      alignItems: 'flex-start', gap: '10px',
-                      marginBottom: '20px',
+                      flexShrink: 0, padding: '5px 13px', borderRadius: '100px',
+                      background: '#F4FAF6',
+                      border: `0.5px solid ${input === chip ? '#21C58E' : '#d4ede3'}`,
+                      fontSize: '12px', fontWeight: '600',
+                      color: input === chip ? '#085041' : '#888780',
+                      cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
                     }}
                   >
-                    {/* 노밍 아바타 */}
-                    {msg.role === 'noming' && (
-                      <img
-                        src={`${BASE_URL}coach.png`}
-                        alt="노밍"
-                        style={{
-                          width: '32px', height: '32px', borderRadius: '10px',
-                          objectFit: 'cover', flexShrink: 0, marginTop: '2px',
-                        }}
-                      />
-                    )}
-
-                    {msg.role === 'user' ? (
-                      /* 사용자 말풍선 */
-                      <div style={{
-                        maxWidth: '72%', padding: '12px 18px',
-                        borderRadius: '18px 4px 18px 18px',
-                        background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
-                        color: '#fff', fontSize: '14px', lineHeight: '1.7',
-                        fontWeight: '500',
-                        boxShadow: '0 4px 14px rgba(33,197,142,0.3)',
-                      }}>
-                        {msg.text}
-                      </div>
-                    ) : (
-                      /* 노밍 응답 + 인포그래픽 */
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '76%' }}>
-                        <NomingCard structured={msg.structured} />
-                        {msg.infographic && <InfographicCard data={msg.infographic} />}
-                      </div>
-                    )}
-                  </div>
+                    {chip}
+                  </button>
                 ))}
+              </div>
 
-                {loading && <LoadingBubble BASE_URL={BASE_URL} />}
-              </>
-            )}
-
-            <div ref={bottomRef} />
-          </div>
-        </div>
-
-        {/* ── 입력 영역 ───────────────────────────────────── */}
-        <div style={{
-          flexShrink: 0,
-          padding: '10px 0 14px',
-        }}>
-          <div className="container" style={{ maxWidth: '720px' }}>
-
-            {/* 새 대화 버튼 (대화 중일 때만 표시) */}
-            {!isEmpty && (
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-                <button
-                  onClick={() => setMessages([])}
+              {/* 텍스트 입력 */}
+              <div style={{
+                display: 'flex', gap: '10px', alignItems: 'flex-end',
+                background: '#fff', border: '0.5px solid #d4ede3',
+                borderRadius: '12px', padding: '10px 10px 10px 16px',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#21C58E'; }}
+              onBlur={e  => { e.currentTarget.style.borderColor = '#d4ede3'; }}
+              >
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={handleInput}
+                  onKeyDown={handleKeyDown}
+                  placeholder="경제 고민을 입력해보세요 (Enter 전송)"
+                  rows={1}
+                  disabled={loading}
                   style={{
-                    padding: '5px 12px', borderRadius: '8px',
-                    background: '#F4FAF6', border: '0.5px solid #d4ede3',
-                    fontSize: '12px', color: '#888780', cursor: 'pointer',
-                    fontWeight: '600',
+                    flex: 1, border: 'none', outline: 'none', resize: 'none',
+                    fontSize: '14px', color: '#085041', background: 'transparent',
+                    lineHeight: '1.6', fontFamily: 'inherit', maxHeight: '140px',
+                    overflowY: 'auto',
+                  }}
+                />
+                <button
+                  onClick={() => send()}
+                  disabled={!input.trim() || loading}
+                  style={{
+                    width: '38px', height: '38px', borderRadius: '12px', flexShrink: 0,
+                    background: !input.trim() || loading
+                      ? '#E2E8F0'
+                      : 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                    border: 'none',
+                    cursor: !input.trim() || loading ? 'not-allowed' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '17px', color: '#fff',
+                    boxShadow: !input.trim() || loading
+                      ? 'none'
+                      : '0 4px 12px rgba(33,197,142,0.35)',
+                    transition: 'all 0.15s',
                   }}
                 >
-                  새 대화
+                  ↑
                 </button>
               </div>
-            )}
 
-            {/* 빠른 주제 칩 */}
-            <div style={{
-              display: 'flex', gap: '7px', overflowX: 'auto',
-              paddingBottom: '10px', scrollbarWidth: 'none',
-            }}>
-              {INPUT_CHIPS.map(chip => (
-                <button
-                  key={chip}
-                  onClick={() => handleChip(chip)}
-                  style={{
-                    flexShrink: 0, padding: '5px 13px', borderRadius: '100px',
-                    background: '#F4FAF6',
-                    border: `0.5px solid ${input === chip ? '#21C58E' : '#d4ede3'}`,
-                    fontSize: '12px', fontWeight: '600',
-                    color: input === chip ? '#085041' : '#888780',
-                    cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
-                  }}
-                >
-                  {chip}
-                </button>
-              ))}
             </div>
-
-            {/* 텍스트 입력 */}
-            <div style={{
-              display: 'flex', gap: '10px', alignItems: 'flex-end',
-              background: '#fff', border: '0.5px solid #d4ede3',
-              borderRadius: '12px', padding: '10px 10px 10px 16px',
-              transition: 'border-color 0.15s',
-            }}
-            onFocus={e => {
-              e.currentTarget.style.borderColor = '#21C58E';
-            }}
-            onBlur={e => {
-              e.currentTarget.style.borderColor = '#d4ede3';
-            }}
-            >
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={handleInput}
-                onKeyDown={handleKeyDown}
-                placeholder="경제 고민을 입력해보세요 (Enter 전송)"
-                rows={1}
-                disabled={loading}
-                style={{
-                  flex: 1, border: 'none', outline: 'none', resize: 'none',
-                  fontSize: '14px', color: '#085041', background: 'transparent',
-                  lineHeight: '1.6', fontFamily: 'inherit', maxHeight: '140px',
-                  overflowY: 'auto',
-                }}
-              />
-              <button
-                onClick={() => send()}
-                disabled={!input.trim() || loading}
-                style={{
-                  width: '38px', height: '38px', borderRadius: '12px', flexShrink: 0,
-                  background: !input.trim() || loading
-                    ? '#E2E8F0'
-                    : 'linear-gradient(135deg, #21C58E, #1AAD7D)',
-                  border: 'none',
-                  cursor: !input.trim() || loading ? 'not-allowed' : 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '17px', color: '#fff',
-                  boxShadow: !input.trim() || loading
-                    ? 'none'
-                    : '0 4px 12px rgba(33,197,142,0.35)',
-                  transition: 'all 0.15s',
-                }}
-              >
-                ↑
-              </button>
-            </div>
-
           </div>
-        </div>
 
+        </div>
       </div>
 
       <style>{`
         @keyframes nomingBounce {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
           30% { transform: translateY(-6px); opacity: 1; }
+        }
+        @media (min-width: 768px) {
+          .coach-sidebar-wrap { display: flex !important; }
         }
       `}</style>
     </PageWrapper>

@@ -2,6 +2,18 @@ import { supabase } from './supabaseClient'
 import { callSolar } from './solarService'
 import { addXp } from './profileService'
 
+// 네이버 뉴스 HTML 엔티티 및 태그 제거
+function cleanHtml(str = '') {
+  return str
+    .replace(/<[^>]+>/g, '')
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#039;/g, "'")
+    .trim()
+}
+
 // 네이버 뉴스 가져오기
 export async function fetchNews(query = '경제', display = 5) {
   const { data, error } = await supabase.functions.invoke('news', {
@@ -20,10 +32,7 @@ export async function summarizeNews(article) {
 {
   "summary": "3문장 이내 쉬운 요약",
   "keyPoints": ["핵심 포인트 1", "핵심 포인트 2", "핵심 포인트 3"],
-  "keywords": [
-    {"term": "경제 용어", "explanation": "한 줄 쉬운 설명"},
-    {"term": "경제 용어2", "explanation": "한 줄 쉬운 설명"}
-  ],
+  "keywords": [{"term": "경제 용어", "explanation": "한 줄 쉬운 설명"}],
   "nomingComment": "노밍이 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지"
 }`
 
@@ -31,16 +40,18 @@ export async function summarizeNews(article) {
     system,
     messages: [{
       role: 'user',
-      content: `제목: ${article.title}\n내용: ${article.description}`,
+      content: `제목: ${cleanHtml(article.title)}\n내용: ${cleanHtml(article.description)}`,
     }],
   })
 
   try {
     const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-    return JSON.parse(clean)
-  } catch {
+    const match = clean.match(/\{[\s\S]*\}/)
+    return JSON.parse(match ? match[0] : clean)
+  } catch (e) {
+    console.warn('[summarizeNews] JSON 파싱 실패. Solar 응답:', content?.slice(0, 300))
     return {
-      summary:       article.description,
+      summary:       cleanHtml(article.description),
       keyPoints:     [],
       keywords:      [],
       nomingComment: '이 뉴스를 꼭 읽어보세요!',
