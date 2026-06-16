@@ -252,7 +252,19 @@ export default function OnboardingPage() {
     </div>
   );
 
-  if (!user) return null;
+  if (!user) return (
+    <div style={{ minHeight: '100vh', background: '#F4FAF6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+      <img src={`${import.meta.env.BASE_URL}coach.png`} alt="노밍" style={{ width: 56, height: 56, borderRadius: 16, objectFit: 'cover' }} />
+      <p style={{ fontSize: 16, fontWeight: 700, color: '#085041', textAlign: 'center' }}>로그인이 필요해요</p>
+      <p style={{ fontSize: 13, color: '#888780', textAlign: 'center' }}>온보딩을 시작하려면 먼저 로그인해주세요.</p>
+      <button
+        onClick={() => navigate('/login')}
+        style={{ padding: '12px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#21C58E,#1AAD7D)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+      >
+        로그인하기
+      </button>
+    </div>
+  );
 
   const step   = STEPS[stepIdx];
   const isDone = stepIdx === STEPS.length;
@@ -263,7 +275,7 @@ export default function OnboardingPage() {
     return { ...prev, [step.id]: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value] };
   });
 
-  const canNext = step?.multi ? (answers[step.id] ?? []).length > 0 : !!answers[step.id];
+  const canNext = !isDone && (step?.multi ? (answers[step.id] ?? []).length > 0 : !!answers[step.id]);
 
   const goNext = () => { setAnimKey(k => k + 1); setStepIdx(i => i + 1); };
   const goBack = () => { setAnimKey(k => k + 1); setStepIdx(i => i - 1); };
