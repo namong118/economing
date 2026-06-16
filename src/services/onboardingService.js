@@ -105,12 +105,9 @@ export function calculateCategoryPriority(interests) {
 }
 
 export async function completeOnboarding(userId, answers) {
-  const [roadmap, nomingIntro] = await Promise.all([
-    generateRoadmap(answers),
-    generateNomingIntro(answers),
-  ])
   const categoryPriority = calculateCategoryPriority(answers.interests)
 
+  // 1단계: 기본 온보딩 데이터 먼저 저장 (Solar 결과와 무관)
   const { error } = await supabase
     .from('profiles')
     .update({
@@ -119,13 +116,25 @@ export async function completeOnboarding(userId, answers) {
       investment_experience:  answers.investment_experience,
       occupation:             answers.occupation,
       interests:              answers.interests ?? [],
-      roadmap,
-      noming_intro:           nomingIntro,
       bite_category_priority: categoryPriority,
       updated_at:             new Date().toISOString(),
     })
     .eq('id', userId)
 
   if (error) throw error
-  return { roadmap, nomingIntro, categoryPriority }
+
+  // 2단계: Solar AI 호출 후 결과 추가 저장 (실패해도 온보딩은 완료 상태 유지)
+  try {
+    const [roadmap, nomingIntro] = await Promise.all([
+      generateRoadmap(answers),
+      generateNomingIntro(answers),
+    ])
+    await supabase
+      .from('profiles')
+      .update({ roadmap, noming_intro: nomingIntro })
+      .eq('id', userId)
+    return { roadmap, nomingIntro, categoryPriority }
+  } catch {
+    return { roadmap: null, nomingIntro: null, categoryPriority }
+  }
 }
