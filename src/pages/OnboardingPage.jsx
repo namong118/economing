@@ -55,6 +55,8 @@ const STEPS = [
   },
 ];
 
+const STEP_COLORS = ['#21C58E', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+
 /* ── 완료 화면 ────────────────────────────────────────────────── */
 function CompletionScreen({ answers, onComplete, saving }) {
   const BASE_URL = import.meta.env.BASE_URL;
@@ -62,45 +64,27 @@ function CompletionScreen({ answers, onComplete, saving }) {
 
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '16px 0' }}>
-      {/* 노밍 */}
       <img
         src={`${BASE_URL}coach.png`}
         alt="노밍"
-        style={{
-          width: '72px', height: '72px', borderRadius: '20px',
-          objectFit: 'cover', margin: '0 auto 16px',
-          boxShadow: '0 8px 24px rgba(255,200,61,0.3)',
-        }}
+        style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 16px', boxShadow: '0 8px 24px rgba(255,200,61,0.3)' }}
       />
-      <h2 style={{
-        fontSize: '24px', fontWeight: '900', color: '#0F172A',
-        letterSpacing: '-0.8px', marginBottom: '8px',
-      }}>
+      <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', marginBottom: '8px' }}>
         준비 완료! 🎉
       </h2>
       <p style={{ fontSize: '15px', color: '#64748B', lineHeight: '1.7', marginBottom: '32px' }}>
         이제 당신만의 경제 성장 여정을<br />함께 시작해볼게요.
       </p>
 
-      {/* 요약 카드 */}
-      <div style={{
-        background: '#F4FAF6', border: '1.5px solid #DCF5EB',
-        borderRadius: '20px', padding: '20px 24px',
-        marginBottom: '28px', textAlign: 'left',
-      }}>
-        <p style={{ fontSize: '12px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>
-          노밍이 파악한 내용
-        </p>
+      <div style={{ background: '#F4FAF6', border: '1.5px solid #DCF5EB', borderRadius: '20px', padding: '20px 24px', marginBottom: '28px', textAlign: 'left' }}>
+        <p style={{ fontSize: '12px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>노밍이 파악한 내용</p>
         {[
           { label: '경제 수준', value: LEVEL_LABEL[answers.economic_level] ?? '-' },
           { label: '투자 경험', value: { none: '없음', etf: 'ETF', stock: '주식' }[answers.investment_experience] ?? '-' },
           { label: '상황',     value: { student: '학생', employee: '직장인', freelancer: '프리랜서', business: '사업자' }[answers.occupation] ?? '-' },
           { label: '관심 분야', value: (answers.interests ?? []).join(' · ') || '-' },
         ].map(row => (
-          <div key={row.label} style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-            padding: '8px 0', borderBottom: '1px solid #E8F5EF',
-          }}>
+          <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '8px 0', borderBottom: '1px solid #E8F5EF' }}>
             <span style={{ fontSize: '13px', color: '#64748B', fontWeight: '600' }}>{row.label}</span>
             <span style={{ fontSize: '14px', color: '#0F172A', fontWeight: '700' }}>{row.value}</span>
           </div>
@@ -126,15 +110,131 @@ function CompletionScreen({ answers, onComplete, saving }) {
   );
 }
 
+/* ── AI 결과 화면 ─────────────────────────────────────────────── */
+function AIResultScreen({ aiResult, onGoHome }) {
+  const BASE_URL   = import.meta.env.BASE_URL;
+  const roadmap    = aiResult?.roadmap;
+  const nomingIntro = aiResult?.nomingIntro;
+
+  return (
+    <div className="anim-fade" style={{ paddingBottom: '8px' }}>
+
+      {/* 헤더 */}
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{ fontSize: '44px', marginBottom: '10px' }}>🎉</div>
+        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#085041', letterSpacing: '-0.6px', marginBottom: '6px' }}>
+          노밍이 맞춤 코칭을 준비했어요!
+        </h2>
+        <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.6' }}>
+          당신만을 위한 경제 성장 로드맵이에요.
+        </p>
+      </div>
+
+      {/* 노밍 인트로 말풍선 */}
+      <div style={{
+        background: '#FFF4D6', border: '0.5px solid #FAC775',
+        borderRadius: '16px', padding: '18px 20px',
+        display: 'flex', gap: '14px', alignItems: 'flex-start',
+        marginBottom: '20px',
+      }}>
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <img src={`${BASE_URL}coach.png`} alt="노밍" style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: '#21C58E', border: '2px solid #FFFBEA' }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>☀️ 노밍의 첫 인사</p>
+          <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.75', fontWeight: '500' }}>
+            {nomingIntro ?? '안녕하세요! 노밍이에요. 함께 경제 공부를 시작해볼게요 🌱'}
+          </p>
+        </div>
+      </div>
+
+      {/* 맞춤 로드맵 */}
+      {roadmap ? (
+        <div style={{ background: '#fff', border: '0.5px solid #d4ede3', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span style={{ fontSize: '14px', fontWeight: '800', color: '#085041' }}>나만의 학습 로드맵</span>
+          </div>
+          {roadmap.goal && (
+            <p style={{ fontSize: '12px', color: '#888780', marginBottom: '16px' }}>목표: {roadmap.goal}</p>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(roadmap.steps ?? []).map((step, i) => {
+              const color = STEP_COLORS[i % STEP_COLORS.length];
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{
+                    width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
+                    background: color, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '12px', fontWeight: '800', color: '#fff', marginTop: '1px',
+                  }}>
+                    {step.order}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: '14px', fontWeight: '700', color: '#085041', marginBottom: '2px' }}>{step.title}</p>
+                    <p style={{ fontSize: '12px', color: '#888780', lineHeight: '1.5' }}>{step.description}</p>
+                    {step.topics?.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+                        {step.topics.map(t => (
+                          <span key={t} style={{
+                            fontSize: '11px', fontWeight: '600',
+                            color, background: color + '14',
+                            border: `1px solid ${color}30`,
+                            borderRadius: '100px', padding: '2px 8px',
+                          }}>{t}</span>
+                        ))}
+                      </div>
+                    )}
+                    {step.estimatedDays && (
+                      <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '4px' }}>예상 {step.estimatedDays}일</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div style={{ background: '#F4FAF6', border: '0.5px solid #d4ede3', borderRadius: '16px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
+          <p style={{ fontSize: '13px', color: '#888780' }}>로드맵은 내 성장 허브에서 확인할 수 있어요.</p>
+        </div>
+      )}
+
+      {/* CTA */}
+      <button
+        onClick={onGoHome}
+        style={{
+          width: '100%', padding: '16px', borderRadius: '16px',
+          background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+          color: '#fff', border: 'none',
+          fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
+          cursor: 'pointer',
+          boxShadow: '0 6px 20px rgba(33,197,142,0.35)',
+        }}
+      >
+        노밍과 함께 시작하기 →
+      </button>
+
+      <button
+        onClick={() => { window.location.hash = '#/my-growth'; }}
+        style={{ display: 'block', margin: '12px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
+      >
+        로드맵 자세히 보기 →
+      </button>
+    </div>
+  );
+}
+
 /* ── 메인 ─────────────────────────────────────────────────────── */
 export default function OnboardingPage() {
   const navigate = useNavigate();
-  const { user, profile, loading, refreshProfile } = useAuth();
+  const { user, loading, refreshProfile } = useAuth();
 
-  const [stepIdx,  setStepIdx]  = useState(0);   // 0~3 = 설문, 4 = 완료
+  const [stepIdx,  setStepIdx]  = useState(0);
   const [answers,  setAnswers]  = useState({});
   const [saving,   setSaving]   = useState(false);
-  const [animKey,  setAnimKey]  = useState(0);    // step 전환 애니메이션 트리거
+  const [animKey,  setAnimKey]  = useState(0);
+  const [aiResult, setAiResult] = useState(null);  // AI 결과 화면 표시용
 
   /* 미인증 → 로그인 */
   useEffect(() => {
@@ -154,47 +254,27 @@ export default function OnboardingPage() {
 
   if (!user) return null;
 
-  const step    = STEPS[stepIdx];
-  const isDone  = stepIdx === STEPS.length;
-  const current = answers[step?.id];
+  const step   = STEPS[stepIdx];
+  const isDone = stepIdx === STEPS.length;
 
-  /* 단일 선택 */
-  const selectSingle = (value) => {
-    setAnswers(prev => ({ ...prev, [step.id]: value }));
-  };
+  const selectSingle = (value) => setAnswers(prev => ({ ...prev, [step.id]: value }));
+  const toggleMulti  = (value) => setAnswers(prev => {
+    const arr = prev[step.id] ?? [];
+    return { ...prev, [step.id]: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value] };
+  });
 
-  /* 복수 선택 토글 */
-  const toggleMulti = (value) => {
-    setAnswers(prev => {
-      const arr = prev[step.id] ?? [];
-      return {
-        ...prev,
-        [step.id]: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value],
-      };
-    });
-  };
+  const canNext = step?.multi ? (answers[step.id] ?? []).length > 0 : !!answers[step.id];
 
-  const canNext = step?.multi
-    ? (answers[step.id] ?? []).length > 0
-    : !!answers[step.id];
+  const goNext = () => { setAnimKey(k => k + 1); setStepIdx(i => i + 1); };
+  const goBack = () => { setAnimKey(k => k + 1); setStepIdx(i => i - 1); };
 
-  const goNext = () => {
-    setAnimKey(k => k + 1);
-    setStepIdx(i => i + 1);
-  };
-
-  const goBack = () => {
-    setAnimKey(k => k + 1);
-    setStepIdx(i => i - 1);
-  };
-
-  /* 최종 저장 */
+  /* 최종 저장 → AI 결과 화면 */
   const handleComplete = async () => {
     setSaving(true);
     try {
-      await completeOnboarding(user.id, answers);
+      const result = await completeOnboarding(user.id, answers);
       await refreshProfile();
-      navigate('/home', { replace: true });
+      setAiResult(result);
     } catch (err) {
       console.error('온보딩 완료 실패:', err);
       navigate('/home', { replace: true });
@@ -203,34 +283,41 @@ export default function OnboardingPage() {
     }
   };
 
-  const BASE_URL = import.meta.env.BASE_URL;
-  const progressPct = isDone ? 100 : ((stepIdx) / STEPS.length) * 100;
+  const BASE_URL    = import.meta.env.BASE_URL;
+  const progressPct = isDone ? 100 : (stepIdx / STEPS.length) * 100;
+
+  /* AI 결과 화면 */
+  if (aiResult) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F4FAF6', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        {/* 헤더바 */}
+        <div style={{ width: '100%', background: '#fff', borderBottom: '1px solid #E8F5EF', padding: '16px 24px', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#21C58E' }}>완료!</span>
+            <span style={{ fontSize: '13px', color: '#94A3B8' }}>경제 성장 여정 준비</span>
+          </div>
+          <div style={{ height: '5px', background: '#E8F5EF', borderRadius: '100px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #21C58E, #1AAD7D)', width: '100%' }} />
+          </div>
+        </div>
+        <div style={{ width: '100%', maxWidth: '520px', padding: '32px 24px 0', boxSizing: 'border-box' }}>
+          <AIResultScreen aiResult={aiResult} onGoHome={() => navigate('/home', { replace: true })} />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{
-      minHeight: '100vh', background: '#F4FAF6',
-      display: 'flex', flexDirection: 'column', alignItems: 'center',
-      padding: '0 0 48px',
-    }}>
+    <div style={{ minHeight: '100vh', background: '#F4FAF6', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
-      {/* ── 상단 헤더 ─────────────────────────────────────── */}
-      <div style={{
-        width: '100%', background: '#fff',
-        borderBottom: '1px solid #E8F5EF',
-        padding: '16px 24px',
-        display: 'flex', alignItems: 'center', gap: '12px',
-        boxSizing: 'border-box',
-      }}>
+      {/* ── 상단 헤더 ── */}
+      <div style={{ width: '100%', background: '#fff', borderBottom: '1px solid #E8F5EF', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '12px', boxSizing: 'border-box' }}>
         {stepIdx > 0 && !isDone && (
           <button
             onClick={goBack}
-            style={{
-              width: '36px', height: '36px', borderRadius: '10px',
-              background: '#F4FAF6', border: '1.5px solid #DCF5EB',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', fontSize: '18px', color: '#64748B',
-              flexShrink: 0, transition: 'all 0.15s',
-            }}
+            style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#F4FAF6', border: '1.5px solid #DCF5EB', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '18px', color: '#64748B', flexShrink: 0, transition: 'all 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#DCF5EB'; }}
             onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6'; }}
           >
@@ -245,45 +332,21 @@ export default function OnboardingPage() {
             <span style={{ fontSize: '13px', color: '#94A3B8' }}>경제 성장 여정 준비</span>
           </div>
           <div style={{ height: '5px', background: '#E8F5EF', borderRadius: '100px', overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', borderRadius: '100px',
-              background: 'linear-gradient(90deg, #21C58E, #1AAD7D)',
-              width: `${progressPct}%`,
-              transition: 'width 0.4s ease',
-            }} />
+            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #21C58E, #1AAD7D)', width: `${progressPct}%`, transition: 'width 0.4s ease' }} />
           </div>
         </div>
       </div>
 
-      {/* ── 본문 ─────────────────────────────────────────── */}
+      {/* ── 본문 ── */}
       <div style={{ width: '100%', maxWidth: '520px', padding: '32px 24px 0', boxSizing: 'border-box' }}>
 
         {/* 노밍 말풍선 */}
-        <div
-          key={`noming-${animKey}`}
-          className="anim-fade"
-          style={{
-            display: 'flex', alignItems: 'flex-start', gap: '14px',
-            marginBottom: '28px',
-          }}
-        >
+        <div key={`noming-${animKey}`} className="anim-fade" style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '28px' }}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
-            <img
-              src={`${BASE_URL}coach.png`}
-              alt="노밍"
-              style={{ width: '52px', height: '52px', borderRadius: '15px', objectFit: 'cover' }}
-            />
-            <div style={{
-              position: 'absolute', bottom: '-2px', right: '-2px',
-              width: '14px', height: '14px', borderRadius: '50%',
-              background: '#21C58E', border: '2px solid #fff',
-            }} />
+            <img src={`${BASE_URL}coach.png`} alt="노밍" style={{ width: '52px', height: '52px', borderRadius: '15px', objectFit: 'cover' }} />
+            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', background: '#21C58E', border: '2px solid #fff' }} />
           </div>
-          <div style={{
-            background: '#fff', border: '1.5px solid #E8F5EF',
-            borderRadius: '4px 18px 18px 18px', padding: '14px 18px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flex: 1,
-          }}>
+          <div style={{ background: '#fff', border: '1.5px solid #E8F5EF', borderRadius: '4px 18px 18px 18px', padding: '14px 18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flex: 1 }}>
             <p style={{ fontSize: '12px', fontWeight: '700', color: '#FFC83D', marginBottom: '4px' }}>☀️ 노밍</p>
             <p style={{ fontSize: '15px', color: '#1E293B', lineHeight: '1.65', fontWeight: '500', whiteSpace: 'pre-line' }}>
               {isDone
@@ -300,34 +363,16 @@ export default function OnboardingPage() {
           <CompletionScreen answers={answers} onComplete={handleComplete} saving={saving} />
         ) : (
           <div key={`step-${animKey}`} className="anim-fade">
-            {/* 질문 */}
-            <h2 style={{
-              fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900',
-              color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3',
-              marginBottom: step.multi ? '6px' : '20px',
-              whiteSpace: 'pre-line',
-            }}>
+            <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: step.multi ? '6px' : '20px', whiteSpace: 'pre-line' }}>
               {step.question}
             </h2>
             {step.multi && (
-              <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>
-                여러 개 선택할 수 있어요
-              </p>
+              <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>여러 개 선택할 수 있어요</p>
             )}
 
-            {/* 선택 카드 */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: step.options.length === 4 || step.options.length === 6
-                ? '1fr 1fr'
-                : '1fr',
-              gap: '10px',
-              marginBottom: '28px',
-            }}>
+            <div style={{ display: 'grid', gridTemplateColumns: step.options.length === 4 || step.options.length === 6 ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '28px' }}>
               {step.options.map(opt => {
-                const selected = step.multi
-                  ? (answers[step.id] ?? []).includes(opt.value)
-                  : answers[step.id] === opt.value;
+                const selected = step.multi ? (answers[step.id] ?? []).includes(opt.value) : answers[step.id] === opt.value;
                 return (
                   <button
                     key={opt.value}
@@ -347,31 +392,14 @@ export default function OnboardingPage() {
                       position: 'relative', overflow: 'hidden',
                     }}
                   >
-                    {/* 선택 체크 */}
                     {selected && (
-                      <div style={{
-                        position: 'absolute', top: '10px', right: '10px',
-                        width: '20px', height: '20px', borderRadius: '50%',
-                        background: '#21C58E',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '11px', color: '#fff', fontWeight: '800',
-                      }}>✓</div>
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#21C58E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
                     )}
-                    <span style={{ fontSize: step.options.length <= 3 ? '28px' : '22px' }}>
-                      {opt.emoji}
-                    </span>
+                    <span style={{ fontSize: step.options.length <= 3 ? '28px' : '22px' }}>{opt.emoji}</span>
                     <div>
-                      <p style={{
-                        fontSize: '15px', fontWeight: '800',
-                        color: selected ? '#0F172A' : '#1E293B',
-                        letterSpacing: '-0.4px', marginBottom: '2px',
-                      }}>
-                        {opt.label}
-                      </p>
+                      <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
                       {step.options.length <= 3 && (
-                        <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>
-                          {opt.desc}
-                        </p>
+                        <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
                       )}
                     </div>
                   </button>
@@ -379,17 +407,13 @@ export default function OnboardingPage() {
               })}
             </div>
 
-            {/* 다음 버튼 */}
             <button
               onClick={goNext}
               disabled={!canNext}
               style={{
                 width: '100%', padding: '16px', borderRadius: '16px',
-                background: canNext
-                  ? 'linear-gradient(135deg, #21C58E, #1AAD7D)'
-                  : '#E2E8F0',
-                color: canNext ? '#fff' : '#94A3B8',
-                border: 'none',
+                background: canNext ? 'linear-gradient(135deg, #21C58E, #1AAD7D)' : '#E2E8F0',
+                color: canNext ? '#fff' : '#94A3B8', border: 'none',
                 fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
                 cursor: canNext ? 'pointer' : 'not-allowed',
                 boxShadow: canNext ? '0 6px 20px rgba(33,197,142,0.35)' : 'none',
@@ -399,15 +423,9 @@ export default function OnboardingPage() {
               {stepIdx === STEPS.length - 1 ? '완료 →' : '다음 →'}
             </button>
 
-            {/* 건너뛰기 */}
             <button
               onClick={() => navigate('/home')}
-              style={{
-                display: 'block', margin: '14px auto 0',
-                background: 'none', border: 'none',
-                fontSize: '13px', color: '#94A3B8',
-                cursor: 'pointer', fontWeight: '500',
-              }}
+              style={{ display: 'block', margin: '14px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
             >
               나중에 설정하기
             </button>
