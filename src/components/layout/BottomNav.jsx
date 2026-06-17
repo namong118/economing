@@ -1,13 +1,11 @@
-/* 하단 네비게이션 바 */
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Map, Search, BookMarked, Pencil } from 'lucide-react';
+import { Home, MessageCircle, BookOpen, TrendingUp } from 'lucide-react';
 
 const navItems = [
-  { path: '/home',       Icon: Home,       label: '홈' },
-  { path: '/roadmap',    Icon: Map,        label: '로드맵' },
-  { path: '/terms',      Icon: Search,     label: '용어' },
-  { path: '/dictionary', Icon: BookMarked, label: '사전' },
-  { path: '/diary',      Icon: Pencil,     label: '일기' },
+  { path: '/home',      Icon: Home,          label: '홈' },
+  { path: '/coach',     Icon: MessageCircle, label: '노밍' },
+  { path: '/read',      Icon: BookOpen,      label: '경제 읽기' },
+  { path: '/my-growth', Icon: TrendingUp,    label: '내 성장' },
 ];
 
 export default function BottomNav() {
@@ -16,15 +14,14 @@ export default function BottomNav() {
 
   return (
     <nav
+      className="bottom-nav"
       style={{
         position: 'fixed',
         bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '100%',
-        maxWidth: '430px',
+        left: 0,
+        right: 0,
         background: '#FFFFFF',
-        borderTop: '1px solid #F3F4F6',
+        borderTop: '0.5px solid #e0f0e8',
         display: 'flex',
         paddingBottom: 'env(safe-area-inset-bottom)',
         zIndex: 100,
@@ -49,30 +46,27 @@ export default function BottomNav() {
               border: 'none',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
+              position: 'relative',
             }}
           >
-            <item.Icon size={20} color={isActive ? '#10B981' : '#9CA3AF'} />
-            <span
-              style={{
-                fontSize: '10px',
-                fontWeight: isActive ? '700' : '500',
-                color: isActive ? '#10B981' : '#9CA3AF',
-                letterSpacing: '-0.3px',
-              }}
-            >
+            <item.Icon size={20} color={isActive ? '#21C58E' : '#9CA3AF'} />
+            <span style={{
+              fontSize: '10px',
+              fontWeight: isActive ? '700' : '500',
+              color: isActive ? '#21C58E' : '#9CA3AF',
+              letterSpacing: '-0.3px',
+            }}>
               {item.label}
             </span>
             {isActive && (
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  background: '#10B981',
-                }}
-              />
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                width: '4px',
+                height: '4px',
+                borderRadius: '50%',
+                background: '#21C58E',
+              }} />
             )}
           </button>
         );

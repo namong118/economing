@@ -72,7 +72,6 @@ export default function TopNav() {
   const { pathname } = useLocation();
   const { user, profile, signOut } = useAuth();
 
-  const [menuOpen, setMenuOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
   const dropRef   = useRef(null);
 
@@ -233,85 +232,9 @@ export default function TopNav() {
               </>
             )}
 
-            {/* 모바일 햄버거 */}
-            <button
-              className="nav-hamburger"
-              onClick={() => setMenuOpen((v) => !v)}
-              style={{
-                width: '40px', height: '40px', borderRadius: '10px',
-                background: '#F1F5F9',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '18px', border: 'none', cursor: 'pointer',
-              }}
-            >
-              {menuOpen ? '✕' : '☰'}
-            </button>
           </div>
         </div>
       </nav>
-
-      {/* 모바일 드롭다운 메뉴 */}
-      <div className={`nav-mobile-menu ${menuOpen ? 'mobile-open' : ''}`}>
-        {navLinks.map((link) => {
-          const isActive = pathname === link.path;
-          return (
-            <button
-              key={link.path}
-              onClick={() => { navigate(link.path); setMenuOpen(false); }}
-              style={{
-                padding: '14px 24px', fontSize: '15px',
-                fontWeight: isActive ? '700' : '500',
-                color: isActive ? '#10B981' : '#374151',
-                background: 'none', border: 'none',
-                cursor: 'pointer', textAlign: 'left', width: '100%',
-              }}
-            >
-              {link.label}
-            </button>
-          );
-        })}
-
-        <div style={{ padding: '12px 24px', borderTop: '1px solid #E2E8F0' }}>
-          {user ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button
-                onClick={() => { navigate('/my-growth'); setMenuOpen(false); }}
-                style={{
-                  padding: '12px', width: '100%', borderRadius: '10px',
-                  background: '#F0FDF4', color: '#064E3B',
-                  border: '1px solid #BBF7D0', fontSize: '14px',
-                  fontWeight: '600', cursor: 'pointer',
-                }}
-              >
-                🌱 내 성장
-              </button>
-              <button
-                onClick={async () => { await signOut(); navigate('/home'); setMenuOpen(false); }}
-                style={{
-                  padding: '12px', width: '100%', borderRadius: '10px',
-                  background: '#FEF2F2', color: '#DC2626',
-                  border: '1px solid #FECACA', fontSize: '14px',
-                  fontWeight: '600', cursor: 'pointer',
-                }}
-              >
-                로그아웃
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => { navigate('/login'); setMenuOpen(false); }}
-              style={{
-                padding: '12px', width: '100%', borderRadius: '10px',
-                background: 'linear-gradient(135deg, #10B981, #059669)',
-                color: '#fff', border: 'none', fontSize: '14px',
-                fontWeight: '700', cursor: 'pointer',
-              }}
-            >
-              로그인 / 회원가입
-            </button>
-          )}
-        </div>
-      </div>
     </>
   );
 }

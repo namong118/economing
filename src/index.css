@@ -141,6 +141,11 @@ input, textarea { font-family: var(--font); outline: none; }
 
 .nav-hamburger { display: none; }
 
+/* ===== 하단 네비 (모바일 전용) ===== */
+@media (min-width: 769px) {
+  .bottom-nav { display: none; }
+}
+
 /* ===== 스크롤바 ===== */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -185,11 +190,6 @@ input, textarea { font-family: var(--font); outline: none; }
   .home-grid       { grid-template-columns: 1fr !important; }
 }
 
-/* 모바일 드롭다운 메뉴: 기본 숨김 (데스크탑 포함 모든 화면) */
-.nav-mobile-menu {
-  display: none;
-}
-
 /* ===== 반응형 — 모바일 (≤768px) ===== */
 @media (max-width: 768px) {
   :root { --nav-height: 56px; }
@@ -197,22 +197,8 @@ input, textarea { font-family: var(--font); outline: none; }
   .container { padding: 0 16px; }
   .top-nav-inner { padding: 0 16px; }
 
-  .nav-links        { display: none; }
-  .nav-hamburger    { display: flex; }
+  .nav-links { display: none; }
 
-  .nav-mobile-menu.mobile-open {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: var(--nav-height);
-    left: 0; right: 0;
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    padding: 8px 0;
-    box-shadow: var(--shadow-lg);
-    z-index: 199;
-  }
-
-  .quick-actions-grid      { grid-template-columns: repeat(2, 1fr); }
-  .roadmap-steps-grid      { grid-template-columns: 1fr; }
+  .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+  .roadmap-steps-grid { grid-template-columns: 1fr; }
 }

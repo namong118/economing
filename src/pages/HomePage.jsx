@@ -223,6 +223,12 @@ export default function HomePage() {
             margin: 0 auto;
           }
         }
+        @media (max-width: 768px) {
+          .hd-grid {
+            padding: 12px 16px 80px;
+            gap: 12px;
+          }
+        }
       `}</style>
 
       <div className="anim-fade">
