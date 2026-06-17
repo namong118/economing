@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { fetchNews, summarizeNews } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
 
-const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산'];
+const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산', '미국경제', '글로벌경제'];
 
 const newsCache = {};
 

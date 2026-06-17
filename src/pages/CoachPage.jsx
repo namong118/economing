@@ -22,7 +22,7 @@ const SUGGESTED_QUESTIONS = [
 const INPUT_CHIPS = ['월급 관리', '저축', '투자 입문', '경제 공부', 'ETF'];
 
 /* ── 노밍 응답 카드 ─────────────────────────────────────── */
-function NomingCard({ structured }) {
+function NomingCard({ structured, onSend }) {
   const { advice, knowFirst, nextStep, terms } = structured;
   return (
     <div style={{
@@ -77,19 +77,27 @@ function NomingCard({ structured }) {
       </div>
 
       {/* ➡️ 다음에 공부하면 좋은 것 */}
-      <div style={{ padding: '12px 18px', display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'visible' }}>
+      <div style={{ padding: '12px 18px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', minWidth: 0 }}>
         <ArrowRight size={14} color="#888780" style={{ flexShrink: 0 }} />
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px', flexShrink: 0, whiteSpace: 'nowrap' }}>
           다음에 공부하면 좋은 것
         </p>
-        <span style={{
-          fontSize: '12px', fontWeight: '700', color: '#21C58E',
-          background: '#F4FAF6', border: '0.5px solid #d4ede3',
-          borderRadius: '100px', padding: '3px 12px',
-          marginLeft: 'auto', whiteSpace: 'nowrap', wordBreak: 'keep-all', flexShrink: 0,
-        }}>
+        <button
+          onClick={() => onSend?.(nextStep)}
+          style={{
+            fontSize: '12px', fontWeight: '700', color: '#21C58E',
+            background: '#F4FAF6', border: '0.5px solid #d4ede3',
+            borderRadius: '100px', padding: '3px 12px',
+            marginLeft: 'auto', whiteSpace: 'normal', wordBreak: 'keep-all',
+            cursor: onSend ? 'pointer' : 'default',
+            fontFamily: 'inherit', textAlign: 'left',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => { if (onSend) e.currentTarget.style.background = '#E1F5EE' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6' }}
+        >
           {nextStep}
-        </span>
+        </button>
       </div>
 
       {/* 💾 핵심 용어 저장 */}
@@ -416,7 +424,7 @@ export default function CoachPage() {
                         </div>
                       ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '76%', minWidth: 0 }}>
-                          <NomingCard structured={msg.structured} />
+                          <NomingCard structured={msg.structured} onSend={send} />
                           {msg.infographic && <InfographicCard data={msg.infographic} />}
                         </div>
                       )}
