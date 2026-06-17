@@ -119,37 +119,6 @@ function SummaryTab() {
 
   return (
     <div>
-      {/* ── 1. 프로필 헤더 ── */}
-      <div style={{
-        background: 'linear-gradient(145deg,#fff,#F9FEFB)',
-        border: '0.5px solid #B8EBC8', borderRadius: '12px',
-        padding: '22px', display: 'flex', alignItems: 'center', gap: '16px',
-        marginBottom: '16px',
-      }}>
-        {profile?.avatar_url ? (
-          <img src={profile.avatar_url} alt="프로필" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #fff', boxShadow: 'none', flexShrink: 0 }} />
-        ) : (
-          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', color: '#fff', fontWeight: '700', border: '3px solid #fff', boxShadow: 'none', flexShrink: 0 }}>
-            {(profile?.nickname || user.email || '?')[0].toUpperCase()}
-          </div>
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '900', color: '#2A7A4B', letterSpacing: '-0.6px', marginBottom: '2px' }}>
-            {profile?.nickname || user.email || '사용자'}
-          </h2>
-          <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <img src={`${BASE_URL}${currentLevel.image}`} alt={currentLevel.label} style={{ width: 16, height: 16, objectFit: 'contain', flexShrink: 0 }} />
-            {currentLevel.label} 단계 · {xp} XP · {PROVIDER_LABEL[provider] ?? provider} 로그인
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ flex: 1, height: '5px', background: '#E2E8F0', borderRadius: '100px', overflow: 'hidden' }}>
-              <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg,#52C97A,#1AAD7D)', width: `${progressPercent}%`, transition: 'width 0.6s' }} />
-            </div>
-            {nextLevel && <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '3px' }}><img src={`${BASE_URL}${nextLevel.image}`} alt={nextLevel.label} style={{ width: 14, height: 14, objectFit: 'contain' }} />{xpNeeded} XP</span>}
-          </div>
-        </div>
-      </div>
-
       {/* ── 2. 성장 단계 ── */}
       <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '16px' }}>
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px', marginBottom: '14px' }}>성장 단계</p>
