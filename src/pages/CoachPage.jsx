@@ -322,13 +322,22 @@ export default function CoachPage() {
   return (
     <PageWrapper>
       <div style={{
+        width: '100%',
         display: 'flex',
+        justifyContent: 'center',
         height: 'calc(100vh - 64px)',
         overflow: 'hidden',
       }}>
+        <div style={{
+          display: 'flex',
+          width: '100%',
+          maxWidth: '1100px',
+          margin: '0 auto',
+          overflow: 'hidden',
+        }}>
 
         {/* ── 사이드 패널 (데스크탑만) ─────────────────────── */}
-        <div style={{ display: 'none' }} className="coach-sidebar-wrap">
+        <div style={{ display: 'none', width: '220px', flexShrink: 0 }} className="coach-sidebar-wrap">
           <CoachSidebar
             user={user}
             onNewChat={handleNewChat}
@@ -341,6 +350,7 @@ export default function CoachPage() {
         {/* ── 대화 영역 ────────────────────────────────────── */}
         <div style={{
           flex: 1,
+          minWidth: 0,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -539,6 +549,7 @@ export default function CoachPage() {
             </div>
           </div>
 
+        </div>
         </div>
       </div>
 
