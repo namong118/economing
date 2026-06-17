@@ -81,9 +81,9 @@ export default function LoginPage() {
         {/* ── 브랜드 헤더 ────────────────────────────────── */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <img
-            src={`${BASE_URL}logo.png`}
+            src={`${BASE_URL}appicon.jpg`}
             alt="ECONOMING"
-            style={{ height: '80px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
+            style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 14px', display: 'block' }}
           />
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치

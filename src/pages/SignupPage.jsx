@@ -99,9 +99,9 @@ export default function SignupPage() {
       }}>
         <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
           <img
-            src={`${BASE_URL}logo.png`}
+            src={`${BASE_URL}appicon.jpg`}
             alt="ECONOMING"
-            style={{ height: '80px', width: 'auto', margin: '0 auto 16px', display: 'block' }}
+            style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 16px', display: 'block' }}
           />
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '10px' }}>
             환영해요! 🌱
@@ -165,9 +165,9 @@ export default function SignupPage() {
         {/* ── 브랜드 헤더 ────────────────────────────────── */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <img
-            src={`${BASE_URL}logo.png`}
+            src={`${BASE_URL}appicon.jpg`}
             alt="ECONOMING"
-            style={{ height: '80px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
+            style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 14px', display: 'block' }}
           />
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치
