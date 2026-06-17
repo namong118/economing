@@ -1,10 +1,10 @@
 ﻿import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, History, MessageCircle, X } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse } from '../services/coachService';
-import { createConversation } from '../services/conversationService';
+import { createConversation, getConversationList } from '../services/conversationService';
 import { getInfographic } from '../data/infographicData';
 import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
@@ -233,6 +233,9 @@ export default function CoachPage() {
   const [loading,          setLoading]          = useState(false);
   const [activeConvId,     setActiveConvId]     = useState(null);
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
+  const [drawerOpen,    setDrawerOpen]    = useState(false);
+  const [drawerGroups,  setDrawerGroups]  = useState({});
+  const [drawerLoading, setDrawerLoading] = useState(false);
   const bottomRef   = useRef(null);
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
@@ -304,6 +307,21 @@ export default function CoachPage() {
     );
   };
 
+  /* 드로어 열릴 때 + 사이드바 갱신 시 대화 목록 fetch */
+  useEffect(() => {
+    if (!drawerOpen || !user?.id) return;
+    setDrawerLoading(true);
+    getConversationList(user.id)
+      .then(setDrawerGroups)
+      .catch(console.error)
+      .finally(() => setDrawerLoading(false));
+  }, [drawerOpen, user?.id]); // eslint-disable-line
+
+  useEffect(() => {
+    if (!user?.id) return;
+    getConversationList(user.id).then(setDrawerGroups).catch(console.error);
+  }, [sidebarRefreshKey]); // eslint-disable-line
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   };
@@ -357,6 +375,17 @@ export default function CoachPage() {
           overflow: 'hidden',
           background: '#F2FBF5',
         }}>
+
+          {/* 모바일 대화 기록 버튼 */}
+          <div className="mobile-history-bar">
+            <button
+              className="mobile-history-btn"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <History size={16} />
+              기록
+            </button>
+          </div>
 
           {/* 노밍 인사 카드 + 추천 질문 (빈 상태) */}
           {isEmpty && (
@@ -554,10 +583,153 @@ export default function CoachPage() {
         </div>
       </div>
 
+      {/* 모바일 대화 기록 드로어 */}
+      {drawerOpen && (
+        <>
+          {/* 오버레이 */}
+          <div
+            onClick={() => setDrawerOpen(false)}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.4)',
+              zIndex: 199,
+            }}
+          />
+
+          {/* 드로어 패널 */}
+          <div style={{
+            position: 'fixed', bottom: 0, left: 0, right: 0,
+            background: '#fff',
+            borderRadius: '16px 16px 0 0',
+            borderTop: '0.5px solid #B8EBC8',
+            padding: '12px 16px 32px',
+            maxHeight: '60vh',
+            overflowY: 'auto',
+            zIndex: 200,
+            animation: 'drawerSlideUp 0.25s ease-out',
+          }}>
+            {/* 핸들 바 */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+              <div style={{
+                width: '40px', height: '4px', borderRadius: '100px',
+                background: '#E2E8F0',
+              }} />
+            </div>
+
+            {/* 헤더 */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: '16px',
+            }}>
+              <p style={{ fontSize: '15px', fontWeight: '700', color: '#0F172A' }}>
+                대화 기록
+              </p>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '28px', height: '28px', borderRadius: '50%',
+                  background: '#F1F5F9', border: 'none', cursor: 'pointer',
+                  color: '#64748B',
+                }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* 새 대화 버튼 */}
+            <button
+              onClick={() => { handleNewChat(); setDrawerOpen(false); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                width: '100%', padding: '10px 14px', borderRadius: '10px',
+                background: '#F2FBF5', border: '0.5px solid #B8EBC8',
+                fontSize: '13px', fontWeight: '600', color: '#2A7A4B',
+                cursor: 'pointer', marginBottom: '16px',
+                fontFamily: 'inherit',
+              }}
+            >
+              <MessageCircle size={14} />
+              새 대화 시작
+            </button>
+
+            {/* 대화 목록 */}
+            {drawerLoading ? (
+              <p style={{ fontSize: '13px', color: '#94A3B8', textAlign: 'center', padding: '20px 0' }}>
+                불러오는 중...
+              </p>
+            ) : Object.keys(drawerGroups).length === 0 ? (
+              <p style={{ fontSize: '13px', color: '#94A3B8', textAlign: 'center', padding: '20px 0' }}>
+                저장된 대화가 없어요.
+              </p>
+            ) : (
+              Object.entries(drawerGroups).map(([dateLabel, convs]) => (
+                <div key={dateLabel} style={{ marginBottom: '16px' }}>
+                  <p style={{
+                    fontSize: '11px', fontWeight: '700', color: '#B0B0A8',
+                    letterSpacing: '0.5px', marginBottom: '6px',
+                  }}>
+                    {dateLabel}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    {convs.map(conv => (
+                      <button
+                        key={conv.id}
+                        onClick={() => {
+                          handleSelectConversation(conv, convs);
+                          setDrawerOpen(false);
+                        }}
+                        style={{
+                          display: 'block', width: '100%', textAlign: 'left',
+                          padding: '9px 12px', borderRadius: '8px',
+                          background: activeConvId === conv.id ? '#E3F9EC' : 'transparent',
+                          border: 'none', cursor: 'pointer',
+                          fontSize: '13px', fontWeight: '500',
+                          color: activeConvId === conv.id ? '#2A7A4B' : '#5F5E5A',
+                          fontFamily: 'inherit',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          transition: 'background 0.1s',
+                        }}
+                        onMouseEnter={e => {
+                          if (activeConvId !== conv.id) e.currentTarget.style.background = '#F2FBF5';
+                        }}
+                        onMouseLeave={e => {
+                          if (activeConvId !== conv.id) e.currentTarget.style.background = 'transparent';
+                        }}
+                      >
+                        {conv.question}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </>
+      )}
+
       <style>{`
         @keyframes nomingBounce {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
           30% { transform: translateY(-6px); opacity: 1; }
+        }
+        @keyframes drawerSlideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+        .mobile-history-bar { display: none; }
+        .mobile-history-btn {
+          display: flex; align-items: center; gap: 5px;
+          background: #fff; border: 0.5px solid #B8EBC8;
+          border-radius: 8px; padding: 6px 10px;
+          font-size: 12px; color: #2A7A4B; font-weight: 600;
+          cursor: pointer; font-family: inherit;
+        }
+        @media (max-width: 768px) {
+          .mobile-history-bar {
+            display: flex; justify-content: flex-end;
+            padding: 8px 16px 4px;
+          }
         }
         @media (min-width: 768px) {
           .coach-sidebar-wrap { display: flex !important; }
