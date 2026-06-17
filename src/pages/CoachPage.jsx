@@ -441,12 +441,12 @@ export default function CoachPage() {
                           borderRadius: '4px 16px 16px 16px',
                           padding: '14px 18px', fontSize: '13px', color: '#5F5E5A',
                           lineHeight: '1.7', whiteSpace: 'pre-wrap',
-                          width: '76%', minWidth: 0,
+                          flex: 1, minWidth: 0,
                         }}>
                           {msg.text}
                         </div>
                       ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '76%', minWidth: 0 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, minWidth: 0 }}>
                           <NomingCard structured={msg.structured} onSend={send} />
                           {msg.infographic && <InfographicCard data={msg.infographic} />}
                         </div>

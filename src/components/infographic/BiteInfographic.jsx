@@ -9,26 +9,33 @@ const colorMap = {
 
 export function BiteInfographic({ steps, result, title }) {
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', overflow: 'hidden' }}>
+      <style>{`
+        .bite-steps { display: flex; align-items: flex-start; justify-content: space-evenly; flex-wrap: nowrap; width: 100%; }
+        .bite-step-icon { width: 64px; height: 64px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 768px) {
+          .bite-steps { gap: 4px; }
+          .bite-step-icon { width: 44px !important; height: 44px !important; border-radius: 10px !important; }
+        }
+      `}</style>
+
       {title && (
         <div style={{ fontSize: 11, color: '#0F6E56', fontWeight: 500, textAlign: 'center', marginBottom: 10 }}>
           {title}
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-evenly', flexWrap: 'nowrap', width: '100%' }}>
+      <div className="bite-steps">
         {steps.map((step, i) => {
           const c = colorMap[step.color ?? 'green']
           const Icon = step.icon
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-                <div style={{
-                  width: 64, height: 64, borderRadius: 14,
-                  background: c.bg, border: c.border,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
+                <div
+                  className="bite-step-icon"
+                  style={{ background: c.bg, border: c.border }}
+                >
                   <Icon size={30} color={c.icon} />
                 </div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: c.label, textAlign: 'center', lineHeight: 1.3 }}>

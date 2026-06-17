@@ -25,6 +25,8 @@ export function NewsTicker() {
       alignItems: 'center',
       gap: 10,
       overflow: 'hidden',
+      width: '100%',
+      minWidth: 0,
     }}>
       <span style={{
         fontSize: 10,
