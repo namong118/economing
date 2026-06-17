@@ -102,7 +102,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                   onMouseLeave={() => setHoveredId(null)}
                 >
                   <button
-                    onClick={() => onSelectConversation(conv)}
+                    onClick={() => onSelectConversation(conv, convs)}
                     style={{
                       width: '100%',
                       background: activeId === conv.id ? '#E1F5EE' : hoveredId === conv.id ? '#F4FAF6' : 'transparent',

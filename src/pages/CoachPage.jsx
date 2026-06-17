@@ -273,12 +273,16 @@ export default function CoachPage() {
     setActiveConvId(null);
   };
 
-  const handleSelectConversation = (conv) => {
+  const handleSelectConversation = (conv, groupConvs) => {
     setActiveConvId(conv.id);
-    setMessages([
-      { role: 'user', text: conv.question },
-      { role: 'noming', isPlainText: true, text: conv.answer },
-    ]);
+    // groupConvs는 getConversationList의 내림차순 배열 → reverse()로 오래된 것부터 표시
+    const ordered = groupConvs ? [...groupConvs].reverse() : [conv];
+    setMessages(
+      ordered.flatMap(c => [
+        { role: 'user', text: c.question },
+        { role: 'noming', isPlainText: true, text: c.answer },
+      ])
+    );
   };
 
   const handleKeyDown = (e) => {
