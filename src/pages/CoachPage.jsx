@@ -10,14 +10,34 @@ import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
 import { CoachSidebar } from '../components/coach/CoachSidebar';
 
-/* ── 추천 질문 ────────────────────────────────────────────── */
-const SUGGESTED_QUESTIONS = [
+/* ── 추천 질문 풀 ─────────────────────────────────────────── */
+const QUESTION_POOL = [
   '월급을 받으면 가장 먼저 해야 할 것은 무엇인가요?',
   '주식 공부는 어디서부터 시작하면 좋을까요?',
   'ETF는 언제 공부하면 좋을까요?',
   '적금과 투자의 차이는 무엇인가요?',
   '경제 공부 순서를 알려주세요.',
+  '비상금은 얼마나 모아야 하나요?',
+  '파킹통장이 뭔가요?',
+  '기준금리가 오르면 내 생활에 어떤 영향이 있나요?',
+  '신용점수를 올리려면 어떻게 해야 하나요?',
+  'IRP와 연금저축, 뭐가 다른가요?',
+  '인플레이션이 왜 나쁜 건가요?',
+  '환율이 오르면 좋은 건가요 나쁜 건가요?',
+  '부동산 공부는 어디서부터 시작하면 좋을까요?',
+  '주식과 ETF 중 초보자에게 뭐가 더 나을까요?',
+  '절세할 수 있는 방법을 알려주세요.',
+  '재테크를 처음 시작하려면 뭐부터 해야 하나요?',
+  '소비 습관을 바꾸려면 어떻게 해야 하나요?',
+  '금리와 채권의 관계가 궁금해요.',
+  '달러를 사두면 좋은가요?',
+  '주식 배당금이란 무엇인가요?',
 ];
+
+function pickRandomQuestions(count = 5) {
+  const shuffled = [...QUESTION_POOL].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
 
 const INPUT_CHIPS = ['월급 관리', '저축', '투자 입문', '경제 공부', 'ETF'];
 
@@ -232,6 +252,7 @@ export default function CoachPage() {
   const { user } = useAuth();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
+  const [suggestedQuestions] = useState(() => pickRandomQuestions(5));
 
   /* 다른 페이지에서 질문 전달 시 자동 전송 */
   useEffect(() => {
@@ -391,7 +412,7 @@ export default function CoachPage() {
                     이런 고민이 있다면 물어보세요
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {SUGGESTED_QUESTIONS.map(q => (
+                    {suggestedQuestions.map(q => (
                       <button
                         key={q}
                         onClick={() => send(q)}
