@@ -334,11 +334,11 @@ export default function CoachPage() {
           maxWidth: '1100px',
           margin: '0 auto',
           padding: '0 24px',
-          overflow: 'hidden',
+          boxSizing: 'border-box',
         }}>
 
         {/* ── 사이드 패널 (데스크탑만) ─────────────────────── */}
-        <div style={{ display: 'none', width: '220px', flexShrink: 0 }} className="coach-sidebar-wrap">
+        <div style={{ display: 'none', flexShrink: 0 }} className="coach-sidebar-wrap">
           <CoachSidebar
             user={user}
             onNewChat={handleNewChat}
