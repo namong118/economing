@@ -76,11 +76,11 @@ function NomingCard({ structured, onSend }) {
         </div>
       </div>
 
-      {/* ➡️ 다음에 공부하면 좋은 것 */}
+      {/* ✅ 오늘 5분 안에 해볼 것 */}
       <div style={{ padding: '12px 18px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', minWidth: 0 }}>
         <ArrowRight size={14} color="#888780" style={{ flexShrink: 0 }} />
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.5px', flexShrink: 0, whiteSpace: 'nowrap' }}>
-          다음에 공부하면 좋은 것
+          오늘 5분 안에 해볼 것
         </p>
         <button
           onClick={() => onSend?.(nextStep)}
@@ -99,6 +99,25 @@ function NomingCard({ structured, onSend }) {
           {nextStep}
         </button>
       </div>
+
+      {/* ⚠️ 경고 (있을 때만) */}
+      {structured.warning && (
+        <div style={{
+          margin: '0 18px 14px',
+          background: '#FAECE7',
+          border: '0.5px solid #F0997B',
+          borderRadius: '8px',
+          padding: '10px 14px',
+          fontSize: '12px',
+          color: '#712B13',
+          display: 'flex',
+          gap: '8px',
+          alignItems: 'flex-start',
+        }}>
+          <span style={{ flexShrink: 0 }}>⚠️</span>
+          <span>{structured.warning}</span>
+        </div>
+      )}
 
       {/* 💾 핵심 용어 저장 */}
       {terms && terms.length > 0 && (
