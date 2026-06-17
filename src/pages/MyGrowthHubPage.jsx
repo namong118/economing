@@ -222,9 +222,8 @@ function SummaryTab() {
       {/* ── 4. 노밍 분석 ── */}
       {isOnboarded && (
         <div style={{ background: '#FFF4D6', border: '0.5px solid #FAC775', borderRadius: '12px', padding: '18px 20px', display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '24px' }}>
-          <div style={{ position: 'relative', flexShrink: 0 }}>
-            <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '42px', height: '42px', objectFit: 'contain' }} />
-            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '11px', height: '11px', borderRadius: '50%', background: '#52C97A', border: '2px solid #FFFBEA' }} />
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 34, height: 34, objectFit: 'contain' }} />
           </div>
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px', letterSpacing: '0.3px' }}>노밍의 한 줄 분석</p>
@@ -418,7 +417,9 @@ function RoadmapTabContent() {
           borderRadius: '14px', padding: '14px 16px', marginBottom: '20px',
           display: 'flex', alignItems: 'flex-start', gap: '10px',
         }}>
-          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '8px', objectFit: 'cover', flexShrink: 0, marginTop: 2 }} />
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+            <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+          </div>
           <div>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '3px' }}>노밍이 만든 맞춤 로드맵</p>
             <p style={{ fontSize: '13px', fontWeight: '600', color: '#78350F', lineHeight: '1.5' }}>{aiRoadmap.currentStage}</p>
@@ -526,7 +527,9 @@ function RoadmapTabContent() {
           padding: '12px 16px', marginBottom: '20px',
           display: 'flex', alignItems: 'center', gap: '10px',
         }}>
-          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }} />
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+          </div>
           <p style={{ fontSize: '13px', fontWeight: '700', color: '#78350F', lineHeight: '1.6' }}>
             노밍 추천 — Step {recommendedStep}부터 시작해봐요!
           </p>
