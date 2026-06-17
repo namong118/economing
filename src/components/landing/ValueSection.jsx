@@ -1,6 +1,4 @@
-﻿import NomingIcon from './NomingIcon';
-
-export default function ValueSection() {
+﻿export default function ValueSection() {
   return (
     <section style={{
       background: 'linear-gradient(160deg, #0D9B6E 0%, #52C97A 60%, #3ECFA0 100%)',
@@ -29,7 +27,7 @@ export default function ValueSection() {
       }}>
         {/* 아이콘 */}
         <div style={{ marginBottom: '32px' }}>
-          <NomingIcon size={100} />
+          <img src={`${import.meta.env.BASE_URL}appicon.jpg`} alt="ECONOMING" style={{ width: 100, height: 100, borderRadius: 28, objectFit: 'cover', display: 'block' }} />
         </div>
 
         {/* 반박 문장 */}

@@ -1,5 +1,4 @@
 ﻿import { useNavigate } from 'react-router-dom';
-import NomingIcon from './NomingIcon';
 
 export default function FinalCTASection() {
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ export default function FinalCTASection() {
           marginBottom: '32px',
           filter: 'drop-shadow(0 8px 24px rgba(33,197,142,0.2))',
         }}>
-          <NomingIcon size={100} />
+          <img src={`${import.meta.env.BASE_URL}appicon.jpg`} alt="ECONOMING" style={{ width: 100, height: 100, borderRadius: 28, objectFit: 'cover', display: 'block' }} />
         </div>
 
         {/* 타이틀 */}

@@ -1,4 +1,3 @@
-import NomingIcon from './NomingIcon';
 
 export default function ComingSoonSection() {
   return (
@@ -27,7 +26,7 @@ export default function ComingSoonSection() {
       }}>
         {/* 아이콘 */}
         <div style={{ marginBottom: '28px' }}>
-          <NomingIcon size={80} />
+          <img src={`${import.meta.env.BASE_URL}appicon.jpg`} alt="ECONOMING" style={{ width: 80, height: 80, borderRadius: 22, objectFit: 'cover', display: 'block' }} />
         </div>
 
         {/* 타이틀 */}
