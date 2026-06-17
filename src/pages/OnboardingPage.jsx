@@ -65,8 +65,8 @@ function CompletionScreen({ answers, onComplete, saving }) {
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '16px 0' }}>
       <img
-        src={`${BASE_URL}coach.png`}
-        alt="노밍"
+        src={`${BASE_URL}icon.jpg`}
+        alt="ECONOMING"
         style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 16px', boxShadow: '0 8px 24px rgba(255,200,61,0.3)' }}
       />
       <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', marginBottom: '8px' }}>
@@ -254,7 +254,7 @@ export default function OnboardingPage() {
 
   if (!user) return (
     <div style={{ minHeight: '100vh', background: '#F2FBF5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', padding: '24px' }}>
-      <img src={`${import.meta.env.BASE_URL}coach.png`} alt="노밍" style={{ width: 56, height: 56, borderRadius: 16, objectFit: 'cover' }} />
+      <img src={`${import.meta.env.BASE_URL}icon.jpg`} alt="ECONOMING" style={{ width: 56, height: 56, borderRadius: 16, objectFit: 'cover' }} />
       <p style={{ fontSize: 16, fontWeight: 700, color: '#2A7A4B', textAlign: 'center' }}>로그인이 필요해요</p>
       <p style={{ fontSize: 13, color: '#888780', textAlign: 'center' }}>온보딩을 시작하려면 먼저 로그인해주세요.</p>
       <button
