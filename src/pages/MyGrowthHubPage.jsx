@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Map } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Map, TrendingUp, Briefcase, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { roadmap } from '../data/roadmapData';
@@ -124,7 +124,7 @@ function SummaryTab() {
         background: 'linear-gradient(145deg,#fff,#F9FEFB)',
         border: '0.5px solid #B8EBC8', borderRadius: '12px',
         padding: '22px', display: 'flex', alignItems: 'center', gap: '16px',
-        marginBottom: '12px',
+        marginBottom: '16px',
       }}>
         {profile?.avatar_url ? (
           <img src={profile.avatar_url} alt="프로필" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #fff', boxShadow: 'none', flexShrink: 0 }} />
@@ -151,7 +151,7 @@ function SummaryTab() {
       </div>
 
       {/* ── 2. 성장 단계 ── */}
-      <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '12px' }}>
+      <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '16px' }}>
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px', marginBottom: '14px' }}>성장 단계</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
           <img src={`${BASE_URL}${currentLevel.image}`} alt={currentLevel.label} style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} />
@@ -198,7 +198,7 @@ function SummaryTab() {
 
       {/* ── 3. 경제 프로필 ── */}
       {isOnboarded ? (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '12px' }}>
+        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px' }}>경제 프로필</p>
             <button
@@ -210,50 +210,59 @@ function SummaryTab() {
               ✏️ 수정
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {econInfo && (
-              <div style={{ background: econInfo.bg, border: `1.5px solid ${econInfo.border}`, borderRadius: '12px', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '22px' }}>{econInfo.emoji}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <BookOpen size={16} color="#3A9A5C" />
+                </div>
                 <div>
-                  <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', marginBottom: '1px', letterSpacing: '0.4px' }}>경제 수준</p>
-                  <p style={{ fontSize: '14px', fontWeight: '800', color: econInfo.color }}>{econInfo.label} <span style={{ fontSize: '12px', color: '#888780', fontWeight: '500' }}>— {econInfo.desc}</span></p>
+                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>경제 수준</p>
+                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{econInfo.label}</p>
                 </div>
               </div>
             )}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              {invInfo && (
-                <div style={{ background: '#F2FBF5', border: '0.5px solid #B8EBC8', borderRadius: '10px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '18px' }}>{invInfo.emoji}</span>
-                  <div>
-                    <p style={{ fontSize: '10px', fontWeight: '700', color: '#888780', marginBottom: '1px', letterSpacing: '0.4px' }}>투자 경험</p>
-                    <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B' }}>{invInfo.label}</p>
-                  </div>
+            {invInfo && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <TrendingUp size={16} color="#3A9A5C" />
                 </div>
-              )}
-              {occInfo && (
-                <div style={{ background: '#F2FBF5', border: '0.5px solid #B8EBC8', borderRadius: '10px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '18px' }}>{occInfo.emoji}</span>
-                  <div>
-                    <p style={{ fontSize: '10px', fontWeight: '700', color: '#888780', marginBottom: '1px', letterSpacing: '0.4px' }}>현재 상황</p>
-                    <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B' }}>{occInfo.label}</p>
-                  </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>투자 경험</p>
+                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{invInfo.label}</p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+            {occInfo && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Briefcase size={16} color="#3A9A5C" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>현재 상황</p>
+                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{occInfo.label}</p>
+                </div>
+              </div>
+            )}
             {interests.length > 0 && (
-              <div>
-                <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.6px', marginBottom: '8px' }}>관심 분야</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {interests.map(tag => (
-                    <span key={tag} style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', background: '#F2FBF5', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '4px 12px' }}>{tag}</span>
-                  ))}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Heart size={16} color="#3A9A5C" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '6px' }}>관심 분야</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {interests.map(tag => (
+                      <span key={tag} style={{ fontSize: '12px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '3px 10px' }}>{tag}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
       ) : (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px dashed #B8EBC8', padding: '28px', textAlign: 'center', marginBottom: '12px' }}>
+        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px dashed #B8EBC8', padding: '28px', textAlign: 'center', marginBottom: '16px' }}>
           <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 10px', display: 'block' }} />
           <p style={{ fontSize: '15px', fontWeight: '800', color: '#2A7A4B', marginBottom: '5px' }}>경제 성장 진단을 완료해보세요</p>
           <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.6', marginBottom: '16px' }}>온보딩을 완료하면 노밍이 맞춤 코칭을 시작해요.</p>
