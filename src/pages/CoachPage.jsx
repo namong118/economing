@@ -167,17 +167,8 @@ function NomingGreeting({ BASE_URL }) {
       borderRadius: '12px', padding: '24px',
       display: 'flex', gap: '16px', alignItems: 'flex-start',
     }}>
-      <div style={{ position: 'relative', flexShrink: 0 }}>
-        <img
-          src={`${BASE_URL}noming.png`}
-          alt="노밍"
-          style={{ width: '52px', height: '52px', objectFit: 'contain' }}
-        />
-        <div style={{
-          position: 'absolute', bottom: '-2px', right: '-2px',
-          width: '14px', height: '14px', borderRadius: '50%',
-          background: '#52C97A', border: '2.5px solid #FFF4D6',
-        }} />
+      <div style={{ width: 60, height: 60, borderRadius: 14, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 44, height: 44, objectFit: 'contain' }} />
       </div>
       <div>
         <p style={{ fontSize: '14px', fontWeight: '800', color: '#92400E', marginBottom: '6px' }}>
@@ -198,11 +189,9 @@ function LoadingBubble({ BASE_URL }) {
     <div className="anim-fade" style={{
       display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '20px',
     }}>
-      <img
-        src={`${BASE_URL}noming.png`}
-        alt="노밍"
-        style={{ width: '36px', height: '36px', objectFit: 'contain', flexShrink: 0, marginTop: '2px' }}
-      />
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+        <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+      </div>
       <div style={{
         background: '#fff', border: '0.5px solid #B8EBC8',
         borderRadius: '4px 16px 16px 16px',
@@ -454,14 +443,9 @@ export default function CoachPage() {
                       }}
                     >
                       {msg.role === 'noming' && (
-                        <img
-                          src={`${BASE_URL}noming.png`}
-                          alt="노밍"
-                          style={{
-                            width: '36px', height: '36px',
-                            objectFit: 'contain', flexShrink: 0, marginTop: '2px',
-                          }}
-                        />
+                        <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                          <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                        </div>
                       )}
 
                       {msg.role === 'user' ? (
