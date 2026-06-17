@@ -4,8 +4,9 @@ import { useAuth } from '../../context/AuthContext';
 
 const navLinks = [
   { path: '/home',      label: '홈' },
+  { path: '/bites',     label: '경제한잎' },
   { path: '/coach',     label: '노밍' },
-  { path: '/read',      label: '경제 읽기' },
+  { path: '/read',      label: '경제읽기' },
   { path: '/my-growth', label: '내 성장' },
 ];
 

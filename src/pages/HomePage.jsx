@@ -1,186 +1,56 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Zap, BookOpen } from 'lucide-react';
+import { Leaf, Zap, MessageCircle, NotebookPen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
 import { getNextLevelInfo } from '../data/levelData';
 import { getTodaysBite } from '../services/biteService';
 import { getRecommendedQuestions } from '../services/coachService';
+import { fetchAndSummarizeNews } from '../services/readingService';
+import { useUserLevel } from '../hooks/useUserLevel';
 import PageWrapper from '../components/layout/PageWrapper';
-import DailyBiteCard from '../components/home/DailyBiteCard';
-import { NewsTicker } from '../components/home/NewsTicker';
 
-/* 받침 유무에 따라 이/가 반환 */
-function subjectParticle(title) {
-  if (!title) return '이';
-  const code = title.charCodeAt(title.length - 1);
-  return (code - 0xAC00) % 28 > 0 ? '이' : '가';
-}
-
-/* ══ 노밍 카드 ══════════════════════════════════════════════ */
-function NomingCard({ bite, profile, navigate }) {
-  const userName = profile?.nickname?.split(' ')[0] || '사용자';
-
-  const todos = [
-    !profile?.onboarding_completed && { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#3A9A5C" />, iconBg: '#E3F9EC', path: '/diagnosis' },
-    { title: '한잎 퀴즈 풀기',       description: '+5 XP 획득 가능',               icon: <Zap size={14} color="#854F0B" />, iconBg: '#FFF4D6', path: `/bite/${bite.id}` },
-    { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
-  ].filter(Boolean);
-
-  const fallback = [
-    `${bite.title}${subjectParticle(bite.title)} 내 생활에 미치는 영향은?`,
-    `${bite.title}${subjectParticle(bite.title)} 뭔지 쉽게 설명해줘`,
-  ];
-
-  const [questions,       setQuestions]       = useState(null);
-  const [questionsLoading, setQuestionsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!bite?.title) return;
-    setQuestionsLoading(true);
-    getRecommendedQuestions(bite.title)
-      .then(qs => setQuestions(qs?.length ? qs : fallback))
-      .catch(() => setQuestions(fallback))
-      .finally(() => setQuestionsLoading(false));
-  }, [bite?.title]); // eslint-disable-line
-
-  return (
-    <div style={{
-      background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8',
-      padding: 16, height: '100%', display: 'flex', flexDirection: 'column',
-      boxSizing: 'border-box',
-    }}>
-
-      {/* 노밍 헤더 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <img
-          src={`${import.meta.env.BASE_URL}noming.png`}
-          alt="노밍"
-          style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
-        />
-        <div>
-          <div style={{ fontSize: 14, fontWeight: 500, color: '#2A7A4B' }}>노밍 · AI 경제 코치</div>
-          <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>언제든 물어보세요</div>
-        </div>
-      </div>
-
-      {/* 말풍선 */}
-      <div style={{
-        background: '#F2FBF5', borderRadius: '0 10px 10px 10px',
-        padding: '13px 14px', fontSize: 13, color: '#444441',
-        lineHeight: 1.7, border: '0.5px solid #B8EBC8', marginBottom: 14,
-      }}>
-        {profile?.noming_intro ? (
-          profile.noming_intro
-        ) : (
-          <>
-            {userName}님, 오늘의 주제는{' '}
-            <strong style={{ color: '#2A7A4B' }}>{bite.title}</strong>이에요.<br />
-            오늘 배운 내용이 내 생활에 어떤 영향이 있는지 같이 알아볼까요?
-          </>
-        )}
-      </div>
-
-      {/* 추천 질문 라벨 */}
-      <div style={{ fontSize: 11, color: '#888780', marginBottom: 8 }}>오늘의 추천 질문</div>
-
-      {/* 추천 질문 버튼 or 스켈레톤 */}
-      {questionsLoading ? (
-        [0, 1].map(i => (
-          <div key={i} style={{
-            width: '100%', height: 36, borderRadius: 8, marginBottom: 6,
-            background: 'linear-gradient(90deg, #E3F9EC 25%, #F2FBF5 50%, #E3F9EC 75%)',
-            backgroundSize: '200% 100%',
-            animation: 'shimmer 1.5s infinite',
-          }} />
-        ))
-      ) : (
-        (questions ?? fallback).map((q, i) => (
-          <button
-            key={i}
-            onClick={() => navigate('/coach', { state: { question: q } })}
-            style={{
-              width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
-              borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#2A7A4B',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              marginBottom: 6, cursor: 'pointer', textAlign: 'left',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-            onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
-          >
-            <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
-            <span style={{ color: '#52C97A', flexShrink: 0 }}>→</span>
-          </button>
-        ))
-      )}
-
-      <hr style={{ border: 'none', borderTop: '0.5px solid #f0f7f3', margin: '14px 0' }} />
-
-      {/* 오늘 할 일 라벨 */}
-      <div style={{ fontSize: 11, color: '#888780', marginBottom: 8 }}>오늘 해야 할 것</div>
-
-      {/* 할 일 목록 */}
-      {todos.map((todo, i) => (
-        <div
-          key={i}
-          onClick={() => navigate(todo.path)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: '7px 0', cursor: 'pointer',
-            borderBottom: i < todos.length - 1 ? '0.5px solid #f0f7f3' : 'none',
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = '#FAFFFE'}
-          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-        >
-          <div style={{
-            width: 28, height: 28, borderRadius: 7, background: todo.iconBg,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 13, flexShrink: 0,
-          }}>
-            {todo.icon}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, fontWeight: 500, color: '#2C2C2A' }}>{todo.title}</div>
-            <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>{todo.description}</div>
-          </div>
-          <span style={{ color: '#B8EBC8', fontSize: 13 }}>→</span>
-        </div>
-      ))}
-
-      <hr style={{ border: 'none', borderTop: '0.5px solid #f0f7f3', margin: '14px 0' }} />
-
-      {/* 직접 질문 */}
-      <button
-        onClick={() => navigate('/coach')}
-        style={{
-          width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
-          borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#888780',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          cursor: 'pointer', marginTop: 'auto',
-        }}
-        onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-        onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
-      >
-        직접 질문하기...
-        <span style={{ color: '#52C97A' }}>→</span>
-      </button>
-    </div>
-  );
-}
-
-/* ══ 메인 ════════════════════════════════════════════════════ */
 export default function HomePage() {
   const navigate                          = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
+  const { userLevel }                     = useUserLevel();
   const [xpLoading, setXpLoading]         = useState(false);
 
-  const bite = getTodaysBite();
-  const xp   = profile?.xp ?? 0;
-  const { currentLevel } = getNextLevelInfo(xp);
+  const bite                    = getTodaysBite();
+  const xp                      = profile?.xp ?? 0;
+  const { currentLevel }        = getNextLevelInfo(xp);
 
   const d    = new Date();
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const today = `${d.getMonth() + 1}월 ${d.getDate()}일 ${days[d.getDay()]}`;
+
+  /* 뉴스 */
+  const [todayNews,    setTodayNews]    = useState(null);
+  const [newsLoading,  setNewsLoading]  = useState(true);
+
+  useEffect(() => {
+    fetchAndSummarizeNews('경제')
+      .then(results => setTodayNews(results[0] ?? null))
+      .catch(() => {})
+      .finally(() => setNewsLoading(false));
+  }, []);
+
+  /* 추천 질문 */
+  const fallbackQuestions = [
+    `${bite?.title}이 내 생활에 미치는 영향은?`,
+    `${bite?.title} 쉽게 설명해줘`,
+  ];
+  const [recommendedQuestions,  setRecommendedQuestions]  = useState(null);
+  const [questionsLoading,      setQuestionsLoading]      = useState(true);
+
+  useEffect(() => {
+    if (!bite?.title) return;
+    setQuestionsLoading(true);
+    getRecommendedQuestions(bite.title, userLevel)
+      .then(qs => setRecommendedQuestions(qs?.length ? qs : fallbackQuestions))
+      .catch(() => setRecommendedQuestions(fallbackQuestions))
+      .finally(() => setQuestionsLoading(false));
+  }, [bite?.title]); // eslint-disable-line
 
   const handleAddXp = async () => {
     if (!user || xpLoading) return;
@@ -190,6 +60,15 @@ export default function HomePage() {
     setXpLoading(false);
   };
 
+  const todos = [
+    { title: '오늘의 한잎 읽기',   description: '3분이면 충분해요',       Icon: Leaf,          iconBg: '#E3F9EC', iconColor: '#3A9A5C', path: `/bite/${bite?.id}` },
+    { title: '한잎 퀴즈 풀기',     description: '+5 XP 획득 가능',       Icon: Zap,           iconBg: '#FFF4D6', iconColor: '#854F0B', path: `/bite/${bite?.id}` },
+    { title: '노밍에게 질문하기',  description: '궁금한 것 바로 물어보기', Icon: MessageCircle, iconBg: '#FFF4D6', iconColor: '#FFC83D', path: '/coach' },
+    { title: '경제일기 쓰기',      description: '오늘 배운 것 기록하기',  Icon: NotebookPen,   iconBg: '#F1EFE8', iconColor: '#5F5E5A', path: '/diary' },
+  ];
+
+  const nomingIntro = profile?.noming_intro;
+
   return (
     <PageWrapper>
       <style>{`
@@ -197,79 +76,208 @@ export default function HomePage() {
           0%   { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
-        .hd-grid {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          gap: 16px;
-          padding: 8px 24px 60px;
-          background: #F2FBF5;
-          box-sizing: border-box;
-          align-content: start;
-        }
-        .hd-header { align-self: center; min-width: 0; overflow: hidden; }
-        .hd-bite, .hd-noming { display: flex; flex-direction: column; min-width: 0; }
-        @media (min-width: 760px) {
-          .hd-grid {
-            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-            grid-template-rows: auto 1fr;
-            align-content: stretch;
-          }
-          .hd-header { grid-column: 1 / -1; align-self: center; }
-          .hd-bite, .hd-noming { align-self: stretch; height: 100%; }
-        }
-        @media (min-width: 1160px) {
-          .hd-grid {
-            max-width: 1160px;
-            margin: 0 auto;
-          }
-        }
-        @media (max-width: 768px) {
-          .hd-grid {
-            padding: 12px 16px 16px;
-            gap: 12px;
-          }
-        }
       `}</style>
 
-      <div className="anim-fade">
-        <div className="hd-grid">
+      <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 80px', boxSizing: 'border-box' }}>
 
-          {/* ── 헤더 ── */}
-          <div className="hd-header">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: '#888780' }}>{today} </span>
-              <div style={{
-                background: '#E3F9EC', border: '0.5px solid #B8EBC8',
-                borderRadius: 20, padding: '4px 12px',
-                fontSize: 11, color: '#2A7A4B',
-                display: 'flex', alignItems: 'center', gap: 5,
-              }}>
-                🍃 {currentLevel.label} · {xp} XP
-                {user && (
-                  <button
-                    onClick={handleAddXp}
-                    disabled={xpLoading}
-                    style={{ background: 'none', border: 'none', fontSize: 9, color: '#B8EBC8', cursor: 'pointer', padding: '0 0 0 4px' }}
-                  >
-                    {xpLoading ? '…' : '+5'}
-                  </button>
-                )}
-              </div>
-            </div>
-            <NewsTicker />
+        {/* 날짜 헤더 */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
+          <div style={{
+            background: '#E3F9EC', border: '0.5px solid #B8EBC8',
+            borderRadius: 20, padding: '4px 12px',
+            fontSize: 11, color: '#2A7A4B',
+            display: 'flex', alignItems: 'center', gap: 5,
+          }}>
+            🍃 {currentLevel?.label} · {xp} XP
+            {user && (
+              <button
+                onClick={handleAddXp}
+                disabled={xpLoading}
+                style={{ background: 'none', border: 'none', fontSize: 9, color: '#B8EBC8', cursor: 'pointer', padding: '0 0 0 4px' }}
+              >
+                {xpLoading ? '…' : '+5'}
+              </button>
+            )}
           </div>
-
-          {/* ── 경제 한잎 ── */}
-          <div className="hd-bite">
-            <DailyBiteCard bite={bite} />
-          </div>
-
-          {/* ── 노밍 카드 ── */}
-          <div className="hd-noming">
-            <NomingCard bite={bite} profile={profile} navigate={navigate} />
-          </div>
-
         </div>
+
+        {/* 카드 1: 오늘의 한잎 미리보기 */}
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <span style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C' }}>🍃 오늘의 경제 한잎</span>
+            <div style={{ display: 'flex', gap: 5 }}>
+              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#E3F9EC', color: '#2A7A4B', border: '0.5px solid #B8EBC8' }}>
+                {bite?.category}
+              </span>
+              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#FFF4D6', color: '#854F0B', border: '0.5px solid #FAC775' }}>
+                {bite?.level}
+              </span>
+            </div>
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: '#2A7A4B', marginBottom: 4 }}>
+            {bite?.title}
+          </div>
+          <div style={{ fontSize: 13, color: '#3A9A5C', marginBottom: 14, lineHeight: 1.6 }}>
+            {bite?.description?.slice(0, 60)}...
+          </div>
+          <button
+            onClick={() => navigate(`/bite/${bite?.id}`)}
+            style={{ width: '100%', background: '#52C97A', color: '#fff', border: 'none', borderRadius: 8, padding: 10, fontSize: 13, fontWeight: 500, cursor: 'pointer' }}
+          >
+            🍃 오늘의 한잎 배우기 →
+          </button>
+        </div>
+
+        {/* 카드 2: 오늘의 추천 뉴스 */}
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', marginBottom: 10 }}>📰 오늘의 추천 뉴스</div>
+
+          {newsLoading ? (
+            <div style={{ height: 60, background: '#E3F9EC', borderRadius: 8, opacity: 0.5 }} />
+          ) : todayNews ? (
+            <>
+              <div style={{ fontSize: 11, color: '#888780', marginBottom: 6 }}>
+                {new Date(todayNews.pubDate).toLocaleDateString('ko-KR')}
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#2A7A4B', lineHeight: 1.5, marginBottom: 8 }}>
+                {todayNews.title}
+              </div>
+              {todayNews.nomingComment && (
+                <div style={{
+                  background: '#FFFBEE', borderRadius: 8, border: '0.5px solid #FAC775',
+                  padding: '8px 12px', fontSize: 12, color: '#633806',
+                  marginBottom: 10, display: 'flex', gap: 6, alignItems: 'flex-start',
+                }}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}noming.png`}
+                    alt="노밍"
+                    style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }}
+                  />
+                  {todayNews.nomingComment}
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 8 }}>
+                <a
+                  href={todayNews.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: '#F2FBF5', border: '0.5px solid #B8EBC8', color: '#2A7A4B', fontSize: 12, textAlign: 'center', textDecoration: 'none' }}
+                >
+                  원문 보기 →
+                </a>
+                <button
+                  onClick={() => navigate('/read')}
+                  style={{ flex: 1, padding: '8px 12px', borderRadius: 8, background: '#52C97A', border: 'none', color: '#fff', fontSize: 12, cursor: 'pointer' }}
+                >
+                  더 많은 뉴스
+                </button>
+              </div>
+            </>
+          ) : (
+            <div style={{ fontSize: 12, color: '#888780', textAlign: 'center', padding: 12 }}>뉴스를 불러올 수 없어요</div>
+          )}
+        </div>
+
+        {/* 카드 3: 노밍의 한마디 */}
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <img
+              src={`${import.meta.env.BASE_URL}noming.png`}
+              alt="노밍"
+              style={{ width: 36, height: 36, objectFit: 'contain' }}
+            />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#2A7A4B' }}>노밍의 한마디</div>
+              <div style={{ fontSize: 11, color: '#888780' }}>오늘의 경제 코칭</div>
+            </div>
+          </div>
+
+          <div style={{
+            background: '#F2FBF5', borderRadius: '0 10px 10px 10px',
+            padding: '12px 14px', fontSize: 13, color: '#444441',
+            lineHeight: 1.7, border: '0.5px solid #B8EBC8', marginBottom: 12,
+          }}>
+            {nomingIntro ? nomingIntro : (
+              <>오늘의 주제는 <strong style={{ color: '#2A7A4B' }}>{bite?.title}</strong>이에요. 궁금한 게 있으면 바로 물어보세요!</>
+            )}
+          </div>
+
+          {questionsLoading ? (
+            [0, 1].map(i => (
+              <div key={i} style={{
+                width: '100%', height: 36, borderRadius: 8, marginBottom: 6,
+                background: 'linear-gradient(90deg, #E3F9EC 25%, #F2FBF5 50%, #E3F9EC 75%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 1.5s infinite',
+              }} />
+            ))
+          ) : (
+            (recommendedQuestions ?? fallbackQuestions).map((q, i) => (
+              <button
+                key={i}
+                onClick={() => navigate('/coach', { state: { question: q } })}
+                style={{
+                  width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
+                  borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#2A7A4B',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  marginBottom: 6, cursor: 'pointer', textAlign: 'left',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
+                onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
+              >
+                <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
+                <span style={{ color: '#52C97A', flexShrink: 0 }}>→</span>
+              </button>
+            ))
+          )}
+
+          <button
+            onClick={() => navigate('/coach')}
+            style={{
+              width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
+              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#888780',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
+            onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
+          >
+            직접 질문하기...
+            <span style={{ color: '#52C97A' }}>→</span>
+          </button>
+        </div>
+
+        {/* 카드 4: 오늘 할일 */}
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', marginBottom: 12 }}>오늘 해야 할 것</div>
+          {todos.map((todo, i) => (
+            <div
+              key={i}
+              onClick={() => navigate(todo.path)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '8px 0', cursor: 'pointer',
+                borderBottom: i < todos.length - 1 ? '0.5px solid #f0f7f3' : 'none',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#FAFFFE'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              <div style={{
+                width: 28, height: 28, borderRadius: 7, background: todo.iconBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <todo.Icon size={14} color={todo.iconColor} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 500, color: '#2C2C2A' }}>{todo.title}</div>
+                <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>{todo.description}</div>
+              </div>
+              <span style={{ color: '#B8EBC8', fontSize: 13 }}>→</span>
+            </div>
+          ))}
+        </div>
+
       </div>
     </PageWrapper>
   );

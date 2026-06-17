@@ -1,11 +1,12 @@
-﻿import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Sun, Newspaper, TrendingUp } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Home, Leaf, Newspaper, TrendingUp } from 'lucide-react';
 
 const navItems = [
-  { path: '/home',      Icon: Home,      label: '홈' },
-  { path: '/coach',     Icon: Sun,       label: '노밍' },
-  { path: '/read',      Icon: Newspaper, label: '경제읽기' },
-  { path: '/my-growth', Icon: TrendingUp, label: '내 성장' },
+  { path: '/home',      Icon: Home,        label: '홈',      type: 'lucide' },
+  { path: '/bites',     Icon: Leaf,        label: '한잎',    type: 'lucide' },
+  { path: '/coach',     Icon: null,        label: '노밍',    type: 'img'    },
+  { path: '/read',      Icon: Newspaper,   label: '경제읽기', type: 'lucide' },
+  { path: '/my-growth', Icon: TrendingUp,  label: '내 성장', type: 'lucide' },
 ];
 
 export default function BottomNav() {
@@ -50,7 +51,18 @@ export default function BottomNav() {
               position: 'relative',
             }}
           >
-            <item.Icon size={20} color={isActive ? '#52C97A' : '#9CA3AF'} />
+            {item.type === 'img' ? (
+              <img
+                src={`${import.meta.env.BASE_URL}noming.png`}
+                alt="노밍"
+                style={{
+                  width: 22, height: 22, objectFit: 'contain',
+                  opacity: isActive ? 1 : 0.45,
+                }}
+              />
+            ) : (
+              <item.Icon size={22} color={isActive ? '#52C97A' : '#9CA3AF'} />
+            )}
             <span style={{
               fontSize: '10px',
               fontWeight: isActive ? '700' : '500',
