@@ -408,7 +408,7 @@ export default function ProfilePage() {
                 온보딩을 완료하면 노밍이<br />나에게 딱 맞는 코칭을 시작해요.
               </p>
               <button
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/diagnosis')}
                 style={{
                   padding: '12px 28px', borderRadius: '12px',
                   background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
@@ -416,7 +416,7 @@ export default function ProfilePage() {
                   cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)',
                 }}
               >
-                온보딩 시작하기 →
+                진단 시작하기 →
               </button>
             </div>
           )}

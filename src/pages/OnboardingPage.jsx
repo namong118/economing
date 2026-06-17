@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  BookOpen, TrendingUp, Briefcase, PiggyBank, Sprout,
+  BookOpen, TrendingUp, Briefcase, PiggyBank,
   GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -9,8 +9,8 @@ import { completeOnboarding } from '../services/onboardingService';
 
 const BASE_URL = import.meta.env.BASE_URL;
 
-/* ── 경제 수준 진단 문항 ──────────────────────────────────────── */
-const DIAGNOSIS_QUESTIONS = [
+/* ── (진단 문항은 DiagnosisPage에서 관리) ── */
+const _REMOVED = [
   {
     id: 1, category: '기초 개념',
     question: 'GDP, 금리, 인플레이션이 무엇인지 설명할 수 있다',
@@ -125,17 +125,6 @@ const DIAGNOSIS_QUESTIONS = [
 
 /* ── 설문 데이터 ─────────────────────────────────────────────── */
 const STEPS = [
-  {
-    id: 'economic_level',
-    question: '경제 공부는\n어느 정도 해보셨나요?',
-    nomingMsg: '어느 정도 경험을 가지고 계신지\n알아야 딱 맞는 이야기를 해줄 수 있어요!',
-    multi: false,
-    options: [
-      { value: 'beginner',     icon: <Sprout size={18} color="#2A7A4B" />,     label: '처음이에요',           desc: '경제 공부, 어디서부터 시작할지 막막해요' },
-      { value: 'intermediate', icon: <BookOpen size={18} color="#2A7A4B" />,   label: '조금 공부해봤어요',    desc: '기본 개념은 알지만 아직 배울 게 많아요' },
-      { value: 'advanced',     icon: <TrendingUp size={18} color="#2A7A4B" />, label: '꾸준히 공부 중이에요', desc: '경제 뉴스, 투자 개념을 꾸준히 접하고 있어요' },
-    ],
-  },
   {
     id: 'investment_experience',
     question: '투자 경험이\n있나요?',
@@ -348,38 +337,16 @@ function AIResultScreen({ aiResult, onGoHome }) {
 /* ── 메인 ─────────────────────────────────────────────────────── */
 export default function OnboardingPage() {
   const navigate = useNavigate();
-  const { user, loading, refreshProfile } = useAuth();
+  const location = useLocation();
+  const { user, loading, refreshProfile, profile } = useAuth();
 
-  const [stepIdx,   setStepIdx]  = useState(0);
-  const [answers,   setAnswers]  = useState({});
-  const [saving,    setSaving]   = useState(false);
-  const [animKey,   setAnimKey]  = useState(0);
-  const [aiResult,  setAiResult] = useState(null);
-  const [currentQ,  setCurrentQ] = useState(0);
-  const [scores,    setScores]   = useState(Array(10).fill(undefined));
+  const diagnosisLevel = location.state?.economic_level;
 
-  const handleAnswer = (score) => {
-    const newScores = [...scores];
-    newScores[currentQ] = score;
-    setScores(newScores);
-  };
-
-  const calculateLevel = (scoresArr) => {
-    const total = scoresArr.reduce((sum, s) => sum + s, 0);
-    if (total <= 18) return 'beginner';
-    if (total <= 26) return 'elementary';
-    if (total <= 34) return 'intermediate';
-    if (total <= 42) return 'advanced';
-    return 'expert';
-  };
-
-  const handleStep1Complete = () => {
-    const level = calculateLevel(scores);
-    const total = scores.reduce((sum, s) => sum + s, 0);
-    setAnswers(prev => ({ ...prev, economic_level: level, diagnosis_scores: scores, diagnosis_total: total }));
-    setAnimKey(k => k + 1);
-    setStepIdx(1);
-  };
+  const [stepIdx,  setStepIdx] = useState(0);
+  const [answers,  setAnswers] = useState(diagnosisLevel ? { economic_level: diagnosisLevel } : {});
+  const [saving,   setSaving]  = useState(false);
+  const [animKey,  setAnimKey] = useState(0);
+  const [aiResult, setAiResult] = useState(null);
 
   /* 미인증 → 로그인 */
   useEffect(() => {
@@ -429,7 +396,11 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setSaving(true);
     try {
-      const result = await completeOnboarding(user.id, answers);
+      const fullAnswers = {
+        economic_level: profile?.economic_level || 'beginner',
+        ...answers,
+      };
+      const result = await completeOnboarding(user.id, fullAnswers);
       await refreshProfile();
       setAiResult(result);
     } catch (err) {
@@ -509,7 +480,9 @@ export default function OnboardingPage() {
               {isDone
                 ? '정보를 저장하고 있어요...'
                 : stepIdx === 0
-                  ? '몇 가지 질문으로\n당신에게 맞는 경제 성장 여정을 준비할게요.'
+                  ? diagnosisLevel
+                    ? '거의 다 왔어요!\n몇 가지만 더 알려주면 맞춤 코칭을 시작할게요.'
+                    : '몇 가지 질문으로\n당신에게 맞는 경제 성장 여정을 준비할게요.'
                   : step.nomingMsg}
             </p>
           </div>
@@ -520,172 +493,74 @@ export default function OnboardingPage() {
           <CompletionScreen answers={answers} onComplete={handleComplete} saving={saving} />
         ) : (
           <div key={`step-${animKey}`} className="anim-fade">
-            {stepIdx === 0 ? (
-              /* ── 경제 수준 진단 (10문항) ── */
-              <>
-                <h2 style={{ fontSize: 'clamp(20px, 4vw, 26px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: '6px' }}>
-                  나의 경제 이해도는?
-                </h2>
-                <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>
-                  각 항목을 읽고 나에게 해당하는 점수를 선택해주세요
-                </p>
+            <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: step.multi ? '6px' : '20px', whiteSpace: 'pre-line' }}>
+              {step.question}
+            </h2>
+            {step.multi && (
+              <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>여러 개 선택할 수 있어요</p>
+            )}
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '700' }}>
-                    {DIAGNOSIS_QUESTIONS[currentQ].category}
-                  </span>
-                  <span style={{ fontSize: '12px', color: '#888780' }}>
-                    {currentQ + 1} / 10
-                  </span>
-                </div>
-                <div style={{ background: '#E3F9EC', borderRadius: '20px', height: '4px', marginBottom: '20px' }}>
-                  <div style={{ background: '#52C97A', width: `${((currentQ + 1) / 10) * 100}%`, borderRadius: '20px', height: '4px', transition: 'width 0.3s ease' }} />
-                </div>
-
-                <p style={{ fontSize: '16px', fontWeight: '600', color: '#2A7A4B', lineHeight: '1.6', marginBottom: '20px' }}>
-                  {DIAGNOSIS_QUESTIONS[currentQ].question}
-                </p>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-                  {DIAGNOSIS_QUESTIONS[currentQ].options.map(opt => (
-                    <button
-                      key={opt.score}
-                      onClick={() => handleAnswer(opt.score)}
-                      style={{
-                        padding: '12px 16px', borderRadius: '10px', cursor: 'pointer',
-                        border: scores[currentQ] === opt.score ? '2px solid #52C97A' : '0.5px solid #B8EBC8',
-                        background: scores[currentQ] === opt.score ? '#E3F9EC' : '#fff',
-                        display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left',
-                        fontFamily: 'inherit', transition: 'all 0.15s',
-                      }}
-                    >
-                      <div style={{
-                        width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-                        background: scores[currentQ] === opt.score ? '#52C97A' : '#F2FBF5',
-                        color: scores[currentQ] === opt.score ? '#fff' : '#888780',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '12px', fontWeight: '600',
-                      }}>
-                        {opt.score}
-                      </div>
-                      <span style={{
-                        fontSize: '13px',
-                        color: scores[currentQ] === opt.score ? '#2A7A4B' : '#5F5E5A',
-                        fontWeight: scores[currentQ] === opt.score ? '600' : '400',
-                      }}>
-                        {opt.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '28px' }}>
-                  {currentQ > 0 && (
-                    <button
-                      onClick={() => setCurrentQ(q => q - 1)}
-                      style={{ flex: 1, padding: '13px', borderRadius: '12px', border: '0.5px solid #B8EBC8', background: '#fff', color: '#2A7A4B', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' }}
-                    >
-                      이전
-                    </button>
-                  )}
+            <div style={{ display: 'grid', gridTemplateColumns: step.options.length === 4 || step.options.length === 6 ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '28px' }}>
+              {step.options.map(opt => {
+                const selected = step.multi ? (answers[step.id] ?? []).includes(opt.value) : answers[step.id] === opt.value;
+                return (
                   <button
-                    onClick={() => currentQ < 9 ? setCurrentQ(q => q + 1) : handleStep1Complete()}
-                    disabled={scores[currentQ] === undefined}
+                    key={opt.value}
+                    onClick={() => step.multi ? toggleMulti(opt.value) : selectSingle(opt.value)}
                     style={{
-                      flex: 2, padding: '13px', borderRadius: '12px', border: 'none',
-                      background: scores[currentQ] !== undefined ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
-                      color: scores[currentQ] !== undefined ? '#fff' : '#94A3B8',
-                      fontSize: '14px', fontWeight: '800', letterSpacing: '-0.3px',
-                      cursor: scores[currentQ] !== undefined ? 'pointer' : 'not-allowed',
-                      fontFamily: 'inherit',
-                      boxShadow: scores[currentQ] !== undefined ? '0 4px 14px rgba(33,197,142,0.3)' : 'none',
-                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: step.options.length <= 3 ? 'row' : 'column',
+                      alignItems: step.options.length <= 3 ? 'center' : 'flex-start',
+                      gap: step.options.length <= 3 ? '14px' : '8px',
+                      padding: step.options.length <= 3 ? '16px 20px' : '16px',
+                      borderRadius: '16px',
+                      background: selected ? '#F2FBF5' : '#fff',
+                      border: `2px solid ${selected ? '#52C97A' : '#E2E8F0'}`,
+                      cursor: 'pointer', textAlign: 'left',
+                      transition: 'all 0.15s',
+                      boxShadow: selected ? '0 0 0 4px rgba(33,197,142,0.1)' : 'none',
+                      position: 'relative', overflow: 'hidden',
                     }}
                   >
-                    {currentQ < 9 ? '다음 →' : '진단 완료 →'}
+                    {selected && (
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
+                    )}
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {opt.icon}
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
+                      {step.options.length <= 3 && (
+                        <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
+                      )}
+                    </div>
                   </button>
-                </div>
+                );
+              })}
+            </div>
 
-                <button
-                  onClick={() => navigate('/home')}
-                  style={{ display: 'block', margin: '0 auto', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
-                >
-                  나중에 설정하기
-                </button>
-              </>
-            ) : (
-              /* ── 일반 선택 (Steps 2~4) ── */
-              <>
-                <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: step.multi ? '6px' : '20px', whiteSpace: 'pre-line' }}>
-                  {step.question}
-                </h2>
-                {step.multi && (
-                  <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>여러 개 선택할 수 있어요</p>
-                )}
+            <button
+              onClick={goNext}
+              disabled={!canNext}
+              style={{
+                width: '100%', padding: '16px', borderRadius: '16px',
+                background: canNext ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
+                color: canNext ? '#fff' : '#94A3B8', border: 'none',
+                fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
+                cursor: canNext ? 'pointer' : 'not-allowed',
+                boxShadow: canNext ? '0 6px 20px rgba(33,197,142,0.35)' : 'none',
+                transition: 'all 0.2s',
+              }}
+            >
+              {stepIdx === STEPS.length - 1 ? '완료 →' : '다음 →'}
+            </button>
 
-                <div style={{ display: 'grid', gridTemplateColumns: step.options.length === 4 || step.options.length === 6 ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '28px' }}>
-                  {step.options.map(opt => {
-                    const selected = step.multi ? (answers[step.id] ?? []).includes(opt.value) : answers[step.id] === opt.value;
-                    return (
-                      <button
-                        key={opt.value}
-                        onClick={() => step.multi ? toggleMulti(opt.value) : selectSingle(opt.value)}
-                        style={{
-                          display: 'flex',
-                          flexDirection: step.options.length <= 3 ? 'row' : 'column',
-                          alignItems: step.options.length <= 3 ? 'center' : 'flex-start',
-                          gap: step.options.length <= 3 ? '14px' : '8px',
-                          padding: step.options.length <= 3 ? '16px 20px' : '16px',
-                          borderRadius: '16px',
-                          background: selected ? '#F2FBF5' : '#fff',
-                          border: `2px solid ${selected ? '#52C97A' : '#E2E8F0'}`,
-                          cursor: 'pointer', textAlign: 'left',
-                          transition: 'all 0.15s',
-                          boxShadow: selected ? '0 0 0 4px rgba(33,197,142,0.1)' : 'none',
-                          position: 'relative', overflow: 'hidden',
-                        }}
-                      >
-                        {selected && (
-                          <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
-                        )}
-                        <div style={{ width: 40, height: 40, borderRadius: 10, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          {opt.icon}
-                        </div>
-                        <div>
-                          <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
-                          {step.options.length <= 3 && (
-                            <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <button
-                  onClick={goNext}
-                  disabled={!canNext}
-                  style={{
-                    width: '100%', padding: '16px', borderRadius: '16px',
-                    background: canNext ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
-                    color: canNext ? '#fff' : '#94A3B8', border: 'none',
-                    fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
-                    cursor: canNext ? 'pointer' : 'not-allowed',
-                    boxShadow: canNext ? '0 6px 20px rgba(33,197,142,0.35)' : 'none',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {stepIdx === STEPS.length - 1 ? '완료 →' : '다음 →'}
-                </button>
-
-                <button
-                  onClick={() => navigate('/home')}
-                  style={{ display: 'block', margin: '14px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
-                >
-                  나중에 설정하기
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => navigate('/home')}
+              style={{ display: 'block', margin: '14px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
+            >
+              나중에 설정하기
+            </button>
           </div>
         )}
       </div>

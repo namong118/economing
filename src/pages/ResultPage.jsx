@@ -31,18 +31,18 @@ export default function ResultPage() {
   const roadmap = roadmaps[level];
 
   const handleStart = async () => {
-    setUserLevel(level); // localStorage에도 저장 (비로그인 폴백)
+    setUserLevel(level);
 
-    // 로그인된 경우 Supabase에도 저장
     if (user) {
       await Promise.all([
-        updateLevel(user.id, level),   // profiles 테이블 업데이트
-        initProgress(user.id),         // roadmap_progress 초기화
+        updateLevel(user.id, level),
+        initProgress(user.id),
       ]);
-      await refreshProfile(); // AuthContext 프로필 새로고침
+      await refreshProfile();
+      navigate('/onboarding', { state: { economic_level: level }, replace: true });
+    } else {
+      navigate('/home');
     }
-
-    navigate('/home');
   };
 
   return (
@@ -193,7 +193,7 @@ export default function ResultPage() {
 
           <div style={{ display: 'flex', gap: '12px' }}>
             <Button size="lg" onClick={handleStart} style={{ flex: 2, borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <Zap size={16} /> 학습 시작하기
+              <Zap size={16} /> {user ? '노밍과 함께 시작하기' : '학습 시작하기'}
             </Button>
             <button
               onClick={() => navigate('/diagnosis')}

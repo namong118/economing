@@ -22,7 +22,7 @@ function NomingCard({ bite, profile, navigate }) {
   const userName = profile?.nickname?.split(' ')[0] || '사용자';
 
   const todos = [
-    !profile?.onboarding_completed && { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#3A9A5C" />, iconBg: '#E3F9EC', path: '/onboarding' },
+    !profile?.onboarding_completed && { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#3A9A5C" />, iconBg: '#E3F9EC', path: '/diagnosis' },
     { title: '한잎 퀴즈 풀기',       description: '+5 XP 획득 가능',               icon: <Zap size={14} color="#854F0B" />, iconBg: '#FFF4D6', path: `/bite/${bite.id}` },
     { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
   ].filter(Boolean);

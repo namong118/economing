@@ -224,8 +224,8 @@ function SummaryTab() {
           <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 10px', display: 'block' }} />
           <p style={{ fontSize: '15px', fontWeight: '800', color: '#2A7A4B', marginBottom: '5px' }}>경제 성장 진단을 완료해보세요</p>
           <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.6', marginBottom: '16px' }}>온보딩을 완료하면 노밍이 맞춤 코칭을 시작해요.</p>
-          <button onClick={() => navigate('/onboarding')} style={{ padding: '10px 24px', borderRadius: '12px', background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}>
-            온보딩 시작하기 →
+          <button onClick={() => navigate('/diagnosis')} style={{ padding: '10px 24px', borderRadius: '12px', background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}>
+            진단 시작하기 →
           </button>
         </div>
       )}
