@@ -181,32 +181,32 @@ function SummaryTab() {
           </div>
           <div style={{ display: 'flex', gap: '0' }}>
             {econInfo && (
-              <div style={{ flex: 1, paddingRight: '12px', borderRight: '1px solid #e8f5ee' }}>
+              <div style={{ flex: 1, paddingRight: '8px', borderRight: '1px solid #e8f5ee' }}>
                 <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>경제 수준</p>
                 <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{econInfo.label}</p>
               </div>
             )}
             {invInfo && (
-              <div style={{ flex: 1, padding: '0 12px', borderRight: occInfo ? '1px solid #e8f5ee' : 'none' }}>
+              <div style={{ flex: 1, padding: '0 8px', borderRight: '1px solid #e8f5ee' }}>
                 <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>투자 경험</p>
                 <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{invInfo.label}</p>
               </div>
             )}
             {occInfo && (
-              <div style={{ flex: 1, paddingLeft: '12px' }}>
+              <div style={{ flex: 1, padding: '0 8px', borderRight: interests.length > 0 ? '1px solid #e8f5ee' : 'none' }}>
                 <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>현재 상황</p>
                 <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{occInfo.label}</p>
               </div>
             )}
+            {interests.length > 0 && (
+              <div style={{ flex: 1, paddingLeft: '8px' }}>
+                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>관심 분야</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>
+                  {interests.slice(0, 2).join(', ')}{interests.length > 2 ? ` +${interests.length - 2}` : ''}
+                </p>
+              </div>
+            )}
           </div>
-          {interests.length > 0 && (
-            <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '0.5px solid #f0f7f3', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '10px', color: '#aaa', flexShrink: 0 }}>관심</span>
-              {interests.map(tag => (
-                <span key={tag} style={{ fontSize: '11px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '1px 7px' }}>{tag}</span>
-              ))}
-            </div>
-          )}
         </div>
       ) : (
         <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px dashed #B8EBC8', padding: '28px', textAlign: 'center', marginBottom: '16px' }}>
