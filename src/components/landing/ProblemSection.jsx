@@ -63,7 +63,7 @@ export default function ProblemSection() {
               <img
                 src={`${import.meta.env.BASE_URL}logo.png`}
                 alt="ECONOMING"
-                style={{ height: 'clamp(28px, 3.5vw, 36px)', width: 'auto', display: 'inline-block', verticalAlign: 'middle', margin: '0 -10px' }}
+                style={{ height: 'clamp(36px, 4.5vw, 48px)', width: 'auto', display: 'inline-block', verticalAlign: 'middle', margin: '0 -14px' }}
               />
               &nbsp;이 만들어졌습니다.
             </p>

@@ -20,7 +20,7 @@ export default function LandingFooter() {
           <img
             src={`${import.meta.env.BASE_URL}logo.png`}
             alt="ECONOMING"
-            style={{ height: '36px', width: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
+            style={{ height: '56px', width: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
           />
         </button>
 
