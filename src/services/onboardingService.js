@@ -3,9 +3,11 @@ import { supabase } from './supabaseClient'
 
 const LABELS = {
   economic_level: {
-    beginner:     '경제 입문자',
-    intermediate: '경제 기초 학습자',
-    advanced:     '경제 중급자',
+    beginner:     '경제 입문자 (GDP·금리도 생소한 수준)',
+    elementary:   '경제 초급자 (기본 용어는 알지만 뉴스가 어려운 수준)',
+    intermediate: '경제 중급자 (경제 뉴스를 어느 정도 이해하는 수준)',
+    advanced:     '경제 고급자 (경제 흐름을 읽고 재무 계획에 반영하는 수준)',
+    expert:       '경제 전문가 (경제를 깊이 이해하고 투자 전략까지 세우는 수준)',
   },
   investment_experience: {
     none:  '투자 경험 없음',
@@ -40,7 +42,14 @@ export async function generateRoadmap(answers) {
 }
 
 steps는 3~5개로 구성. 각 step은 현재 수준에서 목표까지 자연스럽게 이어지도록.
-경제 초보자 친화적으로, 투자 종목 추천 절대 금지.`
+경제 초보자 친화적으로, 투자 종목 추천 절대 금지.
+
+경제 수준 5단계:
+- beginner (입문): GDP, 금리도 생소한 수준
+- elementary (초급): 기본 용어는 알지만 뉴스가 어려운 수준
+- intermediate (중급): 경제 뉴스를 어느 정도 이해하는 수준
+- advanced (고급): 경제 흐름을 읽고 재무 계획에 반영하는 수준
+- expert (전문): 경제를 깊이 이해하고 투자 전략까지 세우는 수준`
 
   const userProfile = `경제 수준: ${LABELS.economic_level[answers.economic_level]}
 투자 경험: ${LABELS.investment_experience[answers.investment_experience]}
@@ -117,6 +126,8 @@ export async function completeOnboarding(userId, answers) {
       occupation:             answers.occupation,
       interests:              answers.interests ?? [],
       bite_category_priority: categoryPriority,
+      diagnosis_scores:       answers.diagnosis_scores ?? null,
+      diagnosis_total:        answers.diagnosis_total ?? null,
       updated_at:             new Date().toISOString(),
     })
     .eq('id', userId)

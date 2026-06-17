@@ -9,6 +9,120 @@ import { completeOnboarding } from '../services/onboardingService';
 
 const BASE_URL = import.meta.env.BASE_URL;
 
+/* ── 경제 수준 진단 문항 ──────────────────────────────────────── */
+const DIAGNOSIS_QUESTIONS = [
+  {
+    id: 1, category: '기초 개념',
+    question: 'GDP, 금리, 인플레이션이 무엇인지 설명할 수 있다',
+    options: [
+      { score: 1, label: '전혀 모른다' },
+      { score: 2, label: '들어본 적 있다' },
+      { score: 3, label: '대략 안다' },
+      { score: 4, label: '잘 안다' },
+      { score: 5, label: '남에게 설명할 수 있다' },
+    ],
+  },
+  {
+    id: 2, category: '뉴스 이해',
+    question: '경제 뉴스를 읽으면 대략적인 내용을 이해할 수 있다',
+    options: [
+      { score: 1, label: '거의 못 이해한다' },
+      { score: 2, label: '단어는 알지만 맥락이 어렵다' },
+      { score: 3, label: '절반 정도 이해한다' },
+      { score: 4, label: '대부분 이해한다' },
+      { score: 5, label: '내 생활과 연결해서 읽을 수 있다' },
+    ],
+  },
+  {
+    id: 3, category: '금리',
+    question: '한국은행이 금리를 올리면 내 대출과 저축에 어떤 영향이 있는지 안다',
+    options: [
+      { score: 1, label: '전혀 모른다' },
+      { score: 2, label: '금리가 뭔지는 안다' },
+      { score: 3, label: '대출이자가 오른다는 건 안다' },
+      { score: 4, label: '대출·저축·주식에 미치는 영향을 안다' },
+      { score: 5, label: '경제 전반에 미치는 연쇄 효과를 설명할 수 있다' },
+    ],
+  },
+  {
+    id: 4, category: '개인 재무',
+    question: '내 한 달 고정 지출과 남는 돈을 정확히 알고 있다',
+    options: [
+      { score: 1, label: '전혀 파악 안 됨' },
+      { score: 2, label: '대략적으로만 안다' },
+      { score: 3, label: '주요 항목은 파악하고 있다' },
+      { score: 4, label: '매달 꼼꼼히 확인한다' },
+      { score: 5, label: '예산까지 세워서 관리한다' },
+    ],
+  },
+  {
+    id: 5, category: '저축·투자',
+    question: '예금, 적금, ETF, 주식의 차이와 위험도를 설명할 수 있다',
+    options: [
+      { score: 1, label: '예금 적금도 헷갈린다' },
+      { score: 2, label: '예금·적금 차이는 안다' },
+      { score: 3, label: 'ETF가 뭔지 대략 안다' },
+      { score: 4, label: '각 상품의 특징과 위험도를 안다' },
+      { score: 5, label: '내 상황에 맞게 조합할 수 있다' },
+    ],
+  },
+  {
+    id: 6, category: '환율',
+    question: '원/달러 환율이 오르면 내 생활에 어떤 영향이 있는지 안다',
+    options: [
+      { score: 1, label: '환율이 뭔지 모른다' },
+      { score: 2, label: '환율이 뭔지는 안다' },
+      { score: 3, label: '해외여행·수입품에 영향 준다는 건 안다' },
+      { score: 4, label: '수출기업·물가에 미치는 영향도 안다' },
+      { score: 5, label: '환율 변동이 경제 전반에 미치는 흐름을 안다' },
+    ],
+  },
+  {
+    id: 7, category: '비상금',
+    question: '비상금이 왜 필요한지, 얼마나 모아야 하는지 안다',
+    options: [
+      { score: 1, label: '생각해본 적 없다' },
+      { score: 2, label: '필요하다는 건 안다' },
+      { score: 3, label: '3~6개월치 생활비라는 걸 안다' },
+      { score: 4, label: '비상금을 실제로 마련하고 있다' },
+      { score: 5, label: '비상금 전략까지 세워놨다' },
+    ],
+  },
+  {
+    id: 8, category: '세금',
+    question: '근로소득세, 종합소득세, 연말정산의 개념을 안다',
+    options: [
+      { score: 1, label: '전혀 모른다' },
+      { score: 2, label: '이름만 들어봤다' },
+      { score: 3, label: '연말정산이 뭔지는 안다' },
+      { score: 4, label: '절세 방법을 몇 가지 알고 실천한다' },
+      { score: 5, label: '세금 신고를 직접 처리할 수 있다' },
+    ],
+  },
+  {
+    id: 9, category: '경제 흐름',
+    question: '경기 침체, 인플레이션, 버블 같은 경제 사이클 개념을 안다',
+    options: [
+      { score: 1, label: '전혀 모른다' },
+      { score: 2, label: '단어는 들어봤다' },
+      { score: 3, label: '대략적인 개념을 안다' },
+      { score: 4, label: '현재 경제 상황과 연결해서 이해한다' },
+      { score: 5, label: '경기 사이클을 내 재무 계획에 반영할 수 있다' },
+    ],
+  },
+  {
+    id: 10, category: '목표 설정',
+    question: '1년 후, 3년 후 나의 재무 목표가 구체적으로 있다',
+    options: [
+      { score: 1, label: '생각해본 적 없다' },
+      { score: 2, label: '막연하게 있다' },
+      { score: 3, label: '목표는 있지만 계획이 없다' },
+      { score: 4, label: '목표와 대략적인 계획이 있다' },
+      { score: 5, label: '구체적인 목표와 실행 계획이 있다' },
+    ],
+  },
+];
+
 /* ── 설문 데이터 ─────────────────────────────────────────────── */
 const STEPS = [
   {
@@ -66,7 +180,7 @@ const STEP_COLORS = ['#52C97A', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
 /* ── 완료 화면 ────────────────────────────────────────────────── */
 function CompletionScreen({ answers, onComplete, saving }) {
   const BASE_URL = import.meta.env.BASE_URL;
-  const LEVEL_LABEL = { beginner: '초급자', intermediate: '중급자', advanced: '고급자' };
+  const LEVEL_LABEL = { beginner: '입문자', elementary: '초급자', intermediate: '중급자', advanced: '고급자', expert: '전문가' };
 
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '16px 0' }}>
@@ -236,11 +350,36 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const { user, loading, refreshProfile } = useAuth();
 
-  const [stepIdx,  setStepIdx]  = useState(0);
-  const [answers,  setAnswers]  = useState({});
-  const [saving,   setSaving]   = useState(false);
-  const [animKey,  setAnimKey]  = useState(0);
-  const [aiResult, setAiResult] = useState(null);  // AI 결과 화면 표시용
+  const [stepIdx,   setStepIdx]  = useState(0);
+  const [answers,   setAnswers]  = useState({});
+  const [saving,    setSaving]   = useState(false);
+  const [animKey,   setAnimKey]  = useState(0);
+  const [aiResult,  setAiResult] = useState(null);
+  const [currentQ,  setCurrentQ] = useState(0);
+  const [scores,    setScores]   = useState(Array(10).fill(undefined));
+
+  const handleAnswer = (score) => {
+    const newScores = [...scores];
+    newScores[currentQ] = score;
+    setScores(newScores);
+  };
+
+  const calculateLevel = (scoresArr) => {
+    const total = scoresArr.reduce((sum, s) => sum + s, 0);
+    if (total <= 18) return 'beginner';
+    if (total <= 26) return 'elementary';
+    if (total <= 34) return 'intermediate';
+    if (total <= 42) return 'advanced';
+    return 'expert';
+  };
+
+  const handleStep1Complete = () => {
+    const level = calculateLevel(scores);
+    const total = scores.reduce((sum, s) => sum + s, 0);
+    setAnswers(prev => ({ ...prev, economic_level: level, diagnosis_scores: scores, diagnosis_total: total }));
+    setAnimKey(k => k + 1);
+    setStepIdx(1);
+  };
 
   /* 미인증 → 로그인 */
   useEffect(() => {
@@ -381,79 +520,172 @@ export default function OnboardingPage() {
           <CompletionScreen answers={answers} onComplete={handleComplete} saving={saving} />
         ) : (
           <div key={`step-${animKey}`} className="anim-fade">
-            <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: step.multi ? '6px' : '20px', whiteSpace: 'pre-line' }}>
-              {step.question}
-            </h2>
-            {step.multi && (
-              <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>여러 개 선택할 수 있어요</p>
-            )}
+            {stepIdx === 0 ? (
+              /* ── 경제 수준 진단 (10문항) ── */
+              <>
+                <h2 style={{ fontSize: 'clamp(20px, 4vw, 26px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: '6px' }}>
+                  나의 경제 이해도는?
+                </h2>
+                <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>
+                  각 항목을 읽고 나에게 해당하는 점수를 선택해주세요
+                </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: step.options.length === 4 || step.options.length === 6 ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '28px' }}>
-              {step.options.map(opt => {
-                const selected = step.multi ? (answers[step.id] ?? []).includes(opt.value) : answers[step.id] === opt.value;
-                return (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '700' }}>
+                    {DIAGNOSIS_QUESTIONS[currentQ].category}
+                  </span>
+                  <span style={{ fontSize: '12px', color: '#888780' }}>
+                    {currentQ + 1} / 10
+                  </span>
+                </div>
+                <div style={{ background: '#E3F9EC', borderRadius: '20px', height: '4px', marginBottom: '20px' }}>
+                  <div style={{ background: '#52C97A', width: `${((currentQ + 1) / 10) * 100}%`, borderRadius: '20px', height: '4px', transition: 'width 0.3s ease' }} />
+                </div>
+
+                <p style={{ fontSize: '16px', fontWeight: '600', color: '#2A7A4B', lineHeight: '1.6', marginBottom: '20px' }}>
+                  {DIAGNOSIS_QUESTIONS[currentQ].question}
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                  {DIAGNOSIS_QUESTIONS[currentQ].options.map(opt => (
+                    <button
+                      key={opt.score}
+                      onClick={() => handleAnswer(opt.score)}
+                      style={{
+                        padding: '12px 16px', borderRadius: '10px', cursor: 'pointer',
+                        border: scores[currentQ] === opt.score ? '2px solid #52C97A' : '0.5px solid #B8EBC8',
+                        background: scores[currentQ] === opt.score ? '#E3F9EC' : '#fff',
+                        display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left',
+                        fontFamily: 'inherit', transition: 'all 0.15s',
+                      }}
+                    >
+                      <div style={{
+                        width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
+                        background: scores[currentQ] === opt.score ? '#52C97A' : '#F2FBF5',
+                        color: scores[currentQ] === opt.score ? '#fff' : '#888780',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '12px', fontWeight: '600',
+                      }}>
+                        {opt.score}
+                      </div>
+                      <span style={{
+                        fontSize: '13px',
+                        color: scores[currentQ] === opt.score ? '#2A7A4B' : '#5F5E5A',
+                        fontWeight: scores[currentQ] === opt.score ? '600' : '400',
+                      }}>
+                        {opt.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '28px' }}>
+                  {currentQ > 0 && (
+                    <button
+                      onClick={() => setCurrentQ(q => q - 1)}
+                      style={{ flex: 1, padding: '13px', borderRadius: '12px', border: '0.5px solid #B8EBC8', background: '#fff', color: '#2A7A4B', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' }}
+                    >
+                      이전
+                    </button>
+                  )}
                   <button
-                    key={opt.value}
-                    onClick={() => step.multi ? toggleMulti(opt.value) : selectSingle(opt.value)}
+                    onClick={() => currentQ < 9 ? setCurrentQ(q => q + 1) : handleStep1Complete()}
+                    disabled={scores[currentQ] === undefined}
                     style={{
-                      display: 'flex',
-                      flexDirection: step.options.length <= 3 ? 'row' : 'column',
-                      alignItems: step.options.length <= 3 ? 'center' : 'flex-start',
-                      gap: step.options.length <= 3 ? '14px' : '8px',
-                      padding: step.options.length <= 3 ? '16px 20px' : '16px',
-                      borderRadius: '16px',
-                      background: selected ? '#F2FBF5' : '#fff',
-                      border: `2px solid ${selected ? '#52C97A' : '#E2E8F0'}`,
-                      cursor: 'pointer', textAlign: 'left',
-                      transition: 'all 0.15s',
-                      boxShadow: selected ? '0 0 0 4px rgba(33,197,142,0.1)' : 'none',
-                      position: 'relative', overflow: 'hidden',
+                      flex: 2, padding: '13px', borderRadius: '12px', border: 'none',
+                      background: scores[currentQ] !== undefined ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
+                      color: scores[currentQ] !== undefined ? '#fff' : '#94A3B8',
+                      fontSize: '14px', fontWeight: '800', letterSpacing: '-0.3px',
+                      cursor: scores[currentQ] !== undefined ? 'pointer' : 'not-allowed',
+                      fontFamily: 'inherit',
+                      boxShadow: scores[currentQ] !== undefined ? '0 4px 14px rgba(33,197,142,0.3)' : 'none',
+                      transition: 'all 0.2s',
                     }}
                   >
-                    {selected && (
-                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
-                    )}
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 10,
-                      background: '#E3F9EC',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0,
-                    }}>
-                      {opt.icon}
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
-                      {step.options.length <= 3 && (
-                        <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
-                      )}
-                    </div>
+                    {currentQ < 9 ? '다음 →' : '진단 완료 →'}
                   </button>
-                );
-              })}
-            </div>
+                </div>
 
-            <button
-              onClick={goNext}
-              disabled={!canNext}
-              style={{
-                width: '100%', padding: '16px', borderRadius: '16px',
-                background: canNext ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
-                color: canNext ? '#fff' : '#94A3B8', border: 'none',
-                fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
-                cursor: canNext ? 'pointer' : 'not-allowed',
-                boxShadow: canNext ? '0 6px 20px rgba(33,197,142,0.35)' : 'none',
-                transition: 'all 0.2s',
-              }}
-            >
-              {stepIdx === STEPS.length - 1 ? '완료 →' : '다음 →'}
-            </button>
+                <button
+                  onClick={() => navigate('/home')}
+                  style={{ display: 'block', margin: '0 auto', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
+                >
+                  나중에 설정하기
+                </button>
+              </>
+            ) : (
+              /* ── 일반 선택 (Steps 2~4) ── */
+              <>
+                <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', lineHeight: '1.3', marginBottom: step.multi ? '6px' : '20px', whiteSpace: 'pre-line' }}>
+                  {step.question}
+                </h2>
+                {step.multi && (
+                  <p style={{ fontSize: '13px', color: '#94A3B8', marginBottom: '20px', fontWeight: '500' }}>여러 개 선택할 수 있어요</p>
+                )}
 
-            <button
-              onClick={() => navigate('/home')}
-              style={{ display: 'block', margin: '14px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
-            >
-              나중에 설정하기
-            </button>
+                <div style={{ display: 'grid', gridTemplateColumns: step.options.length === 4 || step.options.length === 6 ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '28px' }}>
+                  {step.options.map(opt => {
+                    const selected = step.multi ? (answers[step.id] ?? []).includes(opt.value) : answers[step.id] === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => step.multi ? toggleMulti(opt.value) : selectSingle(opt.value)}
+                        style={{
+                          display: 'flex',
+                          flexDirection: step.options.length <= 3 ? 'row' : 'column',
+                          alignItems: step.options.length <= 3 ? 'center' : 'flex-start',
+                          gap: step.options.length <= 3 ? '14px' : '8px',
+                          padding: step.options.length <= 3 ? '16px 20px' : '16px',
+                          borderRadius: '16px',
+                          background: selected ? '#F2FBF5' : '#fff',
+                          border: `2px solid ${selected ? '#52C97A' : '#E2E8F0'}`,
+                          cursor: 'pointer', textAlign: 'left',
+                          transition: 'all 0.15s',
+                          boxShadow: selected ? '0 0 0 4px rgba(33,197,142,0.1)' : 'none',
+                          position: 'relative', overflow: 'hidden',
+                        }}
+                      >
+                        {selected && (
+                          <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
+                        )}
+                        <div style={{ width: 40, height: 40, borderRadius: 10, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {opt.icon}
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
+                          {step.options.length <= 3 && (
+                            <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={goNext}
+                  disabled={!canNext}
+                  style={{
+                    width: '100%', padding: '16px', borderRadius: '16px',
+                    background: canNext ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
+                    color: canNext ? '#fff' : '#94A3B8', border: 'none',
+                    fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
+                    cursor: canNext ? 'pointer' : 'not-allowed',
+                    boxShadow: canNext ? '0 6px 20px rgba(33,197,142,0.35)' : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {stepIdx === STEPS.length - 1 ? '완료 →' : '다음 →'}
+                </button>
+
+                <button
+                  onClick={() => navigate('/home')}
+                  style={{ display: 'block', margin: '14px auto 0', background: 'none', border: 'none', fontSize: '13px', color: '#94A3B8', cursor: 'pointer', fontWeight: '500' }}
+                >
+                  나중에 설정하기
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

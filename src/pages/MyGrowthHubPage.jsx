@@ -10,9 +10,11 @@ import PageWrapper from '../components/layout/PageWrapper';
 
 /* ── 정적 매핑 ────────────────────────────────────────────── */
 const ECONOMIC_LEVEL = {
-  beginner:     { label: '초급자', emoji: '🌱', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', desc: '경제 공부를 이제 막 시작하시는 분' },
+  beginner:     { label: '입문자', emoji: '🌱', color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', desc: '경제 공부를 이제 막 시작하시는 분' },
+  elementary:   { label: '초급자', emoji: '📖', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', desc: '기본 용어는 알지만 뉴스가 아직 어려운 분' },
   intermediate: { label: '중급자', emoji: '📚', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE', desc: '기본 개념은 알고 더 깊이 배우고 싶은 분' },
   advanced:     { label: '고급자', emoji: '🔍', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
+  expert:       { label: '전문가', emoji: '🏆', color: '#EF4444', bg: '#FEF2F2', border: '#FECACA', desc: '경제를 깊이 이해하고 투자 전략까지 세우는 분' },
 };
 const INVESTMENT_EXP = {
   none:  { label: '투자 경험 없음',      emoji: '🤔' },
@@ -40,6 +42,11 @@ function generateAnalysis(profile) {
     if (has('저축')) return "저축부터 시작하는 건 최고의 선택이에요! 파킹통장과 적금 차이를 먼저 알아보면 좋아요.";
     return "경제 공부, 이제 막 시작하셨군요. 지금 내 돈의 흐름을 파악하는 것부터 시작해보세요.";
   }
+  if (level === 'elementary') {
+    if (has('투자')) return "기본 개념은 잡혔네요! ETF 기초부터 시작해 적립식 투자를 차근차근 해봐요.";
+    if (has('저축')) return "목돈 마련 목표를 세우고 예금·적금을 비교해서 활용해봐요.";
+    return "기초 지식을 바탕으로 이제 본격적인 재무 계획을 세워봐요!";
+  }
   if (level === 'intermediate') {
     if (exp === 'etf')   return "ETF 경험이 있으시네요! 적립식 투자를 이어가면서 IRP·연금저축 절세 전략도 챙겨봐요.";
     if (exp === 'stock') return "주식 경험도 있으시네요. ETF 비중을 늘려가는 전략을 고려해보는 건 어떨까요?";
@@ -50,6 +57,10 @@ function generateAnalysis(profile) {
     if (has('세금'))     return "IRP·연금저축 절세 극대화와 금융소득 종합과세 대비를 점검해보면 좋을 것 같아요.";
     if (exp === 'stock') return "포트폴리오 다각화와 배당 전략을 함께 점검해봐요.";
     return "꾸준히 성장해오셨군요! 포트폴리오 리밸런싱과 절세 고도화에 집중해봐요.";
+  }
+  if (level === 'expert') {
+    if (has('세금'))     return "탁월한 이해도네요! 금융소득 종합과세 대비와 절세 포트폴리오 고도화에 집중해봐요.";
+    return "경제를 깊이 이해하고 계시네요! 포트폴리오 최적화와 글로벌 자산배분 전략을 탐구해봐요.";
   }
   return "노밍이 분석 중이에요. 온보딩을 완료하면 맞춤 코칭을 받을 수 있어요!";
 }
@@ -406,7 +417,7 @@ function RoadmapTabContent() {
 
   const aiRoadmap   = profile?.roadmap;
   const econLevel   = profile?.economic_level;
-  const recommendedStep = econLevel === 'advanced' ? 4 : econLevel === 'intermediate' ? 3 : 1;
+  const recommendedStep = (econLevel === 'expert' || econLevel === 'advanced') ? 4 : econLevel === 'intermediate' ? 3 : econLevel === 'elementary' ? 2 : 1;
 
   /* ── AI 맞춤 로드맵 ── */
   if (aiRoadmap) {
