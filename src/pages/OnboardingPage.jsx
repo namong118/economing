@@ -1,7 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  BookOpen, TrendingUp, Briefcase, PiggyBank, Sprout,
+  GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { completeOnboarding } from '../services/onboardingService';
+
+const BASE_URL = import.meta.env.BASE_URL;
 
 /* ── 설문 데이터 ─────────────────────────────────────────────── */
 const STEPS = [
@@ -11,9 +17,9 @@ const STEPS = [
     nomingMsg: '어느 정도 경험을 가지고 계신지\n알아야 딱 맞는 이야기를 해줄 수 있어요!',
     multi: false,
     options: [
-      { value: 'beginner',     emoji: '🌱', label: '처음이에요',           desc: '경제 공부, 어디서부터 시작할지 막막해요' },
-      { value: 'intermediate', emoji: '📚', label: '조금 공부해봤어요',    desc: '기본 개념은 알지만 아직 배울 게 많아요' },
-      { value: 'advanced',     emoji: '📊', label: '꾸준히 공부 중이에요', desc: '경제 뉴스, 투자 개념을 꾸준히 접하고 있어요' },
+      { value: 'beginner',     icon: <Sprout size={18} color="#2A7A4B" />,     label: '처음이에요',           desc: '경제 공부, 어디서부터 시작할지 막막해요' },
+      { value: 'intermediate', icon: <BookOpen size={18} color="#2A7A4B" />,   label: '조금 공부해봤어요',    desc: '기본 개념은 알지만 아직 배울 게 많아요' },
+      { value: 'advanced',     icon: <TrendingUp size={18} color="#2A7A4B" />, label: '꾸준히 공부 중이에요', desc: '경제 뉴스, 투자 개념을 꾸준히 접하고 있어요' },
     ],
   },
   {
@@ -22,9 +28,9 @@ const STEPS = [
     nomingMsg: '투자 경험을 알면\n더 실질적인 도움을 드릴 수 있어요.',
     multi: false,
     options: [
-      { value: 'none',  emoji: '🤔', label: '없어요',                  desc: '투자는 아직 한 번도 해보지 않았어요' },
-      { value: 'etf',   emoji: '📈', label: 'ETF 투자 경험이 있어요',  desc: '인덱스 펀드, ETF로 투자해본 적 있어요' },
-      { value: 'stock', emoji: '💹', label: '주식 투자 경험이 있어요', desc: '개별 종목 또는 다양한 자산에 투자해봤어요' },
+      { value: 'none',  icon: <BookOpen size={18} color="#2A7A4B" />,    label: '없어요',                 desc: '투자는 아직 한 번도 해보지 않았어요' },
+      { value: 'etf',   icon: <TrendingUp size={18} color="#2A7A4B" />,  label: 'ETF 투자 경험이 있어요', desc: '인덱스 펀드, ETF로 투자해본 적 있어요' },
+      { value: 'stock', icon: <TrendingUp size={18} color="#2A7A4B" />,  label: '주식 투자 경험이 있어요', desc: '개별 종목 또는 다양한 자산에 투자해봤어요' },
     ],
   },
   {
@@ -33,10 +39,10 @@ const STEPS = [
     nomingMsg: '상황에 맞는 경제 성장 여정을\n안내해드릴게요.',
     multi: false,
     options: [
-      { value: 'student',    emoji: '🎓', label: '학생',     desc: '대학생 또는 취업 준비 중이에요' },
-      { value: 'employee',   emoji: '💼', label: '직장인',   desc: '월급을 받으며 일하고 있어요' },
-      { value: 'freelancer', emoji: '💻', label: '프리랜서', desc: '독립적으로 일하거나 부업 중이에요' },
-      { value: 'business',   emoji: '🏢', label: '사업자',   desc: '사업을 운영하고 있어요' },
+      { value: 'student',    icon: <GraduationCap size={18} color="#2A7A4B" />, label: '학생',     desc: '대학생 또는 취업 준비 중이에요' },
+      { value: 'employee',   icon: <Briefcase size={18} color="#2A7A4B" />,     label: '직장인',   desc: '월급을 받으며 일하고 있어요' },
+      { value: 'freelancer', icon: <Laptop size={18} color="#2A7A4B" />,        label: '프리랜서', desc: '독립적으로 일하거나 부업 중이에요' },
+      { value: 'business',   icon: <Building2 size={18} color="#2A7A4B" />,     label: '사업자',   desc: '사업을 운영하고 있어요' },
     ],
   },
   {
@@ -45,12 +51,12 @@ const STEPS = [
     nomingMsg: '관심 있는 분야를 모두 골라주세요.\n거기서부터 시작할게요!',
     multi: true,
     options: [
-      { value: '소비 관리',  emoji: '💳', label: '소비 관리', desc: '현명한 소비 습관 만들기' },
-      { value: '저축',       emoji: '🏦', label: '저축',      desc: '목돈 만들기와 저축 전략' },
-      { value: '투자',       emoji: '📈', label: '투자',      desc: '주식, ETF, 펀드 투자' },
-      { value: '부동산',     emoji: '🏠', label: '부동산',    desc: '부동산 시장 이해와 투자' },
-      { value: '세금',       emoji: '📋', label: '세금',      desc: '절세와 세금 신고 이해' },
-      { value: '경제 뉴스',  emoji: '📰', label: '경제 뉴스', desc: '경제 흐름 읽는 법' },
+      { value: '소비 관리', icon: <CreditCard size={18} color="#2A7A4B" />,  label: '소비 관리', desc: '현명한 소비 습관 만들기' },
+      { value: '저축',      icon: <PiggyBank size={18} color="#2A7A4B" />,   label: '저축',      desc: '목돈 만들기와 저축 전략' },
+      { value: '투자',      icon: <TrendingUp size={18} color="#2A7A4B" />,  label: '투자',      desc: '주식, ETF, 펀드 투자' },
+      { value: '부동산',    icon: <Home size={18} color="#2A7A4B" />,        label: '부동산',    desc: '부동산 시장 이해와 투자' },
+      { value: '세금',      icon: <Receipt size={18} color="#2A7A4B" />,     label: '세금',      desc: '절세와 세금 신고 이해' },
+      { value: '경제 뉴스', icon: <Newspaper size={18} color="#2A7A4B" />,   label: '경제 뉴스', desc: '경제 흐름 읽는 법' },
     ],
   },
 ];
@@ -407,7 +413,14 @@ export default function OnboardingPage() {
                     {selected && (
                       <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
                     )}
-                    <span style={{ fontSize: step.options.length <= 3 ? '28px' : '22px' }}>{opt.emoji}</span>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 10,
+                      background: '#E3F9EC',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      {opt.icon}
+                    </div>
                     <div>
                       <p style={{ fontSize: '15px', fontWeight: '800', color: selected ? '#0F172A' : '#1E293B', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
                       {step.options.length <= 3 && (
