@@ -137,14 +137,15 @@ function SummaryTab() {
           <h2 style={{ fontSize: '20px', fontWeight: '900', color: '#2A7A4B', letterSpacing: '-0.6px', marginBottom: '2px' }}>
             {profile?.nickname || user.email || '사용자'}
           </h2>
-          <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500', marginBottom: '8px' }}>
-            {currentLevel.emoji} {currentLevel.label} 단계 · {xp} XP · {PROVIDER_LABEL[provider] ?? provider} 로그인
+          <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <img src={`${BASE_URL}${currentLevel.image}`} alt={currentLevel.label} style={{ width: 16, height: 16, objectFit: 'contain', flexShrink: 0 }} />
+            {currentLevel.label} 단계 · {xp} XP · {PROVIDER_LABEL[provider] ?? provider} 로그인
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{ flex: 1, height: '5px', background: '#E2E8F0', borderRadius: '100px', overflow: 'hidden' }}>
               <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg,#52C97A,#1AAD7D)', width: `${progressPercent}%`, transition: 'width 0.6s' }} />
             </div>
-            {nextLevel && <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600', whiteSpace: 'nowrap' }}>{nextLevel.emoji} {xpNeeded} XP</span>}
+            {nextLevel && <span style={{ fontSize: '11px', color: '#888780', fontWeight: '600', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '3px' }}><img src={`${BASE_URL}${nextLevel.image}`} alt={nextLevel.label} style={{ width: 14, height: 14, objectFit: 'contain' }} />{xpNeeded} XP</span>}
           </div>
         </div>
       </div>
@@ -153,7 +154,7 @@ function SummaryTab() {
       <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '12px' }}>
         <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px', marginBottom: '14px' }}>성장 단계</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <span style={{ fontSize: '32px' }}>{currentLevel.emoji}</span>
+          <img src={`${BASE_URL}${currentLevel.image}`} alt={currentLevel.label} style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} />
           <div>
             <p style={{ fontSize: '17px', fontWeight: '900', color: '#2A7A4B', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
             <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
@@ -170,9 +171,20 @@ function SummaryTab() {
             const isPast    = i < stageIndex;
             return (
               <div key={l.key} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                <div title={l.label} style={{ width: isCurrent ? '28px' : '21px', height: isCurrent ? '28px' : '21px', borderRadius: '50%', flexShrink: 0, background: isCurrent ? '#52C97A' : isPast ? '#DCF5EB' : '#F2FBF5', border: isCurrent ? '2px solid #fff' : isPast ? '0.5px solid #B8EBC8' : '0.5px solid #B8EBC8', boxShadow: isCurrent ? '0 0 0 3px rgba(33,197,142,0.2)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: isCurrent ? '14px' : '10px' }}>
-                  {l.emoji}
-                </div>
+                <img
+                  title={l.label}
+                  src={`${BASE_URL}${l.image}`}
+                  alt={l.label}
+                  style={{
+                    width: isCurrent ? 32 : 28,
+                    height: isCurrent ? 32 : 28,
+                    objectFit: 'contain',
+                    flexShrink: 0,
+                    opacity: isCurrent ? 1 : isPast ? 0.85 : 0.3,
+                    filter: isCurrent ? 'drop-shadow(0 0 4px rgba(33,197,142,0.5))' : 'none',
+                    transition: 'all 0.3s',
+                  }}
+                />
                 {i < LEVELS.length - 1 && <div style={{ flex: 1, height: '2px', margin: '0 2px', background: isPast ? '#52C97A' : '#E2E8F0', borderRadius: '2px' }} />}
               </div>
             );
