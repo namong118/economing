@@ -199,18 +199,18 @@ export default function HomePage() {
         }
         .hd-grid {
           display: grid;
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
           gap: 16px;
           padding: 8px 24px 60px;
           background: #F4FAF6;
           box-sizing: border-box;
           align-content: start;
         }
-        .hd-header { align-self: center; }
-        .hd-bite, .hd-noming { display: flex; flex-direction: column; }
+        .hd-header { align-self: center; min-width: 0; overflow: hidden; }
+        .hd-bite, .hd-noming { display: flex; flex-direction: column; min-width: 0; }
         @media (min-width: 760px) {
           .hd-grid {
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
             grid-template-rows: auto 1fr;
             align-content: stretch;
           }

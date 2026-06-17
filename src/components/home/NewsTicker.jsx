@@ -42,17 +42,26 @@ export function NewsTicker() {
         LIVE
       </span>
 
-      <div style={{ overflow: 'hidden', flex: 1, minWidth: 0 }}>
+      {/* position:relative + 고정 height → 애니메이션 요소를 레이아웃 흐름에서 완전히 분리 */}
+      <div style={{ overflow: 'hidden', flex: 1, minWidth: 0, position: 'relative', height: '18px' }}>
         {loading ? (
-          <span style={{ fontSize: 12, color: '#888780' }}>뉴스 불러오는 중...</span>
+          <span style={{ fontSize: 12, color: '#888780', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
+            뉴스 불러오는 중...
+          </span>
         ) : headlines.length === 0 ? (
-          <span style={{ fontSize: 12, color: '#888780' }}>오늘의 경제 뉴스를 불러올 수 없어요</span>
+          <span style={{ fontSize: 12, color: '#888780', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
+            오늘의 경제 뉴스를 불러올 수 없어요
+          </span>
         ) : (
           <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
             fontSize: 12,
             color: '#2C2C2A',
             whiteSpace: 'nowrap',
-            animation: 'ticker 25s linear infinite',
+            lineHeight: '18px',
+            animation: 'ticker 28s linear infinite',
             willChange: 'transform',
           }}>
             {tickerText}
@@ -62,7 +71,7 @@ export function NewsTicker() {
 
       <style>{`
         @keyframes ticker {
-          0%   { transform: translateX(100vw); }
+          0%   { transform: translateX(100%); }
           100% { transform: translateX(-100%); }
         }
       `}</style>
