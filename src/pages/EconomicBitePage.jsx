@@ -34,7 +34,7 @@ const ANIM = `
 }
 `;
 
-function NumBadge({ n, color = '#3AB54A' }) {
+function NumBadge({ n, color = '#52C97A' }) {
   return (
     <div style={{
       width: 26, height: 26, borderRadius: '50%',
@@ -58,7 +58,7 @@ function SectionHead({ n, emoji, title, color }) {
   );
 }
 
-function ContentCard({ borderColor = '#3AB54A', bg = '#fff', children, style = {} }) {
+function ContentCard({ borderColor = '#52C97A', bg = '#fff', children, style = {} }) {
   return (
     <div style={{
       background: bg,
@@ -122,7 +122,7 @@ export default function EconomicBitePage() {
           <p style={{ fontSize: 16, fontWeight: 600 }}>찾을 수 없는 개념이에요.</p>
           <button onClick={() => navigate('/bites')} style={{
             marginTop: 20, padding: '10px 24px', borderRadius: 10,
-            background: '#3AB54A', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 700,
+            background: '#52C97A', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 700,
           }}>
             경제 한잎 모음 보기
           </button>
@@ -153,7 +153,7 @@ export default function EconomicBitePage() {
       {/* 상단 스티키 바 */}
       <div style={{
         position: 'sticky', top: 0, zIndex: 20,
-        background: '#EFF8EF', borderBottom: '1px solid #E5F5EC',
+        background: '#F2FBF5', borderBottom: '1px solid #E5F5EC',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '12px 20px',
       }}>
@@ -168,7 +168,7 @@ export default function EconomicBitePage() {
         >
           ← 뒤로
         </button>
-        <span style={{ fontSize: 13, fontWeight: 800, color: '#3AB54A', letterSpacing: '-0.2px' }}>
+        <span style={{ fontSize: 13, fontWeight: 800, color: '#52C97A', letterSpacing: '-0.2px' }}>
           🍃 경제 한잎
         </span>
         <button onClick={() => navigate('/bites')} style={{
@@ -176,7 +176,7 @@ export default function EconomicBitePage() {
           fontSize: 12, fontWeight: 700, color: '#6B7280',
           padding: '6px 8px', borderRadius: 8,
         }}
-        onMouseEnter={e => e.currentTarget.style.color = '#3AB54A'}
+        onMouseEnter={e => e.currentTarget.style.color = '#52C97A'}
         onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}
         >
           모음 보기
@@ -209,7 +209,7 @@ export default function EconomicBitePage() {
             letterSpacing: '-1px', lineHeight: 1.2, marginBottom: 10,
             display: 'flex', alignItems: 'center', gap: 10,
           }}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#3AB54A', display: 'inline-block', flexShrink: 0 }} />
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#52C97A', display: 'inline-block', flexShrink: 0 }} />
             {bite.title}
           </h1>
           <p style={{ fontSize: 15, color: '#065F46', fontWeight: 600, lineHeight: 1.65, letterSpacing: '-0.3px' }}>
@@ -219,7 +219,7 @@ export default function EconomicBitePage() {
 
         {/* ── 1. 핵심 인포그래픽 ── */}
         <div style={{ marginBottom: 16 }}>
-          <SectionHead n="1" emoji="📊" title="핵심 개념 한눈에 보기" color="#3AB54A" />
+          <SectionHead n="1" emoji="📊" title="핵심 개념 한눈에 보기" color="#52C97A" />
           <div style={{
             background: '#fff', border: '2px solid #E5F5EC',
             borderRadius: 18, overflow: 'hidden',
@@ -234,8 +234,8 @@ export default function EconomicBitePage() {
 
         {/* ── 2. 쉽게 설명하면 ── */}
         <div style={{ marginBottom: 16 }}>
-          <SectionHead n="2" emoji="📝" title="쉽게 설명하면" color="#3AB54A" />
-          <ContentCard borderColor="#3AB54A">{bite.description}</ContentCard>
+          <SectionHead n="2" emoji="📝" title="쉽게 설명하면" color="#52C97A" />
+          <ContentCard borderColor="#52C97A">{bite.description}</ContentCard>
         </div>
 
         {/* ── 3. 왜 알아야 할까요? ── */}
@@ -474,7 +474,7 @@ export default function EconomicBitePage() {
             onClick={() => navigate('/home')}
             style={{
               width: '100%', padding: 14, borderRadius: 14,
-              background: 'linear-gradient(135deg,#3AB54A,#16A374)',
+              background: 'linear-gradient(135deg,#52C97A,#16A374)',
               color: '#fff', border: 'none', cursor: 'pointer',
               fontSize: 15, fontWeight: 800, letterSpacing: '-0.3px',
               boxShadow: '0 4px 16px rgba(33,197,142,0.35)',

@@ -3,7 +3,7 @@
 export default function ValueSection() {
   return (
     <section style={{
-      background: 'linear-gradient(160deg, #0D9B6E 0%, #3AB54A 60%, #3ECFA0 100%)',
+      background: 'linear-gradient(160deg, #0D9B6E 0%, #52C97A 60%, #3ECFA0 100%)',
       padding: 'clamp(60px, 8vw, 100px) 24px',
       overflow: 'hidden',
       position: 'relative',

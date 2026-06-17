@@ -8,7 +8,7 @@
 export default function GrowthFlowSection() {
   return (
     <section style={{
-      background: 'linear-gradient(170deg, #EFF8EF 0%, #E8FAF3 100%)',
+      background: 'linear-gradient(170deg, #F2FBF5 0%, #E8FAF3 100%)',
       padding: 'clamp(60px, 8vw, 100px) 24px',
     }}>
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -52,7 +52,7 @@ export default function GrowthFlowSection() {
                 }}>
                   <div style={{
                     width: '2px', height: '28px',
-                    background: 'linear-gradient(to bottom, #3AB54A, #A7F3D0)',
+                    background: 'linear-gradient(to bottom, #52C97A, #A7F3D0)',
                     borderRadius: '2px',
                   }}/>
                 </div>
@@ -78,7 +78,7 @@ function StepCard({ num, emoji, label, desc }) {
       {/* 번호 */}
       <div style={{
         width: '36px', height: '36px', borderRadius: '12px',
-        background: 'linear-gradient(135deg, #3AB54A, #16A374)',
+        background: 'linear-gradient(135deg, #52C97A, #16A374)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: '15px', fontWeight: '900', color: '#fff',
         flexShrink: 0,

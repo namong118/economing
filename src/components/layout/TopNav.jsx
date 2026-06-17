@@ -107,16 +107,16 @@ export default function TopNav() {
               fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
               display: 'inline-flex', alignItems: 'center', lineHeight: 1,
             }}>
-              <span style={{ color: '#2D7A35' }}>ECON</span>
+              <span style={{ color: '#2A7A4B' }}>ECON</span>
               {/* 노란 원(O) + 위에서 자라나는 새싹 잎 2개 */}
               <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
                 <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E" />
-                  <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E" />
+                  <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#52C97A" />
+                  <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#52C97A" />
                   <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
                 </svg>
               </span>
-              <span style={{ color: '#2D7A35' }}>MING</span>
+              <span style={{ color: '#2A7A4B' }}>MING</span>
             </span>
           </button>
 
@@ -132,8 +132,8 @@ export default function TopNav() {
                     padding: '6px 14px', borderRadius: '6px',
                     fontSize: '14px',
                     fontWeight: isActive ? '500' : '400',
-                    color: isActive ? '#2D7A35' : '#64748B',
-                    background: isActive ? '#E8F5E9' : 'transparent',
+                    color: isActive ? '#2A7A4B' : '#64748B',
+                    background: isActive ? '#E3F9EC' : 'transparent',
                     transition: 'all 0.15s ease', letterSpacing: '-0.2px',
                     whiteSpace: 'nowrap', border: 'none', cursor: 'pointer',
                   }}
@@ -183,7 +183,7 @@ export default function TopNav() {
                     ) : (
                       <div style={{
                         width: '30px', height: '30px', borderRadius: '50%',
-                        background: '#3AB54A',
+                        background: '#52C97A',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: '13px', color: '#fff', fontWeight: '700', flexShrink: 0,
                       }}>
@@ -250,14 +250,14 @@ export default function TopNav() {
               >
                 {menuOpen ? (
                   <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                    <line x1="5" y1="5" x2="17" y2="17" stroke="#2D7A35" strokeWidth="2.2" strokeLinecap="round"/>
-                    <line x1="17" y1="5" x2="5" y2="17" stroke="#2D7A35" strokeWidth="2.2" strokeLinecap="round"/>
+                    <line x1="5" y1="5" x2="17" y2="17" stroke="#2A7A4B" strokeWidth="2.2" strokeLinecap="round"/>
+                    <line x1="17" y1="5" x2="5" y2="17" stroke="#2A7A4B" strokeWidth="2.2" strokeLinecap="round"/>
                   </svg>
                 ) : (
                   <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                    <line x1="3" y1="7"  x2="19" y2="7"  stroke="#2D7A35" strokeWidth="2" strokeLinecap="round"/>
-                    <line x1="3" y1="11" x2="19" y2="11" stroke="#2D7A35" strokeWidth="2" strokeLinecap="round"/>
-                    <line x1="3" y1="15" x2="19" y2="15" stroke="#2D7A35" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="3" y1="7"  x2="19" y2="7"  stroke="#2A7A4B" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="3" y1="11" x2="19" y2="11" stroke="#2A7A4B" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="3" y1="15" x2="19" y2="15" stroke="#2A7A4B" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                 )}
               </button>
@@ -273,10 +273,10 @@ export default function TopNav() {
                         onClick={() => { navigate(link.path); setMenuOpen(false); }}
                         style={{
                           width: '100%', padding: '14px 24px',
-                          background: isActive ? '#E8F5E9' : 'none',
+                          background: isActive ? '#E3F9EC' : 'none',
                           border: 'none', textAlign: 'left',
                           fontSize: '15px', fontWeight: isActive ? '600' : '500',
-                          color: isActive ? '#2D7A35' : '#374151',
+                          color: isActive ? '#2A7A4B' : '#374151',
                           cursor: 'pointer',
                         }}
                       >
@@ -292,7 +292,7 @@ export default function TopNav() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 24px' }}>
                         <div style={{
                           width: '36px', height: '36px', borderRadius: '50%',
-                          background: '#3AB54A', color: '#fff', flexShrink: 0,
+                          background: '#52C97A', color: '#fff', flexShrink: 0,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: '15px', fontWeight: '700',
                         }}>

@@ -146,7 +146,7 @@ export default function ProfilePage() {
             onClick={() => navigate('/login')}
             style={{
               padding: '12px 28px', borderRadius: '12px',
-              background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+              background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
               color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '14px',
             }}
           >
@@ -172,7 +172,7 @@ export default function ProfilePage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#EFF8EF', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
+      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
 
           {/* ── 페이지 제목 ─────────────────────────────── */}
@@ -200,7 +200,7 @@ export default function ProfilePage() {
               ) : (
                 <div style={{
                   width: '68px', height: '68px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+                  background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '28px', color: '#fff', fontWeight: '700',
                   border: '3px solid #fff', boxShadow: '0 4px 14px rgba(33,197,142,0.2)',
@@ -210,7 +210,7 @@ export default function ProfilePage() {
               )}
               <div style={{
                 position: 'absolute', bottom: '-2px', right: '-2px',
-                background: '#3AB54A', borderRadius: '100px',
+                background: '#52C97A', borderRadius: '100px',
                 fontSize: '11px', padding: '2px 6px',
                 border: '2px solid #fff', color: '#fff', fontWeight: '700', lineHeight: '1.4',
               }}>
@@ -230,7 +230,7 @@ export default function ProfilePage() {
                 <div style={{ flex: 1, height: '6px', background: '#E2E8F0', borderRadius: '100px', overflow: 'hidden' }}>
                   <div style={{
                     height: '100%', borderRadius: '100px',
-                    background: 'linear-gradient(90deg, #3AB54A, #1AAD7D)',
+                    background: 'linear-gradient(90deg, #52C97A, #1AAD7D)',
                     width: `${progressPercent}%`, transition: 'width 0.6s ease',
                   }} />
                 </div>
@@ -262,7 +262,7 @@ export default function ProfilePage() {
             <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden', marginBottom: '14px' }}>
               <div style={{
                 height: '100%', borderRadius: '100px',
-                background: 'linear-gradient(90deg, #3AB54A, #1AAD7D)',
+                background: 'linear-gradient(90deg, #52C97A, #1AAD7D)',
                 width: `${progressPercent}%`, transition: 'width 0.6s ease',
               }} />
             </div>
@@ -279,7 +279,7 @@ export default function ProfilePage() {
                         width: isCurrent ? '30px' : '22px',
                         height: isCurrent ? '30px' : '22px',
                         borderRadius: '50%', flexShrink: 0,
-                        background: isCurrent ? '#3AB54A' : isPast ? '#DCF5EB' : '#EFF8EF',
+                        background: isCurrent ? '#52C97A' : isPast ? '#DCF5EB' : '#F2FBF5',
                         border: isCurrent ? '2px solid #fff' : isPast ? '1.5px solid #A7F3D0' : '1.5px solid #E2E8F0',
                         boxShadow: isCurrent ? '0 0 0 3px rgba(33,197,142,0.2)' : 'none',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -291,7 +291,7 @@ export default function ProfilePage() {
                     {i < LEVELS.length - 1 && (
                       <div style={{
                         flex: 1, height: '2px', margin: '0 2px',
-                        background: isPast ? '#3AB54A' : '#E2E8F0', borderRadius: '2px',
+                        background: isPast ? '#52C97A' : '#E2E8F0', borderRadius: '2px',
                       }} />
                     )}
                   </div>
@@ -362,8 +362,8 @@ export default function ProfilePage() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
                       {interests.map(tag => (
                         <span key={tag} style={{
-                          fontSize: '13px', fontWeight: '700', color: '#3AB54A',
-                          background: '#EFF8EF', border: '1.5px solid #DCF5EB',
+                          fontSize: '13px', fontWeight: '700', color: '#52C97A',
+                          background: '#F2FBF5', border: '1.5px solid #DCF5EB',
                           borderRadius: '100px', padding: '5px 13px',
                         }}>
                           {tag}
@@ -383,7 +383,7 @@ export default function ProfilePage() {
                     background: 'none', color: '#64748B', border: '1.5px solid #E2E8F0',
                     fontSize: '13px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.15s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#3AB54A'; e.currentTarget.style.color = '#3AB54A'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#52C97A'; e.currentTarget.style.color = '#52C97A'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#64748B'; }}
                 >
                   ✏️ 경제 프로필 다시 설정
@@ -411,7 +411,7 @@ export default function ProfilePage() {
                 onClick={() => navigate('/onboarding')}
                 style={{
                   padding: '12px 28px', borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+                  background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
                   color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800',
                   cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)',
                 }}
@@ -439,7 +439,7 @@ export default function ProfilePage() {
                 <div style={{
                   position: 'absolute', bottom: '-2px', right: '-2px',
                   width: '12px', height: '12px', borderRadius: '50%',
-                  background: '#3AB54A', border: '2px solid #FFFBEA',
+                  background: '#52C97A', border: '2px solid #FFFBEA',
                 }} />
               </div>
               <div>
@@ -453,7 +453,7 @@ export default function ProfilePage() {
                   onClick={() => navigate('/coach')}
                   style={{
                     marginTop: '12px', padding: '8px 16px', borderRadius: '100px',
-                    background: '#3AB54A', color: '#fff', border: 'none',
+                    background: '#52C97A', color: '#fff', border: 'none',
                     fontSize: '12px', fontWeight: '700', cursor: 'pointer',
                     boxShadow: '0 2px 8px rgba(33,197,142,0.35)',
                   }}

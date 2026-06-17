@@ -12,7 +12,7 @@
     title: '경제 읽기',
     desc: '3분 만에\n경제 개념 하나를 이해해보세요.',
     bg: '#F0FDF4',
-    accent: '#3AB54A',
+    accent: '#52C97A',
     border: '#BBF7D0',
   },
   {

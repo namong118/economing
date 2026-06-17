@@ -93,7 +93,7 @@ export default function SignupPage() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #F0FDF4 0%, #EFF8EF 60%, #FFF9EB 100%)',
+        background: 'linear-gradient(160deg, #F0FDF4 0%, #F2FBF5 60%, #FFF9EB 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '32px 20px',
       }}>
@@ -113,7 +113,7 @@ export default function SignupPage() {
           {MOCK ? (
             <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '24px' }}>
               계정이 만들어졌어요. 바로 로그인할 수 있어요!<br />
-              <span style={{ fontSize: '12px', color: '#3AB54A', fontWeight: '600' }}>🧪 개발 모드 — 이메일 인증 없음</span>
+              <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '600' }}>🧪 개발 모드 — 이메일 인증 없음</span>
             </p>
           ) : (
             <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '24px' }}>
@@ -122,17 +122,17 @@ export default function SignupPage() {
             </p>
           )}
           <div style={{
-            background: '#EFF8EF', border: '1.5px solid #DCF5EB',
+            background: '#F2FBF5', border: '1.5px solid #DCF5EB',
             borderRadius: '14px', padding: '14px 16px', marginBottom: '24px', textAlign: 'left',
           }}>
-            <p style={{ fontSize: '12px', fontWeight: '700', color: '#3AB54A', marginBottom: '8px' }}>
+            <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '8px' }}>
               ☀️ 노밍이 기다리고 있어요
             </p>
             {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <div style={{
                   width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
-                  background: '#3AB54A', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '9px', color: '#fff', fontWeight: '800',
                 }}>✓</div>
                 <span style={{ fontSize: '13px', color: '#374151', fontWeight: '500' }}>{item}</span>
@@ -143,7 +143,7 @@ export default function SignupPage() {
             onClick={() => navigate('/login')}
             style={{
               width: '100%', padding: '14px', borderRadius: '14px',
-              background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+              background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
               color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
               cursor: 'pointer', letterSpacing: '-0.4px',
               boxShadow: '0 6px 20px rgba(33,197,142,0.35)',
@@ -160,7 +160,7 @@ export default function SignupPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(160deg, #F0FDF4 0%, #EFF8EF 60%, #FFF9EB 100%)',
+      background: 'linear-gradient(160deg, #F0FDF4 0%, #F2FBF5 60%, #FFF9EB 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '32px 20px',
     }}>
@@ -178,11 +178,11 @@ export default function SignupPage() {
             }}
           />
           <h1 style={{ fontSize: '26px', fontWeight: '900', letterSpacing: '-1px', margin: '0 0 8px', lineHeight: 1 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#2D7A35' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#2A7A4B' }}>
               ECON
               <svg width="20" height="32" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#3AB54A" />
-                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#3AB54A" />
+                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#52C97A" />
+                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#52C97A" />
                 <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
               </svg>
               MING
@@ -210,17 +210,17 @@ export default function SignupPage() {
               지금 바로 시작해요
             </h2>
             <div style={{
-              background: '#EFF8EF', borderRadius: '14px',
+              background: '#F2FBF5', borderRadius: '14px',
               padding: '14px 16px', border: '1px solid #DCF5EB',
             }}>
-              <p style={{ fontSize: '12px', fontWeight: '700', color: '#3AB54A', marginBottom: '10px' }}>
+              <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '10px' }}>
                 ☀️ 노밍과 함께
               </p>
               {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
                 <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '7px' }}>
                   <div style={{
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
-                    background: '#3AB54A', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '10px', color: '#fff', fontWeight: '800',
                   }}>✓</div>
                   <span style={{ fontSize: '13px', color: '#374151', fontWeight: '500' }}>{item}</span>
@@ -317,7 +317,7 @@ export default function SignupPage() {
                 value={nickname}
                 onChange={e => setNickname(e.target.value)}
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#3AB54A'}
+                onFocus={e => e.target.style.borderColor = '#52C97A'}
                 onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
               />
               <input
@@ -327,7 +327,7 @@ export default function SignupPage() {
                 onChange={e => setEmail(e.target.value)}
                 autoComplete="email"
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#3AB54A'}
+                onFocus={e => e.target.style.borderColor = '#52C97A'}
                 onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
               />
               <input
@@ -337,7 +337,7 @@ export default function SignupPage() {
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="new-password"
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#3AB54A'}
+                onFocus={e => e.target.style.borderColor = '#52C97A'}
                 onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
               />
               <div>
@@ -351,7 +351,7 @@ export default function SignupPage() {
                     ...inputStyle,
                     borderColor: confirm && confirm !== password ? '#EF4444' : '#E2E8F0',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#3AB54A'}
+                  onFocus={e => e.target.style.borderColor = '#52C97A'}
                   onBlur={e  => e.target.style.borderColor = confirm !== password ? '#EF4444' : '#E2E8F0'}
                 />
                 {confirm && confirm !== password && (
@@ -363,7 +363,7 @@ export default function SignupPage() {
                 disabled={loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
-                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
                   color: '#fff', border: 'none', fontSize: '14px', fontWeight: '700',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   boxShadow: loading ? 'none' : '0 4px 14px rgba(33,197,142,0.3)',
@@ -378,7 +378,7 @@ export default function SignupPage() {
           {/* 로그인 링크 */}
           <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748B', margin: 0 }}>
             이미 계정이 있으신가요?{' '}
-            <Link to="/login" style={{ color: '#3AB54A', fontWeight: '700', textDecoration: 'none' }}>
+            <Link to="/login" style={{ color: '#52C97A', fontWeight: '700', textDecoration: 'none' }}>
               로그인
             </Link>
           </p>

@@ -24,21 +24,21 @@ export default function DailyBiteCard({ bite, hideButton }) {
 
   return (
     <div style={{
-      background: '#fff', borderRadius: 12, border: '0.5px solid #C8E6C9',
+      background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8',
       padding: 16, height: '100%', display: 'flex', flexDirection: 'column',
       boxSizing: 'border-box',
     }}>
 
       {/* 카드 헤더 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 500, color: '#3A8A42', display: 'flex', alignItems: 'center', gap: 5 }}>
+        <span style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', display: 'flex', alignItems: 'center', gap: 5 }}>
           🍃 오늘의 경제 한잎
         </span>
         <div style={{ display: 'flex', gap: 5 }}>
-          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#3AB54A', color: '#fff' }}>
+          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#52C97A', color: '#fff' }}>
             {bite.category}
           </span>
-          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#E8F5E9', color: '#2D7A35', border: '0.5px solid #A5D6A7' }}>
+          <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#E3F9EC', color: '#2A7A4B', border: '0.5px solid #B8EBC8' }}>
             {DIFF_LABEL[bite.difficulty] ?? bite.difficulty}
           </span>
         </div>
@@ -46,17 +46,17 @@ export default function DailyBiteCard({ bite, hideButton }) {
 
       {/* 제목 영역 */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 26, fontWeight: 700, color: '#2D7A35', lineHeight: 1.2, marginBottom: 4 }}>
+        <div style={{ fontSize: 26, fontWeight: 700, color: '#2A7A4B', lineHeight: 1.2, marginBottom: 4 }}>
           {bite.title}
         </div>
-        <div style={{ fontSize: 13, color: '#3A8A42', lineHeight: 1.5 }}>
+        <div style={{ fontSize: 13, color: '#3A9A5C', lineHeight: 1.5 }}>
           {bite.summary}
         </div>
       </div>
 
       {/* 픽토그램 영역 */}
       <div style={{
-        background: '#EFF8EF', borderRadius: 10, border: '0.5px solid #C8E6C9',
+        background: '#F2FBF5', borderRadius: 10, border: '0.5px solid #B8EBC8',
         padding: '20px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         height: 'auto', flexShrink: 0,
@@ -66,7 +66,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
         ) : (
           <div style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            gap: 8, color: '#3A8A42', fontSize: 13, opacity: 0.5,
+            gap: 8, color: '#3A9A5C', fontSize: 13, opacity: 0.5,
           }}>
             <span style={{ fontSize: 28 }}>{emoji}</span>
             <span>{bite.title}</span>
@@ -99,14 +99,14 @@ export default function DailyBiteCard({ bite, hideButton }) {
         <button
           onClick={() => navigate(`/bite/${bite.id}`)}
           style={{
-            width: '100%', background: '#3AB54A', color: '#fff',
+            width: '100%', background: '#52C97A', color: '#fff',
             border: 'none', borderRadius: 8, padding: 11,
             fontSize: 13, fontWeight: 500, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             marginTop: 'auto', flexShrink: 0,
           }}
           onMouseEnter={e => e.currentTarget.style.background = '#1AAD7D'}
-          onMouseLeave={e => e.currentTarget.style.background = '#3AB54A'}
+          onMouseLeave={e => e.currentTarget.style.background = '#52C97A'}
         >
           🍃 오늘의 한잎 배우기 →
         </button>

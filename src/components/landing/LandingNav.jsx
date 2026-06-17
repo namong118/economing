@@ -37,15 +37,15 @@ export default function LandingNav() {
           fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
           display: 'inline-flex', alignItems: 'center', lineHeight: 1,
         }}>
-          <span style={{ color: '#3AB54A' }}>ECON</span>
+          <span style={{ color: '#52C97A' }}>ECON</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
             <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E"/>
-              <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E"/>
+              <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#52C97A"/>
+              <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#52C97A"/>
               <circle cx="7" cy="11" r="6.5" fill="#FFC83D"/>
             </svg>
           </span>
-          <span style={{ color: '#3AB54A' }}>MING</span>
+          <span style={{ color: '#52C97A' }}>MING</span>
         </span>
       </button>
 
@@ -57,7 +57,7 @@ export default function LandingNav() {
             padding: '8px 16px', borderRadius: '10px',
             background: 'none',
             border: scrolled ? '1.5px solid #E2E8F0' : '1.5px solid rgba(33,197,142,0.4)',
-            color: scrolled ? '#374151' : '#3AB54A',
+            color: scrolled ? '#374151' : '#52C97A',
             cursor: 'pointer',
             fontSize: '13px', fontWeight: '600',
             letterSpacing: '-0.2px',
@@ -70,7 +70,7 @@ export default function LandingNav() {
           onClick={() => navigate('/signup')}
           style={{
             padding: '8px 18px', borderRadius: '10px',
-            background: 'linear-gradient(135deg, #3AB54A, #16A374)',
+            background: 'linear-gradient(135deg, #52C97A, #16A374)',
             color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: '13px', fontWeight: '700',
             letterSpacing: '-0.2px',

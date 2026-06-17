@@ -17,7 +17,7 @@ function SummarySkeleton() {
       {[100, 85, 70].map((w, i) => (
         <div key={i} style={{
           height: '14px', borderRadius: '6px',
-          background: 'linear-gradient(90deg, #f0f7f3 25%, #E8F5E9 50%, #f0f7f3 75%)',
+          background: 'linear-gradient(90deg, #f0f7f3 25%, #E3F9EC 50%, #f0f7f3 75%)',
           backgroundSize: '200% 100%',
           animation: 'shimmer 1.4s infinite',
           width: `${w}%`,
@@ -31,14 +31,14 @@ function SummarySkeleton() {
 function NewsCardSkeleton() {
   const bar = (w, h = '13px', mb = '7px') => ({
     height: h, width: w, borderRadius: '6px', marginBottom: mb,
-    background: 'linear-gradient(90deg, #E8F5E9 25%, #EFF8EF 50%, #E8F5E9 75%)',
+    background: 'linear-gradient(90deg, #E3F9EC 25%, #F2FBF5 50%, #E3F9EC 75%)',
     backgroundSize: '200% 100%',
     animation: 'shimmer 1.5s infinite',
   })
   return (
     <div style={{
       background: '#fff', borderRadius: '12px',
-      border: '0.5px solid #C8E6C9', overflow: 'hidden', marginBottom: '12px',
+      border: '0.5px solid #B8EBC8', overflow: 'hidden', marginBottom: '12px',
     }}>
       <div style={{ padding: '20px 22px 18px' }}>
         <div style={bar('80px', '11px', '12px')} />
@@ -64,7 +64,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
   return (
     <div style={{
       background: '#fff', borderRadius: '12px',
-      border: '0.5px solid #C8E6C9', overflow: 'hidden', marginBottom: '12px',
+      border: '0.5px solid #B8EBC8', overflow: 'hidden', marginBottom: '12px',
     }}>
       {/* 날짜 + 제목 */}
       <div style={{ padding: '20px 22px 14px' }}>
@@ -72,7 +72,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
           {new Date(article.pubDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
         <h2 style={{
-          fontSize: '17px', fontWeight: '800', color: '#2D7A35',
+          fontSize: '17px', fontWeight: '800', color: '#2A7A4B',
           lineHeight: '1.4', letterSpacing: '-0.4px', marginBottom: '10px',
         }}>
           {article.title}
@@ -90,7 +90,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
 
       {/* 핵심 포인트 */}
       {!summarizing && article.keyPoints?.length > 0 && (
-        <div style={{ margin: '0 22px 14px', background: '#EFF8EF', borderRadius: '10px', border: '0.5px solid #C8E6C9', padding: '14px 16px' }}>
+        <div style={{ margin: '0 22px 14px', background: '#F2FBF5', borderRadius: '10px', border: '0.5px solid #B8EBC8', padding: '14px 16px' }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', marginBottom: '10px', letterSpacing: '0.2px' }}>
             📌 핵심 포인트
           </p>
@@ -98,7 +98,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
             <div key={j} style={{ display: 'flex', gap: '8px', marginBottom: j < article.keyPoints.length - 1 ? '8px' : '0' }}>
               <div style={{
                 width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0,
-                background: '#3AB54A', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '10px', color: '#fff', fontWeight: '800', marginTop: '1px',
               }}>
                 {j + 1}
@@ -137,7 +137,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
                 title={kw.explanation}
                 style={{
                   fontSize: '11px', padding: '4px 12px', borderRadius: '100px',
-                  background: '#E8F5E9', color: '#2D7A35', border: '0.5px solid #A5D6A7',
+                  background: '#E3F9EC', color: '#2A7A4B', border: '0.5px solid #B8EBC8',
                   fontWeight: '600',
                 }}
               >
@@ -157,8 +157,8 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
           style={{
             flex: 1, padding: '10px 12px', borderRadius: '10px',
             fontSize: '12px', fontWeight: '600',
-            background: '#EFF8EF', border: '0.5px solid #C8E6C9',
-            color: '#2D7A35', textAlign: 'center', textDecoration: 'none',
+            background: '#F2FBF5', border: '0.5px solid #B8EBC8',
+            color: '#2A7A4B', textAlign: 'center', textDecoration: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
@@ -171,8 +171,8 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
             style={{
               flex: 1, padding: '10px 12px', borderRadius: '10px',
               fontSize: '12px', fontWeight: '700',
-              background: isSaved ? '#EFF8EF' : '#3AB54A',
-              border: isSaved ? '0.5px solid #C8E6C9' : 'none',
+              background: isSaved ? '#F2FBF5' : '#52C97A',
+              border: isSaved ? '0.5px solid #B8EBC8' : 'none',
               color: isSaved ? '#888780' : '#fff',
               cursor: isSaved ? 'default' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -247,7 +247,7 @@ export default function ReadingPage() {
         }
       `}</style>
 
-      <div style={{ background: '#EFF8EF', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
+      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
 
           {/* 카테고리 필터 */}
@@ -260,9 +260,9 @@ export default function ReadingPage() {
                   padding: '5px 16px', borderRadius: '100px',
                   fontSize: '12px', fontWeight: category === cat ? '700' : '500',
                   border: '0.5px solid',
-                  background:  category === cat ? '#3AB54A' : '#fff',
-                  color:       category === cat ? '#fff' : '#2D7A35',
-                  borderColor: category === cat ? '#3AB54A' : '#C8E6C9',
+                  background:  category === cat ? '#52C97A' : '#fff',
+                  color:       category === cat ? '#fff' : '#2A7A4B',
+                  borderColor: category === cat ? '#52C97A' : '#B8EBC8',
                   cursor: 'pointer', transition: 'all 0.15s',
                 }}
               >
@@ -291,7 +291,7 @@ export default function ReadingPage() {
                 onClick={() => { delete newsCache[category]; loadNews(category); }}
                 style={{
                   padding: '8px 20px', borderRadius: '8px',
-                  background: '#3AB54A', color: '#fff', border: 'none',
+                  background: '#52C97A', color: '#fff', border: 'none',
                   fontSize: '12px', fontWeight: '700', cursor: 'pointer',
                 }}
               >
@@ -327,7 +327,7 @@ export default function ReadingPage() {
                 onClick={() => navigate('/coach')}
                 style={{
                   padding: '10px 22px', borderRadius: '100px',
-                  background: '#3AB54A', color: '#fff', border: 'none',
+                  background: '#52C97A', color: '#fff', border: 'none',
                   fontSize: '13px', fontWeight: '700', cursor: 'pointer',
                   boxShadow: '0 3px 10px rgba(33,197,142,0.3)',
                 }}

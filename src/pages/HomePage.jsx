@@ -22,7 +22,7 @@ function NomingCard({ bite, profile, navigate }) {
   const userName = profile?.nickname?.split(' ')[0] || '사용자';
 
   const todos = [
-    !profile?.onboarding_completed && { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#3A8A42" />, iconBg: '#E8F5E9', path: '/onboarding' },
+    !profile?.onboarding_completed && { title: '경제 프로필 설정하기', description: '2분이면 완료 — 맞춤 코칭 시작', icon: <User size={14} color="#3A9A5C" />, iconBg: '#E3F9EC', path: '/onboarding' },
     { title: '한잎 퀴즈 풀기',       description: '+5 XP 획득 가능',               icon: <Zap size={14} color="#854F0B" />, iconBg: '#FFF4D6', path: `/bite/${bite.id}` },
     { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
   ].filter(Boolean);
@@ -46,7 +46,7 @@ function NomingCard({ bite, profile, navigate }) {
 
   return (
     <div style={{
-      background: '#fff', borderRadius: 12, border: '0.5px solid #C8E6C9',
+      background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8',
       padding: 16, height: '100%', display: 'flex', flexDirection: 'column',
       boxSizing: 'border-box',
     }}>
@@ -59,23 +59,23 @@ function NomingCard({ bite, profile, navigate }) {
           style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
         />
         <div>
-          <div style={{ fontSize: 14, fontWeight: 500, color: '#2D7A35' }}>노밍 · AI 경제 코치</div>
+          <div style={{ fontSize: 14, fontWeight: 500, color: '#2A7A4B' }}>노밍 · AI 경제 코치</div>
           <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>언제든 물어보세요</div>
         </div>
       </div>
 
       {/* 말풍선 */}
       <div style={{
-        background: '#EFF8EF', borderRadius: '0 10px 10px 10px',
+        background: '#F2FBF5', borderRadius: '0 10px 10px 10px',
         padding: '13px 14px', fontSize: 13, color: '#444441',
-        lineHeight: 1.7, border: '0.5px solid #C8E6C9', marginBottom: 14,
+        lineHeight: 1.7, border: '0.5px solid #B8EBC8', marginBottom: 14,
       }}>
         {profile?.noming_intro ? (
           profile.noming_intro
         ) : (
           <>
             {userName}님, 오늘의 주제는{' '}
-            <strong style={{ color: '#2D7A35' }}>{bite.title}</strong>이에요.<br />
+            <strong style={{ color: '#2A7A4B' }}>{bite.title}</strong>이에요.<br />
             오늘 배운 내용이 내 생활에 어떤 영향이 있는지 같이 알아볼까요?
           </>
         )}
@@ -89,7 +89,7 @@ function NomingCard({ bite, profile, navigate }) {
         [0, 1].map(i => (
           <div key={i} style={{
             width: '100%', height: 36, borderRadius: 8, marginBottom: 6,
-            background: 'linear-gradient(90deg, #E8F5E9 25%, #EFF8EF 50%, #E8F5E9 75%)',
+            background: 'linear-gradient(90deg, #E3F9EC 25%, #F2FBF5 50%, #E3F9EC 75%)',
             backgroundSize: '200% 100%',
             animation: 'shimmer 1.5s infinite',
           }} />
@@ -100,16 +100,16 @@ function NomingCard({ bite, profile, navigate }) {
             key={i}
             onClick={() => navigate('/coach', { state: { question: q } })}
             style={{
-              width: '100%', background: '#EFF8EF', border: '0.5px solid #C8E6C9',
-              borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#2D7A35',
+              width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
+              borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#2A7A4B',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               marginBottom: 6, cursor: 'pointer', textAlign: 'left',
             }}
             onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-            onMouseLeave={e => e.currentTarget.style.background = '#EFF8EF'}
+            onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
           >
             <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
-            <span style={{ color: '#3AB54A', flexShrink: 0 }}>→</span>
+            <span style={{ color: '#52C97A', flexShrink: 0 }}>→</span>
           </button>
         ))
       )}
@@ -143,7 +143,7 @@ function NomingCard({ bite, profile, navigate }) {
             <div style={{ fontSize: 12, fontWeight: 500, color: '#2C2C2A' }}>{todo.title}</div>
             <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>{todo.description}</div>
           </div>
-          <span style={{ color: '#C0DD97', fontSize: 13 }}>→</span>
+          <span style={{ color: '#B8EBC8', fontSize: 13 }}>→</span>
         </div>
       ))}
 
@@ -153,16 +153,16 @@ function NomingCard({ bite, profile, navigate }) {
       <button
         onClick={() => navigate('/coach')}
         style={{
-          width: '100%', background: '#EFF8EF', border: '0.5px solid #C8E6C9',
+          width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
           borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#888780',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           cursor: 'pointer', marginTop: 'auto',
         }}
         onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-        onMouseLeave={e => e.currentTarget.style.background = '#EFF8EF'}
+        onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
       >
         직접 질문하기...
-        <span style={{ color: '#3AB54A' }}>→</span>
+        <span style={{ color: '#52C97A' }}>→</span>
       </button>
     </div>
   );
@@ -202,7 +202,7 @@ export default function HomePage() {
           grid-template-columns: minmax(0, 1fr);
           gap: 16px;
           padding: 8px 24px 60px;
-          background: #EFF8EF;
+          background: #F2FBF5;
           box-sizing: border-box;
           align-content: start;
         }
@@ -239,9 +239,9 @@ export default function HomePage() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
               <div style={{
-                background: '#E8F5E9', border: '0.5px solid #A5D6A7',
+                background: '#E3F9EC', border: '0.5px solid #B8EBC8',
                 borderRadius: 20, padding: '4px 12px',
-                fontSize: 11, color: '#2D7A35',
+                fontSize: 11, color: '#2A7A4B',
                 display: 'flex', alignItems: 'center', gap: 5,
               }}>
                 🍃 {currentLevel.label} · {xp} XP
@@ -249,7 +249,7 @@ export default function HomePage() {
                   <button
                     onClick={handleAddXp}
                     disabled={xpLoading}
-                    style={{ background: 'none', border: 'none', fontSize: 9, color: '#A5D6A7', cursor: 'pointer', padding: '0 0 0 4px' }}
+                    style={{ background: 'none', border: 'none', fontSize: 9, color: '#B8EBC8', cursor: 'pointer', padding: '0 0 0 4px' }}
                   >
                     {xpLoading ? '…' : '+5'}
                   </button>

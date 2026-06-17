@@ -21,7 +21,7 @@ export default function BottomNav() {
         left: 0,
         right: 0,
         background: '#FFFFFF',
-        borderTop: '0.5px solid #e0f0e8',
+        borderTop: '0.5px solid #DCF0E0',
         display: 'flex',
         height: '60px',
         paddingBottom: 'env(safe-area-inset-bottom)',
@@ -50,11 +50,11 @@ export default function BottomNav() {
               position: 'relative',
             }}
           >
-            <item.Icon size={20} color={isActive ? '#3AB54A' : '#9CA3AF'} />
+            <item.Icon size={20} color={isActive ? '#52C97A' : '#9CA3AF'} />
             <span style={{
               fontSize: '10px',
               fontWeight: isActive ? '700' : '500',
-              color: isActive ? '#3AB54A' : '#9CA3AF',
+              color: isActive ? '#52C97A' : '#9CA3AF',
               letterSpacing: '-0.3px',
             }}>
               {item.label}
@@ -66,7 +66,7 @@ export default function BottomNav() {
                 width: '4px',
                 height: '4px',
                 borderRadius: '50%',
-                background: '#3AB54A',
+                background: '#52C97A',
               }} />
             )}
           </button>

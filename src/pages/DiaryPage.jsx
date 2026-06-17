@@ -11,7 +11,7 @@ const SECTIONS = [
   { key: 'news_thought',     icon: '💡', title: '뉴스를 보고 든 생각',   desc: '뉴스를 보고 어떤 생각이 들었나요?',                               placeholder: '금리가 유지되면 예금 금리도 크게 변하지 않을 것 같다.', type: 'textarea', color: '#F59E0B' },
   { key: 'questions',        icon: '🤔', title: '아직 궁금한 것',        desc: '아직 잘 이해되지 않는 부분이나 더 공부하고 싶은 내용을 적어보세요.', placeholder: '기준금리가 왜 물가에 영향을 줄까?',                   type: 'textarea', color: '#EF4444' },
   { key: 'consumption_note', icon: '💸', title: '오늘의 소비 돌아보기',  desc: '오늘 가장 기억에 남는 소비를 적어보세요.',                         placeholder: '배달음식 20,000원',                               type: 'textarea', color: '#06B6D4' },
-  { key: 'next_topic',       icon: '🎯', title: '다음에 공부할 것',      desc: '다음에 더 알아보고 싶은 경제 주제를 적어보세요.',                  placeholder: '비상금, ETF, 인플레이션',                          type: 'textarea', color: '#3AB54A' },
+  { key: 'next_topic',       icon: '🎯', title: '다음에 공부할 것',      desc: '다음에 더 알아보고 싶은 경제 주제를 적어보세요.',                  placeholder: '비상금, ETF, 인플레이션',                          type: 'textarea', color: '#52C97A' },
 ];
 
 const EMPTY_FORM = {
@@ -152,7 +152,7 @@ function JournalCard({ journal, onClick }) {
           <span style={{ fontSize: '14px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.4px' }}>{date}</span>
           <span style={{ fontSize: '11px', fontWeight: '600', color: '#94A3B8' }}>{dayName}</span>
         </div>
-        <span style={{ fontSize: '12px', color: '#3AB54A', fontWeight: '700', opacity: hov ? 1 : 0.5 }}>보기 →</span>
+        <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '700', opacity: hov ? 1 : 0.5 }}>보기 →</span>
       </div>
       {previews.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -207,7 +207,7 @@ function MonthCalendar({ year, month, journalMap, onDateClick }) {
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center', gap: '2px',
                 cursor: 'pointer', transition: 'background 0.1s',
-                background: isToday ? '#3AB54A' : 'transparent',
+                background: isToday ? '#52C97A' : 'transparent',
               }}
               onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = '#F0FDF9'; }}
               onMouseLeave={e => { if (!isToday) e.currentTarget.style.background = 'transparent'; }}
@@ -225,7 +225,7 @@ function MonthCalendar({ year, month, journalMap, onDateClick }) {
               {hasEntry && (
                 <span style={{
                   width: '5px', height: '5px', borderRadius: '50%', display: 'block',
-                  background: isToday ? 'rgba(255,255,255,0.85)' : '#3AB54A',
+                  background: isToday ? 'rgba(255,255,255,0.85)' : '#52C97A',
                 }} />
               )}
             </button>
@@ -288,7 +288,7 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
               {calYear}년 {calMonth + 1}월
             </p>
             {streakCount > 0 && (
-              <p style={{ fontSize: '11px', color: '#3AB54A', fontWeight: '700', marginTop: '1px' }}>
+              <p style={{ fontSize: '11px', color: '#52C97A', fontWeight: '700', marginTop: '1px' }}>
                 이 달 {streakCount}개 작성 🌱
               </p>
             )}
@@ -319,11 +319,11 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
           background: '#F8FAFC', borderRadius: '10px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3AB54A', display: 'inline-block' }} />
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#52C97A', display: 'inline-block' }} />
             <span style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>작성 완료</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '20px', height: '20px', borderRadius: '8px', background: '#3AB54A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ width: '20px', height: '20px', borderRadius: '8px', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontSize: '10px', color: '#fff', fontWeight: '900' }}>오</span>
             </span>
             <span style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>오늘</span>
@@ -340,7 +340,7 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
           onClick={onCreateToday}
           style={{
             width: '100%', padding: '14px', borderRadius: '14px', marginBottom: '24px',
-            background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+            background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
             color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
             cursor: 'pointer', letterSpacing: '-0.4px',
             boxShadow: '0 4px 16px rgba(33,197,142,0.3)',
@@ -446,7 +446,7 @@ function FormView({ form, onFieldChange, onSave, onCancel, saving, editMode, err
         onClick={onSave} disabled={saving}
         style={{
           width: '100%', padding: '15px', borderRadius: '14px', marginBottom: '40px',
-          background: saving ? '#E2E8F0' : 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+          background: saving ? '#E2E8F0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
           color: saving ? '#94A3B8' : '#fff', border: 'none',
           fontSize: '15px', fontWeight: '800', cursor: saving ? 'not-allowed' : 'pointer',
           letterSpacing: '-0.4px', transition: 'all 0.15s',
@@ -680,7 +680,7 @@ export function DiaryContent() {
 export default function DiaryPage() {
   return (
     <PageWrapper>
-      <div style={{ background: '#EFF8EF', minHeight: 'calc(100vh - 64px)', padding: '28px 0 64px' }}>
+      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '28px 0 64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
           <DiaryContent />
         </div>

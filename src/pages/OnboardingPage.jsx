@@ -55,7 +55,7 @@ const STEPS = [
   },
 ];
 
-const STEP_COLORS = ['#3AB54A', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+const STEP_COLORS = ['#52C97A', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
 
 /* ── 완료 화면 ────────────────────────────────────────────────── */
 function CompletionScreen({ answers, onComplete, saving }) {
@@ -76,7 +76,7 @@ function CompletionScreen({ answers, onComplete, saving }) {
         이제 당신만의 경제 성장 여정을<br />함께 시작해볼게요.
       </p>
 
-      <div style={{ background: '#EFF8EF', border: '1.5px solid #DCF5EB', borderRadius: '20px', padding: '20px 24px', marginBottom: '28px', textAlign: 'left' }}>
+      <div style={{ background: '#F2FBF5', border: '1.5px solid #DCF5EB', borderRadius: '20px', padding: '20px 24px', marginBottom: '28px', textAlign: 'left' }}>
         <p style={{ fontSize: '12px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>노밍이 파악한 내용</p>
         {[
           { label: '경제 수준', value: LEVEL_LABEL[answers.economic_level] ?? '-' },
@@ -96,7 +96,7 @@ function CompletionScreen({ answers, onComplete, saving }) {
         disabled={saving}
         style={{
           width: '100%', padding: '16px', borderRadius: '16px',
-          background: saving ? '#A7F3D0' : 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+          background: saving ? '#A7F3D0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
           color: '#fff', border: 'none',
           fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
           cursor: saving ? 'not-allowed' : 'pointer',
@@ -122,7 +122,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
       {/* 헤더 */}
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <div style={{ fontSize: '44px', marginBottom: '10px' }}>🎉</div>
-        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#2D7A35', letterSpacing: '-0.6px', marginBottom: '6px' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#2A7A4B', letterSpacing: '-0.6px', marginBottom: '6px' }}>
           노밍이 맞춤 코칭을 준비했어요!
         </h2>
         <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.6' }}>
@@ -139,7 +139,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
       }}>
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <img src={`${BASE_URL}coach.png`} alt="노밍" style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: '#3AB54A', border: '2px solid #FFFBEA' }} />
+          <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: '#52C97A', border: '2px solid #FFFBEA' }} />
         </div>
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>☀️ 노밍의 첫 인사</p>
@@ -151,9 +151,9 @@ function AIResultScreen({ aiResult, onGoHome }) {
 
       {/* 맞춤 로드맵 */}
       {roadmap ? (
-        <div style={{ background: '#fff', border: '0.5px solid #C8E6C9', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #B8EBC8', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '800', color: '#2D7A35' }}>나만의 학습 로드맵</span>
+            <span style={{ fontSize: '14px', fontWeight: '800', color: '#2A7A4B' }}>나만의 학습 로드맵</span>
           </div>
           {roadmap.goal && (
             <p style={{ fontSize: '12px', color: '#888780', marginBottom: '16px' }}>목표: {roadmap.goal}</p>
@@ -171,7 +171,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
                     {step.order}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: '14px', fontWeight: '700', color: '#2D7A35', marginBottom: '2px' }}>{step.title}</p>
+                    <p style={{ fontSize: '14px', fontWeight: '700', color: '#2A7A4B', marginBottom: '2px' }}>{step.title}</p>
                     <p style={{ fontSize: '12px', color: '#888780', lineHeight: '1.5' }}>{step.description}</p>
                     {step.topics?.length > 0 && (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
@@ -195,7 +195,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
           </div>
         </div>
       ) : (
-        <div style={{ background: '#EFF8EF', border: '0.5px solid #C8E6C9', borderRadius: '16px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
+        <div style={{ background: '#F2FBF5', border: '0.5px solid #B8EBC8', borderRadius: '16px', padding: '20px', marginBottom: '20px', textAlign: 'center' }}>
           <p style={{ fontSize: '13px', color: '#888780' }}>로드맵은 내 성장 허브에서 확인할 수 있어요.</p>
         </div>
       )}
@@ -205,7 +205,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
         onClick={onGoHome}
         style={{
           width: '100%', padding: '16px', borderRadius: '16px',
-          background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
+          background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
           color: '#fff', border: 'none',
           fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
           cursor: 'pointer',
@@ -243,9 +243,9 @@ export default function OnboardingPage() {
   }, [loading, user, navigate]);
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#EFF8EF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#F2FBF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 40, height: 40, border: '3px solid #C8E6C9', borderTop: '3px solid #3AB54A', borderRadius: '50%', margin: '0 auto 12px', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: 40, height: 40, border: '3px solid #B8EBC8', borderTop: '3px solid #52C97A', borderRadius: '50%', margin: '0 auto 12px', animation: 'spin 0.8s linear infinite' }} />
         <p style={{ fontSize: 13, color: '#888780' }}>불러오는 중...</p>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -253,13 +253,13 @@ export default function OnboardingPage() {
   );
 
   if (!user) return (
-    <div style={{ minHeight: '100vh', background: '#EFF8EF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+    <div style={{ minHeight: '100vh', background: '#F2FBF5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px', padding: '24px' }}>
       <img src={`${import.meta.env.BASE_URL}coach.png`} alt="노밍" style={{ width: 56, height: 56, borderRadius: 16, objectFit: 'cover' }} />
-      <p style={{ fontSize: 16, fontWeight: 700, color: '#2D7A35', textAlign: 'center' }}>로그인이 필요해요</p>
+      <p style={{ fontSize: 16, fontWeight: 700, color: '#2A7A4B', textAlign: 'center' }}>로그인이 필요해요</p>
       <p style={{ fontSize: 13, color: '#888780', textAlign: 'center' }}>온보딩을 시작하려면 먼저 로그인해주세요.</p>
       <button
         onClick={() => navigate('/login')}
-        style={{ padding: '12px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#3AB54A,#1AAD7D)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+        style={{ padding: '12px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', color: '#fff', border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
       >
         로그인하기
       </button>
@@ -301,16 +301,16 @@ export default function OnboardingPage() {
   /* AI 결과 화면 */
   if (aiResult) {
     return (
-      <div style={{ minHeight: '100vh', background: '#EFF8EF', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
+      <div style={{ minHeight: '100vh', background: '#F2FBF5', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         {/* 헤더바 */}
         <div style={{ width: '100%', background: '#fff', borderBottom: '1px solid #E8F5EF', padding: '16px 24px', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span style={{ fontSize: '13px', fontWeight: '700', color: '#3AB54A' }}>완료!</span>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#52C97A' }}>완료!</span>
             <span style={{ fontSize: '13px', color: '#94A3B8' }}>경제 성장 여정 준비</span>
           </div>
           <div style={{ height: '5px', background: '#E8F5EF', borderRadius: '100px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #3AB54A, #1AAD7D)', width: '100%' }} />
+            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #52C97A, #1AAD7D)', width: '100%' }} />
           </div>
         </div>
         <div style={{ width: '100%', maxWidth: '520px', padding: '32px 24px 0', boxSizing: 'border-box' }}>
@@ -321,7 +321,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#EFF8EF', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
+    <div style={{ minHeight: '100vh', background: '#F2FBF5', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 0 48px' }}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       {/* ── 상단 헤더 ── */}
@@ -329,22 +329,22 @@ export default function OnboardingPage() {
         {stepIdx > 0 && !isDone && (
           <button
             onClick={goBack}
-            style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#EFF8EF', border: '1.5px solid #DCF5EB', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '18px', color: '#64748B', flexShrink: 0, transition: 'all 0.15s' }}
+            style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#F2FBF5', border: '1.5px solid #DCF5EB', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '18px', color: '#64748B', flexShrink: 0, transition: 'all 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#DCF5EB'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#EFF8EF'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#F2FBF5'; }}
           >
             ←
           </button>
         )}
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span style={{ fontSize: '13px', fontWeight: '700', color: '#3AB54A' }}>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#52C97A' }}>
               {isDone ? '완료!' : `${stepIdx + 1} / ${STEPS.length}`}
             </span>
             <span style={{ fontSize: '13px', color: '#94A3B8' }}>경제 성장 여정 준비</span>
           </div>
           <div style={{ height: '5px', background: '#E8F5EF', borderRadius: '100px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #3AB54A, #1AAD7D)', width: `${progressPct}%`, transition: 'width 0.4s ease' }} />
+            <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, #52C97A, #1AAD7D)', width: `${progressPct}%`, transition: 'width 0.4s ease' }} />
           </div>
         </div>
       </div>
@@ -356,7 +356,7 @@ export default function OnboardingPage() {
         <div key={`noming-${animKey}`} className="anim-fade" style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '28px' }}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <img src={`${BASE_URL}coach.png`} alt="노밍" style={{ width: '52px', height: '52px', borderRadius: '15px', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', background: '#3AB54A', border: '2px solid #fff' }} />
+            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', background: '#52C97A', border: '2px solid #fff' }} />
           </div>
           <div style={{ background: '#fff', border: '1.5px solid #E8F5EF', borderRadius: '4px 18px 18px 18px', padding: '14px 18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flex: 1 }}>
             <p style={{ fontSize: '12px', fontWeight: '700', color: '#FFC83D', marginBottom: '4px' }}>☀️ 노밍</p>
@@ -396,8 +396,8 @@ export default function OnboardingPage() {
                       gap: step.options.length <= 3 ? '14px' : '8px',
                       padding: step.options.length <= 3 ? '16px 20px' : '16px',
                       borderRadius: '16px',
-                      background: selected ? '#EFF8EF' : '#fff',
-                      border: `2px solid ${selected ? '#3AB54A' : '#E2E8F0'}`,
+                      background: selected ? '#F2FBF5' : '#fff',
+                      border: `2px solid ${selected ? '#52C97A' : '#E2E8F0'}`,
                       cursor: 'pointer', textAlign: 'left',
                       transition: 'all 0.15s',
                       boxShadow: selected ? '0 0 0 4px rgba(33,197,142,0.1)' : 'none',
@@ -405,7 +405,7 @@ export default function OnboardingPage() {
                     }}
                   >
                     {selected && (
-                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#3AB54A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
                     )}
                     <span style={{ fontSize: step.options.length <= 3 ? '28px' : '22px' }}>{opt.emoji}</span>
                     <div>
@@ -424,7 +424,7 @@ export default function OnboardingPage() {
               disabled={!canNext}
               style={{
                 width: '100%', padding: '16px', borderRadius: '16px',
-                background: canNext ? 'linear-gradient(135deg, #3AB54A, #1AAD7D)' : '#E2E8F0',
+                background: canNext ? 'linear-gradient(135deg, #52C97A, #1AAD7D)' : '#E2E8F0',
                 color: canNext ? '#fff' : '#94A3B8', border: 'none',
                 fontSize: '16px', fontWeight: '800', letterSpacing: '-0.4px',
                 cursor: canNext ? 'pointer' : 'not-allowed',

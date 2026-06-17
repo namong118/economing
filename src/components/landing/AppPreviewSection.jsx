@@ -66,7 +66,7 @@ export default function AppPreviewSection() {
                 padding: '9px 20px', borderRadius: '100px',
                 border: 'none', cursor: 'pointer',
                 fontSize: '14px', fontWeight: active === s.key ? '700' : '500',
-                background: active === s.key ? '#3AB54A' : '#F1F5F9',
+                background: active === s.key ? '#52C97A' : '#F1F5F9',
                 color: active === s.key ? '#fff' : '#64748B',
                 transition: 'all 0.2s',
               }}
@@ -105,7 +105,7 @@ function PhoneFrame({ children }) {
       }}/>
       {/* 화면 */}
       <div style={{
-        background: '#EFF8EF',
+        background: '#F2FBF5',
         borderRadius: '28px',
         height: '520px',
         overflow: 'hidden',
@@ -125,7 +125,7 @@ function MockTopBar({ title }) {
       borderBottom: '1px solid #F1F5F9',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     }}>
-      <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '-0.5px', color: '#3AB54A' }}>
+      <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '-0.5px', color: '#52C97A' }}>
         ECONOMING
       </span>
       <span style={{ fontSize: '11px', fontWeight: '700', color: '#0F1F18' }}>{title}</span>
@@ -140,13 +140,13 @@ function HomeScreen() {
       <MockTopBar title="홈" />
       <div style={{ padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {/* 인사 */}
-        <div style={{ background: 'linear-gradient(135deg, #3AB54A, #16A374)', borderRadius: '16px', padding: '16px' }}>
+        <div style={{ background: 'linear-gradient(135deg, #52C97A, #16A374)', borderRadius: '16px', padding: '16px' }}>
           <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>안녕하세요 👋</p>
           <p style={{ fontSize: '14px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>오늘도 성장해봐요!</p>
         </div>
         {/* 오늘의 학습 */}
         <div style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid #E8FAF3' }}>
-          <p style={{ fontSize: '10px', fontWeight: '700', color: '#3AB54A', marginBottom: '8px' }}>📖 오늘의 경제</p>
+          <p style={{ fontSize: '10px', fontWeight: '700', color: '#52C97A', marginBottom: '8px' }}>📖 오늘의 경제</p>
           <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', marginBottom: '6px' }}/>
           <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', width: '70%' }}/>
         </div>
@@ -156,7 +156,7 @@ function HomeScreen() {
           {[70, 40, 10].map((w, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
               <div style={{ flex: 1, height: '6px', background: '#F1F5F9', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ width: `${w}%`, height: '100%', background: '#3AB54A', borderRadius: '3px' }}/>
+                <div style={{ width: `${w}%`, height: '100%', background: '#52C97A', borderRadius: '3px' }}/>
               </div>
               <span style={{ fontSize: '9px', color: '#94A3B8', minWidth: '28px' }}>{w}%</span>
             </div>
@@ -181,7 +181,7 @@ function CoachScreen() {
         </div>
         {/* 사용자 메시지 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ background: 'linear-gradient(135deg, #3AB54A, #16A374)', borderRadius: '14px 14px 4px 14px', padding: '10px 12px', maxWidth: '75%' }}>
+          <div style={{ background: 'linear-gradient(135deg, #52C97A, #16A374)', borderRadius: '14px 14px 4px 14px', padding: '10px 12px', maxWidth: '75%' }}>
             <p style={{ fontSize: '11px', color: '#fff', lineHeight: '1.5' }}>ETF가 뭔지 쉽게 설명해줘</p>
           </div>
         </div>
@@ -196,9 +196,9 @@ function CoachScreen() {
       </div>
       {/* 입력창 */}
       <div style={{ padding: '12px 14px', background: '#fff', borderTop: '1px solid #F1F5F9' }}>
-        <div style={{ background: '#EFF8EF', borderRadius: '100px', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: '#F2FBF5', borderRadius: '100px', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontSize: '11px', color: '#94A3B8' }}>궁금한 경제 개념을 물어보세요</span>
-          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3AB54A' }}/>
+          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#52C97A' }}/>
         </div>
       </div>
     </div>
@@ -238,7 +238,7 @@ function GrowthScreen() {
       <MockTopBar title="내 성장" />
       <div style={{ padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {/* 성장 카드 */}
-        <div style={{ background: 'linear-gradient(135deg, #3AB54A, #0D9B6E)', borderRadius: '16px', padding: '18px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(135deg, #52C97A, #0D9B6E)', borderRadius: '16px', padding: '18px', textAlign: 'center' }}>
           <div style={{ fontSize: '36px', marginBottom: '8px' }}>🌱</div>
           <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>현재 단계</p>
           <p style={{ fontSize: '16px', fontWeight: '900', color: '#fff', letterSpacing: '-0.5px' }}>새싹 경제인</p>
