@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookMarked } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
-import { fetchNews, summarizeNews } from '../services/readingService';
+import { fetchAndSummarizeNews } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
 
 const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산', '미국경제', '글로벌경제'];
@@ -25,6 +25,35 @@ function SummarySkeleton() {
       ))}
     </div>
   );
+}
+
+/* ── 전체 카드 스켈레톤 (초기 로딩용) ─────────────────────── */
+function NewsCardSkeleton() {
+  const bar = (w, h = '13px', mb = '7px') => ({
+    height: h, width: w, borderRadius: '6px', marginBottom: mb,
+    background: 'linear-gradient(90deg, #E1F5EE 25%, #F4FAF6 50%, #E1F5EE 75%)',
+    backgroundSize: '200% 100%',
+    animation: 'shimmer 1.5s infinite',
+  })
+  return (
+    <div style={{
+      background: '#fff', borderRadius: '12px',
+      border: '0.5px solid #d4ede3', overflow: 'hidden', marginBottom: '12px',
+    }}>
+      <div style={{ padding: '20px 22px 18px' }}>
+        <div style={bar('80px', '11px', '12px')} />
+        <div style={bar('92%', '17px', '8px')} />
+        <div style={bar('68%', '17px', '18px')} />
+        <div style={bar('100%', '13px', '8px')} />
+        <div style={bar('88%', '13px', '8px')} />
+        <div style={bar('74%', '13px', '0')} />
+      </div>
+      <div style={{ padding: '12px 22px 20px', display: 'flex', gap: '8px' }}>
+        <div style={{ ...bar('100%', '38px', '0'), flex: 1 }} />
+        <div style={{ ...bar('100%', '38px', '0'), flex: 1 }} />
+      </div>
+    </div>
+  )
 }
 
 /* ── 뉴스 카드 ────────────────────────────────────────────── */
@@ -175,7 +204,7 @@ export default function ReadingPage() {
     setError(null);
     abortRef.current = false;
 
-    // 캐시 히트
+    // 1. 메모리 캐시 확인 (즉시)
     if (newsCache[query]) {
       setArticles(newsCache[query]);
       setLoading(false);
@@ -183,32 +212,18 @@ export default function ReadingPage() {
     }
 
     try {
-      // 1단계: 뉴스 목록 먼저 표시 (빠름)
-      const raw = await fetchNews(query, 5);
-      if (!raw.length) { setLoading(false); return; }
-
-      const initial = raw.map(a => ({ ...a, _summarizing: true }));
-      setArticles(initial);
+      // 2. Supabase 캐시 확인 → 없으면 API 호출 + 병렬 요약
+      const results = await fetchAndSummarizeNews(query);
+      if (abortRef.current) return;
+      newsCache[query] = results;
+      setArticles(results);
       setLoading(false);
-
-      // 2단계: 각 기사 AI 요약 순차 처리 (카드별로 채워짐)
-      const result = [...initial];
-      for (let i = 0; i < raw.length; i++) {
-        if (abortRef.current) break;
-        try {
-          const summary = await summarizeNews(raw[i]);
-          result[i] = { ...raw[i], ...summary, _summarizing: false };
-        } catch {
-          result[i] = { ...raw[i], _summarizing: false };
-        }
-        setArticles([...result]);
-      }
-
-      newsCache[query] = result.map(a => ({ ...a, _summarizing: false }));
     } catch (err) {
       console.error(err);
-      setLoading(false);
-      setError('뉴스를 가져오는 데 실패했어요. 잠시 후 다시 시도해주세요.');
+      if (!abortRef.current) {
+        setLoading(false);
+        setError('뉴스를 가져오는 데 실패했어요. 잠시 후 다시 시도해주세요.');
+      }
     }
   }, []);
 
@@ -256,17 +271,13 @@ export default function ReadingPage() {
             ))}
           </div>
 
-          {/* 첫 로딩 (뉴스 목록 fetch 중) */}
+          {/* 초기 로딩 스켈레톤 */}
           {loading && (
-            <div style={{
-              background: '#FFF4D6', border: '0.5px solid #FAC775',
-              borderRadius: '12px', padding: '24px', textAlign: 'center',
-            }}>
-              <p style={{ fontSize: '14px', color: '#B45309', fontWeight: '700', marginBottom: '6px' }}>
-                ☀️ 뉴스를 불러오고 있어요
-              </p>
-              <p style={{ fontSize: '12px', color: '#92400E' }}>잠깐만요...</p>
-            </div>
+            <>
+              <NewsCardSkeleton />
+              <NewsCardSkeleton />
+              <NewsCardSkeleton />
+            </>
           )}
 
           {/* 에러 */}

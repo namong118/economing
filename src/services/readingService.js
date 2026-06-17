@@ -14,6 +14,33 @@ function cleanHtml(str = '') {
     .trim()
 }
 
+// Supabase news_cache 조회
+async function getCachedNews(category) {
+  try {
+    const today = new Date().toISOString().slice(0, 10)
+    const { data } = await supabase
+      .from('news_cache')
+      .select('data')
+      .eq('category', category)
+      .eq('date', today)
+      .limit(1)
+      .maybeSingle()
+    return data?.data ?? null
+  } catch {
+    return null
+  }
+}
+
+// Supabase news_cache 저장
+async function saveCachedNews(category, articles) {
+  try {
+    const today = new Date().toISOString().slice(0, 10)
+    await supabase.from('news_cache').insert({ category, date: today, data: articles })
+  } catch (err) {
+    console.warn('[news_cache] 저장 실패:', err.message)
+  }
+}
+
 // 네이버 뉴스 가져오기
 export async function fetchNews(query = '경제', display = 5) {
   const { data, error } = await supabase.functions.invoke('news', {
@@ -83,24 +110,26 @@ export async function summarizeNews(article) {
   }
 }
 
-// 뉴스 5개 가져와서 순차 요약
+// 뉴스 5개 가져와서 병렬 요약 (Supabase 캐시 우선)
 export async function fetchAndSummarizeNews(query = '경제') {
+  const cached = await getCachedNews(query)
+  if (cached) return cached
+
   const articles = await fetchNews(query, 5)
-  const results  = []
-  for (const article of articles) {
-    try {
-      const summary = await summarizeNews(article)
-      results.push({ ...article, ...summary })
-    } catch {
-      results.push({
+
+  const results = await Promise.all(
+    articles.map(article =>
+      summarizeNews(article).catch(() => ({
         ...article,
         summary:       article.description,
         keyPoints:     [],
         keywords:      [],
         nomingComment: '',
-      })
-    }
-  }
+      }))
+    )
+  )
+
+  saveCachedNews(query, results)  // 비동기, 결과 대기 안 함
   return results
 }
 
