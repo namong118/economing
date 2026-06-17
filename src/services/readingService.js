@@ -32,8 +32,8 @@ export async function summarizeNews(article) {
 {
   "summary": "3문장 이내 쉬운 요약",
   "keyPoints": ["핵심 포인트 1", "핵심 포인트 2", "핵심 포인트 3"],
-  "keywords": [{"term": "경제 용어", "explanation": "한 줄 쉬운 설명"}],
-  "nomingComment": "노밍이 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지"
+  "nomingComment": "노밍이 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지",
+  "keywords": [{"term": "경제 용어", "explanation": "한 줄 쉬운 설명"}]
 }`
 
   const content = await callSolar({
@@ -48,8 +48,32 @@ export async function summarizeNews(article) {
     const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     const match = clean.match(/\{[\s\S]*\}/)
     return JSON.parse(match ? match[0] : clean)
-  } catch (e) {
-    console.warn('[summarizeNews] JSON 파싱 실패. Solar 응답:', content?.slice(0, 300))
+  } catch {
+    // JSON 파싱 실패 시 regex로 핵심 필드 개별 추출
+    const extractStr = (key) => {
+      const m = content.match(new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*?)"`))
+      return m?.[1] ?? null
+    }
+    const extractArr = (key) => {
+      const m = content.match(new RegExp(`"${key}"\\s*:\\s*\\[([\\s\\S]*?)\\]`))
+      if (!m) return []
+      return [...m[1].matchAll(/"((?:[^"\\\\]|\\\\.)*)"/g)].map(x => x[1]).filter(Boolean)
+    }
+
+    const summary       = extractStr('summary')
+    const nomingComment = extractStr('nomingComment')
+    const keyPoints     = extractArr('keyPoints')
+
+    if (summary || nomingComment) {
+      return {
+        summary:       summary || cleanHtml(article.description),
+        keyPoints:     keyPoints.length ? keyPoints : [],
+        keywords:      [],
+        nomingComment: nomingComment || '이 뉴스를 꼭 읽어보세요!',
+      }
+    }
+
+    console.warn('[summarizeNews] 완전 파싱 실패. Solar 응답:', content?.slice(0, 300))
     return {
       summary:       cleanHtml(article.description),
       keyPoints:     [],
