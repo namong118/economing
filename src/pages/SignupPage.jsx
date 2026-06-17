@@ -99,13 +99,9 @@ export default function SignupPage() {
       }}>
         <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
           <img
-            src={`${BASE_URL}coach.png`}
-            alt="노밍"
-            style={{
-              width: '72px', height: '72px', borderRadius: '20px',
-              objectFit: 'cover', margin: '0 auto 16px', display: 'block',
-              boxShadow: '0 6px 20px rgba(33,197,142,0.25)',
-            }}
+            src={`${BASE_URL}logo.png`}
+            alt="ECONOMING"
+            style={{ height: '56px', width: 'auto', margin: '0 auto 16px', display: 'block' }}
           />
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '10px' }}>
             환영해요! 🌱
@@ -169,25 +165,10 @@ export default function SignupPage() {
         {/* ── 브랜드 헤더 ────────────────────────────────── */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <img
-            src={`${BASE_URL}icon.jpg`}
+            src={`${BASE_URL}logo.png`}
             alt="ECONOMING"
-            style={{
-              width: '68px', height: '68px', borderRadius: '20px',
-              objectFit: 'cover', margin: '0 auto 14px', display: 'block',
-              boxShadow: '0 6px 20px rgba(33,197,142,0.25)',
-            }}
+            style={{ height: '56px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
           />
-          <h1 style={{ fontSize: '26px', fontWeight: '900', letterSpacing: '-1px', margin: '0 0 8px', lineHeight: 1 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#2A7A4B' }}>
-              ECON
-              <svg width="20" height="32" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#52C97A" />
-                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#52C97A" />
-                <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
-              </svg>
-              MING
-            </span>
-          </h1>
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치
           </p>
