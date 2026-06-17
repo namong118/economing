@@ -26,7 +26,7 @@
   --pink-50: #FDF2F8;
   --pink-100: #FCE7F3;
 
-  --bg:         #F8FAFC;
+  --bg:         #F2FBF5;
   --surface:    #FFFFFF;
   --surface-2:  #F1F5F9;
 
@@ -152,7 +152,7 @@ input, textarea { font-family: var(--font); outline: none; }
 
 /* ===== 하단 네비 (모바일 전용) ===== */
 @media (min-width: 769px) {
-  .bottom-nav { display: none; }
+  .bottom-nav { display: none !important; }
 }
 
 /* ===== 스크롤바 ===== */
