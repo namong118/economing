@@ -57,15 +57,15 @@ export default function ProblemSection() {
               fontSize: 'clamp(16px, 2.5vw, 20px)',
               fontWeight: '800', color: '#065F46',
               letterSpacing: '-0.5px', margin: 0,
-              display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'center',
+              display: 'flex', alignItems: 'center', gap: '0', flexWrap: 'wrap', justifyContent: 'center',
             }}>
-              그래서
+              그래서&nbsp;
               <img
                 src={`${import.meta.env.BASE_URL}logo.png`}
                 alt="ECONOMING"
-                style={{ height: 'clamp(28px, 3.5vw, 36px)', width: 'auto', display: 'inline-block', verticalAlign: 'middle' }}
+                style={{ height: 'clamp(28px, 3.5vw, 36px)', width: 'auto', display: 'inline-block', verticalAlign: 'middle', margin: '0 -10px' }}
               />
-              이 만들어졌습니다.
+              &nbsp;이 만들어졌습니다.
             </p>
           </div>
         </div>
