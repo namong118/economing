@@ -4,7 +4,8 @@ import { ArrowRight, History, MessageCircle, X } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse } from '../services/coachService';
-import { createConversation, getConversationList } from '../services/conversationService';
+import { createConversation, getConversationList, getRecentConversations } from '../services/conversationService';
+import { callSolar } from '../services/solarService';
 import { getInfographic } from '../data/infographicData';
 import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
@@ -294,7 +295,25 @@ export default function CoachPage() {
   const { user, profile } = useAuth();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
-  const suggestedQuestions = getPersonalizedQuestions(profile);
+  const [suggestedQuestions, setSuggestedQuestions] = useState(() => getPersonalizedQuestions(profile));
+
+  /* 최근 대화 기반 맞춤 질문 생성 */
+  useEffect(() => {
+    if (!user?.id) return;
+    getRecentConversations(user.id, 5).then(({ data }) => {
+      if (!data?.length) return;
+      const recentList = data.map(c => `- ${c.question}`).join('\n');
+      callSolar({
+        system: `당신은 경제 학습 코치입니다. 사용자가 최근에 한 질문들을 보고, 자연스럽게 이어지거나 더 깊이 파고들 수 있는 경제 공부 질문 5개를 추천하세요. 이미 물어본 것과 너무 비슷한 질문은 피하고, 다음 단계로 나아갈 수 있는 질문을 제안하세요.\n반드시 JSON 배열로만 응답하세요: ["질문1", "질문2", "질문3", "질문4", "질문5"]`,
+        messages: [{ role: 'user', content: `최근 질문 목록:\n${recentList}` }],
+      }).then(content => {
+        const match = content.match(/\[[\s\S]*?\]/);
+        if (!match) return;
+        const parsed = JSON.parse(match[0]);
+        if (Array.isArray(parsed) && parsed.length >= 3) setSuggestedQuestions(parsed.slice(0, 5));
+      }).catch(() => {});
+    });
+  }, [user?.id]); // eslint-disable-line
 
   /* 다른 페이지에서 질문 전달 시 자동 전송 */
   useEffect(() => {
