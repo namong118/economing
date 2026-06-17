@@ -54,9 +54,9 @@ function NomingCard({ bite, profile, navigate }) {
       {/* 노밍 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
         <img
-          src={`${import.meta.env.BASE_URL}noming-icon.png`}
+          src={`${import.meta.env.BASE_URL}noming.png`}
           alt="노밍"
-          style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+          style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
         />
         <div>
           <div style={{ fontSize: 14, fontWeight: 500, color: '#2A7A4B' }}>노밍 · AI 경제 코치</div>

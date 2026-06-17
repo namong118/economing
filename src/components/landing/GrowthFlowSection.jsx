@@ -1,8 +1,32 @@
-﻿const STEPS = [
-  { num: 1, emoji: '☀️', label: '노밍에게 질문하기', desc: '모르는 경제 개념을 편하게 물어보세요' },
-  { num: 2, emoji: '📖', label: '경제 읽기', desc: '3분짜리 쉬운 경제 콘텐츠를 읽어보세요' },
-  { num: 3, emoji: '📓', label: '경제일기 작성', desc: '오늘 배운 것을 짧게 기록해보세요' },
-  { num: 4, emoji: '🌱', label: '내 성장 확인', desc: '쌓인 지식과 성장 단계를 확인하세요' },
+import { BookOpen, NotebookPen, Sprout } from 'lucide-react';
+
+const BASE_URL = import.meta.env.BASE_URL;
+
+const STEPS = [
+  {
+    num: 1,
+    icon: <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />,
+    label: '노밍에게 질문하기',
+    desc: '모르는 경제 개념을 편하게 물어보세요',
+  },
+  {
+    num: 2,
+    icon: <BookOpen size={22} color="#2A7A4B" />,
+    label: '경제 읽기',
+    desc: '3분짜리 쉬운 경제 콘텐츠를 읽어보세요',
+  },
+  {
+    num: 3,
+    icon: <NotebookPen size={22} color="#2A7A4B" />,
+    label: '경제일기 작성',
+    desc: '오늘 배운 것을 짧게 기록해보세요',
+  },
+  {
+    num: 4,
+    icon: <Sprout size={22} color="#2A7A4B" />,
+    label: '내 성장 확인',
+    desc: '쌓인 지식과 성장 단계를 확인하세요',
+  },
 ];
 
 export default function GrowthFlowSection() {
@@ -65,7 +89,7 @@ export default function GrowthFlowSection() {
   );
 }
 
-function StepCard({ num, emoji, label, desc }) {
+function StepCard({ num, icon, label, desc }) {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: '16px',
@@ -85,8 +109,15 @@ function StepCard({ num, emoji, label, desc }) {
       }}>
         {num}
       </div>
-      {/* 이모지 */}
-      <span style={{ fontSize: '26px', flexShrink: 0 }}>{emoji}</span>
+      {/* 아이콘 박스 */}
+      <div style={{
+        width: 40, height: 40, borderRadius: 10,
+        background: '#E3F9EC',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        {icon}
+      </div>
       {/* 텍스트 */}
       <div>
         <p style={{

@@ -169,9 +169,9 @@ function NomingGreeting({ BASE_URL }) {
     }}>
       <div style={{ position: 'relative', flexShrink: 0 }}>
         <img
-          src={`${BASE_URL}coach.png`}
+          src={`${BASE_URL}noming.png`}
           alt="노밍"
-          style={{ width: '56px', height: '56px', borderRadius: '16px', objectFit: 'cover' }}
+          style={{ width: '52px', height: '52px', objectFit: 'contain' }}
         />
         <div style={{
           position: 'absolute', bottom: '-2px', right: '-2px',
@@ -199,9 +199,9 @@ function LoadingBubble({ BASE_URL }) {
       display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '20px',
     }}>
       <img
-        src={`${BASE_URL}coach.png`}
+        src={`${BASE_URL}noming.png`}
         alt="노밍"
-        style={{ width: '32px', height: '32px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0, marginTop: '2px' }}
+        style={{ width: '36px', height: '36px', objectFit: 'contain', flexShrink: 0, marginTop: '2px' }}
       />
       <div style={{
         background: '#fff', border: '0.5px solid #B8EBC8',
@@ -455,11 +455,11 @@ export default function CoachPage() {
                     >
                       {msg.role === 'noming' && (
                         <img
-                          src={`${BASE_URL}coach.png`}
+                          src={`${BASE_URL}noming.png`}
                           alt="노밍"
                           style={{
-                            width: '32px', height: '32px', borderRadius: '10px',
-                            objectFit: 'cover', flexShrink: 0, marginTop: '2px',
+                            width: '36px', height: '36px',
+                            objectFit: 'contain', flexShrink: 0, marginTop: '2px',
                           }}
                         />
                       )}

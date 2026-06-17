@@ -1,35 +1,43 @@
-﻿const FEATURES = [
+import { BookOpen, NotebookPen, BookMarked } from 'lucide-react';
+
+const BASE_URL = import.meta.env.BASE_URL;
+
+const FEATURES = [
   {
-    emoji: '☀️',
+    icon: <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, objectFit: 'contain' }} />,
     title: 'AI 코치',
     desc: '모르는 경제 개념을\n쉽게 질문하세요.',
     bg: '#FEF9EC',
     accent: '#F59E0B',
     border: '#FDE68A',
+    iconColor: '#F59E0B',
   },
   {
-    emoji: '📖',
+    icon: <BookOpen size={28} color="#2A7A4B" />,
     title: '경제 읽기',
     desc: '3분 만에\n경제 개념 하나를 이해해보세요.',
     bg: '#F0FDF4',
     accent: '#52C97A',
     border: '#BBF7D0',
+    iconColor: '#52C97A',
   },
   {
-    emoji: '📓',
+    icon: <NotebookPen size={28} color="#3B82F6" />,
     title: '경제일기',
     desc: '배운 것과\n경제 뉴스를 기록해보세요.',
     bg: '#EFF6FF',
     accent: '#3B82F6',
     border: '#BFDBFE',
+    iconColor: '#3B82F6',
   },
   {
-    emoji: '📚',
+    icon: <BookMarked size={28} color="#8B5CF6" />,
     title: '나만의 경제사전',
     desc: '모르는 경제 용어를\n저장하고 다시 확인하세요.',
     bg: '#FAF5FF',
     accent: '#8B5CF6',
     border: '#DDD6FE',
+    iconColor: '#8B5CF6',
   },
 ];
 
@@ -75,7 +83,7 @@ export default function FeatureSection() {
   );
 }
 
-function FeatureCard({ emoji, title, desc, bg, accent, border }) {
+function FeatureCard({ icon, title, desc, bg, accent, border }) {
   return (
     <div style={{
       background: bg,
@@ -91,11 +99,10 @@ function FeatureCard({ emoji, title, desc, bg, accent, border }) {
         background: '#fff',
         borderRadius: '16px',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '28px',
         boxShadow: `0 4px 12px ${accent}22`,
         border: `1px solid ${border}`,
       }}>
-        {emoji}
+        {icon}
       </div>
       <div>
         <h3 style={{

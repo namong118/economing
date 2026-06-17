@@ -174,7 +174,7 @@ function CoachScreen() {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {/* AI 메시지 */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#E8FAF3', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>🌱</div>
+          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'contain', flexShrink: 0, background: '#E8FAF3' }} />
           <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid #E8FAF3' }}>
             <p style={{ fontSize: '11px', color: '#374151', lineHeight: '1.5' }}>ETF는 여러 주식을 묶어서 거래하는 펀드예요. 쉽게 말하면...</p>
           </div>
@@ -187,7 +187,7 @@ function CoachScreen() {
         </div>
         {/* AI 답변 */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#E8FAF3', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>🌱</div>
+          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'contain', flexShrink: 0, background: '#E8FAF3' }} />
           <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid #E8FAF3' }}>
             <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '4px', marginBottom: '5px' }}/>
             <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '4px', width: '80%' }}/>

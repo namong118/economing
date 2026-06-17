@@ -319,9 +319,9 @@ export default function EconomicBitePage() {
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
               <img
-                src={`${import.meta.env.BASE_URL}noming-icon.png`}
+                src={`${import.meta.env.BASE_URL}noming.png`}
                 alt="노밍"
-                style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, boxShadow: '0 2px 8px rgba(245,158,11,0.3)' }}
+                style={{ width: 42, height: 42, objectFit: 'contain', flexShrink: 0 }}
               />
               <div>
                 <div style={{ fontSize: 12, fontWeight: 800, color: '#92400E', letterSpacing: '-0.1px', marginBottom: 5 }}>
