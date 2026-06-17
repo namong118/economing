@@ -108,7 +108,8 @@ function SummaryTab() {
   const xp          = profile?.xp ?? 0;
   const levelInfo   = getNextLevelInfo(xp);
   const { currentLevel, nextLevel, xpNeeded, progressPercent } = levelInfo;
-  const stageIndex  = LEVELS.findIndex(l => l.key === currentLevel.key);
+  const stageIndex      = LEVELS.findIndex(l => l.key === currentLevel.key);
+  const overallProgress = (stageIndex + progressPercent / 100) / (LEVELS.length - 1);
   const econInfo    = ECONOMIC_LEVEL[profile?.economic_level] ?? null;
   const invInfo     = INVESTMENT_EXP[profile?.investment_experience] ?? null;
   const occInfo     = OCCUPATION[profile?.occupation] ?? null;
@@ -131,33 +132,36 @@ function SummaryTab() {
             </p>
           </div>
         </div>
-        <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden', marginBottom: '12px' }}>
-          <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg,#52C97A,#1AAD7D)', width: `${progressPercent}%`, transition: 'width 0.6s' }} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {LEVELS.map((l, i) => {
-            const isCurrent = l.key === currentLevel.key;
-            const isPast    = i < stageIndex;
-            return (
-              <div key={l.key} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+        <div style={{ position: 'relative', height: '36px', marginBottom: '4px' }}>
+          {/* 트랙 배경 */}
+          <div style={{ position: 'absolute', left: '14px', right: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: '#F1F5F9', borderRadius: '100px' }} />
+          {/* 진행 채움 */}
+          <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: 'linear-gradient(90deg,#52C97A,#1AAD7D)', borderRadius: '100px', width: `calc(${overallProgress.toFixed(4)} * (100% - 28px))`, transition: 'width 0.6s' }} />
+          {/* 아이콘 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+            {LEVELS.map((l, i) => {
+              const isCurrent = l.key === currentLevel.key;
+              const isPast    = i < stageIndex;
+              return (
                 <img
+                  key={l.key}
                   title={l.label}
                   src={`${BASE_URL}${l.image}`}
                   alt={l.label}
                   style={{
-                    width: isCurrent ? 32 : 28,
-                    height: isCurrent ? 32 : 28,
+                    width: isCurrent ? 32 : 26,
+                    height: isCurrent ? 32 : 26,
                     objectFit: 'contain',
                     flexShrink: 0,
                     opacity: isCurrent ? 1 : isPast ? 0.85 : 0.3,
                     filter: isCurrent ? 'drop-shadow(0 0 4px rgba(33,197,142,0.5))' : 'none',
                     transition: 'all 0.3s',
+                    position: 'relative', zIndex: 1,
                   }}
                 />
-                {i < LEVELS.length - 1 && <div style={{ flex: 1, height: '2px', margin: '0 2px', background: isPast ? '#52C97A' : '#E2E8F0', borderRadius: '2px' }} />}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
