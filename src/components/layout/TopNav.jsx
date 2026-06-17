@@ -103,21 +103,11 @@ export default function TopNav() {
               padding: '4px 0', flexShrink: 0,
             }}
           >
-            <span style={{
-              fontSize: '18px', fontWeight: '900', letterSpacing: '-0.8px',
-              display: 'inline-flex', alignItems: 'center', lineHeight: 1,
-            }}>
-              <span style={{ color: '#2A7A4B' }}>ECON</span>
-              {/* 노란 원(O) + 위에서 자라나는 새싹 잎 2개 */}
-              <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
-                <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#52C97A" />
-                  <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#52C97A" />
-                  <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
-                </svg>
-              </span>
-              <span style={{ color: '#2A7A4B' }}>MING</span>
-            </span>
+            <img
+              src={`${import.meta.env.BASE_URL}logo.png`}
+              alt="ECONOMING"
+              style={{ height: 32, width: 'auto' }}
+            />
           </button>
 
           {/* PC 네비 링크 */}
