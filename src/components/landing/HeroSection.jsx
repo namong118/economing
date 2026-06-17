@@ -1,5 +1,4 @@
 ﻿import { useNavigate } from 'react-router-dom';
-import NomingIcon from './NomingIcon';
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -47,7 +46,11 @@ export default function HeroSection() {
         filter: 'drop-shadow(0 12px 32px rgba(33,197,142,0.25))',
         animation: 'heroFloat 3s ease-in-out infinite',
       }}>
-        <NomingIcon size={140} />
+        <img
+          src={`${import.meta.env.BASE_URL}appicon.jpg`}
+          alt="ECONOMING"
+          style={{ width: 140, height: 140, borderRadius: 36, objectFit: 'cover', display: 'block' }}
+        />
       </div>
 
       {/* 메인 카피 */}
