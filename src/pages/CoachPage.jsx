@@ -333,6 +333,7 @@ export default function CoachPage() {
           width: '100%',
           maxWidth: '1100px',
           margin: '0 auto',
+          padding: '0 24px',
           overflow: 'hidden',
         }}>
 
