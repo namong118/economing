@@ -1,9 +1,10 @@
 const PROBLEMS = [
-  { emoji: '🤔', text: '경제 뉴스가 너무 어렵다' },
-  { emoji: '🤔', text: '무엇부터 공부해야 할지 모르겠다' },
-  { emoji: '🤔', text: 'ETF가 뭔지 모르겠다' },
-  { emoji: '🤔', text: '투자 공부가 막막하다' },
-  { emoji: '🤔', text: '경제 공부가 오래 가지 않는다' },
+  '경제 뉴스가 너무 어렵다',
+  '무엇부터 공부해야 할지 모르겠다',
+  'ETF가 뭔지 모르겠다',
+  '투자 공부가 막막하다',
+  '경제 공부가 오래 가지 않는다',
+  '경제 용어들이 너무 낯설다',
 ];
 
 export default function ProblemSection() {
@@ -40,8 +41,8 @@ export default function ProblemSection() {
           gap: '14px',
           marginBottom: '52px',
         }}>
-          {PROBLEMS.map((p, i) => (
-            <ProblemCard key={i} emoji={p.emoji} text={p.text} />
+          {PROBLEMS.map((text, i) => (
+            <ProblemCard key={i} text={text} />
           ))}
         </div>
 
@@ -52,13 +53,19 @@ export default function ProblemSection() {
             background: 'linear-gradient(135deg, #E8FAF3, #D1FAE5)',
             borderRadius: '20px', padding: '20px 32px',
           }}>
-            <span style={{ fontSize: '28px' }}>💡</span>
             <p style={{
               fontSize: 'clamp(16px, 2.5vw, 20px)',
               fontWeight: '800', color: '#065F46',
               letterSpacing: '-0.5px', margin: 0,
+              display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'center',
             }}>
-              그래서 ECONOMING이 만들어졌습니다.
+              그래서
+              <img
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt="ECONOMING"
+                style={{ height: '22px', width: 'auto', display: 'inline-block', verticalAlign: 'middle' }}
+              />
+              이 만들어졌습니다.
             </p>
           </div>
         </div>
@@ -67,7 +74,7 @@ export default function ProblemSection() {
   );
 }
 
-function ProblemCard({ emoji, text }) {
+function ProblemCard({ text }) {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: '14px',
@@ -76,7 +83,6 @@ function ProblemCard({ emoji, text }) {
       padding: '20px 22px',
       border: '1.5px solid #E2E8F0',
     }}>
-      <span style={{ fontSize: '24px', flexShrink: 0 }}>{emoji}</span>
       <span style={{
         fontSize: '15px', fontWeight: '600',
         color: '#374151', letterSpacing: '-0.3px',
