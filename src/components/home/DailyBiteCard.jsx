@@ -83,7 +83,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
       {bite.realLifeExample && (
         <div style={{
           background: '#FFFBEE', borderRadius: 10, border: '0.5px solid #FAC775',
-          padding: '14px 16px', marginBottom: 0, flexShrink: 0,
+          padding: '14px 16px', marginBottom: 14, flexShrink: 0,
         }}>
           <div style={{ fontSize: 11, fontWeight: 500, color: '#854F0B', marginBottom: 8 }}>
             💡 실생활 예시
