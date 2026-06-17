@@ -159,10 +159,6 @@ function SummaryTab() {
             );
           })}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-          <span style={{ fontSize: '10px', color: '#CBD5E1', fontWeight: '600' }}>{LEVELS[0].label}</span>
-          <span style={{ fontSize: '10px', color: '#CBD5E1', fontWeight: '600' }}>{LEVELS[LEVELS.length - 1].label}</span>
-        </div>
       </div>
 
       {/* ── 3. 경제 프로필 ── */}
