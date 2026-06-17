@@ -249,7 +249,7 @@ function GrowthScreen() {
         </div>
         {/* 통계 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-          {[['📖', '읽은 글', '12개'], ['📓', '일기', '8개'], ['📚', '저장 용어', '24개'], ['☀️', '코치 질문', '16개']].map(([e, l, v]) => (
+          {[['📖', '읽은 글', '12개'], ['📓', '일기', '8개'], ['📚', '저장 용어', '24개'], ['💬', '코치 질문', '16개']].map(([e, l, v]) => (
             <div key={l} style={{ background: '#fff', borderRadius: '14px', padding: '14px', textAlign: 'center', border: '1px solid #F1F5F9' }}>
               <p style={{ fontSize: '20px', marginBottom: '4px' }}>{e}</p>
               <p style={{ fontSize: '9px', color: '#94A3B8', marginBottom: '2px' }}>{l}</p>

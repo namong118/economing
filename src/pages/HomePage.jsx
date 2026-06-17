@@ -237,7 +237,7 @@ export default function HomePage() {
           {/* ── 헤더 ── */}
           <div className="hd-header">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
+              <span style={{ fontSize: 13, color: '#888780' }}>{today} </span>
               <div style={{
                 background: '#E3F9EC', border: '0.5px solid #B8EBC8',
                 borderRadius: 20, padding: '4px 12px',

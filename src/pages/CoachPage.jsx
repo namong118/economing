@@ -181,7 +181,7 @@ function NomingGreeting({ BASE_URL }) {
       </div>
       <div>
         <p style={{ fontSize: '14px', fontWeight: '800', color: '#92400E', marginBottom: '6px' }}>
-          ☀️ 노밍이에요!
+          노밍이에요!
         </p>
         <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', letterSpacing: '-0.3px' }}>
           안녕하세요. 무엇부터 시작해야 할지<br />
@@ -209,7 +209,7 @@ function LoadingBubble({ BASE_URL }) {
         padding: '12px 18px',
       }}>
         <p style={{ fontSize: '12px', color: '#52C97A', fontWeight: '600', marginBottom: '7px' }}>
-          ☀️ 노밍이 답변을 준비하고 있어요...
+          노밍이 답변을 준비하고 있어요...
         </p>
         <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           {[0, 1, 2].map(i => (

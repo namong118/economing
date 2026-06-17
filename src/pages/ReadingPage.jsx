@@ -113,12 +113,12 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       {!summarizing && article.nomingComment && (
         <div style={{ margin: '0 22px 14px', background: '#FFF4D6', borderRadius: '10px', border: '0.5px solid #FAC775', padding: '12px 16px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
           <img
-            src={`${BASE_URL}coach.png`}
+            src={`${BASE_URL}noming.png`}
             alt="노밍"
-            style={{ width: '28px', height: '28px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0, marginTop: '2px' }}
+            style={{ width: '28px', height: '28px', objectFit: 'contain', flexShrink: 0, marginTop: '2px' }}
           />
           <div>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px' }}>☀️ 노밍 한마디</p>
+            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px' }}>노밍 한마디</p>
             <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.65' }}>{article.nomingComment}</p>
           </div>
         </div>
@@ -318,7 +318,7 @@ export default function ReadingPage() {
               borderRadius: '12px', padding: '20px 22px', textAlign: 'center',
             }}>
               <p style={{ fontSize: '14px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>
-                ☀️ 더 궁금한 게 생겼나요?
+                더 궁금한 게 생겼나요?
               </p>
               <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.7', marginBottom: '14px' }}>
                 노밍에게 바로 질문해봐요.

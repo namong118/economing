@@ -142,7 +142,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
           <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: '#52C97A', border: '2px solid #FFFBEA' }} />
         </div>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>☀️ 노밍의 첫 인사</p>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>노밍의 첫 인사</p>
           <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.75', fontWeight: '500' }}>
             {nomingIntro ?? '안녕하세요! 노밍이에요. 함께 경제 공부를 시작해볼게요 🌱'}
           </p>
@@ -359,7 +359,7 @@ export default function OnboardingPage() {
             <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', background: '#52C97A', border: '2px solid #fff' }} />
           </div>
           <div style={{ background: '#fff', border: '1.5px solid #E8F5EF', borderRadius: '4px 18px 18px 18px', padding: '14px 18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flex: 1 }}>
-            <p style={{ fontSize: '12px', fontWeight: '700', color: '#FFC83D', marginBottom: '4px' }}>☀️ 노밍</p>
+            <p style={{ fontSize: '12px', fontWeight: '700', color: '#FFC83D', marginBottom: '4px' }}>노밍</p>
             <p style={{ fontSize: '15px', color: '#1E293B', lineHeight: '1.65', fontWeight: '500', whiteSpace: 'pre-line' }}>
               {isDone
                 ? '정보를 저장하고 있어요...'

@@ -114,7 +114,7 @@ export default function LoginPage() {
                 fontSize: '12px', fontWeight: '700', color: '#52C97A',
                 marginBottom: '10px', letterSpacing: '0.2px',
               }}>
-                ☀️ 노밍과 함께
+                노밍과 함께
               </p>
               {[
                 '경제 공부 순서 찾기',

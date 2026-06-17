@@ -397,9 +397,9 @@ export default function ProfilePage() {
               padding: '32px 24px', textAlign: 'center', marginBottom: '12px',
             }}>
               <img
-                src={`${BASE_URL}coach.png`}
+                src={`${BASE_URL}noming.png`}
                 alt="노밍"
-                style={{ width: '52px', height: '52px', borderRadius: '14px', objectFit: 'cover', margin: '0 auto 12px', display: 'block' }}
+                style={{ width: '52px', height: '52px', objectFit: 'contain', margin: '0 auto 12px', display: 'block' }}
               />
               <p style={{ fontSize: '16px', fontWeight: '800', color: '#0F172A', marginBottom: '6px', letterSpacing: '-0.4px' }}>
                 경제 성장 진단을 완료해보세요
@@ -432,9 +432,9 @@ export default function ProfilePage() {
             }}>
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 <img
-                  src={`${BASE_URL}coach.png`}
+                  src={`${BASE_URL}noming.png`}
                   alt="노밍"
-                  style={{ width: '44px', height: '44px', borderRadius: '13px', objectFit: 'cover' }}
+                  style={{ width: '44px', height: '44px', objectFit: 'contain' }}
                 />
                 <div style={{
                   position: 'absolute', bottom: '-2px', right: '-2px',
@@ -444,7 +444,7 @@ export default function ProfilePage() {
               </div>
               <div>
                 <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '5px', letterSpacing: '0.3px' }}>
-                  ☀️ 노밍의 한 줄 분석
+                  노밍의 한 줄 분석
                 </p>
                 <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.3px' }}>
                   {generateAnalysis(profile)}

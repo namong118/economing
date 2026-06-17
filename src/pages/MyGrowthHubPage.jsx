@@ -259,7 +259,7 @@ function SummaryTab() {
             <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '11px', height: '11px', borderRadius: '50%', background: '#52C97A', border: '2px solid #FFFBEA' }} />
           </div>
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px', letterSpacing: '0.3px' }}>☀️ 노밍의 한 줄 분석</p>
+            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px', letterSpacing: '0.3px' }}>노밍의 한 줄 분석</p>
             <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.7', fontWeight: '500' }}>{generateAnalysis(profile)}</p>
             <button onClick={() => navigate('/coach')} style={{ marginTop: '10px', padding: '7px 14px', borderRadius: '100px', background: '#52C97A', color: '#fff', border: 'none', fontSize: '12px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 2px 8px rgba(33,197,142,0.3)' }}>
               노밍에게 더 물어보기 →
@@ -283,7 +283,7 @@ function SummaryTab() {
 /* ── 출처 뱃지 맵 ─────────────────────────────────────────── */
 const SOURCE_STYLE = {
   economic_bite: { label: '경제 한잎', icon: '🍃', bg: '#F0FDF4', color: '#15803D', border: '#86EFAC' },
-  coach:         { label: '노밍 대화', icon: '☀️', bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
+  coach:         { label: '노밍 대화', icon: '💬', bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
   news:          { label: '경제 읽기', icon: '📰', bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
 };
 
@@ -452,7 +452,7 @@ function RoadmapTabContent() {
         }}>
           <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '8px', objectFit: 'cover', flexShrink: 0, marginTop: 2 }} />
           <div>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '3px' }}>☀️ 노밍이 만든 맞춤 로드맵</p>
+            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '3px' }}>노밍이 만든 맞춤 로드맵</p>
             <p style={{ fontSize: '13px', fontWeight: '600', color: '#78350F', lineHeight: '1.5' }}>{aiRoadmap.currentStage}</p>
             {aiRoadmap.goal && (
               <p style={{ fontSize: '12px', color: '#92400E', marginTop: '4px' }}>목표: {aiRoadmap.goal}</p>

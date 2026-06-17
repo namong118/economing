@@ -259,7 +259,6 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
         padding: '12px 16px', marginBottom: '14px',
         display: 'flex', alignItems: 'center', gap: '10px',
       }}>
-        <span style={{ fontSize: '20px', flexShrink: 0 }}>☀️</span>
         <p style={{ fontSize: '14px', fontWeight: '700', color: '#78350F', letterSpacing: '-0.3px' }}>
           오늘의 경제를 기록해볼까요? ✍️
         </p>

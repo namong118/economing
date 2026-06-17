@@ -122,7 +122,7 @@ export default function SignupPage() {
             borderRadius: '14px', padding: '14px 16px', marginBottom: '24px', textAlign: 'left',
           }}>
             <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '8px' }}>
-              ☀️ 노밍이 기다리고 있어요
+              노밍이 기다리고 있어요
             </p>
             {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
@@ -195,7 +195,7 @@ export default function SignupPage() {
               padding: '14px 16px', border: '1px solid #DCF5EB',
             }}>
               <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '10px' }}>
-                ☀️ 노밍과 함께
+                노밍과 함께
               </p>
               {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
                 <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '7px' }}>

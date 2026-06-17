@@ -79,9 +79,9 @@ function EmptyProfile({ navigate, BASE_URL }) {
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '48px 0' }}>
       <img
-        src={`${BASE_URL}coach.png`}
+        src={`${BASE_URL}noming.png`}
         alt="노밍"
-        style={{ width: '64px', height: '64px', borderRadius: '18px', objectFit: 'cover', margin: '0 auto 16px', display: 'block' }}
+        style={{ width: '64px', height: '64px', objectFit: 'contain', margin: '0 auto 16px', display: 'block' }}
       />
       <h2 style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.6px', marginBottom: '8px' }}>
         아직 경제 프로필이 없어요
@@ -154,9 +154,9 @@ export default function MyGrowthPage() {
               }}>
                 <div style={{ position: 'relative', flexShrink: 0 }}>
                   <img
-                    src={`${BASE_URL}coach.png`}
+                    src={`${BASE_URL}noming.png`}
                     alt="노밍"
-                    style={{ width: '48px', height: '48px', borderRadius: '14px', objectFit: 'cover' }}
+                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
                   />
                   <div style={{
                     position: 'absolute', bottom: '-2px', right: '-2px',
@@ -166,7 +166,7 @@ export default function MyGrowthPage() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: '12px', fontWeight: '700', color: '#B45309', marginBottom: '6px', letterSpacing: '0.3px' }}>
-                    ☀️ 노밍의 한 줄 분석
+                    노밍의 한 줄 분석
                   </p>
                   <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.3px' }}>
                     {analysis}
@@ -346,7 +346,7 @@ export default function MyGrowthPage() {
                     boxShadow: '0 4px 16px rgba(33,197,142,0.3)',
                   }}
                 >
-                  ☀️ 노밍에게 질문하기
+                  노밍에게 질문하기
                 </button>
                 <button
                   onClick={() => navigate('/onboarding')}
