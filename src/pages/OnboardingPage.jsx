@@ -144,7 +144,7 @@ function AIResultScreen({ aiResult, onGoHome }) {
         marginBottom: '20px',
       }}>
         <div style={{ position: 'relative', flexShrink: 0 }}>
-          <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+          <img src={`${BASE_URL}icon.jpg`} alt="노밍" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
           <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: '#52C97A', border: '2px solid #FFFBEA' }} />
         </div>
         <div style={{ flex: 1 }}>
@@ -361,7 +361,7 @@ export default function OnboardingPage() {
         {/* 노밍 말풍선 */}
         <div key={`noming-${animKey}`} className="anim-fade" style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '28px' }}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
-            <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+            <img src={`${BASE_URL}icon.jpg`} alt="노밍" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
             <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderRadius: '50%', background: '#52C97A', border: '2px solid #fff' }} />
           </div>
           <div style={{ background: '#fff', border: '1.5px solid #E8F5EF', borderRadius: '4px 18px 18px 18px', padding: '14px 18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flex: 1 }}>
