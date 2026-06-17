@@ -147,6 +147,7 @@ input, textarea { font-family: var(--font); outline: none; }
   gap: 4px;
 }
 
+.nav-right-desktop { display: flex; align-items: center; gap: 10px; }
 .nav-hamburger { display: none; }
 
 /* ===== 하단 네비 (모바일 전용) ===== */
@@ -206,6 +207,32 @@ input, textarea { font-family: var(--font); outline: none; }
   .top-nav-inner { padding: 0 16px; }
 
   .nav-links { display: none; }
+  .nav-right-desktop { display: none; }
+
+  .nav-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .nav-mobile-menu {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    z-index: 199;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 16px;
+  }
 
   .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
   .roadmap-steps-grid { grid-template-columns: 1fr; }
