@@ -106,7 +106,7 @@ export default function TopNav() {
             <img
               src={`${import.meta.env.BASE_URL}logo.png`}
               alt="ECONOMING"
-              style={{ height: 44, width: 'auto' }}
+              style={{ height: 56, width: 'auto' }}
             />
           </button>
 
