@@ -10,6 +10,13 @@ import PageWrapper from '../components/layout/PageWrapper';
 import DailyBiteCard from '../components/home/DailyBiteCard';
 import { NewsTicker } from '../components/home/NewsTicker';
 
+/* 받침 유무에 따라 이/가 반환 */
+function subjectParticle(title) {
+  if (!title) return '이';
+  const code = title.charCodeAt(title.length - 1);
+  return (code - 0xAC00) % 28 > 0 ? '이' : '가';
+}
+
 /* ══ 노밍 카드 ══════════════════════════════════════════════ */
 function NomingCard({ bite, profile, navigate }) {
   const userName = profile?.nickname?.split(' ')[0] || '사용자';
@@ -20,18 +27,22 @@ function NomingCard({ bite, profile, navigate }) {
     { title: '경제일기 쓰기',         description: '오늘 배운 것 기록하기',          icon: <BookOpen size={14} color="#614A1F" />, iconBg: '#F1EFE8', path: '/diary' },
   ].filter(Boolean);
 
-  const [questions, setQuestions] = useState([
-    `${bite.title}이 내 적금에 미치는 영향은?`,
-    `${bite.title}이 부동산에 미치는 영향은?`,
-  ]);
+  const fallback = [
+    `${bite.title}${subjectParticle(bite.title)} 내 생활에 미치는 영향은?`,
+    `${bite.title}${subjectParticle(bite.title)} 뭔지 쉽게 설명해줘`,
+  ];
+
+  const [questions,       setQuestions]       = useState(null);
+  const [questionsLoading, setQuestionsLoading] = useState(true);
 
   useEffect(() => {
-    if (bite?.title) {
-      getRecommendedQuestions(bite.title)
-        .then(qs => { if (qs?.length) setQuestions(qs); })
-        .catch(() => {});
-    }
-  }, [bite?.title]);
+    if (!bite?.title) return;
+    setQuestionsLoading(true);
+    getRecommendedQuestions(bite.title)
+      .then(qs => setQuestions(qs?.length ? qs : fallback))
+      .catch(() => setQuestions(fallback))
+      .finally(() => setQuestionsLoading(false));
+  }, [bite?.title]); // eslint-disable-line
 
   return (
     <div style={{
@@ -73,24 +84,35 @@ function NomingCard({ bite, profile, navigate }) {
       {/* 추천 질문 라벨 */}
       <div style={{ fontSize: 11, color: '#888780', marginBottom: 8 }}>오늘의 추천 질문</div>
 
-      {/* 추천 질문 버튼 */}
-      {questions.map((q, i) => (
-        <button
-          key={i}
-          onClick={() => navigate('/coach', { state: { question: q } })}
-          style={{
-            width: '100%', background: '#F4FAF6', border: '0.5px solid #d4ede3',
-            borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#085041',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            marginBottom: 6, cursor: 'pointer', textAlign: 'left',
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-          onMouseLeave={e => e.currentTarget.style.background = '#F4FAF6'}
-        >
-          <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
-          <span style={{ color: '#21C58E', flexShrink: 0 }}>→</span>
-        </button>
-      ))}
+      {/* 추천 질문 버튼 or 스켈레톤 */}
+      {questionsLoading ? (
+        [0, 1].map(i => (
+          <div key={i} style={{
+            width: '100%', height: 36, borderRadius: 8, marginBottom: 6,
+            background: 'linear-gradient(90deg, #E1F5EE 25%, #F4FAF6 50%, #E1F5EE 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 1.5s infinite',
+          }} />
+        ))
+      ) : (
+        (questions ?? fallback).map((q, i) => (
+          <button
+            key={i}
+            onClick={() => navigate('/coach', { state: { question: q } })}
+            style={{
+              width: '100%', background: '#F4FAF6', border: '0.5px solid #d4ede3',
+              borderRadius: 8, padding: '9px 12px', fontSize: 12, color: '#085041',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              marginBottom: 6, cursor: 'pointer', textAlign: 'left',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
+            onMouseLeave={e => e.currentTarget.style.background = '#F4FAF6'}
+          >
+            <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
+            <span style={{ color: '#21C58E', flexShrink: 0 }}>→</span>
+          </button>
+        ))
+      )}
 
       <hr style={{ border: 'none', borderTop: '0.5px solid #f0f7f3', margin: '14px 0' }} />
 
@@ -171,6 +193,10 @@ export default function HomePage() {
   return (
     <PageWrapper>
       <style>{`
+        @keyframes shimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
         .hd-grid {
           display: grid;
           grid-template-columns: 1fr;
