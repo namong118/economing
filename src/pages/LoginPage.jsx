@@ -83,7 +83,7 @@ export default function LoginPage() {
           <img
             src={`${BASE_URL}logo.png`}
             alt="ECONOMING"
-            style={{ height: '56px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
+            style={{ height: '80px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
           />
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치

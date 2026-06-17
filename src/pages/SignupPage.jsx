@@ -101,7 +101,7 @@ export default function SignupPage() {
           <img
             src={`${BASE_URL}logo.png`}
             alt="ECONOMING"
-            style={{ height: '56px', width: 'auto', margin: '0 auto 16px', display: 'block' }}
+            style={{ height: '80px', width: 'auto', margin: '0 auto 16px', display: 'block' }}
           />
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '10px' }}>
             환영해요! 🌱
@@ -167,7 +167,7 @@ export default function SignupPage() {
           <img
             src={`${BASE_URL}logo.png`}
             alt="ECONOMING"
-            style={{ height: '56px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
+            style={{ height: '80px', width: 'auto', margin: '0 auto 14px', display: 'block' }}
           />
           <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
             경제 초보자를 위한 AI 성장 코치
