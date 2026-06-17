@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.BASE_URL;
 const STEPS = [
   {
     num: 1,
-    icon: <img src={`${BASE_URL}appicon.jpg`} alt="ECONOMING" style={{ width: 26, height: 26, borderRadius: 6, objectFit: 'cover' }} />,
+    icon: <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />,
     label: '노밍에게 질문하기',
     desc: '모르는 경제 개념을 편하게 물어보세요',
   },
