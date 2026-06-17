@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -93,7 +93,7 @@ function EmptyProfile({ navigate, BASE_URL }) {
         onClick={() => navigate('/onboarding')}
         style={{
           padding: '14px 32px', borderRadius: '14px',
-          background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+          background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
           color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
           cursor: 'pointer', letterSpacing: '-0.4px',
           boxShadow: '0 6px 20px rgba(33,197,142,0.35)',
@@ -126,7 +126,7 @@ export default function MyGrowthPage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
+      <div style={{ background: '#EFF8EF', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
         <div style={{ maxWidth: '780px', margin: '0 auto', padding: '0 24px' }}>
 
           {/* ── 페이지 제목 ─────────────────────────────── */}
@@ -161,7 +161,7 @@ export default function MyGrowthPage() {
                   <div style={{
                     position: 'absolute', bottom: '-2px', right: '-2px',
                     width: '13px', height: '13px', borderRadius: '50%',
-                    background: '#21C58E', border: '2px solid #FFFBEA',
+                    background: '#3AB54A', border: '2px solid #FFFBEA',
                   }} />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -236,7 +236,7 @@ export default function MyGrowthPage() {
                   <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden' }}>
                     <div style={{
                       height: '100%', borderRadius: '100px',
-                      background: 'linear-gradient(90deg, #21C58E, #1AAD7D)',
+                      background: 'linear-gradient(90deg, #3AB54A, #1AAD7D)',
                       width: `${progressPercent}%`,
                       transition: 'width 0.6s ease',
                     }} />
@@ -252,7 +252,7 @@ export default function MyGrowthPage() {
                             width: isCurrent ? '26px' : '20px',
                             height: isCurrent ? '26px' : '20px',
                             borderRadius: '50%', flexShrink: 0,
-                            background: isCurrent ? '#21C58E' : isPast ? '#DCF5EB' : '#F4FAF6',
+                            background: isCurrent ? '#3AB54A' : isPast ? '#DCF5EB' : '#EFF8EF',
                             border: isCurrent ? '2px solid #fff' : isPast ? '1.5px solid #A7F3D0' : '1.5px solid #E2E8F0',
                             boxShadow: isCurrent ? '0 0 0 3px rgba(33,197,142,0.2)' : 'none',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -263,7 +263,7 @@ export default function MyGrowthPage() {
                           {i < LEVELS.length - 1 && (
                             <div style={{
                               flex: 1, height: '2px', margin: '0 2px',
-                              background: isPast ? '#21C58E' : '#E2E8F0',
+                              background: isPast ? '#3AB54A' : '#E2E8F0',
                               borderRadius: '2px',
                             }} />
                           )}
@@ -321,8 +321,8 @@ export default function MyGrowthPage() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {interests.map(tag => (
                       <span key={tag} style={{
-                        fontSize: '13px', fontWeight: '700', color: '#21C58E',
-                        background: '#F4FAF6', border: '1.5px solid #DCF5EB',
+                        fontSize: '13px', fontWeight: '700', color: '#3AB54A',
+                        background: '#EFF8EF', border: '1.5px solid #DCF5EB',
                         borderRadius: '100px', padding: '6px 14px',
                       }}>
                         {tag}
@@ -340,7 +340,7 @@ export default function MyGrowthPage() {
                   onClick={() => navigate('/coach')}
                   style={{
                     flex: 1, padding: '14px', borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                    background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
                     color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800',
                     cursor: 'pointer', letterSpacing: '-0.3px',
                     boxShadow: '0 4px 16px rgba(33,197,142,0.3)',
@@ -357,7 +357,7 @@ export default function MyGrowthPage() {
                     cursor: 'pointer', whiteSpace: 'nowrap',
                     transition: 'all 0.15s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#21C58E'; e.currentTarget.style.color = '#21C58E'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#3AB54A'; e.currentTarget.style.color = '#3AB54A'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#64748B'; }}
                 >
                   프로필 다시 설정

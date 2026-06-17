@@ -1,4 +1,4 @@
-export default function FlowGraphic({ data }) {
+﻿export default function FlowGraphic({ data }) {
   const { steps } = data;
 
   return (
@@ -15,7 +15,7 @@ export default function FlowGraphic({ data }) {
             }}>
               <div style={{
                 width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
-                background: isLast ? '#21C58E' : '#fff',
+                background: isLast ? '#3AB54A' : '#fff',
                 border: `1.5px solid ${isLast ? '#1AAD7D' : '#E2E8F0'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '18px',
@@ -38,7 +38,7 @@ export default function FlowGraphic({ data }) {
               </div>
               {isLast && (
                 <span style={{
-                  fontSize: '10px', fontWeight: '700', color: '#21C58E',
+                  fontSize: '10px', fontWeight: '700', color: '#3AB54A',
                   background: '#DCFCE7', borderRadius: '100px', padding: '2px 8px',
                   flexShrink: 0, whiteSpace: 'nowrap',
                 }}>

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import NomingIcon from './NomingIcon';
 
 export default function FinalCTASection() {
@@ -40,7 +40,7 @@ export default function FinalCTASection() {
           marginBottom: '16px',
         }}>
           경제 공부,<br/>
-          <span style={{ color: '#21C58E' }}>오늘부터</span> 시작해볼까요?
+          <span style={{ color: '#3AB54A' }}>오늘부터</span> 시작해볼까요?
         </h2>
 
         <p style={{

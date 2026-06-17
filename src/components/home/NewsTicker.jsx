@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { fetchEconomyNews } from '../../services/newsService'
 
 export function NewsTicker() {
@@ -19,7 +19,7 @@ export function NewsTicker() {
       marginTop: 8,
       background: '#fff',
       borderRadius: 8,
-      border: '0.5px solid #d4ede3',
+      border: '0.5px solid #C8E6C9',
       padding: '8px 12px',
       display: 'flex',
       alignItems: 'center',
@@ -34,7 +34,7 @@ export function NewsTicker() {
         fontSize: 10,
         padding: '2px 8px',
         borderRadius: 20,
-        background: '#21C58E',
+        background: '#3AB54A',
         color: '#fff',
         fontWeight: 500,
         flexShrink: 0,

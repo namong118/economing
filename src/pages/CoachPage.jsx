@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -27,14 +27,14 @@ function NomingCard({ structured, onSend }) {
   return (
     <div style={{
       background: '#fff',
-      border: '0.5px solid #d4ede3',
+      border: '0.5px solid #C8E6C9',
       borderRadius: '4px 20px 20px 20px',
       overflow: 'hidden',
     }}>
       {/* 💡 한 줄 조언 */}
       <div style={{
-        background: '#F4FAF6',
-        borderBottom: '0.5px solid #d4ede3',
+        background: '#EFF8EF',
+        borderBottom: '0.5px solid #C8E6C9',
         padding: '14px 18px',
         display: 'flex', gap: '10px',
       }}>
@@ -62,9 +62,9 @@ function NomingCard({ structured, onSend }) {
             <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
               <div style={{
                 width: '18px', height: '18px', borderRadius: '50%', flexShrink: 0,
-                background: '#F4FAF6', border: '0.5px solid #d4ede3',
+                background: '#EFF8EF', border: '0.5px solid #C8E6C9',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '10px', fontWeight: '800', color: '#21C58E', marginTop: '1px',
+                fontSize: '10px', fontWeight: '800', color: '#3AB54A', marginTop: '1px',
               }}>
                 {i + 1}
               </div>
@@ -85,16 +85,16 @@ function NomingCard({ structured, onSend }) {
         <button
           onClick={() => onSend?.(nextStep)}
           style={{
-            fontSize: '12px', fontWeight: '700', color: '#21C58E',
-            background: '#F4FAF6', border: '0.5px solid #d4ede3',
+            fontSize: '12px', fontWeight: '700', color: '#3AB54A',
+            background: '#EFF8EF', border: '0.5px solid #C8E6C9',
             borderRadius: '100px', padding: '3px 12px',
             marginLeft: 'auto', whiteSpace: 'normal', wordBreak: 'keep-all',
             cursor: onSend ? 'pointer' : 'default',
             fontFamily: 'inherit', textAlign: 'left',
             transition: 'background 0.15s',
           }}
-          onMouseEnter={e => { if (onSend) e.currentTarget.style.background = '#E1F5EE' }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#F4FAF6' }}
+          onMouseEnter={e => { if (onSend) e.currentTarget.style.background = '#E8F5E9' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#EFF8EF' }}
         >
           {nextStep}
         </button>
@@ -124,7 +124,7 @@ function NomingCard({ structured, onSend }) {
         <div style={{
           padding: '12px 18px 14px',
           borderTop: '1px solid #F1F5F9',
-          background: '#F4FAF6',
+          background: '#EFF8EF',
         }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.4px', marginBottom: '8px' }}>
             💾 이 대화의 핵심 용어
@@ -133,11 +133,11 @@ function NomingCard({ structured, onSend }) {
             {terms.map(t => (
               <div key={t.term} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                gap: '10px', background: '#fff', border: '0.5px solid #d4ede3',
+                gap: '10px', background: '#fff', border: '0.5px solid #C8E6C9',
                 borderRadius: '10px', padding: '8px 12px',
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#085041' }}>{t.term}</span>
+                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#2D7A35' }}>{t.term}</span>
                   <p style={{ fontSize: '11px', color: '#888780', marginTop: '2px', lineHeight: '1.5',
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {t.meaning}
@@ -176,7 +176,7 @@ function NomingGreeting({ BASE_URL }) {
         <div style={{
           position: 'absolute', bottom: '-2px', right: '-2px',
           width: '14px', height: '14px', borderRadius: '50%',
-          background: '#21C58E', border: '2.5px solid #FFF4D6',
+          background: '#3AB54A', border: '2.5px solid #FFF4D6',
         }} />
       </div>
       <div>
@@ -204,18 +204,18 @@ function LoadingBubble({ BASE_URL }) {
         style={{ width: '32px', height: '32px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0, marginTop: '2px' }}
       />
       <div style={{
-        background: '#fff', border: '0.5px solid #d4ede3',
+        background: '#fff', border: '0.5px solid #C8E6C9',
         borderRadius: '4px 16px 16px 16px',
         padding: '12px 18px',
       }}>
-        <p style={{ fontSize: '12px', color: '#21C58E', fontWeight: '600', marginBottom: '7px' }}>
+        <p style={{ fontSize: '12px', color: '#3AB54A', fontWeight: '600', marginBottom: '7px' }}>
           ☀️ 노밍이 답변을 준비하고 있어요...
         </p>
         <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{
               width: '7px', height: '7px', borderRadius: '50%',
-              background: '#21C58E', opacity: 0.7,
+              background: '#3AB54A', opacity: 0.7,
               animation: `nomingBounce 1.3s ease-in-out ${i * 0.22}s infinite`,
             }} />
           ))}
@@ -344,7 +344,7 @@ export default function CoachPage() {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          background: '#F4FAF6',
+          background: '#EFF8EF',
         }}>
 
           {/* 노밍 인사 카드 + 추천 질문 (빈 상태) */}
@@ -369,19 +369,19 @@ export default function CoachPage() {
                         style={{
                           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                           padding: '12px 16px', borderRadius: '8px',
-                          background: '#fff', border: '0.5px solid #d4ede3',
+                          background: '#fff', border: '0.5px solid #C8E6C9',
                           cursor: 'pointer', textAlign: 'left',
                           fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
                           lineHeight: '1.4', transition: 'all 0.15s',
                           fontFamily: 'inherit',
                         }}
                         onMouseEnter={e => {
-                          e.currentTarget.style.borderColor = '#21C58E';
-                          e.currentTarget.style.background  = '#F4FAF6';
-                          e.currentTarget.style.color       = '#085041';
+                          e.currentTarget.style.borderColor = '#3AB54A';
+                          e.currentTarget.style.background  = '#EFF8EF';
+                          e.currentTarget.style.color       = '#2D7A35';
                         }}
                         onMouseLeave={e => {
-                          e.currentTarget.style.borderColor = '#d4ede3';
+                          e.currentTarget.style.borderColor = '#C8E6C9';
                           e.currentTarget.style.background  = '#fff';
                           e.currentTarget.style.color       = '#5F5E5A';
                         }}
@@ -428,7 +428,7 @@ export default function CoachPage() {
                         <div style={{
                           maxWidth: '72%', padding: '12px 18px',
                           borderRadius: '18px 4px 18px 18px',
-                          background: 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                          background: 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
                           color: '#fff', fontSize: '14px', lineHeight: '1.7',
                           fontWeight: '500',
                           boxShadow: '0 4px 14px rgba(33,197,142,0.3)',
@@ -437,7 +437,7 @@ export default function CoachPage() {
                         </div>
                       ) : msg.isPlainText ? (
                         <div style={{
-                          background: '#fff', border: '0.5px solid #d4ede3',
+                          background: '#fff', border: '0.5px solid #C8E6C9',
                           borderRadius: '4px 16px 16px 16px',
                           padding: '14px 18px', fontSize: '13px', color: '#5F5E5A',
                           lineHeight: '1.7', whiteSpace: 'pre-wrap',
@@ -477,10 +477,10 @@ export default function CoachPage() {
                     onClick={() => handleChip(chip)}
                     style={{
                       flexShrink: 0, padding: '5px 13px', borderRadius: '100px',
-                      background: '#F4FAF6',
-                      border: `0.5px solid ${input === chip ? '#21C58E' : '#d4ede3'}`,
+                      background: '#EFF8EF',
+                      border: `0.5px solid ${input === chip ? '#3AB54A' : '#C8E6C9'}`,
                       fontSize: '12px', fontWeight: '600',
-                      color: input === chip ? '#085041' : '#888780',
+                      color: input === chip ? '#2D7A35' : '#888780',
                       cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
                     }}
                   >
@@ -492,12 +492,12 @@ export default function CoachPage() {
               {/* 텍스트 입력 */}
               <div style={{
                 display: 'flex', gap: '10px', alignItems: 'flex-end',
-                background: '#fff', border: '0.5px solid #d4ede3',
+                background: '#fff', border: '0.5px solid #C8E6C9',
                 borderRadius: '12px', padding: '10px 10px 10px 16px',
                 transition: 'border-color 0.15s',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#21C58E'; }}
-              onBlur={e  => { e.currentTarget.style.borderColor = '#d4ede3'; }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#3AB54A'; }}
+              onBlur={e  => { e.currentTarget.style.borderColor = '#C8E6C9'; }}
               >
                 <textarea
                   ref={textareaRef}
@@ -509,7 +509,7 @@ export default function CoachPage() {
                   disabled={loading}
                   style={{
                     flex: 1, border: 'none', outline: 'none', resize: 'none',
-                    fontSize: '14px', color: '#085041', background: 'transparent',
+                    fontSize: '14px', color: '#2D7A35', background: 'transparent',
                     lineHeight: '1.6', fontFamily: 'inherit', maxHeight: '140px',
                     overflowY: 'auto',
                   }}
@@ -521,7 +521,7 @@ export default function CoachPage() {
                     width: '38px', height: '38px', borderRadius: '12px', flexShrink: 0,
                     background: !input.trim() || loading
                       ? '#E2E8F0'
-                      : 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                      : 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
                     border: 'none',
                     cursor: !input.trim() || loading ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',

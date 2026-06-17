@@ -1,7 +1,7 @@
-import { CheckCircle } from 'lucide-react'
+﻿import { CheckCircle } from 'lucide-react'
 
 const colorMap = {
-  green:  { bg: '#21C58E', border: 'none',                   icon: '#fff',    label: '#085041', sub: '#0F6E56'  },
+  green:  { bg: '#3AB54A', border: 'none',                   icon: '#fff',    label: '#2D7A35', sub: '#3A8A42'  },
   yellow: { bg: '#FFF4D6', border: '1px solid #FAC775',      icon: '#854F0B', label: '#633806', sub: '#854F0B'  },
   red:    { bg: '#FAECE7', border: '1px solid #F0997B',      icon: '#712B13', label: '#712B13', sub: '#993C1D'  },
   blue:   { bg: '#E8F4FD', border: '1px solid #90CAF9',      icon: '#1565C0', label: '#1565C0', sub: '#1976D2'  },
@@ -20,7 +20,7 @@ export function BiteInfographic({ steps, result, title }) {
       `}</style>
 
       {title && (
-        <div style={{ fontSize: 11, color: '#0F6E56', fontWeight: 500, textAlign: 'center', marginBottom: 10 }}>
+        <div style={{ fontSize: 11, color: '#3A8A42', fontWeight: 500, textAlign: 'center', marginBottom: 10 }}>
           {title}
         </div>
       )}
@@ -58,10 +58,10 @@ export function BiteInfographic({ steps, result, title }) {
       {result && (
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-          marginTop: 10, background: '#E1F5EE', borderRadius: 8, padding: '8px 12px',
+          marginTop: 10, background: '#E8F5E9', borderRadius: 8, padding: '8px 12px',
         }}>
-          <CheckCircle size={13} color="#21C58E" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: 11, color: '#085041', fontWeight: 500 }}>{result}</span>
+          <CheckCircle size={13} color="#3AB54A" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: 11, color: '#2D7A35', fontWeight: 500 }}>{result}</span>
         </div>
       )}
     </div>

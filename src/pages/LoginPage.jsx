@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
@@ -72,7 +72,7 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(160deg, #F0FDF4 0%, #F4FAF6 60%, #FFF9EB 100%)',
+      background: 'linear-gradient(160deg, #F0FDF4 0%, #EFF8EF 60%, #FFF9EB 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '32px 20px',
     }}>
@@ -91,11 +91,11 @@ export default function LoginPage() {
           />
           {/* ECON🟡MING 로고 */}
           <h1 style={{ fontSize: '26px', fontWeight: '900', letterSpacing: '-1px', margin: '0 0 8px', lineHeight: 1 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#085041' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#2D7A35' }}>
               ECON
               <svg width="20" height="32" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E" />
-                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E" />
+                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#3AB54A" />
+                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#3AB54A" />
                 <circle cx="7" cy="11" r="6.5" fill="#FFC83D" />
               </svg>
               MING
@@ -123,11 +123,11 @@ export default function LoginPage() {
               경제 성장 여정을<br />지금 시작해요
             </h2>
             <div style={{
-              background: '#F4FAF6', borderRadius: '14px',
+              background: '#EFF8EF', borderRadius: '14px',
               padding: '14px 16px', border: '1px solid #DCF5EB',
             }}>
               <p style={{
-                fontSize: '12px', fontWeight: '700', color: '#21C58E',
+                fontSize: '12px', fontWeight: '700', color: '#3AB54A',
                 marginBottom: '10px', letterSpacing: '0.2px',
               }}>
                 ☀️ 노밍과 함께
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '7px' }}>
                   <div style={{
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
-                    background: '#21C58E',
+                    background: '#3AB54A',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '10px', color: '#fff', fontWeight: '800',
                   }}>✓</div>
@@ -244,7 +244,7 @@ export default function LoginPage() {
                   color: '#0F172A', background: '#F8FAFC',
                   boxSizing: 'border-box', transition: 'border-color 0.15s', outline: 'none',
                 }}
-                onFocus={e => e.target.style.borderColor = '#21C58E'}
+                onFocus={e => e.target.style.borderColor = '#3AB54A'}
                 onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
               />
               <input
@@ -259,7 +259,7 @@ export default function LoginPage() {
                   color: '#0F172A', background: '#F8FAFC',
                   boxSizing: 'border-box', transition: 'border-color 0.15s', outline: 'none',
                 }}
-                onFocus={e => e.target.style.borderColor = '#21C58E'}
+                onFocus={e => e.target.style.borderColor = '#3AB54A'}
                 onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
               />
               <button
@@ -267,7 +267,7 @@ export default function LoginPage() {
                 disabled={loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
-                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #21C58E, #1AAD7D)',
+                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #3AB54A, #1AAD7D)',
                   color: '#fff', border: 'none', fontSize: '14px', fontWeight: '700',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   boxShadow: loading ? 'none' : '0 4px 14px rgba(33,197,142,0.3)',
@@ -282,7 +282,7 @@ export default function LoginPage() {
           {/* 회원가입 */}
           <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748B', margin: 0 }}>
             계정이 없으신가요?{' '}
-            <Link to="/signup" style={{ color: '#21C58E', fontWeight: '700', textDecoration: 'none' }}>
+            <Link to="/signup" style={{ color: '#3AB54A', fontWeight: '700', textDecoration: 'none' }}>
               회원가입
             </Link>
           </p>

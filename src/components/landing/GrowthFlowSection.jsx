@@ -1,4 +1,4 @@
-const STEPS = [
+﻿const STEPS = [
   { num: 1, emoji: '☀️', label: '노밍에게 질문하기', desc: '모르는 경제 개념을 편하게 물어보세요' },
   { num: 2, emoji: '📖', label: '경제 읽기', desc: '3분짜리 쉬운 경제 콘텐츠를 읽어보세요' },
   { num: 3, emoji: '📓', label: '경제일기 작성', desc: '오늘 배운 것을 짧게 기록해보세요' },
@@ -8,7 +8,7 @@ const STEPS = [
 export default function GrowthFlowSection() {
   return (
     <section style={{
-      background: 'linear-gradient(170deg, #F4FAF6 0%, #E8FAF3 100%)',
+      background: 'linear-gradient(170deg, #EFF8EF 0%, #E8FAF3 100%)',
       padding: 'clamp(60px, 8vw, 100px) 24px',
     }}>
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -52,7 +52,7 @@ export default function GrowthFlowSection() {
                 }}>
                   <div style={{
                     width: '2px', height: '28px',
-                    background: 'linear-gradient(to bottom, #21C58E, #A7F3D0)',
+                    background: 'linear-gradient(to bottom, #3AB54A, #A7F3D0)',
                     borderRadius: '2px',
                   }}/>
                 </div>
@@ -78,7 +78,7 @@ function StepCard({ num, emoji, label, desc }) {
       {/* 번호 */}
       <div style={{
         width: '36px', height: '36px', borderRadius: '12px',
-        background: 'linear-gradient(135deg, #21C58E, #16A374)',
+        background: 'linear-gradient(135deg, #3AB54A, #16A374)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: '15px', fontWeight: '900', color: '#fff',
         flexShrink: 0,

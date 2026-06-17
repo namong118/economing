@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import NomingIcon from './NomingIcon';
 
 export default function HeroSection() {
@@ -62,7 +62,7 @@ export default function HeroSection() {
         maxWidth: '520px',
       }}>
         경제 공부,<br/>
-        <span style={{ color: '#21C58E' }}>어디서부터 시작해야</span><br/>
+        <span style={{ color: '#3AB54A' }}>어디서부터 시작해야</span><br/>
         할지 모르겠다면
       </h1>
 
@@ -86,7 +86,7 @@ export default function HeroSection() {
           onClick={() => navigate('/signup')}
           style={{
             padding: '18px 32px', borderRadius: '18px',
-            background: 'linear-gradient(135deg, #21C58E, #16A374)',
+            background: 'linear-gradient(135deg, #3AB54A, #16A374)',
             color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: '17px', fontWeight: '800',
             letterSpacing: '-0.5px',

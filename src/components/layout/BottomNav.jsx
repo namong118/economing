@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+﻿import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, Sun, Newspaper, TrendingUp } from 'lucide-react';
 
 const navItems = [
@@ -50,11 +50,11 @@ export default function BottomNav() {
               position: 'relative',
             }}
           >
-            <item.Icon size={20} color={isActive ? '#21C58E' : '#9CA3AF'} />
+            <item.Icon size={20} color={isActive ? '#3AB54A' : '#9CA3AF'} />
             <span style={{
               fontSize: '10px',
               fontWeight: isActive ? '700' : '500',
-              color: isActive ? '#21C58E' : '#9CA3AF',
+              color: isActive ? '#3AB54A' : '#9CA3AF',
               letterSpacing: '-0.3px',
             }}>
               {item.label}
@@ -66,7 +66,7 @@ export default function BottomNav() {
                 width: '4px',
                 height: '4px',
                 borderRadius: '50%',
-                background: '#21C58E',
+                background: '#3AB54A',
               }} />
             )}
           </button>

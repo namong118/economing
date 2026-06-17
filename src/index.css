@@ -1,7 +1,7 @@
-/* ===== CSS 변수 (디자인 시스템) ===== */
+﻿/* ===== CSS 변수 (디자인 시스템) ===== */
 :root {
-  --primary: #21C58E;
-  --primary-50:  #F4FAF6;
+  --primary: #3AB54A;
+  --primary-50:  #EFF8EF;
   --primary-100: #D1FAE5;
   --primary-200: #A7F3D0;
   --primary-600: #1AAD7D;
@@ -12,7 +12,7 @@
   --noming-bg: #FFFBEB;
   --noming-border: #FFE08A;
 
-  --garden-bg: #F4FAF6;
+  --garden-bg: #EFF8EF;
 
   --secondary: #6366F1;
   --secondary-50: #EEF2FF;
@@ -51,7 +51,7 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
   --shadow-lg: 0 10px 28px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.04);
 
-  --font: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
+  --font: 'Spoqa Han Sans Neo', 'Spoqa Han Sans', -apple-system, BlinkMacSystemFont,
           'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', 'Noto Color Emoji', sans-serif;
 }
 

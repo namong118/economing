@@ -1,4 +1,4 @@
-// Infographic data schemas (future Solar API will return same JSON → auto-rendered)
+﻿// Infographic data schemas (future Solar API will return same JSON → auto-rendered)
 //
 // flow:       { type, title, subtitle, steps: [{ icon, label, note? }] }
 // collection: { type, title, subtitle, items: [{ icon, label }], result: { icon, label, note? } }
@@ -42,7 +42,7 @@ const DEPOSIT_INFOGRAPHIC = {
   right: {
     icon: '🐷',
     label: '정기적금',
-    color: '#21C58E',
+    color: '#3AB54A',
     points: ['매달 나눠서 납입', '저축 습관 기르기 좋음', '목돈 없이도 시작 가능'],
   },
   note: '💡 목돈이 있으면 예금, 저축을 시작하려면 적금',
@@ -71,7 +71,7 @@ const INTEREST_RATE_INFOGRAPHIC = {
   right: {
     icon: '📉',
     label: '금리 인하',
-    color: '#21C58E',
+    color: '#3AB54A',
     points: ['대출 이자 부담 감소', '예금·적금 이자 감소', '소비·투자 활성화'],
   },
   note: '💡 한국은행이 경제를 조율하는 핵심 도구예요',

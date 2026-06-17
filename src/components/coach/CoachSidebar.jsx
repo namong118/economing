@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { getConversationList, deleteConversation } from '../../services/conversationService'
 import { Plus, MessageCircle, X } from 'lucide-react'
 
@@ -31,7 +31,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
       width: 240,
       flexShrink: 0,
       background: '#fff',
-      borderRight: '0.5px solid #d4ede3',
+      borderRight: '0.5px solid #C8E6C9',
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
@@ -43,7 +43,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
           onClick={onNewChat}
           style={{
             width: '100%',
-            background: '#21C58E',
+            background: '#3AB54A',
             color: '#fff',
             border: 'none',
             borderRadius: 8,
@@ -57,7 +57,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
             fontFamily: 'inherit',
           }}
           onMouseEnter={e => { e.currentTarget.style.background = '#1AAD7D' }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#21C58E' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#3AB54A' }}
         >
           <Plus size={16} />
           새 대화
@@ -65,7 +65,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
       </div>
 
       {/* 구분선 */}
-      <div style={{ height: '0.5px', background: '#d4ede3', margin: '0 12px' }} />
+      <div style={{ height: '0.5px', background: '#C8E6C9', margin: '0 12px' }} />
 
       {/* 대화 목록 */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '8px 8px 16px' }}>
@@ -105,12 +105,12 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                     onClick={() => onSelectConversation(conv, convs)}
                     style={{
                       width: '100%',
-                      background: activeId === conv.id ? '#E1F5EE' : hoveredId === conv.id ? '#F4FAF6' : 'transparent',
+                      background: activeId === conv.id ? '#E8F5E9' : hoveredId === conv.id ? '#EFF8EF' : 'transparent',
                       border: 'none',
                       borderRadius: 8,
                       padding: '7px 28px 7px 10px',
                       fontSize: 12,
-                      color: activeId === conv.id ? '#085041' : '#5F5E5A',
+                      color: activeId === conv.id ? '#2D7A35' : '#5F5E5A',
                       cursor: 'pointer',
                       textAlign: 'left',
                       display: 'flex',
@@ -120,7 +120,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                       transition: 'background 0.12s',
                     }}
                   >
-                    <MessageCircle size={13} color={activeId === conv.id ? '#21C58E' : '#C0DD97'} style={{ flexShrink: 0 }} />
+                    <MessageCircle size={13} color={activeId === conv.id ? '#3AB54A' : '#C0DD97'} style={{ flexShrink: 0 }} />
                     <span style={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',

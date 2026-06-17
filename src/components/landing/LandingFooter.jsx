@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 
 export default function LandingFooter() {
   const navigate = useNavigate();
@@ -24,15 +24,15 @@ export default function LandingFooter() {
             fontSize: '20px', fontWeight: '900', letterSpacing: '-0.8px',
             display: 'inline-flex', alignItems: 'center', lineHeight: 1,
           }}>
-            <span style={{ color: '#21C58E' }}>ECON</span>
+            <span style={{ color: '#3AB54A' }}>ECON</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, margin: '0 1px' }}>
               <svg width="14" height="22" viewBox="0 0 14 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#21C58E"/>
-                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#21C58E"/>
+                <path d="M7 5 C4.5 3.5 1.5 2.5 2 0.5 C3 0 6.5 0.5 7 5Z" fill="#3AB54A"/>
+                <path d="M7 5 C9.5 3.5 12.5 2.5 12 0.5 C11 0 7.5 0.5 7 5Z" fill="#3AB54A"/>
                 <circle cx="7" cy="11" r="6.5" fill="#FFC83D"/>
               </svg>
             </span>
-            <span style={{ color: '#21C58E' }}>MING</span>
+            <span style={{ color: '#3AB54A' }}>MING</span>
           </span>
         </button>
 

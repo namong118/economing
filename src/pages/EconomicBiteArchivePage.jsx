@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookMarked } from 'lucide-react';
 import economicBites from '../data/economicBites';
@@ -42,7 +42,7 @@ function BiteCard({ bite, isToday, navigate }) {
       {isToday && (
         <div style={{
           position: 'absolute', top: '12px', right: '14px',
-          background: '#21C58E', color: '#fff',
+          background: '#3AB54A', color: '#fff',
           fontSize: '10px', fontWeight: '800', letterSpacing: '0.3px',
           padding: '3px 8px', borderRadius: '100px',
         }}>
@@ -73,7 +73,7 @@ function BiteCard({ bite, isToday, navigate }) {
       }}>
         <span style={{
           width: '6px', height: '6px', borderRadius: '50%',
-          background: '#21C58E', display: 'inline-block', flexShrink: 0,
+          background: '#3AB54A', display: 'inline-block', flexShrink: 0,
         }}/>
         {bite.title}
       </div>
@@ -101,7 +101,7 @@ export default function EconomicBiteArchivePage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#F4FAF6', minHeight: 'calc(100vh - 64px)', padding: '28px 0 72px' }}>
+      <div style={{ background: '#EFF8EF', minHeight: 'calc(100vh - 64px)', padding: '28px 0 72px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
 
           {/* ── 헤더 ── */}
@@ -134,7 +134,7 @@ export default function EconomicBiteArchivePage() {
           <div
             onClick={() => navigate(`/bite/${todaysBite.id}`)}
             style={{
-              background: 'linear-gradient(135deg, #21C58E, #16A374)',
+              background: 'linear-gradient(135deg, #3AB54A, #16A374)',
               borderRadius: '20px', padding: '18px 22px',
               marginBottom: '24px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -180,9 +180,9 @@ export default function EconomicBiteArchivePage() {
                 onClick={() => setSelectedCategory(cat)}
                 style={{
                   padding: '8px 16px', borderRadius: '100px',
-                  background: selectedCategory === cat ? '#21C58E' : '#fff',
+                  background: selectedCategory === cat ? '#3AB54A' : '#fff',
                   color: selectedCategory === cat ? '#fff' : '#64748B',
-                  border: `1.5px solid ${selectedCategory === cat ? '#21C58E' : '#E2E8F0'}`,
+                  border: `1.5px solid ${selectedCategory === cat ? '#3AB54A' : '#E2E8F0'}`,
                   fontSize: '13px', fontWeight: '700', cursor: 'pointer',
                   letterSpacing: '-0.2px', transition: 'all 0.15s',
                 }}
