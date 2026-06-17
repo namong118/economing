@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Map, TrendingUp, Briefcase, Heart } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Map } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { roadmap } from '../data/roadmapData';
@@ -167,8 +167,8 @@ function SummaryTab() {
 
       {/* ── 3. 경제 프로필 ── */}
       {isOnboarded ? (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '16px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '14px 16px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px' }}>경제 프로필</p>
             <button
               onClick={() => navigate('/onboarding')}
@@ -179,56 +179,34 @@ function SummaryTab() {
               ✏️ 수정
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', gap: '0' }}>
             {econInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <BookOpen size={16} color="#3A9A5C" />
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>경제 수준</p>
-                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{econInfo.label}</p>
-                </div>
+              <div style={{ flex: 1, paddingRight: '12px', borderRight: '1px solid #e8f5ee' }}>
+                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>경제 수준</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{econInfo.label}</p>
               </div>
             )}
             {invInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <TrendingUp size={16} color="#3A9A5C" />
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>투자 경험</p>
-                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{invInfo.label}</p>
-                </div>
+              <div style={{ flex: 1, padding: '0 12px', borderRight: occInfo ? '1px solid #e8f5ee' : 'none' }}>
+                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>투자 경험</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{invInfo.label}</p>
               </div>
             )}
             {occInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: interests.length > 0 ? '0.5px solid #f0f7f3' : 'none' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Briefcase size={16} color="#3A9A5C" />
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>현재 상황</p>
-                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{occInfo.label}</p>
-                </div>
-              </div>
-            )}
-            {interests.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '6px 0' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Heart size={16} color="#3A9A5C" />
-                </div>
-                <div>
-                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '4px' }}>관심 분야</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                    {interests.map(tag => (
-                      <span key={tag} style={{ fontSize: '11px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '2px 8px' }}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
+              <div style={{ flex: 1, paddingLeft: '12px' }}>
+                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>현재 상황</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{occInfo.label}</p>
               </div>
             )}
           </div>
+          {interests.length > 0 && (
+            <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '0.5px solid #f0f7f3', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '10px', color: '#aaa', flexShrink: 0 }}>관심</span>
+              {interests.map(tag => (
+                <span key={tag} style={{ fontSize: '11px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '1px 7px' }}>{tag}</span>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px dashed #B8EBC8', padding: '28px', textAlign: 'center', marginBottom: '16px' }}>
