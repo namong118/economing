@@ -1,6 +1,14 @@
 /* 진단 결과 페이지 — PC 중앙 정렬 */
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Map } from 'lucide-react';
+import { Map, Sprout, Leaf, TrendingUp, Wallet, PiggyBank, Receipt, Home, Zap } from 'lucide-react';
+
+const LEVEL_ICONS = {
+  beginner:     Sprout,
+  elementary:   Leaf,
+  intermediate: TrendingUp,
+};
+
+const STEP_ICONS = { 1: Wallet, 2: PiggyBank, 3: TrendingUp, 4: Receipt, 5: Home };
 import { levelInfo } from '../data/diagnosisQuestions';
 import { roadmaps } from '../data/roadmapData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -59,7 +67,11 @@ export default function ResultPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ fontSize: '80px', lineHeight: 1, marginBottom: '20px' }}>{info.emoji}</div>
+          {(() => { const LIcon = LEVEL_ICONS[level] ?? Sprout; return (
+            <div style={{ width: 96, height: 96, borderRadius: 24, background: info.bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <LIcon size={52} color={info.color} />
+            </div>
+          ); })()}
           <div
             style={{
               display: 'inline-flex',
@@ -153,12 +165,11 @@ export default function ResultPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
                     flexShrink: 0,
                     boxShadow: idx === 0 ? `0 4px 12px ${step.color}35` : 'none',
                   }}
                 >
-                  {step.emoji}
+                  {(() => { const SIcon = STEP_ICONS[step.step] ?? TrendingUp; return <SIcon size={24} color={idx === 0 ? '#fff' : '#94A3B8'} />; })()}
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
@@ -181,8 +192,8 @@ export default function ResultPage() {
           </div>
 
           <div style={{ display: 'flex', gap: '12px' }}>
-            <Button size="lg" onClick={handleStart} style={{ flex: 2, borderRadius: '14px' }}>
-              🚀 학습 시작하기
+            <Button size="lg" onClick={handleStart} style={{ flex: 2, borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <Zap size={16} /> 학습 시작하기
             </Button>
             <button
               onClick={() => navigate('/diagnosis')}

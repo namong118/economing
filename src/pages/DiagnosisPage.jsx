@@ -1,10 +1,18 @@
 /* AI 경제 레벨 진단 페이지 — PC 중앙 정렬 */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Lightbulb, CheckCircle, XCircle, Target, TrendingUp, Home, Receipt, BarChart2 } from 'lucide-react';
 import { diagnosisQuestions, getLevelByScore } from '../data/diagnosisQuestions';
 import ProgressBar from '../components/common/ProgressBar';
 import Button from '../components/common/Button';
 import TopNav from '../components/layout/TopNav';
+
+const CATEGORY_ICONS = {
+  '투자': TrendingUp,
+  '부동산': Home,
+  '세금': Receipt,
+  '경제': BarChart2,
+};
 
 export default function DiagnosisPage() {
   const navigate = useNavigate();
@@ -87,9 +95,11 @@ export default function DiagnosisPage() {
 
           {/* 질문 본문 */}
           <div style={{ padding: '32px 32px 24px' }}>
-            <div style={{ fontSize: '64px', lineHeight: 1, marginBottom: '24px' }}>
-              {question.emoji}
-            </div>
+            {(() => { const QIcon = CATEGORY_ICONS[question.category] ?? BarChart2; return (
+              <div style={{ width: 72, height: 72, borderRadius: 20, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+                <QIcon size={40} color="#059669" />
+              </div>
+            ); })()}
             <h2
               style={{
                 fontSize: '22px',
@@ -102,48 +112,53 @@ export default function DiagnosisPage() {
             >
               {question.question}
             </h2>
-            <p style={{ fontSize: '14px', color: '#94A3B8', lineHeight: '1.6', letterSpacing: '-0.3px' }}>
-              💡 {question.hint}
+            <p style={{ fontSize: '14px', color: '#94A3B8', lineHeight: '1.6', letterSpacing: '-0.3px', display: 'flex', alignItems: 'flex-start', gap: '5px' }}>
+              <Lightbulb size={14} color="#94A3B8" style={{ flexShrink: 0, marginTop: '2px' }} />
+              {question.hint}
             </p>
           </div>
 
           {/* 답변 선택 */}
           <div style={{ padding: '0 32px 32px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[
-              { value: true, emoji: '✅', label: '네, 알고 있어요!' },
-              { value: false, emoji: '❌', label: '아니요, 잘 모르겠어요' },
-            ].map((option) => (
-              <button
-                key={String(option.value)}
-                onClick={() => setSelected(option.value)}
-                style={{
-                  padding: '18px 24px',
-                  borderRadius: '14px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  border: selected === option.value ? '2px solid #10B981' : '2px solid #E2E8F0',
-                  background: selected === option.value ? 'linear-gradient(135deg, #ECFDF5, #D1FAE5)' : '#F8FAFC',
-                  color: selected === option.value ? '#047857' : '#374151',
-                  transform: selected === option.value ? 'scale(1.01)' : 'scale(1)',
-                  boxShadow: selected === option.value ? '0 4px 12px rgba(16,185,129,0.18)' : 'none',
-                }}
-              >
-                <span style={{ fontSize: '24px' }}>{option.emoji}</span>
-                <span style={{ letterSpacing: '-0.3px' }}>{option.label}</span>
-              </button>
-            ))}
+              { value: true,  Icon: CheckCircle, label: '네, 알고 있어요!',      activeColor: '#047857', activeBg: 'linear-gradient(135deg,#ECFDF5,#D1FAE5)', activeBorder: '#10B981' },
+              { value: false, Icon: XCircle,     label: '아니요, 잘 모르겠어요', activeColor: '#B91C1C', activeBg: 'linear-gradient(135deg,#FEF2F2,#FEE2E2)', activeBorder: '#F87171' },
+            ].map((option) => {
+              const isActive = selected === option.value;
+              return (
+                <button
+                  key={String(option.value)}
+                  onClick={() => setSelected(option.value)}
+                  style={{
+                    padding: '18px 24px',
+                    borderRadius: '14px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '14px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    border: `2px solid ${isActive ? option.activeBorder : '#E2E8F0'}`,
+                    background: isActive ? option.activeBg : '#F8FAFC',
+                    color: isActive ? option.activeColor : '#374151',
+                    transform: isActive ? 'scale(1.01)' : 'scale(1)',
+                    boxShadow: isActive ? '0 4px 12px rgba(16,185,129,0.18)' : 'none',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  <option.Icon size={24} color={isActive ? option.activeColor : '#CBD5E1'} />
+                  <span style={{ letterSpacing: '-0.3px' }}>{option.label}</span>
+                </button>
+              );
+            })}
 
             <Button
               disabled={selected === null}
               onClick={handleNext}
-              style={{ borderRadius: '14px', marginTop: '8px', fontSize: '15px' }}
+              style={{ borderRadius: '14px', marginTop: '8px', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
-              {isLast ? '🎯 결과 확인하기' : '다음 질문 →'}
+              {isLast ? <><Target size={16} /> 결과 확인하기</> : '다음 질문 →'}
             </Button>
           </div>
         </div>
