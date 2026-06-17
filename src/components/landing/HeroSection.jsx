@@ -37,7 +37,7 @@ export default function HeroSection() {
         fontSize: '13px', fontWeight: '700',
         letterSpacing: '-0.2px', marginBottom: '36px',
       }}>
-        <span>✨</span> AI 경제 성장 코치
+        AI 경제 성장 코치
       </div>
 
       {/* 앱 아이콘 */}
