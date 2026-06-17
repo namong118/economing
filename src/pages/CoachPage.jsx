@@ -10,33 +10,75 @@ import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
 import { CoachSidebar } from '../components/coach/CoachSidebar';
 
-/* ── 추천 질문 풀 ─────────────────────────────────────────── */
-const QUESTION_POOL = [
-  '월급을 받으면 가장 먼저 해야 할 것은 무엇인가요?',
-  '주식 공부는 어디서부터 시작하면 좋을까요?',
-  'ETF는 언제 공부하면 좋을까요?',
-  '적금과 투자의 차이는 무엇인가요?',
-  '경제 공부 순서를 알려주세요.',
-  '비상금은 얼마나 모아야 하나요?',
-  '파킹통장이 뭔가요?',
-  '기준금리가 오르면 내 생활에 어떤 영향이 있나요?',
-  '신용점수를 올리려면 어떻게 해야 하나요?',
-  'IRP와 연금저축, 뭐가 다른가요?',
-  '인플레이션이 왜 나쁜 건가요?',
-  '환율이 오르면 좋은 건가요 나쁜 건가요?',
-  '부동산 공부는 어디서부터 시작하면 좋을까요?',
-  '주식과 ETF 중 초보자에게 뭐가 더 나을까요?',
-  '절세할 수 있는 방법을 알려주세요.',
-  '재테크를 처음 시작하려면 뭐부터 해야 하나요?',
-  '소비 습관을 바꾸려면 어떻게 해야 하나요?',
-  '금리와 채권의 관계가 궁금해요.',
-  '달러를 사두면 좋은가요?',
-  '주식 배당금이란 무엇인가요?',
-];
+/* ── 맞춤 추천 질문 ───────────────────────────────────────── */
+function getPersonalizedQuestions(profile) {
+  const level     = profile?.economic_level;
+  const exp       = profile?.investment_experience;
+  const occ       = profile?.occupation;
+  const interests = profile?.interests ?? [];
+  const has       = (k) => interests.includes(k);
 
-function pickRandomQuestions(count = 5) {
-  const shuffled = [...QUESTION_POOL].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+  // 온보딩 미완료 시 기본 질문
+  if (!level) return [
+    '경제 공부는 어디서부터 시작해야 하나요?',
+    '비상금은 얼마나 모아야 하나요?',
+    '적금과 예금의 차이는 무엇인가요?',
+    '파킹통장이 뭔가요?',
+    '재테크를 처음 시작하려면 뭐부터 해야 하나요?',
+  ];
+
+  const questions = [];
+
+  // 경제 수준별
+  if (level === 'beginner') {
+    questions.push('비상금은 얼마나 모아두면 되나요?');
+    questions.push('파킹통장과 적금 중 뭐가 더 나을까요?');
+    questions.push('경제 공부 순서를 알려주세요.');
+    questions.push('소비 습관을 바꾸려면 어떻게 해야 하나요?');
+  } else if (level === 'intermediate') {
+    questions.push('ETF 적립식 투자, 어떻게 시작하면 좋을까요?');
+    questions.push('IRP와 연금저축, 뭐가 다른가요?');
+    questions.push('포트폴리오를 어떻게 구성하면 좋을까요?');
+  } else if (level === 'advanced') {
+    questions.push('금융소득 종합과세, 어떻게 대비해야 하나요?');
+    questions.push('포트폴리오 리밸런싱은 얼마나 자주 해야 하나요?');
+    questions.push('배당 투자 전략을 알려주세요.');
+  }
+
+  // 투자 경험별
+  if (exp === 'none') {
+    questions.push('주식과 ETF 중 초보자에게 뭐가 더 나을까요?');
+    questions.push('투자를 처음 시작할 때 가장 중요한 것은 무엇인가요?');
+  } else if (exp === 'etf') {
+    questions.push('ETF 종류가 너무 많은데 어떻게 고르나요?');
+    questions.push('국내 ETF와 해외 ETF, 어떤 차이가 있나요?');
+  } else if (exp === 'stock') {
+    questions.push('주식 투자할 때 ETF도 함께 가져가야 할까요?');
+    questions.push('종목 분석은 어떻게 하나요?');
+  }
+
+  // 직업별
+  if (occ === 'student') {
+    questions.push('학생도 투자를 시작할 수 있나요?');
+  } else if (occ === 'employee') {
+    questions.push('직장인 연말정산 절세 방법을 알려주세요.');
+  } else if (occ === 'freelancer') {
+    questions.push('프리랜서는 어떻게 세금 신고를 하나요?');
+  } else if (occ === 'business') {
+    questions.push('사업자 절세 방법이 있나요?');
+  }
+
+  // 관심 분야별
+  if (has('부동산'))    questions.push('부동산 공부는 어디서부터 시작해야 하나요?');
+  if (has('세금'))      questions.push('절세를 위해 꼭 알아야 할 것이 있나요?');
+  if (has('저축'))      questions.push('월급의 몇 퍼센트를 저축하는 게 좋을까요?');
+  if (has('투자'))      questions.push('기준금리가 오르면 투자에 어떤 영향이 있나요?');
+  if (has('ETF 기초'))  questions.push('ETF는 언제 공부하면 좋을까요?');
+  if (has('환율'))      questions.push('환율이 오르면 나한테 좋은 건가요 나쁜 건가요?');
+
+  // 중복 제거 후 5개 반환
+  const unique = [...new Set(questions)];
+  return unique.slice(0, 5);
 }
 
 const INPUT_CHIPS = ['월급 관리', '저축', '투자 입문', '경제 공부', 'ETF'];
@@ -249,10 +291,10 @@ export default function CoachPage() {
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
 
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
-  const [suggestedQuestions] = useState(() => pickRandomQuestions(5));
+  const suggestedQuestions = getPersonalizedQuestions(profile);
 
   /* 다른 페이지에서 질문 전달 시 자동 전송 */
   useEffect(() => {
