@@ -167,8 +167,8 @@ function SummaryTab() {
 
       {/* ── 3. 경제 프로필 ── */}
       {isOnboarded ? (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '16px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px' }}>경제 프로필</p>
             <button
               onClick={() => navigate('/onboarding')}
@@ -179,50 +179,50 @@ function SummaryTab() {
               ✏️ 수정
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {econInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <BookOpen size={16} color="#3A9A5C" />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>경제 수준</p>
-                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{econInfo.label}</p>
+                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{econInfo.label}</p>
                 </div>
               </div>
             )}
             {invInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <TrendingUp size={16} color="#3A9A5C" />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>투자 경험</p>
-                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{invInfo.label}</p>
+                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{invInfo.label}</p>
                 </div>
               </div>
             )}
             {occInfo && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: interests.length > 0 ? '0.5px solid #f0f7f3' : 'none' }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Briefcase size={16} color="#3A9A5C" />
                 </div>
                 <div>
                   <p style={{ fontSize: '11px', color: '#888780', marginBottom: '2px' }}>현재 상황</p>
-                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#2A7A4B' }}>{occInfo.label}</p>
+                  <p style={{ fontSize: '13px', fontWeight: '500', color: '#2A7A4B' }}>{occInfo.label}</p>
                 </div>
               </div>
             )}
             {interests.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '6px 0' }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: '#E3F9EC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Heart size={16} color="#3A9A5C" />
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '6px' }}>관심 분야</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  <p style={{ fontSize: '11px', color: '#888780', marginBottom: '4px' }}>관심 분야</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                     {interests.map(tag => (
-                      <span key={tag} style={{ fontSize: '12px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '3px 10px' }}>{tag}</span>
+                      <span key={tag} style={{ fontSize: '11px', fontWeight: '600', color: '#2A7A4B', background: '#E3F9EC', border: '0.5px solid #B8EBC8', borderRadius: '100px', padding: '2px 8px' }}>{tag}</span>
                     ))}
                   </div>
                 </div>
