@@ -1,11 +1,11 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, BookOpen, TrendingUp } from 'lucide-react';
+import { Home, Sun, Newspaper, TrendingUp } from 'lucide-react';
 
 const navItems = [
-  { path: '/home',      Icon: Home,          label: '홈' },
-  { path: '/coach',     Icon: MessageCircle, label: '노밍' },
-  { path: '/read',      Icon: BookOpen,      label: '경제 읽기' },
-  { path: '/my-growth', Icon: TrendingUp,    label: '내 성장' },
+  { path: '/home',      Icon: Home,      label: '홈' },
+  { path: '/coach',     Icon: Sun,       label: '노밍' },
+  { path: '/read',      Icon: Newspaper, label: '경제읽기' },
+  { path: '/my-growth', Icon: TrendingUp, label: '내 성장' },
 ];
 
 export default function BottomNav() {
@@ -23,6 +23,7 @@ export default function BottomNav() {
         background: '#FFFFFF',
         borderTop: '0.5px solid #e0f0e8',
         display: 'flex',
+        height: '60px',
         paddingBottom: 'env(safe-area-inset-bottom)',
         zIndex: 100,
         boxShadow: '0 -4px 20px rgba(0,0,0,0.06)',

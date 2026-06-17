@@ -225,7 +225,7 @@ export default function HomePage() {
         }
         @media (max-width: 768px) {
           .hd-grid {
-            padding: 12px 16px 80px;
+            padding: 12px 16px 16px;
             gap: 12px;
           }
         }
