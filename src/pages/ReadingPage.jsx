@@ -69,7 +69,9 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       {/* 날짜 + 제목 */}
       <div style={{ padding: '20px 22px 14px' }}>
         <div style={{ fontSize: '11px', color: '#888780', marginBottom: '6px' }}>
-          {new Date(article.pubDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {article.pubDate && !isNaN(new Date(article.pubDate))
+            ? new Date(article.pubDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+            : ''}
         </div>
         <h2 style={{
           fontSize: '17px', fontWeight: '800', color: '#2A7A4B',
@@ -151,7 +153,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       {/* 하단 버튼 */}
       <div style={{ display: 'flex', gap: '8px', padding: '0 22px 20px' }}>
         <a
-          href={article.link}
+          href={article.originallink || article.link}
           target="_blank"
           rel="noopener noreferrer"
           style={{

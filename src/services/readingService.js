@@ -119,13 +119,15 @@ export async function fetchAndSummarizeNews(query = '경제') {
 
   const results = await Promise.all(
     articles.map(article =>
-      summarizeNews(article).catch(() => ({
-        ...article,
-        summary:       article.description,
-        keyPoints:     [],
-        keywords:      [],
-        nomingComment: '',
-      }))
+      summarizeNews(article)
+        .then(ai => ({ ...article, ...ai }))
+        .catch(() => ({
+          ...article,
+          summary:       article.description,
+          keyPoints:     [],
+          keywords:      [],
+          nomingComment: '',
+        }))
     )
   )
 
