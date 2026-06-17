@@ -1,6 +1,7 @@
 /* 나만의 경제 사전 페이지 — Supabase 연결 버전 */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BookMarked, Calendar, Search, Loader2, Inbox } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import Card from '../components/common/Card';
 import { useAuth } from '../context/AuthContext';
@@ -63,8 +64,8 @@ export default function DictionaryPage() {
                 <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
                   내 단어장
                 </p>
-                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px' }}>
-                  나만의 경제 사전 📚
+                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  나만의 경제 사전 <BookMarked size={24} color="#10B981" />
                 </h1>
                 <p style={{ fontSize: '15px', color: '#64748B' }}>
                   내가 저장한 경제 용어 모음
@@ -91,13 +92,13 @@ export default function DictionaryPage() {
             {/* 통계 카드 행 */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '32px' }}>
               {[
-                { emoji: '📖', value: isLoading ? '...' : items.length, label: '저장된 용어', color: '#EC4899', bg: '#FDF2F8' },
-                { emoji: '📅', value: items[items.length - 1]?.savedAt ?? '-', label: '첫 저장일', color: '#6366F1', bg: '#EEF2FF' },
-                { emoji: '🔥', value: filtered.length, label: '검색 결과', color: '#F59E0B', bg: '#FFFBEB' },
+                { Icon: BookMarked, value: isLoading ? '...' : items.length, label: '저장된 용어', color: '#EC4899', bg: '#FDF2F8' },
+                { Icon: Calendar,   value: items[items.length - 1]?.savedAt ?? '-', label: '첫 저장일', color: '#6366F1', bg: '#EEF2FF' },
+                { Icon: Search,     value: filtered.length, label: '검색 결과', color: '#F59E0B', bg: '#FFFBEB' },
               ].map((stat) => (
                 <Card key={stat.label} style={{ background: stat.bg, border: 'none', padding: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <span style={{ fontSize: '28px' }}>{stat.emoji}</span>
+                    <stat.Icon size={28} color={stat.color} />
                     <div>
                       <p style={{ fontSize: '18px', fontWeight: '900', color: stat.color, letterSpacing: '-0.6px', lineHeight: 1 }}>
                         {stat.value}
@@ -128,7 +129,7 @@ export default function DictionaryPage() {
                     marginBottom: '20px', boxShadow: 'var(--shadow-xs)',
                   }}
                 >
-                  <span style={{ fontSize: '16px', color: '#94A3B8' }}>🔍</span>
+                  <Search size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
                   <input
                     type="text" placeholder="저장된 용어 검색..."
                     value={searchQuery}
@@ -151,13 +152,15 @@ export default function DictionaryPage() {
                 {/* 로딩 상태 */}
                 {isLoading ? (
                   <Card style={{ textAlign: 'center', padding: '60px' }}>
-                    <div style={{ fontSize: '40px', marginBottom: '16px' }}>⏳</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                      <Loader2 size={40} color="#94A3B8" />
+                    </div>
                     <p style={{ fontSize: '15px', color: '#94A3B8' }}>불러오는 중...</p>
                   </Card>
                 ) : filtered.length === 0 ? (
                   <Card style={{ textAlign: 'center', padding: '60px' }}>
-                    <div style={{ fontSize: '48px', marginBottom: '16px' }}>
-                      {items.length === 0 ? '📭' : '🔍'}
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                      {items.length === 0 ? <Inbox size={48} color="#94A3B8" /> : <Search size={48} color="#94A3B8" />}
                     </div>
                     <p style={{ fontSize: '16px', color: '#374151', fontWeight: '700', marginBottom: '8px' }}>
                       {items.length === 0 ? '아직 저장된 용어가 없어요' : '검색 결과가 없어요'}

@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Map } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Map, Search, Leaf, MessageCircle, Newspaper } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { roadmap } from '../data/roadmapData';
@@ -249,9 +249,9 @@ function SummaryTab() {
 
 /* ── 출처 뱃지 맵 ─────────────────────────────────────────── */
 const SOURCE_STYLE = {
-  economic_bite: { label: '경제 한잎', icon: '🍃', bg: '#F0FDF4', color: '#15803D', border: '#86EFAC' },
-  coach:         { label: '노밍 대화', icon: '💬', bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
-  news:          { label: '경제 읽기', icon: '📰', bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
+  economic_bite: { label: '경제 한잎', Icon: Leaf,          bg: '#F0FDF4', color: '#15803D', border: '#86EFAC' },
+  coach:         { label: '노밍 대화', Icon: MessageCircle, bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
+  news:          { label: '경제 읽기', Icon: Newspaper,     bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
 };
 
 /* ── 용어 카드 (새 스키마) ────────────────────────────────── */
@@ -273,9 +273,10 @@ function TermCard({ term, onDelete, deleting }) {
         <span style={{
           fontSize: '10px', fontWeight: '700', flexShrink: 0,
           background: src.bg, color: src.color, border: `1px solid ${src.border}`,
-          borderRadius: '100px', padding: '2px 8px', lineHeight: 1.8,
+          borderRadius: '100px', padding: '2px 8px',
+          display: 'inline-flex', alignItems: 'center', gap: '3px',
         }}>
-          {src.icon} {src.label}
+          <src.Icon size={10} /> {src.label}
         </span>
       </div>
 
@@ -342,7 +343,7 @@ function DictionaryTabContent() {
 
       {/* 검색 */}
       <div style={{ position: 'relative', marginBottom: '16px' }}>
-        <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '15px', pointerEvents: 'none' }}>🔍</span>
+        <Search size={15} color="#888780" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
