@@ -27,6 +27,8 @@ export function NewsTicker() {
       overflow: 'hidden',
       width: '100%',
       minWidth: 0,
+      position: 'relative',
+      contain: 'paint',
     }}>
       <span style={{
         fontSize: 10,
@@ -40,7 +42,7 @@ export function NewsTicker() {
         LIVE
       </span>
 
-      <div style={{ overflow: 'hidden', flex: 1 }}>
+      <div style={{ overflow: 'hidden', flex: 1, minWidth: 0 }}>
         {loading ? (
           <span style={{ fontSize: 12, color: '#888780' }}>뉴스 불러오는 중...</span>
         ) : headlines.length === 0 ? (
@@ -51,6 +53,7 @@ export function NewsTicker() {
             color: '#2C2C2A',
             whiteSpace: 'nowrap',
             animation: 'ticker 25s linear infinite',
+            willChange: 'transform',
           }}>
             {tickerText}
           </div>
@@ -59,8 +62,8 @@ export function NewsTicker() {
 
       <style>{`
         @keyframes ticker {
-          0%   { transform: translateX(100%) }
-          100% { transform: translateX(-100%) }
+          0%   { transform: translateX(100vw); }
+          100% { transform: translateX(-100%); }
         }
       `}</style>
     </div>
