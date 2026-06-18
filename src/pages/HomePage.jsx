@@ -82,7 +82,10 @@ export default function HomePage() {
     { title: '경제일기 쓰기',      description: '오늘 배운 것 기록하기',  Icon: NotebookPen,   iconBg: '#F1EFE8', iconColor: '#5F5E5A', path: '/diary' },
   ];
 
-  const nomingIntro = profile?.noming_intro;
+  const nomingIntro = profile?.noming_intro
+    ?.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   const InfographicComp = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
 
@@ -229,12 +232,12 @@ export default function HomePage() {
           </div>
 
           <div style={{
-            background: '#F2FBF5', borderRadius: '0 10px 10px 10px',
-            padding: '12px 14px', fontSize: 13, color: '#444441',
-            lineHeight: 1.7, border: '0.5px solid #B8EBC8', marginBottom: 12,
+            background: '#FFF4D6', borderRadius: '0 10px 10px 10px',
+            padding: '12px 14px', fontSize: 13, color: '#633806',
+            lineHeight: 1.7, border: '0.5px solid #FAC775', marginBottom: 12,
           }}>
             {nomingIntro ? nomingIntro : (
-              <>오늘의 주제는 <strong style={{ color: '#2A7A4B' }}>{bite?.title}</strong>이에요. 궁금한 게 있으면 바로 물어보세요!</>
+              <>오늘의 주제는 <strong style={{ color: '#92400E' }}>{bite?.title}</strong>이에요. 궁금한 게 있으면 바로 물어보세요!</>
             )}
           </div>
 
@@ -270,16 +273,16 @@ export default function HomePage() {
           <button
             onClick={() => navigate('/coach')}
             style={{
-              width: '100%', background: '#F2FBF5', border: '0.5px solid #B8EBC8',
-              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#888780',
+              width: '100%', background: '#FFF4D6', border: '0.5px solid #FAC775',
+              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#92400E',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#E8F7F1'}
-            onMouseLeave={e => e.currentTarget.style.background = '#F2FBF5'}
+            onMouseEnter={e => e.currentTarget.style.background = '#FFE8A0'}
+            onMouseLeave={e => e.currentTarget.style.background = '#FFF4D6'}
           >
             직접 질문하기...
-            <span style={{ color: '#52C97A' }}>→</span>
+            <span style={{ color: '#FFC83D' }}>→</span>
           </button>
         </div>
 
