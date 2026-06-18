@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
@@ -28,8 +28,8 @@ function KakaoIcon() {
 
 const inputStyle = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
-  border: '1.5px solid #E2E8F0', fontSize: '14px',
-  color: '#0F172A', background: '#F8FAFC',
+  border: '1.5px solid var(--c-line)', fontSize: '14px',
+  color: 'var(--c-ink)', background: 'var(--c-surface)',
   transition: 'border-color 0.15s', boxSizing: 'border-box', outline: 'none',
 };
 
@@ -93,50 +93,40 @@ export default function SignupPage() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #F0FDF4 0%, #F2FBF5 60%, #FFF9EB 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '32px 20px',
+        background: 'linear-gradient(160deg, var(--c-green-50) 0%, var(--c-canvas) 60%, var(--c-yellow-100) 100%)',
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+        padding: '40px 20px 32px',
       }}>
         <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-          <img
-            src={`${BASE_URL}appicon.jpg`}
-            alt="ECONOMING"
-            style={{ width: '96px', height: '96px', borderRadius: '24px', objectFit: 'cover', margin: '0 auto 2px', display: 'block' }}
-          />
-          <img
-            src={`${BASE_URL}logo.png`}
-            alt="ECONOMING"
-            style={{ height: '64px', objectFit: 'contain', display: 'block', margin: '0 auto 8px' }}
-          />
-          <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '10px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.7px', marginBottom: '10px' }}>
             환영해요! 🌱
           </h2>
           {MOCK ? (
-            <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '24px' }}>
               계정이 만들어졌어요. 바로 로그인할 수 있어요!<br />
-              <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '600' }}>🧪 개발 모드 — 이메일 인증 없음</span>
+              <span style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '600' }}>🧪 개발 모드 — 이메일 인증 없음</span>
             </p>
           ) : (
-            <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '24px' }}>
               가입하신 이메일로 인증 메일을 보냈어요.<br />
               메일함을 확인하고 인증을 완료해주세요.
             </p>
           )}
           <div style={{
-            background: '#F2FBF5', border: '1.5px solid #DCF5EB',
+            background: 'var(--c-canvas)', border: '1.5px solid var(--c-line-soft)',
             borderRadius: '14px', padding: '14px 16px', marginBottom: '24px', textAlign: 'left',
           }}>
-            <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '8px' }}>
+            <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-green-500)', marginBottom: '8px' }}>
               노밍이 기다리고 있어요
             </p>
             {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <div style={{
                   width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
-                  background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '9px', color: '#fff', fontWeight: '800',
                 }}>✓</div>
-                <span style={{ fontSize: '13px', color: '#374151', fontWeight: '500' }}>{item}</span>
+                <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
               </div>
             ))}
           </div>
@@ -144,7 +134,7 @@ export default function SignupPage() {
             onClick={() => navigate('/login')}
             style={{
               width: '100%', padding: '14px', borderRadius: '14px',
-              background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+              background: 'var(--grad-action)',
               color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
               cursor: 'pointer', letterSpacing: '-0.4px',
               boxShadow: '0 6px 20px rgba(33,197,142,0.35)',
@@ -161,57 +151,43 @@ export default function SignupPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(160deg, #F0FDF4 0%, #F2FBF5 60%, #FFF9EB 100%)',
+      background: 'linear-gradient(160deg, var(--c-green-50) 0%, var(--c-canvas) 60%, var(--c-yellow-100) 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '32px 20px',
+      padding: '12px 20px 120px',
     }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
 
-        {/* ── 브랜드 헤더 ────────────────────────────────── */}
-        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-          <img
-            src={`${BASE_URL}appicon.jpg`}
-            alt="ECONOMING"
-            style={{ width: '96px', height: '96px', borderRadius: '24px', objectFit: 'cover', margin: '0 auto 2px', display: 'block' }}
-          />
-          <img
-            src={`${BASE_URL}logo.png`}
-            alt="ECONOMING"
-            style={{ height: '64px', objectFit: 'contain', display: 'block', margin: '0 auto' }}
-          />
-        </div>
-
         {/* ── 메인 카드 ────────────────────────────────── */}
         <div style={{
-          background: '#fff', borderRadius: '24px',
+          background: 'var(--c-surface)', borderRadius: '24px',
           padding: '28px 24px',
           boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
-          border: '1px solid #E8F5EF',
+          border: '1px solid var(--c-line-soft)',
         }}>
 
           {/* 헤드라인 */}
           <div style={{ marginBottom: '24px' }}>
             <h2 style={{
-              fontSize: '21px', fontWeight: '900', color: '#0F172A',
+              fontSize: '21px', fontWeight: '900', color: 'var(--c-ink)',
               letterSpacing: '-0.7px', lineHeight: '1.35', margin: '0 0 16px',
             }}>
               지금 바로 시작해요
             </h2>
             <div style={{
-              background: '#F2FBF5', borderRadius: '14px',
-              padding: '14px 16px', border: '1px solid #DCF5EB',
+              background: 'var(--c-canvas)', borderRadius: '14px',
+              padding: '14px 16px', border: '1px solid var(--c-line-soft)',
             }}>
-              <p style={{ fontSize: '12px', fontWeight: '700', color: '#52C97A', marginBottom: '10px' }}>
+              <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-green-500)', marginBottom: '10px' }}>
                 노밍과 함께
               </p>
               {['경제 공부 순서 찾기', '나에게 맞는 성장 단계', '쉬운 경제 코칭'].map(item => (
                 <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '7px' }}>
                   <div style={{
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
-                    background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '10px', color: '#fff', fontWeight: '800',
                   }}>✓</div>
-                  <span style={{ fontSize: '13px', color: '#374151', fontWeight: '500' }}>{item}</span>
+                  <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
                 </div>
               ))}
             </div>
@@ -246,8 +222,8 @@ export default function SignupPage() {
               opacity: googleLoading ? 0.7 : 1,
               transition: 'all 0.15s',
             }}
-            onMouseEnter={e => { if (!anyLoading) { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.1)'; } }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; }}
+            onMouseEnter={e => { if (!anyLoading) { e.currentTarget.style.background = 'var(--c-surface)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.1)'; } }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-surface)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; }}
           >
             <GoogleIcon />
             {googleLoading ? 'Google 연결 중...' : 'Google로 시작하기'}
@@ -286,11 +262,11 @@ export default function SignupPage() {
               cursor: 'pointer', padding: '4px 0 12px',
             }}
           >
-            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
-            <span style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', whiteSpace: 'nowrap' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--c-line)' }} />
+            <span style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
               {showEmail ? '이메일 가입 닫기 ↑' : '이메일로 가입 ↓'}
             </span>
-            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+            <div style={{ flex: 1, height: '1px', background: 'var(--c-line)' }} />
           </button>
 
           {showEmail && (
@@ -305,8 +281,8 @@ export default function SignupPage() {
                 value={nickname}
                 onChange={e => setNickname(e.target.value)}
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#52C97A'}
-                onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
+                onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                onBlur={e  => e.target.style.borderColor = 'var(--c-line)'}
               />
               <input
                 type="email"
@@ -315,8 +291,8 @@ export default function SignupPage() {
                 onChange={e => setEmail(e.target.value)}
                 autoComplete="email"
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#52C97A'}
-                onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
+                onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                onBlur={e  => e.target.style.borderColor = 'var(--c-line)'}
               />
               <input
                 type="password"
@@ -325,8 +301,8 @@ export default function SignupPage() {
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="new-password"
                 style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#52C97A'}
-                onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
+                onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                onBlur={e  => e.target.style.borderColor = 'var(--c-line)'}
               />
               <div>
                 <input
@@ -337,10 +313,10 @@ export default function SignupPage() {
                   autoComplete="new-password"
                   style={{
                     ...inputStyle,
-                    borderColor: confirm && confirm !== password ? '#EF4444' : '#E2E8F0',
+                    borderColor: confirm && confirm !== password ? '#EF4444' : 'var(--c-line)',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#52C97A'}
-                  onBlur={e  => e.target.style.borderColor = confirm !== password ? '#EF4444' : '#E2E8F0'}
+                  onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                  onBlur={e  => e.target.style.borderColor = confirm !== password ? '#EF4444' : 'var(--c-line)'}
                 />
                 {confirm && confirm !== password && (
                   <p style={{ fontSize: '12px', color: '#EF4444', marginTop: '4px' }}>비밀번호가 일치하지 않아요.</p>
@@ -351,7 +327,7 @@ export default function SignupPage() {
                 disabled={loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
-                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+                  background: loading ? 'var(--c-green-100)' : 'var(--grad-action)',
                   color: '#fff', border: 'none', fontSize: '14px', fontWeight: '700',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   boxShadow: loading ? 'none' : '0 4px 14px rgba(33,197,142,0.3)',
@@ -364,9 +340,9 @@ export default function SignupPage() {
           )}
 
           {/* 로그인 링크 */}
-          <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748B', margin: 0 }}>
+          <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--c-slate)', margin: 0 }}>
             이미 계정이 있으신가요?{' '}
-            <Link to="/login" style={{ color: '#52C97A', fontWeight: '700', textDecoration: 'none' }}>
+            <Link to="/login" style={{ color: 'var(--c-green-500)', fontWeight: '700', textDecoration: 'none' }}>
               로그인
             </Link>
           </p>
@@ -374,7 +350,7 @@ export default function SignupPage() {
 
         {/* 둘러보기 */}
         <p style={{ textAlign: 'center', marginTop: '18px' }}>
-          <Link to="/home" style={{ fontSize: '13px', color: '#94A3B8', textDecoration: 'none' }}>
+          <Link to="/home" style={{ fontSize: '13px', color: 'var(--c-muted)', textDecoration: 'none' }}>
             ← 로그인 없이 둘러보기
           </Link>
         </p>

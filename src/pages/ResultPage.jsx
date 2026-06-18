@@ -1,16 +1,7 @@
-/* 진단 결과 페이지 — PC 중앙 정렬 */
+/* 진단 결과 페이지 */
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Map, Sprout, Leaf, TrendingUp, Wallet, PiggyBank, Receipt, Home, Zap } from 'lucide-react';
-
-const LEVEL_ICONS = {
-  beginner:     Sprout,
-  elementary:   Leaf,
-  intermediate: TrendingUp,
-};
-
-const STEP_ICONS = { 1: Wallet, 2: PiggyBank, 3: TrendingUp, 4: Receipt, 5: Home };
+import { Sprout, Leaf, TrendingUp, Zap, Star } from 'lucide-react';
 import { levelInfo } from '../data/diagnosisQuestions';
-import { roadmaps } from '../data/roadmapData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import TopNav from '../components/layout/TopNav';
 import Card from '../components/common/Card';
@@ -18,6 +9,14 @@ import Button from '../components/common/Button';
 import { useAuth } from '../context/AuthContext';
 import { updateLevel } from '../services/profileService';
 import { initProgress } from '../services/roadmapService';
+
+const LEVEL_ICONS = {
+  beginner:     Sprout,
+  elementary:   Leaf,
+  intermediate: TrendingUp,
+  advanced:     Star,
+  expert:       Zap,
+};
 
 export default function ResultPage() {
   const { state } = useLocation();
@@ -27,12 +26,10 @@ export default function ResultPage() {
 
   const level = state?.level || 'beginner';
   const score = state?.score ?? 0;
-  const info = levelInfo[level];
-  const roadmap = roadmaps[level];
+  const info = levelInfo[level] ?? levelInfo['beginner'];
 
   const handleStart = async () => {
     setUserLevel(level);
-
     if (user) {
       await Promise.all([
         updateLevel(user.id, level),
@@ -45,173 +42,110 @@ export default function ResultPage() {
     }
   };
 
+  const LIcon = LEVEL_ICONS[level] ?? Sprout;
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <TopNav />
 
-      <div
-        style={{
-          maxWidth: '860px',
-          margin: '0 auto',
-          padding: '48px 24px',
-        }}
-      >
-        {/* 결과 헤더 카드 */}
+      <div style={{
+        maxWidth: '440px',
+        margin: '0 auto',
+        padding: '32px 20px 80px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        {/* 결과 카드 */}
         <Card
           className="anim-fade"
           style={{
-            background: `linear-gradient(135deg, ${info.bgColor} 0%, #fff 60%)`,
+            width: '100%',
+            background: `linear-gradient(135deg, ${info.bgColor} 0%, #fff 70%)`,
             border: `1.5px solid ${info.color}33`,
-            padding: '48px',
+            padding: '24px 20px',
             textAlign: 'center',
-            marginBottom: '24px',
           }}
         >
-          {(() => { const LIcon = LEVEL_ICONS[level] ?? Sprout; return (
-            <div style={{ width: 96, height: 96, borderRadius: 24, background: info.bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <LIcon size={52} color={info.color} />
-            </div>
-          ); })()}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: info.bgColor,
-              color: info.color,
-              borderRadius: '100px',
-              padding: '6px 20px',
-              fontSize: '13px',
-              fontWeight: '700',
-              marginBottom: '16px',
-              border: `1px solid ${info.color}44`,
-            }}
-          >
+          {/* 아이콘 */}
+          <div style={{
+            width: 56, height: 56, borderRadius: 16,
+            background: info.bgColor,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 12px',
+            border: `1px solid ${info.color}33`,
+          }}>
+            <LIcon size={30} color={info.color} />
+          </div>
+
+          {/* 배지 */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center',
+            background: info.bgColor, color: info.color,
+            borderRadius: 100, padding: '4px 14px',
+            fontSize: 11, fontWeight: 700,
+            border: `1px solid ${info.color}44`,
+            marginBottom: 10,
+          }}>
             진단 결과
           </div>
-          <h2
-            style={{
-              fontSize: '36px',
-              fontWeight: '900',
-              color: info.color,
-              letterSpacing: '-1.5px',
-              marginBottom: '16px',
-            }}
-          >
+
+          {/* 레벨명 */}
+          <h2 style={{
+            fontSize: 26, fontWeight: 900,
+            color: info.color, letterSpacing: '-1px',
+            marginBottom: 8,
+          }}>
             {info.label}
           </h2>
-          <p
-            style={{
-              fontSize: '16px',
-              color: '#64748B',
-              lineHeight: '1.7',
-              letterSpacing: '-0.3px',
-              whiteSpace: 'pre-line',
-              maxWidth: '480px',
-              margin: '0 auto 24px',
-            }}
-          >
+
+          {/* 설명 */}
+          <p style={{
+            fontSize: 13, color: 'var(--c-slate)',
+            lineHeight: 1.65, letterSpacing: '-0.2px',
+            whiteSpace: 'pre-line',
+            marginBottom: 16,
+          }}>
             {info.description}
           </p>
-          {/* 점수 도트 */}
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: '14px',
-                  height: '14px',
-                  borderRadius: '50%',
-                  background: i < score ? info.color : '#E2E8F0',
-                  transition: `background ${0.1 + i * 0.1}s ease`,
-                }}
-              />
-            ))}
+
+          {/* 점수 바 */}
+          <div style={{ maxWidth: 160, margin: '0 auto' }}>
+            <div style={{ background: 'var(--c-line)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
+              <div style={{
+                width: `${Math.max(0, ((score - 10) / 40) * 100)}%`,
+                height: '100%', borderRadius: 99,
+                background: info.color,
+                transition: 'width 0.8s ease',
+              }} />
+            </div>
+            <p style={{ fontSize: 11, color: 'var(--c-muted)', marginTop: 6 }}>
+              총점 {score}점 / 50점
+            </p>
           </div>
-          <p style={{ fontSize: '13px', color: '#94A3B8', marginTop: '10px' }}>5문항 중 {score}개 정답</p>
         </Card>
 
-        {/* 맞춤 로드맵 */}
-        <div className="anim-slide">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Map size={20} color="#0F172A" /> 나만의 학습 로드맵
-              </h3>
-              <p style={{ fontSize: '14px', color: '#64748B' }}>{info.shortDesc}을 위한 4단계 커리큘럼</p>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '28px' }}>
-            {roadmap.map((step, idx) => (
-              <Card
-                key={step.step}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
-                  opacity: 0.6 + idx * 0.12,
-                  border: idx === 0 ? `1.5px solid ${step.color}44` : '1.5px solid var(--border-light)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '52px',
-                    height: '52px',
-                    borderRadius: '14px',
-                    background: idx === 0
-                      ? `linear-gradient(135deg, ${step.color}, ${step.color}88)`
-                      : '#F1F5F9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    boxShadow: idx === 0 ? `0 4px 12px ${step.color}35` : 'none',
-                  }}
-                >
-                  {(() => { const SIcon = STEP_ICONS[step.step] ?? TrendingUp; return <SIcon size={24} color={idx === 0 ? '#fff' : '#94A3B8'} />; })()}
-                </div>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: '700', color: idx === 0 ? step.color : '#94A3B8', letterSpacing: '0.3px' }}>
-                      STEP {step.step}
-                    </span>
-                    {idx === 0 && (
-                      <span style={{ background: step.color, color: '#fff', fontSize: '10px', fontWeight: '700', padding: '1px 7px', borderRadius: '100px' }}>
-                        시작
-                      </span>
-                    )}
-                  </div>
-                  <p style={{ fontSize: '15px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.4px' }}>
-                    {step.title}
-                  </p>
-                  <p style={{ fontSize: '12px', color: '#94A3B8' }}>{step.description}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <Button size="lg" onClick={handleStart} style={{ flex: 2, borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <Zap size={16} /> {user ? '노밍과 함께 시작하기' : '학습 시작하기'}
-            </Button>
-            <button
-              onClick={() => navigate('/diagnosis')}
-              style={{
-                flex: 1,
-                padding: '14px',
-                borderRadius: '14px',
-                background: '#F1F5F9',
-                border: 'none',
-                fontSize: '14px',
-                color: '#64748B',
-                cursor: 'pointer',
-                fontWeight: '600',
-              }}
-            >
-              다시 진단받기
-            </button>
-          </div>
+        {/* 버튼 */}
+        <div style={{ width: '100%', display: 'flex', gap: '10px' }}>
+          <Button
+            size="lg"
+            onClick={handleStart}
+            style={{ flex: 2, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <Zap size={15} /> 학습하러 가기
+          </Button>
+          <button
+            onClick={() => navigate('/diagnosis')}
+            style={{
+              flex: 1, padding: '14px', borderRadius: 12,
+              background: 'var(--c-line-soft)', border: 'none',
+              fontSize: 14, color: 'var(--c-slate)',
+              cursor: 'pointer', fontWeight: 600,
+            }}
+          >
+            다시 진단
+          </button>
         </div>
       </div>
     </div>

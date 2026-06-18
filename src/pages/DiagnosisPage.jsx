@@ -1,8 +1,7 @@
-/* AI 경제 레벨 진단 페이지 — PC 중앙 정렬 */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lightbulb, CheckCircle, XCircle, Target, TrendingUp, Home, Receipt, BarChart2 } from 'lucide-react';
-import { diagnosisQuestions, getLevelByScore } from '../data/diagnosisQuestions';
+import { Lightbulb, Target, TrendingUp, Home, Receipt, BarChart2, Wallet, PiggyBank } from 'lucide-react';
+import { diagnosisQuestions, answerOptions, getLevelByScore } from '../data/diagnosisQuestions';
 import ProgressBar from '../components/common/ProgressBar';
 import Button from '../components/common/Button';
 import TopNav from '../components/layout/TopNav';
@@ -12,6 +11,7 @@ const CATEGORY_ICONS = {
   '부동산': Home,
   '세금': Receipt,
   '경제': BarChart2,
+  '저축': PiggyBank,
 };
 
 export default function DiagnosisPage() {
@@ -30,7 +30,7 @@ export default function DiagnosisPage() {
     const newAnswers = [...answers, selected];
     setTimeout(() => {
       if (isLast) {
-        const score = newAnswers.filter(Boolean).length;
+        const score = newAnswers.reduce((sum, v) => sum + v, 0);
         navigate('/result', { state: { level: getLevelByScore(score), score, answers: newAnswers } });
       } else {
         setAnswers(newAnswers);
@@ -41,114 +41,106 @@ export default function DiagnosisPage() {
     }, 280);
   };
 
+  const QIcon = CATEGORY_ICONS[question.category] ?? BarChart2;
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--c-canvas)' }}>
       <TopNav />
 
-      {/* 중앙 정렬 카드 */}
-      <div
-        style={{
-          minHeight: 'calc(100vh - 64px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '40px 24px',
-        }}
-      >
+      <div style={{
+        minHeight: 'calc(100vh - 64px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '12px 20px 160px',
+      }}>
         <div
           className="anim-scale"
           key={current}
           style={{
             width: '100%',
-            maxWidth: '560px',
-            background: '#fff',
-            borderRadius: '24px',
-            boxShadow: 'var(--shadow-lg)',
+            maxWidth: '520px',
+            background: 'var(--c-surface)',
+            borderRadius: 24,
+            boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
             overflow: 'hidden',
-            border: '1px solid var(--border-light)',
+            border: '1px solid var(--c-line-soft)',
           }}
         >
-          {/* 상단 진행 바 */}
-          <div style={{ padding: '28px 32px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span
-                  style={{
-                    background: '#ECFDF5',
-                    color: '#059669',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    padding: '3px 12px',
-                    borderRadius: '100px',
-                    letterSpacing: '-0.2px',
-                  }}
-                >
-                  {question.category}
-                </span>
-              </div>
-              <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: '600' }}>
+          {/* 진행 바 */}
+          <div style={{ padding: '24px 28px 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{
+                background: 'var(--c-green-50)', color: 'var(--c-forest-700)',
+                fontSize: 11, fontWeight: 700, padding: '3px 12px',
+                borderRadius: 100, letterSpacing: '-0.2px',
+              }}>
+                {question.category}
+              </span>
+              <span style={{ fontSize: 12, color: 'var(--c-muted)', fontWeight: 600 }}>
                 {current + 1} / {diagnosisQuestions.length}
               </span>
             </div>
-            <ProgressBar current={current + 1} total={diagnosisQuestions.length} height={6} />
+            <ProgressBar current={current + 1} total={diagnosisQuestions.length} height={5} />
           </div>
 
-          {/* 질문 본문 */}
-          <div style={{ padding: '32px 32px 24px' }}>
-            {(() => { const QIcon = CATEGORY_ICONS[question.category] ?? BarChart2; return (
-              <div style={{ width: 72, height: 72, borderRadius: 20, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
-                <QIcon size={40} color="#059669" />
-              </div>
-            ); })()}
-            <h2
-              style={{
-                fontSize: '22px',
-                fontWeight: '800',
-                color: '#0F172A',
-                lineHeight: '1.4',
-                letterSpacing: '-0.8px',
-                marginBottom: '10px',
-              }}
-            >
+          {/* 질문 */}
+          <div style={{ padding: '24px 28px 20px' }}>
+            <div style={{
+              width: 60, height: 60, borderRadius: 16,
+              background: 'var(--c-green-50)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 18,
+            }}>
+              <QIcon size={32} color="var(--c-green-500)" />
+            </div>
+            <h2 style={{
+              fontSize: 19, fontWeight: 800, color: 'var(--c-ink)',
+              lineHeight: 1.45, letterSpacing: '-0.6px', marginBottom: 8,
+            }}>
               {question.question}
             </h2>
-            <p style={{ fontSize: '14px', color: '#94A3B8', lineHeight: '1.6', letterSpacing: '-0.3px', display: 'flex', alignItems: 'flex-start', gap: '5px' }}>
-              <Lightbulb size={14} color="#94A3B8" style={{ flexShrink: 0, marginTop: '2px' }} />
+            <p style={{
+              fontSize: 13, color: 'var(--c-muted)', lineHeight: 1.6,
+              display: 'flex', alignItems: 'flex-start', gap: 5,
+            }}>
+              <Lightbulb size={13} color="var(--c-muted)" style={{ flexShrink: 0, marginTop: 2 }} />
               {question.hint}
             </p>
           </div>
 
-          {/* 답변 선택 */}
-          <div style={{ padding: '0 32px 32px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {[
-              { value: true,  Icon: CheckCircle, label: '네, 알고 있어요!',      activeColor: '#047857', activeBg: 'linear-gradient(135deg,#ECFDF5,#D1FAE5)', activeBorder: '#10B981' },
-              { value: false, Icon: XCircle,     label: '아니요, 잘 모르겠어요', activeColor: '#B91C1C', activeBg: 'linear-gradient(135deg,#FEF2F2,#FEE2E2)', activeBorder: '#F87171' },
-            ].map((option) => {
-              const isActive = selected === option.value;
+          {/* 5단계 답변 */}
+          <div style={{ padding: '0 28px 28px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {answerOptions.map((option) => {
+              const isActive = selected === option.score;
               return (
                 <button
-                  key={String(option.value)}
-                  onClick={() => setSelected(option.value)}
+                  key={option.score}
+                  onClick={() => setSelected(option.score)}
                   style={{
-                    padding: '18px 24px',
-                    borderRadius: '14px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '14px',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    border: `2px solid ${isActive ? option.activeBorder : '#E2E8F0'}`,
-                    background: isActive ? option.activeBg : '#F8FAFC',
-                    color: isActive ? option.activeColor : '#374151',
-                    transform: isActive ? 'scale(1.01)' : 'scale(1)',
-                    boxShadow: isActive ? '0 4px 12px rgba(16,185,129,0.18)' : 'none',
-                    fontFamily: 'inherit',
+                    padding: '13px 18px',
+                    borderRadius: 12,
+                    fontSize: 14, fontWeight: 600,
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    cursor: 'pointer', transition: 'all 0.15s',
+                    border: `1.5px solid ${isActive ? 'var(--c-green-500)' : 'var(--c-line)'}`,
+                    background: isActive ? 'var(--c-green-50)' : 'var(--c-surface)',
+                    color: isActive ? 'var(--c-forest-700)' : 'var(--c-slate)',
+                    fontFamily: 'inherit', textAlign: 'left',
                   }}
                 >
-                  <option.Icon size={24} color={isActive ? option.activeColor : '#CBD5E1'} />
-                  <span style={{ letterSpacing: '-0.3px' }}>{option.label}</span>
+                  {/* 점수 뱃지 */}
+                  <span style={{
+                    width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, fontWeight: 800,
+                    background: isActive ? 'var(--c-green-500)' : 'var(--c-line-soft)',
+                    color: isActive ? '#fff' : 'var(--c-muted)',
+                    transition: 'all 0.15s',
+                  }}>
+                    {option.score}
+                  </span>
+                  {option.label}
                 </button>
               );
             })}
@@ -156,9 +148,9 @@ export default function DiagnosisPage() {
             <Button
               disabled={selected === null}
               onClick={handleNext}
-              style={{ borderRadius: '14px', marginTop: '8px', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              style={{ borderRadius: 12, marginTop: 4, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
-              {isLast ? <><Target size={16} /> 결과 확인하기</> : '다음 질문 →'}
+              {isLast ? <><Target size={15} /> 결과 확인하기</> : '다음 질문 →'}
             </Button>
           </div>
         </div>

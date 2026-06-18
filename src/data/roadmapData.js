@@ -1,4 +1,4 @@
-/* 경제 성장 5단계 로드맵 — 모든 사용자 공통 */
+﻿/* 경제 성장 5단계 로드맵 — 모든 사용자 공통 */
 
 export const roadmap = [
   {
@@ -8,7 +8,7 @@ export const roadmap = [
     topics: ['월급 관리법', '소비 vs 저축 비율', '가계부 시작하기', '비상금 만들기'],
     duration: '1~2주',
     emoji: '💰',
-    color: '#10B981',
+    color: 'var(--c-green-500)',
     coachQuestions: [
       '월급 받으면 가장 먼저 해야 할 것은?',
       '저축과 소비 비율은 어떻게 정해야 할까요?',
@@ -36,7 +36,7 @@ export const roadmap = [
     topics: ['주식이란?', 'ETF란?', '분산투자 원칙', '첫 투자 시작하기'],
     duration: '2주',
     emoji: '📈',
-    color: '#F59E0B',
+    color: 'var(--c-yellow-500)',
     coachQuestions: [
       '주식 투자를 꼭 해야 할까요?',
       'ETF가 주식보다 안전한가요?',
@@ -78,6 +78,8 @@ export const levelStartStep = {
   beginner:     1,
   elementary:   2,
   intermediate: 3,
+  advanced:     4,
+  expert:       5,
 };
 
 // 기존 코드 호환성 유지 (HomePage 등에서 roadmaps[level] 형태로 쓰던 곳)
@@ -85,4 +87,6 @@ export const roadmaps = {
   beginner:     roadmap,
   elementary:   roadmap,
   intermediate: roadmap,
+  advanced:     roadmap,
+  expert:       roadmap,
 };

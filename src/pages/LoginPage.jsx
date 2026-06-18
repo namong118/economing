@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
@@ -72,48 +72,34 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(160deg, #F0FDF4 0%, #F2FBF5 60%, #FFF9EB 100%)',
+      background: 'linear-gradient(160deg, var(--c-green-50) 0%, var(--c-canvas) 60%, var(--c-yellow-100) 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '32px 20px',
+      padding: '12px 20px 120px',
     }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
 
-        {/* ── 브랜드 헤더 ────────────────────────────────── */}
-        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-          <img
-            src={`${BASE_URL}appicon.jpg`}
-            alt="ECONOMING"
-            style={{ width: '96px', height: '96px', borderRadius: '24px', objectFit: 'cover', margin: '0 auto 2px', display: 'block' }}
-          />
-          <img
-            src={`${BASE_URL}logo.png`}
-            alt="ECONOMING"
-            style={{ height: '64px', objectFit: 'contain', display: 'block', margin: '0 auto' }}
-          />
-        </div>
-
         {/* ── 메인 카드 ────────────────────────────────── */}
         <div style={{
-          background: '#fff', borderRadius: '24px',
+          background: 'var(--c-surface)', borderRadius: '24px',
           padding: '28px 24px',
           boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
-          border: '1px solid #E8F5EF',
+          border: '1px solid var(--c-line-soft)',
         }}>
 
           {/* 헤드라인 + 가치 제안 */}
           <div style={{ marginBottom: '24px' }}>
             <h2 style={{
-              fontSize: '21px', fontWeight: '900', color: '#0F172A',
+              fontSize: '21px', fontWeight: '900', color: 'var(--c-ink)',
               letterSpacing: '-0.7px', lineHeight: '1.35', margin: '0 0 16px',
             }}>
               경제 성장 여정을<br />지금 시작해요
             </h2>
             <div style={{
-              background: '#F2FBF5', borderRadius: '14px',
-              padding: '14px 16px', border: '1px solid #DCF5EB',
+              background: 'var(--c-canvas)', borderRadius: '14px',
+              padding: '14px 16px', border: '1px solid var(--c-line-soft)',
             }}>
               <p style={{
-                fontSize: '12px', fontWeight: '700', color: '#52C97A',
+                fontSize: '12px', fontWeight: '700', color: 'var(--c-green-500)',
                 marginBottom: '10px', letterSpacing: '0.2px',
               }}>
                 노밍과 함께
@@ -126,11 +112,11 @@ export default function LoginPage() {
                 <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '7px' }}>
                   <div style={{
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
-                    background: '#52C97A',
+                    background: 'var(--c-green-500)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '10px', color: '#fff', fontWeight: '800',
                   }}>✓</div>
-                  <span style={{ fontSize: '13px', color: '#374151', fontWeight: '500' }}>{item}</span>
+                  <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
                 </div>
               ))}
             </div>
@@ -165,8 +151,8 @@ export default function LoginPage() {
               opacity: googleLoading ? 0.7 : 1,
               transition: 'all 0.15s',
             }}
-            onMouseEnter={e => { if (!anyLoading) { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.1)'; } }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; }}
+            onMouseEnter={e => { if (!anyLoading) { e.currentTarget.style.background = 'var(--c-surface)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.1)'; } }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-surface)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; }}
           >
             <GoogleIcon />
             {googleLoading ? 'Google 연결 중...' : 'Google로 시작하기'}
@@ -205,11 +191,11 @@ export default function LoginPage() {
               cursor: 'pointer', padding: '4px 0 12px',
             }}
           >
-            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
-            <span style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', whiteSpace: 'nowrap' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--c-line)' }} />
+            <span style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
               {showEmail ? '이메일 로그인 닫기 ↑' : '이메일로 로그인 ↓'}
             </span>
-            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+            <div style={{ flex: 1, height: '1px', background: 'var(--c-line)' }} />
           </button>
 
           {showEmail && (
@@ -226,12 +212,12 @@ export default function LoginPage() {
                 autoComplete="email"
                 style={{
                   width: '100%', padding: '12px 14px', borderRadius: '10px',
-                  border: '1.5px solid #E2E8F0', fontSize: '14px',
-                  color: '#0F172A', background: '#F8FAFC',
+                  border: '1.5px solid var(--c-line)', fontSize: '14px',
+                  color: 'var(--c-ink)', background: 'var(--c-surface)',
                   boxSizing: 'border-box', transition: 'border-color 0.15s', outline: 'none',
                 }}
-                onFocus={e => e.target.style.borderColor = '#52C97A'}
-                onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
+                onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                onBlur={e  => e.target.style.borderColor = 'var(--c-line)'}
               />
               <input
                 type="password"
@@ -241,19 +227,19 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 style={{
                   width: '100%', padding: '12px 14px', borderRadius: '10px',
-                  border: '1.5px solid #E2E8F0', fontSize: '14px',
-                  color: '#0F172A', background: '#F8FAFC',
+                  border: '1.5px solid var(--c-line)', fontSize: '14px',
+                  color: 'var(--c-ink)', background: 'var(--c-surface)',
                   boxSizing: 'border-box', transition: 'border-color 0.15s', outline: 'none',
                 }}
-                onFocus={e => e.target.style.borderColor = '#52C97A'}
-                onBlur={e  => e.target.style.borderColor = '#E2E8F0'}
+                onFocus={e => e.target.style.borderColor = 'var(--c-green-500)'}
+                onBlur={e  => e.target.style.borderColor = 'var(--c-line)'}
               />
               <button
                 type="submit"
                 disabled={loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
-                  background: loading ? '#A7F3D0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+                  background: loading ? 'var(--c-green-100)' : 'var(--grad-action)',
                   color: '#fff', border: 'none', fontSize: '14px', fontWeight: '700',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   boxShadow: loading ? 'none' : '0 4px 14px rgba(33,197,142,0.3)',
@@ -266,9 +252,9 @@ export default function LoginPage() {
           )}
 
           {/* 회원가입 */}
-          <p style={{ textAlign: 'center', fontSize: '13px', color: '#64748B', margin: 0 }}>
+          <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--c-slate)', margin: 0 }}>
             계정이 없으신가요?{' '}
-            <Link to="/signup" style={{ color: '#52C97A', fontWeight: '700', textDecoration: 'none' }}>
+            <Link to="/signup" style={{ color: 'var(--c-green-500)', fontWeight: '700', textDecoration: 'none' }}>
               회원가입
             </Link>
           </p>
@@ -276,7 +262,7 @@ export default function LoginPage() {
 
         {/* 둘러보기 */}
         <p style={{ textAlign: 'center', marginTop: '18px' }}>
-          <Link to="/home" style={{ fontSize: '13px', color: '#94A3B8', textDecoration: 'none' }}>
+          <Link to="/home" style={{ fontSize: '13px', color: 'var(--c-muted)', textDecoration: 'none' }}>
             ← 로그인 없이 둘러보기
           </Link>
         </p>
