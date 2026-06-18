@@ -232,7 +232,7 @@ export default function HomePage() {
           </div>
 
           <div style={{
-            background: '#FFF4D6', borderRadius: '0 10px 10px 10px',
+            background: '#FFFBEE', borderRadius: '0 10px 10px 10px',
             padding: '12px 14px', fontSize: 13, color: '#633806',
             lineHeight: 1.7, border: '0.5px solid #FAC775', marginBottom: 12,
           }}>
