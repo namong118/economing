@@ -124,31 +124,6 @@ export default function EconomicBiteArchivePage() {
       <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '28px 0 72px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
 
-          {/* ── 헤더 ── */}
-          <div style={{ marginBottom: '24px' }}>
-            <button
-              onClick={() => navigate(-1)}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: '13px', fontWeight: '700', color: '#94A3B8',
-                padding: '0', marginBottom: '16px',
-                display: 'flex', alignItems: 'center', gap: '4px',
-              }}
-            >
-              ← 돌아가기
-            </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-              <img src={`${import.meta.env.BASE_URL}leaf.png`} alt="경제한잎" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-              <h1 style={{
-                fontSize: '24px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px',
-              }}>
-                경제 한잎 모음
-              </h1>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748B', fontWeight: '500', letterSpacing: '-0.2px' }}>
-              총 {economicBites.length}개의 경제 개념을 쉽게 배워봐요.
-            </p>
-          </div>
 
           {/* ── 오늘의 한잎 배너 ── */}
           <div
