@@ -74,10 +74,10 @@ export default function HomePage() {
   }, [user?.id, bite?.id]);
 
   const todos = [
-    { title: '오늘의 한잎 읽기',  Icon: Leaf,          path: `/bite/${bite?.id}`, done: todoDone[0] },
-    { title: '한잎 퀴즈 풀기',    Icon: Zap,           path: `/bite/${bite?.id}`, done: todoDone[1] },
-    { title: '노밍에게 질문하기', Icon: MessageCircle, path: '/coach',            done: todoDone[2] },
-    { title: '경제일기 쓰기',     Icon: NotebookPen,   path: '/diary',            done: todoDone[3] },
+    { title: '오늘의 한잎 읽기',  Icon: Leaf,          iconColor: '#3A9A5C', path: `/bite/${bite?.id}`, done: todoDone[0] },
+    { title: '한잎 퀴즈 풀기',    Icon: Zap,           iconColor: '#854F0B', path: `/bite/${bite?.id}`, done: todoDone[1] },
+    { title: '노밍에게 질문하기', Icon: MessageCircle, iconColor: '#FFC83D', path: '/coach',            done: todoDone[2] },
+    { title: '경제일기 쓰기',     Icon: NotebookPen,   iconColor: '#5F5E5A', path: '/diary',            done: todoDone[3] },
   ];
 
   const nomingIntro = profile?.noming_intro
@@ -107,22 +107,27 @@ export default function HomePage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
 
-          {/* 할일 체크 아이콘 4개 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {/* 할일 pill */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
             {todos.map((todo, i) => (
-              <div
-                key={i}
-                onClick={() => navigate(todo.path)}
-                title={todo.title}
-                style={{
-                  width: 28, height: 28, borderRadius: 8,
-                  background: todo.done ? '#52C97A' : '#F2FBF5',
-                  border: `0.5px solid ${todo.done ? '#52C97A' : '#B8EBC8'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer',
-                }}
-              >
-                <todo.Icon size={14} color={todo.done ? '#fff' : '#B8EBC8'} />
+              <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+                {i > 0 && (
+                  <span style={{ width: 3, height: 3, borderRadius: '50%', background: '#B8EBC8', margin: '0 4px', flexShrink: 0 }} />
+                )}
+                <div
+                  onClick={() => navigate(todo.path)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
+                    background: todo.done ? '#52C97A' : '#F2FBF5',
+                    border: `0.5px solid ${todo.done ? '#52C97A' : '#B8EBC8'}`,
+                  }}
+                >
+                  <todo.Icon size={12} color={todo.done ? '#fff' : todo.iconColor} />
+                  <span style={{ fontSize: 11, color: todo.done ? '#fff' : '#3A9A5C', fontWeight: todo.done ? 500 : 400 }}>
+                    {todo.title}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
