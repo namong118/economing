@@ -4,7 +4,7 @@ import { Leaf, Zap, MessageCircle, NotebookPen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
 import { getNextLevelInfo } from '../data/levelData';
-import { getTodaysBite } from '../services/biteService';
+import { getTodaysBite, getRecommendedBite, recordBiteView } from '../services/biteService';
 import { getRecommendedQuestions } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { useUserLevel } from '../hooks/useUserLevel';
@@ -17,13 +17,27 @@ export default function HomePage() {
   const { userLevel }                     = useUserLevel();
   const [xpLoading, setXpLoading]         = useState(false);
 
-  const bite                    = getTodaysBite();
+  const [bite, setBite]         = useState(() => getTodaysBite());
   const xp                      = profile?.xp ?? 0;
   const { currentLevel }        = getNextLevelInfo(xp);
 
   const d    = new Date();
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const today = `${d.getMonth() + 1}월 ${d.getDate()}일 ${days[d.getDay()]}`;
+
+  /* 맞춤 한잎 */
+  useEffect(() => {
+    if (!user?.id) {
+      setBite(getTodaysBite());
+      return;
+    }
+    getRecommendedBite(user.id, userLevel)
+      .then(b => {
+        setBite(b);
+        recordBiteView(user.id, b.id);
+      })
+      .catch(() => setBite(getTodaysBite()));
+  }, [user?.id, userLevel]); // eslint-disable-line
 
   /* 뉴스 */
   const [todayNews,    setTodayNews]    = useState(null);

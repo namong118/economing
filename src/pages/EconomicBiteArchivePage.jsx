@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookMarked } from 'lucide-react';
 import economicBites from '../data/economicBites';
 import { getTodaysBite } from '../services/biteService';
+import { useUserLevel } from '../hooks/useUserLevel';
 import PageWrapper from '../components/layout/PageWrapper';
 
 const CATEGORIES = ['전체', '기초', '금리', '투자', '저축', '거시경제', '부동산'];
@@ -19,7 +20,7 @@ const CATEGORY_COLOR = {
 const DIFFICULTY_LABEL = { easy: '쉬움', medium: '보통', hard: '심화' };
 const DIFFICULTY_COLOR = { easy: '#059669', medium: '#B45309', hard: '#7C3AED' };
 
-function BiteCard({ bite, isToday, navigate }) {
+function BiteCard({ bite, isToday, isRecommended, navigate }) {
   const [hov, setHov] = useState(false);
   const cat = CATEGORY_COLOR[bite.category] ?? { badge: '#F1F5F9', badgeText: '#374151' };
 
@@ -64,6 +65,15 @@ function BiteCard({ bite, isToday, navigate }) {
         }}>
           {DIFFICULTY_LABEL[bite.difficulty]}
         </span>
+        {isRecommended && (
+          <span style={{
+            fontSize: 10, padding: '2px 8px', borderRadius: 20,
+            background: '#E3F9EC', color: '#2A7A4B',
+            border: '0.5px solid #B8EBC8', fontWeight: 600,
+          }}>
+            ✓ 내 수준
+          </span>
+        )}
       </div>
 
       <div style={{
@@ -90,10 +100,20 @@ function BiteCard({ bite, isToday, navigate }) {
   );
 }
 
+const LEVEL_DIFFICULTY_MAP = {
+  beginner:     ['easy'],
+  elementary:   ['easy', 'medium'],
+  intermediate: ['medium'],
+  advanced:     ['medium', 'hard'],
+  expert:       ['hard'],
+};
+
 export default function EconomicBiteArchivePage() {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const todaysBite = getTodaysBite();
+  const { userLevel } = useUserLevel();
+  const recommendedDifficulties = LEVEL_DIFFICULTY_MAP[userLevel] ?? ['easy'];
 
   const filtered = selectedCategory === '전체'
     ? economicBites
@@ -207,6 +227,7 @@ export default function EconomicBiteArchivePage() {
                 key={bite.id}
                 bite={bite}
                 isToday={bite.id === todaysBite.id}
+                isRecommended={recommendedDifficulties.includes(bite.difficulty)}
                 navigate={navigate}
               />
             ))}
