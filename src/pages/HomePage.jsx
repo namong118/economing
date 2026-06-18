@@ -156,14 +156,12 @@ export default function HomePage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              onClick={() => navigate(`/bite/${bite?.id}`)}
-              style={{ background: '#52C97A', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 500, cursor: 'pointer' }}
-            >
-              🍃 배우기 →
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(`/bite/${bite?.id}`)}
+            style={{ width: '100%', background: '#52C97A', color: '#fff', border: 'none', borderRadius: 8, padding: 10, fontSize: 13, fontWeight: 500, cursor: 'pointer' }}
+          >
+            🍃 오늘의 한잎 배우기 →
+          </button>
         </div>
 
         {/* 카드 2: 오늘의 추천 뉴스 */}
