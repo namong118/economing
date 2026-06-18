@@ -8,6 +8,7 @@ import { getTodaysBite } from '../services/biteService';
 import { getRecommendedQuestions } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { useUserLevel } from '../hooks/useUserLevel';
+import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import PageWrapper from '../components/layout/PageWrapper';
 
 export default function HomePage() {
@@ -69,6 +70,13 @@ export default function HomePage() {
 
   const nomingIntro = profile?.noming_intro;
 
+  const InfographicComp = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
+
+  const CATEGORY_ICON = {
+    '금리': '💹', '투자': '📊', '거시경제': '🌐',
+    '저축': '🏦', '부동산': '🏠', '기초': '📚',
+  };
+
   return (
     <PageWrapper>
       <style>{`
@@ -121,6 +129,19 @@ export default function HomePage() {
           <div style={{ fontSize: 13, color: '#3A9A5C', marginBottom: 14, lineHeight: 1.6 }}>
             {bite?.description}
           </div>
+
+          {/* 핵심 개념 픽토그램 */}
+          <div style={{ background: '#F2FBF5', borderRadius: 10, padding: '16px 12px', marginBottom: 12 }}>
+            {InfographicComp ? (
+              <InfographicComp />
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontSize: 36 }}>{CATEGORY_ICON[bite?.category] ?? '📌'}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#2A7A4B' }}>{bite?.title}</div>
+              </div>
+            )}
+          </div>
+
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               onClick={() => navigate(`/bite/${bite?.id}`)}
