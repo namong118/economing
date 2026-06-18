@@ -138,7 +138,7 @@ export default function EconomicBiteArchivePage() {
               ← 돌아가기
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-              <span style={{ fontSize: '22px' }}>🍃</span>
+              <img src={`${import.meta.env.BASE_URL}leaf.png`} alt="경제한잎" style={{ width: 28, height: 28, objectFit: 'contain' }} />
               <h1 style={{
                 fontSize: '24px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px',
               }}>
