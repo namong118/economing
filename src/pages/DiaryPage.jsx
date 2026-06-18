@@ -252,17 +252,6 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
 
   return (
     <div className="anim-fade">
-      {/* 노밍 인사 */}
-      <div style={{
-        background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-        border: '1px solid #FFE08A', borderRadius: '14px',
-        padding: '12px 16px', marginBottom: '14px',
-        display: 'flex', alignItems: 'center', gap: '10px',
-      }}>
-        <p style={{ fontSize: '14px', fontWeight: '700', color: '#78350F', letterSpacing: '-0.3px' }}>
-          오늘의 경제를 기록해볼까요? ✍️
-        </p>
-      </div>
 
       {/* 캘린더 카드 */}
       <div style={{
