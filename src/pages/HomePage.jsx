@@ -119,7 +119,7 @@ export default function HomePage() {
                 {bite?.category}
               </span>
               <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#FFF4D6', color: '#854F0B', border: '0.5px solid #FAC775' }}>
-                {bite?.level}
+                {{ easy: '쉬움', medium: '보통', hard: '심화' }[bite?.difficulty] ?? ''}
               </span>
             </div>
           </div>
