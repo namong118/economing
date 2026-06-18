@@ -4,6 +4,7 @@ import { ArrowRight, History, MessageCircle, X } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse } from '../services/coachService';
+import { useUserLevel } from '../hooks/useUserLevel';
 import { createConversation, getConversationList, getRecentConversations } from '../services/conversationService';
 import { callSolar } from '../services/solarService';
 import { getInfographic } from '../data/infographicData';
@@ -225,7 +226,7 @@ function NomingCard({ structured, onSend }) {
 function NomingGreeting({ BASE_URL }) {
   return (
     <div className="anim-fade" style={{
-      background: '#FFF4D6',
+      background: '#FFFBEE',
       border: '0.5px solid #FAC775',
       borderRadius: '12px', padding: '24px',
       display: 'flex', gap: '16px', alignItems: 'flex-start',
@@ -293,6 +294,7 @@ export default function CoachPage() {
   const initSent    = useRef(false);
 
   const { user, profile } = useAuth();
+  const { userLevel } = useUserLevel();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
   const [suggestedQuestions, setSuggestedQuestions] = useState(() => getPersonalizedQuestions(profile));
@@ -349,7 +351,7 @@ export default function CoachPage() {
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-    const { answer, structured } = await getCoachResponse(q, history);
+    const { answer, structured } = await getCoachResponse(q, history, userLevel);
     const infographic = getInfographic(q);
     setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
     setLoading(false);
