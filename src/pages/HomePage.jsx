@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Leaf, Zap, MessageCircle, NotebookPen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { addXp } from '../services/profileService';
-import { getNextLevelInfo } from '../data/levelData';
+import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite, recordBiteView } from '../services/biteService';
 import { getRecommendedQuestions } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
@@ -12,14 +11,11 @@ import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import PageWrapper from '../components/layout/PageWrapper';
 
 export default function HomePage() {
-  const navigate                          = useNavigate();
-  const { user, profile, refreshProfile } = useAuth();
-  const { userLevel }                     = useUserLevel();
-  const [xpLoading, setXpLoading]         = useState(false);
+  const navigate             = useNavigate();
+  const { user, profile }    = useAuth();
+  const { userLevel }        = useUserLevel();
 
-  const [bite, setBite]         = useState(() => getTodaysBite());
-  const xp                      = profile?.xp ?? 0;
-  const { currentLevel }        = getNextLevelInfo(xp);
+  const [bite, setBite]      = useState(() => getTodaysBite());
 
   const d    = new Date();
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
@@ -27,21 +23,15 @@ export default function HomePage() {
 
   /* 맞춤 한잎 */
   useEffect(() => {
-    if (!user?.id) {
-      setBite(getTodaysBite());
-      return;
-    }
+    if (!user?.id) { setBite(getTodaysBite()); return; }
     getRecommendedBite(user.id, userLevel)
-      .then(b => {
-        setBite(b);
-        recordBiteView(user.id, b.id);
-      })
+      .then(b => { setBite(b); recordBiteView(user.id, b.id); })
       .catch(() => setBite(getTodaysBite()));
   }, [user?.id, userLevel]); // eslint-disable-line
 
   /* 뉴스 */
-  const [todayNews,    setTodayNews]    = useState(null);
-  const [newsLoading,  setNewsLoading]  = useState(true);
+  const [todayNews,   setTodayNews]   = useState(null);
+  const [newsLoading, setNewsLoading] = useState(true);
 
   useEffect(() => {
     fetchAndSummarizeNews('경제')
@@ -55,8 +45,8 @@ export default function HomePage() {
     `${bite?.title}이 내 생활에 미치는 영향은?`,
     `${bite?.title} 쉽게 설명해줘`,
   ];
-  const [recommendedQuestions,  setRecommendedQuestions]  = useState(null);
-  const [questionsLoading,      setQuestionsLoading]      = useState(true);
+  const [recommendedQuestions, setRecommendedQuestions] = useState(null);
+  const [questionsLoading,     setQuestionsLoading]     = useState(true);
 
   useEffect(() => {
     if (!bite?.title) return;
@@ -67,19 +57,27 @@ export default function HomePage() {
       .finally(() => setQuestionsLoading(false));
   }, [bite?.title]); // eslint-disable-line
 
-  const handleAddXp = async () => {
-    if (!user || xpLoading) return;
-    setXpLoading(true);
-    await addXp(user.id, 5);
-    await refreshProfile();
-    setXpLoading(false);
-  };
+  /* 할일 완료 여부 */
+  const [todoDone, setTodoDone] = useState([false, false, false, false]);
+
+  useEffect(() => {
+    if (!user?.id || !bite?.id) return;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    Promise.all([
+      supabase.from('user_bite_history').select('id').eq('user_id', user.id).eq('bite_id', bite.id).gte('viewed_at', todayStr).limit(1),
+      supabase.from('user_quiz_results').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
+      supabase.from('coach_conversations').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
+      supabase.from('diary').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
+    ]).then(results => {
+      setTodoDone(results.map(({ data }) => (data?.length ?? 0) > 0));
+    }).catch(() => {});
+  }, [user?.id, bite?.id]);
 
   const todos = [
-    { title: '오늘의 한잎 읽기',   description: '3분이면 충분해요',       Icon: Leaf,          iconBg: '#E3F9EC', iconColor: '#3A9A5C', path: `/bite/${bite?.id}` },
-    { title: '한잎 퀴즈 풀기',     description: '+5 XP 획득 가능',       Icon: Zap,           iconBg: '#FFF4D6', iconColor: '#854F0B', path: `/bite/${bite?.id}` },
-    { title: '노밍에게 질문하기',  description: '궁금한 것 바로 물어보기', Icon: MessageCircle, iconBg: '#FFF4D6', iconColor: '#FFC83D', path: '/coach' },
-    { title: '경제일기 쓰기',      description: '오늘 배운 것 기록하기',  Icon: NotebookPen,   iconBg: '#F1EFE8', iconColor: '#5F5E5A', path: '/diary' },
+    { title: '오늘의 한잎 읽기',  Icon: Leaf,          path: `/bite/${bite?.id}`, done: todoDone[0] },
+    { title: '한잎 퀴즈 풀기',    Icon: Zap,           path: `/bite/${bite?.id}`, done: todoDone[1] },
+    { title: '노밍에게 질문하기', Icon: MessageCircle, path: '/coach',            done: todoDone[2] },
+    { title: '경제일기 쓰기',     Icon: NotebookPen,   path: '/diary',            done: todoDone[3] },
   ];
 
   const nomingIntro = profile?.noming_intro
@@ -108,22 +106,25 @@ export default function HomePage() {
         {/* 날짜 헤더 */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
-          <div style={{
-            background: '#E3F9EC', border: '0.5px solid #B8EBC8',
-            borderRadius: 20, padding: '4px 12px',
-            fontSize: 11, color: '#2A7A4B',
-            display: 'flex', alignItems: 'center', gap: 5,
-          }}>
-            🍃 {currentLevel?.label} · {xp} XP
-            {user && (
-              <button
-                onClick={handleAddXp}
-                disabled={xpLoading}
-                style={{ background: 'none', border: 'none', fontSize: 9, color: '#B8EBC8', cursor: 'pointer', padding: '0 0 0 4px' }}
+
+          {/* 할일 체크 아이콘 4개 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {todos.map((todo, i) => (
+              <div
+                key={i}
+                onClick={() => navigate(todo.path)}
+                title={todo.title}
+                style={{
+                  width: 28, height: 28, borderRadius: 8,
+                  background: todo.done ? '#52C97A' : '#F2FBF5',
+                  border: `0.5px solid ${todo.done ? '#52C97A' : '#B8EBC8'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
               >
-                {xpLoading ? '…' : '+5'}
-              </button>
-            )}
+                <todo.Icon size={14} color={todo.done ? '#fff' : '#B8EBC8'} />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -220,7 +221,7 @@ export default function HomePage() {
         </div>
 
         {/* 카드 3: 노밍의 한마디 */}
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <img
               src={`${import.meta.env.BASE_URL}noming.png`}
@@ -286,36 +287,6 @@ export default function HomePage() {
             직접 질문하기...
             <span style={{ color: '#B8EBC8' }}>→</span>
           </button>
-        </div>
-
-        {/* 카드 4: 오늘 할일 */}
-        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', marginBottom: 12 }}>오늘 해야 할 것</div>
-          {todos.map((todo, i) => (
-            <div
-              key={i}
-              onClick={() => navigate(todo.path)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '8px 0', cursor: 'pointer',
-                borderBottom: i < todos.length - 1 ? '0.5px solid #f0f7f3' : 'none',
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FAFFFE'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-            >
-              <div style={{
-                width: 28, height: 28, borderRadius: 7, background: todo.iconBg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-              }}>
-                <todo.Icon size={14} color={todo.iconColor} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, fontWeight: 500, color: '#2C2C2A' }}>{todo.title}</div>
-                <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>{todo.description}</div>
-              </div>
-              <span style={{ color: '#B8EBC8', fontSize: 13 }}>→</span>
-            </div>
-          ))}
         </div>
 
       </div>
