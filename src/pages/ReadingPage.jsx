@@ -113,7 +113,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
 
       {/* 노밍 한마디 */}
       {!summarizing && article.nomingComment && (
-        <div style={{ margin: '0 22px 14px', background: '#FFF4D6', borderRadius: '10px', border: '0.5px solid #FAC775', padding: '12px 16px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+        <div style={{ margin: '0 22px 14px', background: '#FFFBEE', borderRadius: '10px', border: '0.5px solid #FAC775', padding: '12px 16px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
           <img
             src={`${BASE_URL}noming.png`}
             alt="노밍"
@@ -316,7 +316,7 @@ export default function ReadingPage() {
           {!loading && !error && articles.length > 0 && (
             <div style={{
               marginTop: '16px',
-              background: '#FFF4D6', border: '0.5px solid #FAC775',
+              background: '#FFFBEE', border: '0.5px solid #FAC775',
               borderRadius: '12px', padding: '20px 22px', textAlign: 'center',
             }}>
               <p style={{ fontSize: '14px', fontWeight: '700', color: '#B45309', marginBottom: '6px' }}>
