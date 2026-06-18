@@ -198,6 +198,16 @@ input, textarea { font-family: var(--font); outline: none; }
   .home-grid       { grid-template-columns: 1fr !important; }
 }
 
+/* ===== 코치 페이지 높이 (BottomNav 고려) ===== */
+.coach-page-wrap {
+  height: calc(100dvh - 52px);
+}
+@media (max-width: 768px) {
+  .coach-page-wrap {
+    height: calc(100dvh - 56px - 60px);
+  }
+}
+
 /* ===== 반응형 — 모바일 (≤768px) ===== */
 @media (max-width: 768px) {
   :root { --nav-height: 56px; }

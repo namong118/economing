@@ -228,19 +228,18 @@ function NomingGreeting({ BASE_URL }) {
     <div className="anim-fade" style={{
       background: '#FFFBEE',
       border: '0.5px solid #FAC775',
-      borderRadius: '12px', padding: '24px',
-      display: 'flex', gap: '16px', alignItems: 'flex-start',
+      borderRadius: '12px', padding: '14px 16px',
+      display: 'flex', gap: '12px', alignItems: 'center',
     }}>
-      <div style={{ width: 60, height: 60, borderRadius: 14, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 44, height: 44, objectFit: 'contain' }} />
+      <div style={{ width: 44, height: 44, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 32, height: 32, objectFit: 'contain' }} />
       </div>
       <div>
-        <p style={{ fontSize: '14px', fontWeight: '800', color: '#92400E', marginBottom: '6px' }}>
+        <p style={{ fontSize: '13px', fontWeight: '800', color: '#92400E', marginBottom: '3px' }}>
           노밍이에요!
         </p>
-        <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', letterSpacing: '-0.3px' }}>
-          안녕하세요. 무엇부터 시작해야 할지<br />
-          모르겠다면 제가 함께 정리해드릴게요.
+        <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.6', letterSpacing: '-0.2px' }}>
+          무엇부터 시작해야 할지 모르겠다면 제가 함께 정리해드릴게요.
         </p>
       </div>
     </div>
@@ -426,11 +425,10 @@ export default function CoachPage() {
 
   return (
     <PageWrapper>
-      <div style={{
+      <div className="coach-page-wrap" style={{
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
-        height: 'calc(100dvh - 64px)',
         overflow: 'hidden',
       }}>
         <div style={{
