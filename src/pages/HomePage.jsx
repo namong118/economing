@@ -273,16 +273,16 @@ export default function HomePage() {
           <button
             onClick={() => navigate('/coach')}
             style={{
-              width: '100%', background: '#FFF4D6', border: '0.5px solid #FAC775',
-              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#92400E',
+              width: '100%', background: '#fff', border: '0.5px solid #E2E8F0',
+              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#888780',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#FFE8A0'}
-            onMouseLeave={e => e.currentTarget.style.background = '#FFF4D6'}
+            onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
+            onMouseLeave={e => e.currentTarget.style.background = '#fff'}
           >
             직접 질문하기...
-            <span style={{ color: '#FFC83D' }}>→</span>
+            <span style={{ color: '#B8EBC8' }}>→</span>
           </button>
         </div>
 
