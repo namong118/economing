@@ -130,7 +130,7 @@ export default function HomePage() {
         {/* 카드 1: 오늘의 한잎 미리보기 */}
         <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <span style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C' }}>🍃 오늘의 경제 한잎</span>
+            <span style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C' }}>오늘의 경제 한잎</span>
             <div style={{ display: 'flex', gap: 5 }}>
               <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: '#E3F9EC', color: '#2A7A4B', border: '0.5px solid #B8EBC8' }}>
                 {bite?.category}
@@ -169,7 +169,7 @@ export default function HomePage() {
 
         {/* 카드 2: 오늘의 추천 뉴스 */}
         <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', marginBottom: 10 }}>📰 오늘의 추천 뉴스</div>
+          <div style={{ fontSize: 11, fontWeight: 500, color: '#3A9A5C', marginBottom: 10 }}>오늘의 추천 뉴스</div>
 
           {newsLoading ? (
             <div style={{ height: 60, background: '#E3F9EC', borderRadius: 8, opacity: 0.5 }} />
