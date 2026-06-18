@@ -10,6 +10,8 @@ import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import { getBiteQuiz } from '../data/biteQuizzes';
 import PageWrapper from '../components/layout/PageWrapper';
 import SaveTermButton from '../components/common/SaveTermButton';
+import { useAuth } from '../context/AuthContext';
+import { addXp } from '../services/profileService';
 
 const CATEGORY_STYLE = {
   '금리':     { badge: '#FEF3C7', badgeText: '#92400E', Icon: TrendingUp },
@@ -75,6 +77,7 @@ function ConceptPlaceholder({ bite }) {
 export default function EconomicBitePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const bite = getBiteById(Number(id));
   const InfographicComponent = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
   const quizData = bite ? getBiteQuiz(bite.id) : null;
@@ -119,6 +122,7 @@ export default function EconomicBitePage() {
     if (idx === quizData.quiz.answer) {
       setShowXP(true);
       setTimeout(() => setShowXP(false), 1900);
+      if (user?.id) addXp(user.id, 10);
     }
   }
 

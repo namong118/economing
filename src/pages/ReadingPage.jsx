@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookMarked } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
-import { fetchAndSummarizeNews } from '../services/readingService';
+import { fetchAndSummarizeNews, markAsRead } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
 
 const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산', '미국경제', '글로벌경제'];
@@ -57,7 +57,7 @@ function NewsCardSkeleton() {
 }
 
 /* ── 뉴스 카드 ────────────────────────────────────────────── */
-function NewsCard({ article, isSaved, onSaveKeywords }) {
+function NewsCard({ article, isSaved, onSaveKeywords, isRead, onMarkRead }) {
   const BASE_URL    = import.meta.env.BASE_URL;
   const summarizing = article._summarizing;
 
@@ -151,7 +151,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
       )}
 
       {/* 하단 버튼 */}
-      <div style={{ display: 'flex', gap: '8px', padding: '0 22px 20px' }}>
+      <div style={{ display: 'flex', gap: '8px', padding: '0 22px 20px', flexWrap: 'wrap' }}>
         <a
           href={article.originallink || article.link}
           target="_blank"
@@ -166,6 +166,24 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
         >
           원문 보기 →
         </a>
+        {!summarizing && (
+          <button
+            onClick={onMarkRead}
+            disabled={isRead}
+            style={{
+              flex: 1, padding: '10px 12px', borderRadius: '10px',
+              fontSize: '12px', fontWeight: '700',
+              background: isRead ? '#F2FBF5' : '#52C97A',
+              border: isRead ? '0.5px solid #B8EBC8' : 'none',
+              color: isRead ? '#888780' : '#fff',
+              cursor: isRead ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'all 0.2s',
+            }}
+          >
+            {isRead ? '✓ +5 XP 적립됨' : '읽기 완료 +5 XP'}
+          </button>
+        )}
         {!summarizing && article.keywords?.length > 0 && (
           <button
             onClick={onSaveKeywords}
@@ -173,9 +191,9 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
             style={{
               flex: 1, padding: '10px 12px', borderRadius: '10px',
               fontSize: '12px', fontWeight: '700',
-              background: isSaved ? '#F2FBF5' : '#52C97A',
-              border: isSaved ? '0.5px solid #B8EBC8' : 'none',
-              color: isSaved ? '#888780' : '#fff',
+              background: isSaved ? '#F2FBF5' : '#E3F9EC',
+              border: isSaved ? '0.5px solid #B8EBC8' : '0.5px solid #B8EBC8',
+              color: isSaved ? '#888780' : '#2A7A4B',
               cursor: isSaved ? 'default' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.2s',
@@ -197,6 +215,7 @@ export default function ReadingPage() {
   const [loading,  setLoading]  = useState(true);
   const [category, setCategory] = useState('경제');
   const [savedMap, setSavedMap] = useState({});
+  const [readMap,  setReadMap]  = useState({});
   const [error,    setError]    = useState(null);
   const abortRef = useRef(false);
 
@@ -238,6 +257,13 @@ export default function ReadingPage() {
     if (!user) { navigate('/login'); return; }
     await saveKeywordsFromNews(article.keywords, user.id, article.title);
     setSavedMap(prev => ({ ...prev, [idx]: true }));
+  }
+
+  async function handleMarkRead(idx) {
+    if (!user) { navigate('/login'); return; }
+    if (readMap[idx]) return;
+    setReadMap(prev => ({ ...prev, [idx]: true }));
+    await markAsRead(user.id);
   }
 
   return (
@@ -309,6 +335,8 @@ export default function ReadingPage() {
               article={article}
               isSaved={!!savedMap[i]}
               onSaveKeywords={() => handleSaveKeywords(article, i)}
+              isRead={!!readMap[i]}
+              onMarkRead={() => handleMarkRead(i)}
             />
           ))}
 
