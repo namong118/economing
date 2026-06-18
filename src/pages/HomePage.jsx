@@ -10,6 +10,8 @@ import { useUserLevel } from '../hooks/useUserLevel';
 import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import PageWrapper from '../components/layout/PageWrapper';
 
+const _questionsCache = {};
+
 export default function HomePage() {
   const navigate             = useNavigate();
   const { user, profile }    = useAuth();
@@ -45,17 +47,32 @@ export default function HomePage() {
     `${bite?.title}이 내 생활에 미치는 영향은?`,
     `${bite?.title} 쉽게 설명해줘`,
   ];
-  const [recommendedQuestions, setRecommendedQuestions] = useState(null);
-  const [questionsLoading,     setQuestionsLoading]     = useState(true);
+  const qCacheKey = bite?.title ? `${bite.title}__${userLevel}` : null;
+  const [recommendedQuestions, setRecommendedQuestions] = useState(
+    () => (qCacheKey ? _questionsCache[qCacheKey] ?? null : null)
+  );
+  const [questionsLoading, setQuestionsLoading] = useState(!qCacheKey || !_questionsCache[qCacheKey]);
 
   useEffect(() => {
-    if (!bite?.title) return;
+    if (!qCacheKey) return;
+    if (_questionsCache[qCacheKey]) {
+      setRecommendedQuestions(_questionsCache[qCacheKey]);
+      setQuestionsLoading(false);
+      return;
+    }
     setQuestionsLoading(true);
     getRecommendedQuestions(bite.title, userLevel)
-      .then(qs => setRecommendedQuestions(qs?.length ? qs : fallbackQuestions))
-      .catch(() => setRecommendedQuestions(fallbackQuestions))
+      .then(qs => {
+        const result = qs?.length ? qs : fallbackQuestions;
+        _questionsCache[qCacheKey] = result;
+        setRecommendedQuestions(result);
+      })
+      .catch(() => {
+        _questionsCache[qCacheKey] = fallbackQuestions;
+        setRecommendedQuestions(fallbackQuestions);
+      })
       .finally(() => setQuestionsLoading(false));
-  }, [bite?.title]); // eslint-disable-line
+  }, [qCacheKey]); // eslint-disable-line
 
   /* 할일 완료 여부 */
   const [todoDone, setTodoDone] = useState([false, false, false, false]);

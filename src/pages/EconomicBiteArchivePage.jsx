@@ -1,6 +1,6 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookMarked } from 'lucide-react';
+import { Leaf } from 'lucide-react';
 import economicBites from '../data/economicBites';
 import { getTodaysBite } from '../services/biteService';
 import { useUserLevel } from '../hooks/useUserLevel';
@@ -20,6 +20,14 @@ const CATEGORY_COLOR = {
 const DIFFICULTY_LABEL = { easy: '쉬움', medium: '보통', hard: '심화' };
 const DIFFICULTY_COLOR = { easy: '#059669', medium: '#B45309', hard: '#7C3AED' };
 
+const LEVEL_DIFFICULTY_MAP = {
+  beginner:     ['easy'],
+  elementary:   ['easy', 'medium'],
+  intermediate: ['medium'],
+  advanced:     ['medium', 'hard'],
+  expert:       ['hard'],
+};
+
 function BiteCard({ bite, isToday, isRecommended, navigate }) {
   const [hov, setHov] = useState(false);
   const cat = CATEGORY_COLOR[bite.category] ?? { badge: '#F1F5F9', badgeText: '#374151' };
@@ -30,37 +38,36 @@ function BiteCard({ bite, isToday, isRecommended, navigate }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        background: isToday ? 'linear-gradient(145deg, #F0FDF4, #DCFCE7)' : '#fff',
-        border: `1.5px solid ${isToday ? '#6EE7B7' : (hov ? '#A7F3D0' : '#E8FAF3')}`,
-        borderRadius: '18px', padding: '18px',
+        background: isToday ? '#F2FBF5' : '#fff',
+        border: `0.5px solid ${hov ? '#52C97A' : (isToday ? '#52C97A' : '#B8EBC8')}`,
+        borderRadius: 12,
+        padding: '16px 18px',
         cursor: 'pointer',
-        transition: 'all 0.15s',
-        transform: hov ? 'translateY(-2px)' : 'none',
-        boxShadow: hov ? '0 6px 20px rgba(33,197,142,0.12)' : 'none',
+        transition: 'border-color 0.15s',
         position: 'relative',
       }}
     >
       {isToday && (
         <div style={{
-          position: 'absolute', top: '12px', right: '14px',
+          position: 'absolute', top: 12, right: 14,
           background: '#52C97A', color: '#fff',
-          fontSize: '10px', fontWeight: '800', letterSpacing: '0.3px',
-          padding: '3px 8px', borderRadius: '100px',
+          fontSize: 10, fontWeight: 700,
+          padding: '2px 8px', borderRadius: 100,
         }}>
           오늘
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
         <span style={{
-          fontSize: '11px', fontWeight: '700',
+          fontSize: 11, fontWeight: 700,
           background: cat.badge, color: cat.badgeText,
-          borderRadius: '100px', padding: '2px 9px',
+          borderRadius: 100, padding: '2px 9px',
         }}>
           {bite.category}
         </span>
         <span style={{
-          fontSize: '11px', fontWeight: '600',
+          fontSize: 11, fontWeight: 600,
           color: DIFFICULTY_COLOR[bite.difficulty] ?? '#94A3B8',
         }}>
           {DIFFICULTY_LABEL[bite.difficulty]}
@@ -77,20 +84,15 @@ function BiteCard({ bite, isToday, isRecommended, navigate }) {
       </div>
 
       <div style={{
-        fontSize: '17px', fontWeight: '900', color: '#0F172A',
-        letterSpacing: '-0.6px', marginBottom: '7px',
-        display: 'flex', alignItems: 'center', gap: '8px',
+        fontSize: 15, fontWeight: 700, color: '#0F172A',
+        letterSpacing: '-0.4px', marginBottom: 6,
       }}>
-        <span style={{
-          width: '6px', height: '6px', borderRadius: '50%',
-          background: '#52C97A', display: 'inline-block', flexShrink: 0,
-        }}/>
         {bite.title}
       </div>
 
       <p style={{
-        fontSize: '13px', color: '#64748B', lineHeight: '1.6',
-        letterSpacing: '-0.15px', fontWeight: '500',
+        fontSize: 13, color: '#64748B', lineHeight: 1.6,
+        fontWeight: 400,
         display: '-webkit-box', WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical', overflow: 'hidden',
       }}>
@@ -99,14 +101,6 @@ function BiteCard({ bite, isToday, isRecommended, navigate }) {
     </div>
   );
 }
-
-const LEVEL_DIFFICULTY_MAP = {
-  beginner:     ['easy'],
-  elementary:   ['easy', 'medium'],
-  intermediate: ['medium'],
-  advanced:     ['medium', 'hard'],
-  expert:       ['hard'],
-};
 
 export default function EconomicBiteArchivePage() {
   const navigate = useNavigate();
@@ -121,65 +115,58 @@ export default function EconomicBiteArchivePage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '28px 0 72px' }}>
-        <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
-
+      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '20px 0 80px' }}>
+        <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 20px' }}>
 
           {/* ── 오늘의 한잎 배너 ── */}
           <div
             onClick={() => navigate(`/bite/${todaysBite.id}`)}
             style={{
-              background: 'linear-gradient(135deg, #52C97A, #16A374)',
-              borderRadius: '20px', padding: '18px 22px',
-              marginBottom: '24px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              boxShadow: '0 6px 24px rgba(33,197,142,0.25)',
-              transition: 'all 0.15s',
+              background: '#E3F9EC',
+              border: '0.5px solid #52C97A',
+              borderRadius: 12,
+              padding: '16px 18px',
+              marginBottom: 20,
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+              transition: 'background 0.15s',
             }}
+            onMouseEnter={e => e.currentTarget.style.background = '#D0F5E2'}
+            onMouseLeave={e => e.currentTarget.style.background = '#E3F9EC'}
           >
-            <div>
-              <div style={{
-                fontSize: '11px', fontWeight: '800', color: 'rgba(255,255,255,0.8)',
-                letterSpacing: '0.5px', marginBottom: '5px',
-              }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#3A9A5C', marginBottom: 4 }}>
                 오늘의 경제 한잎
               </div>
-              <div style={{
-                fontSize: '20px', fontWeight: '900', color: '#fff', letterSpacing: '-0.7px',
-              }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#2A7A4B', letterSpacing: '-0.4px', marginBottom: 2 }}>
                 {todaysBite.title}
               </div>
-              <div style={{
-                fontSize: '13px', color: 'rgba(255,255,255,0.8)', marginTop: '4px', fontWeight: '500',
-              }}>
+              <div style={{ fontSize: 12, color: '#52C97A', fontWeight: 400 }}>
                 {todaysBite.summary.length > 40 ? todaysBite.summary.slice(0, 40) + '...' : todaysBite.summary}
               </div>
             </div>
             <div style={{
-              width: '44px', height: '44px', background: 'rgba(255,255,255,0.2)',
-              borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 36, height: 36, background: '#fff',
+              borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
-              <BookMarked size={22} color="#fff" />
+              <Leaf size={18} color="#52C97A" />
             </div>
           </div>
 
           {/* ── 카테고리 필터 ── */}
-          <div style={{
-            display: 'flex', gap: '7px', flexWrap: 'wrap',
-            marginBottom: '20px',
-          }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 style={{
-                  padding: '8px 16px', borderRadius: '100px',
+                  padding: '6px 14px', borderRadius: 100,
                   background: selectedCategory === cat ? '#52C97A' : '#fff',
                   color: selectedCategory === cat ? '#fff' : '#64748B',
-                  border: `1.5px solid ${selectedCategory === cat ? '#52C97A' : '#E2E8F0'}`,
-                  fontSize: '13px', fontWeight: '700', cursor: 'pointer',
-                  letterSpacing: '-0.2px', transition: 'all 0.15s',
+                  border: `0.5px solid ${selectedCategory === cat ? '#52C97A' : '#B8EBC8'}`,
+                  fontSize: 12, fontWeight: selectedCategory === cat ? 700 : 500,
+                  cursor: 'pointer', transition: 'all 0.15s',
                 }}
               >
                 {cat} {cat !== '전체' && `(${economicBites.filter(b => b.category === cat).length})`}
@@ -188,15 +175,12 @@ export default function EconomicBiteArchivePage() {
           </div>
 
           {/* ── 개수 ── */}
-          <p style={{
-            fontSize: '12px', color: '#94A3B8', fontWeight: '600',
-            marginBottom: '14px', letterSpacing: '-0.1px',
-          }}>
+          <p style={{ fontSize: 11, color: '#94A3B8', fontWeight: 500, marginBottom: 12 }}>
             {filtered.length}개의 경제 한잎
           </p>
 
-          {/* ── 카드 그리드 ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* ── 카드 목록 ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filtered.map(bite => (
               <BiteCard
                 key={bite.id}

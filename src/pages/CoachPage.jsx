@@ -278,6 +278,9 @@ function LoadingBubble({ BASE_URL }) {
   );
 }
 
+/* 탭 전환 시 재마운트돼도 질문이 유지되도록 모듈 레벨에 캐시 */
+const _questionsCache = {};
+
 /* ── 메인 ─────────────────────────────────────────────────── */
 export default function CoachPage() {
   const location    = useLocation();
@@ -297,25 +300,36 @@ export default function CoachPage() {
   const { userLevel } = useUserLevel();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
-  const [suggestedQuestions, setSuggestedQuestions] = useState(() => getPersonalizedQuestions(profile));
+  const cacheKey = user?.id ?? 'guest';
+  const [suggestedQuestions, setSuggestedQuestions] = useState(() => _questionsCache[cacheKey] ?? null);
 
-  /* 최근 대화 기반 맞춤 질문 생성 */
+  /* 질문 한 번만 결정 — 캐시 있으면 즉시 반환, 없으면 fetch 후 캐시 저장 */
   useEffect(() => {
-    if (!user?.id) return;
-    getRecentConversations(user.id, 5).then(({ data }) => {
-      if (!data?.length) return;
-      const recentList = data.map(c => `- ${c.question}`).join('\n');
-      callSolar({
-        system: `당신은 경제 학습 코치입니다. 사용자가 최근에 한 질문들을 보고, 자연스럽게 이어지거나 더 깊이 파고들 수 있는 경제 공부 질문 5개를 추천하세요. 이미 물어본 것과 너무 비슷한 질문은 피하고, 다음 단계로 나아갈 수 있는 질문을 제안하세요.\n반드시 JSON 배열로만 응답하세요: ["질문1", "질문2", "질문3", "질문4", "질문5"]`,
-        messages: [{ role: 'user', content: `최근 질문 목록:\n${recentList}` }],
-      }).then(content => {
-        const match = content.match(/\[[\s\S]*?\]/);
-        if (!match) return;
-        const parsed = JSON.parse(match[0]);
-        if (Array.isArray(parsed) && parsed.length >= 3) setSuggestedQuestions(parsed.slice(0, 5));
-      }).catch(() => {});
-    });
-  }, [user?.id]); // eslint-disable-line
+    if (_questionsCache[cacheKey]) { setSuggestedQuestions(_questionsCache[cacheKey]); return; }
+    const set = (qs) => { _questionsCache[cacheKey] = qs; setSuggestedQuestions(qs); };
+    const fallback = getPersonalizedQuestions(profile);
+    if (!user?.id) { set(fallback); return; }
+    getRecentConversations(user.id, 5)
+      .then(({ data }) => {
+        if (!data?.length) { set(fallback); return; }
+        const recentList = data.map(c => `- ${c.question}`).join('\n');
+        callSolar({
+          system: `당신은 경제 학습 코치입니다. 사용자가 최근에 한 질문들을 보고, 자연스럽게 이어지거나 더 깊이 파고들 수 있는 경제 공부 질문 5개를 추천하세요. 이미 물어본 것과 너무 비슷한 질문은 피하고, 다음 단계로 나아갈 수 있는 질문을 제안하세요.\n반드시 JSON 배열로만 응답하세요: ["질문1", "질문2", "질문3", "질문4", "질문5"]`,
+          messages: [{ role: 'user', content: `최근 질문 목록:\n${recentList}` }],
+        })
+          .then(content => {
+            try {
+              const match = content.match(/\[[\s\S]*?\]/);
+              const parsed = match ? JSON.parse(match[0]) : null;
+              set(Array.isArray(parsed) && parsed.length >= 3 ? parsed.slice(0, 5) : fallback);
+            } catch {
+              set(fallback);
+            }
+          })
+          .catch(() => set(fallback));
+      })
+      .catch(() => set(fallback));
+  }, [cacheKey]); // eslint-disable-line
 
   /* 다른 페이지에서 질문 전달 시 자동 전송 */
   useEffect(() => {
@@ -475,34 +489,45 @@ export default function CoachPage() {
                     이런 고민이 있다면 물어보세요
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {suggestedQuestions.map(q => (
-                      <button
-                        key={q}
-                        onClick={() => send(q)}
-                        style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          padding: '12px 16px', borderRadius: '8px',
-                          background: '#fff', border: '0.5px solid #B8EBC8',
-                          cursor: 'pointer', textAlign: 'left',
-                          fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
-                          lineHeight: '1.4', transition: 'all 0.15s',
-                          fontFamily: 'inherit',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.borderColor = '#52C97A';
-                          e.currentTarget.style.background  = '#F2FBF5';
-                          e.currentTarget.style.color       = '#2A7A4B';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.borderColor = '#B8EBC8';
-                          e.currentTarget.style.background  = '#fff';
-                          e.currentTarget.style.color       = '#5F5E5A';
-                        }}
-                      >
-                        <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
-                        <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
-                      </button>
-                    ))}
+                    {suggestedQuestions === null ? (
+                      [0, 1, 2, 3, 4].map(i => (
+                        <div key={i} style={{
+                          height: 44, borderRadius: 8,
+                          background: 'linear-gradient(90deg, #E3F9EC 25%, #F2FBF5 50%, #E3F9EC 75%)',
+                          backgroundSize: '200% 100%',
+                          animation: 'shimmer 1.4s infinite',
+                        }} />
+                      ))
+                    ) : (
+                      suggestedQuestions.map(q => (
+                        <button
+                          key={q}
+                          onClick={() => send(q)}
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            padding: '12px 16px', borderRadius: '8px',
+                            background: '#fff', border: '0.5px solid #B8EBC8',
+                            cursor: 'pointer', textAlign: 'left',
+                            fontSize: '13px', color: '#5F5E5A', fontWeight: '500',
+                            lineHeight: '1.4', transition: 'all 0.15s',
+                            fontFamily: 'inherit',
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.borderColor = '#52C97A';
+                            e.currentTarget.style.background  = '#F2FBF5';
+                            e.currentTarget.style.color       = '#2A7A4B';
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.borderColor = '#B8EBC8';
+                            e.currentTarget.style.background  = '#fff';
+                            e.currentTarget.style.color       = '#5F5E5A';
+                          }}
+                        >
+                          <span style={{ flex: 1, paddingRight: '10px' }}>{q}</span>
+                          <span style={{ fontSize: '15px', color: '#CBD5E1', flexShrink: 0 }}>›</span>
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -777,6 +802,10 @@ export default function CoachPage() {
       )}
 
       <style>{`
+        @keyframes shimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
         @keyframes nomingBounce {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
           30% { transform: translateY(-6px); opacity: 1; }

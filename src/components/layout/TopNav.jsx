@@ -1,5 +1,6 @@
 ﻿import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { TrendingUp, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const navLinks = [
@@ -31,12 +32,12 @@ function ProfileDropdown({ user, profile, onClose, navigate, signOut }) {
       </div>
       {/* 메뉴 아이템 */}
       <DropItem
-        icon="🌱"
+        Icon={TrendingUp}
         label="내 성장"
         onClick={() => { navigate('/my-growth'); onClose(); }}
       />
       <DropItem
-        icon="🚪"
+        Icon={LogOut}
         label="로그아웃"
         danger
         onClick={async () => { await signOut(); navigate('/home'); onClose(); }}
@@ -45,7 +46,7 @@ function ProfileDropdown({ user, profile, onClose, navigate, signOut }) {
   );
 }
 
-function DropItem({ icon, label, onClick, danger }) {
+function DropItem({ Icon, label, onClick, danger }) {
   const [hov, setHov] = useState(false);
   return (
     <button
@@ -62,7 +63,7 @@ function DropItem({ icon, label, onClick, danger }) {
         textAlign: 'left', transition: 'background 0.1s',
       }}
     >
-      <span style={{ fontSize: '16px' }}>{icon}</span>
+      <Icon size={16} color={danger ? '#DC2626' : '#374151'} />
       {label}
     </button>
   );

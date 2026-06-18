@@ -101,7 +101,12 @@ export default function SignupPage() {
           <img
             src={`${BASE_URL}appicon.jpg`}
             alt="ECONOMING"
-            style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 16px', display: 'block' }}
+            style={{ width: '96px', height: '96px', borderRadius: '24px', objectFit: 'cover', margin: '0 auto 2px', display: 'block' }}
+          />
+          <img
+            src={`${BASE_URL}logo.png`}
+            alt="ECONOMING"
+            style={{ height: '64px', objectFit: 'contain', display: 'block', margin: '0 auto 8px' }}
           />
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.7px', marginBottom: '10px' }}>
             환영해요! 🌱
@@ -163,15 +168,17 @@ export default function SignupPage() {
       <div style={{ width: '100%', maxWidth: '400px' }}>
 
         {/* ── 브랜드 헤더 ────────────────────────────────── */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
           <img
             src={`${BASE_URL}appicon.jpg`}
             alt="ECONOMING"
-            style={{ width: '72px', height: '72px', borderRadius: '20px', objectFit: 'cover', margin: '0 auto 14px', display: 'block' }}
+            style={{ width: '96px', height: '96px', borderRadius: '24px', objectFit: 'cover', margin: '0 auto 2px', display: 'block' }}
           />
-          <p style={{ fontSize: '13px', color: '#64748B', margin: 0, fontWeight: '500' }}>
-            경제 초보자를 위한 AI 성장 코치
-          </p>
+          <img
+            src={`${BASE_URL}logo.png`}
+            alt="ECONOMING"
+            style={{ height: '64px', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+          />
         </div>
 
         {/* ── 메인 카드 ────────────────────────────────── */}
