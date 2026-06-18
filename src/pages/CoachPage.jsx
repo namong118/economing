@@ -430,7 +430,7 @@ export default function CoachPage() {
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
-        height: 'calc(100vh - 64px)',
+        height: 'calc(100dvh - 64px)',
         overflow: 'hidden',
       }}>
         <div style={{
@@ -596,7 +596,7 @@ export default function CoachPage() {
           </div>
 
           {/* 입력 영역 */}
-          <div style={{ flexShrink: 0, padding: '10px 0 14px' }}>
+          <div style={{ flexShrink: 0, padding: '10px 0 14px', paddingBottom: 'max(14px, env(safe-area-inset-bottom))' }}>
             <div className="container" style={{ maxWidth: '720px' }}>
 
               {/* 빠른 주제 칩 */}
