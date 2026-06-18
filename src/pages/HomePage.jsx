@@ -200,7 +200,7 @@ export default function HomePage() {
                     alt="노밍"
                     style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }}
                   />
-                  {todayNews.nomingComment}
+                  {todayNews.nomingComment.replace(/^노밍[이의]?\s*한마디\s*[-—–]\s*/u, '')}
                 </div>
               )}
               <div style={{ display: 'flex', gap: 8 }}>
