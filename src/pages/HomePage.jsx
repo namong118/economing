@@ -105,7 +105,7 @@ export default function HomePage() {
 
         {/* 날짜 헤더 */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <span style={{ fontSize: 13, color: '#888780' }}>{today} ☀️</span>
+          <span style={{ fontSize: 13, color: '#888780' }}>{today}</span>
 
           {/* 할일 pill */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
