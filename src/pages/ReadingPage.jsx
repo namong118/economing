@@ -121,7 +121,7 @@ function NewsCard({ article, isSaved, onSaveKeywords }) {
           />
           <div>
             <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px' }}>노밍 한마디</p>
-            <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.65' }}>{article.nomingComment}</p>
+            <p style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.65' }}>{article.nomingComment.replace(/^노밍[이의]?\s*한마디\s*[-—–]\s*/u, '')}</p>
           </div>
         </div>
       )}
