@@ -1,9 +1,8 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Map, Search, Leaf, MessageCircle, Newspaper } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
-import { roadmap } from '../data/roadmapData';
 import { useDictionaryCtx } from '../context/DictionaryContext';
 import { DiaryContent } from './DiaryPage';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -230,21 +229,6 @@ function SummaryTab() {
         </div>
       )}
 
-      {/* ── 4. 노밍 분석 ── */}
-      {isOnboarded && (
-        <div style={{ background: '#FFF4D6', border: '0.5px solid #FAC775', borderRadius: '12px', padding: '18px 20px', display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '24px' }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 34, height: 34, objectFit: 'contain' }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '4px', letterSpacing: '0.3px' }}>노밍의 한 줄 분석</p>
-            <p style={{ fontSize: '14px', color: '#78350F', lineHeight: '1.7', fontWeight: '500' }}>{generateAnalysis(profile)}</p>
-            <button onClick={() => navigate('/coach')} style={{ marginTop: '10px', padding: '7px 14px', borderRadius: '100px', background: '#52C97A', color: '#fff', border: 'none', fontSize: '12px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 2px 8px rgba(33,197,142,0.3)' }}>
-              노밍에게 더 물어보기 →
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ── 개발자 정보 / 로그아웃 ── */}
       <DevInfo user={user} profile={profile} provider={provider} />
@@ -409,261 +393,12 @@ function DictionaryTabContent() {
   );
 }
 
-/* ── 로드맵 탭 ────────────────────────────────────────────── */
-function RoadmapTabContent() {
-  const navigate    = useNavigate();
-  const { profile } = useAuth();
-  const [expanded, setExpanded] = useState(null);
-
-  const aiRoadmap   = profile?.roadmap;
-  const econLevel   = profile?.economic_level;
-  const recommendedStep = (econLevel === 'expert' || econLevel === 'advanced') ? 4 : econLevel === 'intermediate' ? 3 : econLevel === 'elementary' ? 2 : 1;
-
-  /* ── AI 맞춤 로드맵 ── */
-  if (aiRoadmap) {
-    const STEP_COLORS = ['#52C97A', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
-    return (
-      <div>
-        <div style={{
-          background: '#FFF4D6', border: '0.5px solid #FAC775',
-          borderRadius: '14px', padding: '14px 16px', marginBottom: '20px',
-          display: 'flex', alignItems: 'flex-start', gap: '10px',
-        }}>
-          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-            <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-          </div>
-          <div>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#B45309', marginBottom: '3px' }}>노밍이 만든 맞춤 로드맵</p>
-            <p style={{ fontSize: '13px', fontWeight: '600', color: '#78350F', lineHeight: '1.5' }}>{aiRoadmap.currentStage}</p>
-            {aiRoadmap.goal && (
-              <p style={{ fontSize: '12px', color: '#92400E', marginTop: '4px' }}>목표: {aiRoadmap.goal}</p>
-            )}
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {(aiRoadmap.steps ?? []).map((step, idx) => {
-            const isExpanded = expanded === step.order;
-            const isLast     = idx === (aiRoadmap.steps.length - 1);
-            const color      = STEP_COLORS[idx % STEP_COLORS.length];
-            return (
-              <div key={step.order} style={{ display: 'flex', gap: '12px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '32px', flexShrink: 0, paddingTop: '14px' }}>
-                  <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
-                    background: color, border: `2px solid ${color}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '13px', fontWeight: '800', color: '#fff',
-                    boxShadow: `0 0 0 4px ${color}22`,
-                  }}>
-                    {step.order}
-                  </div>
-                  {!isLast && <div style={{ width: '2px', flex: 1, minHeight: '20px', background: '#E2E8F0', margin: '6px 0' }} />}
-                </div>
-
-                <div
-                  style={{
-                    flex: 1, marginBottom: isLast ? '0' : '8px',
-                    background: '#fff', border: `0.5px solid ${color}40`,
-                    borderRadius: '12px', padding: '14px 16px',
-                    cursor: 'pointer', transition: 'border-color 0.15s',
-                  }}
-                  onClick={() => setExpanded(isExpanded ? null : step.order)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' }}>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: '14px', fontWeight: '800', color: '#2A7A4B', letterSpacing: '-0.3px', marginBottom: '2px' }}>
-                        Step {step.order}. {step.title}
-                      </p>
-                      {step.estimatedDays && (
-                        <p style={{ fontSize: '11px', color: '#888780', fontWeight: '500' }}>예상 기간: {step.estimatedDays}일</p>
-                      )}
-                    </div>
-                    <span style={{ fontSize: '12px', color: '#CBD5E1', flexShrink: 0, marginTop: '2px' }}>
-                      {isExpanded ? '▲' : '▼'}
-                    </span>
-                  </div>
-
-                  {isExpanded && (
-                    <div style={{ marginTop: '12px' }}>
-                      <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75', marginBottom: '12px' }}>
-                        {step.description}
-                      </p>
-                      {step.topics?.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
-                          {step.topics.map(topic => (
-                            <span key={topic} style={{
-                              fontSize: '12px', fontWeight: '600',
-                              color, background: color + '12',
-                              border: `1px solid ${color}28`,
-                              borderRadius: '100px', padding: '3px 10px',
-                            }}>
-                              {topic}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <button
-                        onClick={e => { e.stopPropagation(); navigate('/coach', { state: { question: `${step.title}에 대해 더 자세히 알려줘` } }); }}
-                        style={{
-                          width: '100%', textAlign: 'left', padding: '9px 12px',
-                          background: '#F2FBF5', border: '0.5px solid #B8EBC8',
-                          borderRadius: '10px', fontSize: '12px', color: '#5F5E5A',
-                          cursor: 'pointer', fontFamily: 'inherit',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = '#52C97A'}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = '#B8EBC8'}
-                      >
-                        💬 {step.title}에 대해 노밍에게 물어보기 →
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  /* ── 기본 정적 로드맵 (AI 로드맵 미생성 시) ── */
-  return (
-    <div>
-
-      {/* 노밍 추천 배너 */}
-      {econLevel && (
-        <div style={{
-          background: '#FFF4D6',
-          border: '0.5px solid #FAC775', borderRadius: '14px',
-          padding: '12px 16px', marginBottom: '20px',
-          display: 'flex', alignItems: 'center', gap: '10px',
-        }}>
-          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-          </div>
-          <p style={{ fontSize: '13px', fontWeight: '700', color: '#78350F', lineHeight: '1.6' }}>
-            노밍 추천 — Step {recommendedStep}부터 시작해봐요!
-          </p>
-        </div>
-      )}
-
-      {/* 타임라인 */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {roadmap.map((step, idx) => {
-          const isExpanded    = expanded === step.step;
-          const isRecommended = step.step === recommendedStep;
-          const isLast        = idx === roadmap.length - 1;
-
-          return (
-            <div key={step.step} style={{ display: 'flex', gap: '12px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '32px', flexShrink: 0, paddingTop: '14px' }}>
-                <div style={{
-                  width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
-                  background: isRecommended ? step.color : '#F1F5F9',
-                  border: `2px solid ${isRecommended ? step.color : '#E2E8F0'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '16px',
-                  boxShadow: isRecommended ? `0 0 0 4px ${step.color}22` : 'none',
-                }}>
-                  {step.emoji}
-                </div>
-                {!isLast && (
-                  <div style={{ width: '2px', flex: 1, minHeight: '20px', background: '#E2E8F0', margin: '6px 0' }} />
-                )}
-              </div>
-
-              <div
-                style={{
-                  flex: 1, marginBottom: isLast ? '0' : '8px',
-                  background: '#fff',
-                  border: `0.5px solid ${isRecommended ? step.color + '50' : '#B8EBC8'}`,
-                  borderRadius: '12px', padding: '14px 16px',
-                  cursor: 'pointer', transition: 'border-color 0.15s',
-                }}
-                onClick={() => setExpanded(isExpanded ? null : step.step)}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' }}>
-                  <div style={{ flex: 1 }}>
-                    {isRecommended && (
-                      <span style={{
-                        fontSize: '10px', fontWeight: '700',
-                        color: step.color, background: step.color + '18',
-                        borderRadius: '100px', padding: '2px 9px',
-                        marginBottom: '5px', display: 'inline-block',
-                      }}>
-                        ✨ 추천 시작점
-                      </span>
-                    )}
-                    <p style={{ fontSize: '14px', fontWeight: '800', color: '#2A7A4B', letterSpacing: '-0.3px', marginBottom: '2px' }}>
-                      Step {step.step}. {step.title}
-                    </p>
-                    <p style={{ fontSize: '11px', color: '#888780', fontWeight: '500' }}>{step.duration}</p>
-                  </div>
-                  <span style={{ fontSize: '12px', color: '#CBD5E1', flexShrink: 0, marginTop: '2px' }}>
-                    {isExpanded ? '▲' : '▼'}
-                  </span>
-                </div>
-
-                {isExpanded && (
-                  <div style={{ marginTop: '12px' }}>
-                    <p style={{ fontSize: '13px', color: '#5F5E5A', lineHeight: '1.75', marginBottom: '12px' }}>
-                      {step.description}
-                    </p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
-                      {step.topics.map(topic => (
-                        <span key={topic} style={{
-                          fontSize: '12px', fontWeight: '600',
-                          color: step.color,
-                          background: step.color + '12',
-                          border: `1px solid ${step.color}28`,
-                          borderRadius: '100px', padding: '3px 10px',
-                        }}>
-                          {topic}
-                        </span>
-                      ))}
-                    </div>
-                    <div style={{ background: '#F2FBF5', borderRadius: '12px', padding: '12px' }}>
-                      <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.4px', marginBottom: '8px' }}>
-                        💬 노밍에게 물어봐요
-                      </p>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {step.coachQuestions.map(q => (
-                          <button
-                            key={q}
-                            onClick={e => { e.stopPropagation(); navigate('/coach'); }}
-                            style={{
-                              textAlign: 'left', padding: '9px 12px',
-                              background: '#fff', border: '0.5px solid #B8EBC8',
-                              borderRadius: '10px', fontSize: '12px', color: '#5F5E5A',
-                              cursor: 'pointer', fontFamily: 'inherit', lineHeight: '1.55',
-                              transition: 'border-color 0.15s',
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.borderColor = '#52C97A'}
-                            onMouseLeave={e => e.currentTarget.style.borderColor = '#B8EBC8'}
-                          >
-                            {q} →
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 /* ── 탭 카드 설정 ─────────────────────────────────────────── */
 const TAB_CARDS = [
   { key: 'summary',    label: '요약',    Icon: LayoutDashboard },
   { key: 'diary',      label: '경제일기', Icon: BookOpen },
   { key: 'dictionary', label: '경제사전', Icon: BookMarked },
-  { key: 'roadmap',    label: '로드맵',  Icon: Map },
 ];
 
 /* ── 메인 ─────────────────────────────────────────────────── */
@@ -694,7 +429,7 @@ export default function MyGrowthHubPage() {
 
           {/* 카드 그리드 */}
           <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
+            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '8px', marginBottom: '16px',
           }}>
             {TAB_CARDS.map(({ key, label, Icon }) => {
@@ -736,7 +471,6 @@ export default function MyGrowthHubPage() {
           {activeTab === 'summary'    && <SummaryTab />}
           {activeTab === 'diary'      && <DiaryContent />}
           {activeTab === 'dictionary' && <DictionaryTabContent />}
-          {activeTab === 'roadmap'    && <RoadmapTabContent />}
         </div>
 
       </div>
