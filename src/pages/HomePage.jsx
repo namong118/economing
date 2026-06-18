@@ -175,11 +175,13 @@ export default function HomePage() {
             <div style={{ height: 60, background: '#E3F9EC', borderRadius: 8, opacity: 0.5 }} />
           ) : todayNews ? (
             <>
-              <div style={{ fontSize: 11, color: '#888780', marginBottom: 6 }}>
-                {new Date(todayNews.pubDate).toLocaleDateString('ko-KR')}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#2A7A4B', lineHeight: 1.5, marginBottom: 8 }}>
-                {todayNews.title}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 11, color: '#888780', flexShrink: 0 }}>
+                  {new Date(todayNews.pubDate).toLocaleDateString('ko-KR')}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#2A7A4B', lineHeight: 1.5 }}>
+                  {todayNews.title}
+                </span>
               </div>
               {todayNews.nomingComment && (
                 <div style={{
