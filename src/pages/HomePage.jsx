@@ -225,7 +225,7 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* 카드 3: 노밍의 한마디 */}
+        {/* 카드 3: 노밍 한마디 */}
         <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <img
@@ -234,7 +234,7 @@ export default function HomePage() {
               style={{ width: 36, height: 36, objectFit: 'contain' }}
             />
             <div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: '#2A7A4B' }}>노밍의 한마디</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#2A7A4B' }}>노밍 한마디</div>
               <div style={{ fontSize: 11, color: '#888780' }}>오늘의 경제 코칭</div>
             </div>
           </div>

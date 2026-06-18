@@ -308,7 +308,7 @@ export default function EconomicBitePage() {
           </div>
         )}
 
-        {/* ── 노밍의 한마디 ── */}
+        {/* ── 노밍 한마디 ── */}
         {quizData?.nomingMessage && (
           <div style={{
             background: 'linear-gradient(145deg,#FFFBEA,#FFF7D6)',
@@ -325,7 +325,7 @@ export default function EconomicBitePage() {
               />
               <div>
                 <div style={{ fontSize: 12, fontWeight: 800, color: '#92400E', letterSpacing: '-0.1px', marginBottom: 5 }}>
-                  노밍의 한마디
+                  노밍 한마디
                 </div>
                 <p style={{ fontSize: 14, color: '#78350F', lineHeight: 1.7, letterSpacing: '-0.2px', fontWeight: 500 }}>
                   {quizData.nomingMessage}

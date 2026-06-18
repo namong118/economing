@@ -59,7 +59,7 @@ export async function summarizeNews(article) {
 {
   "summary": "3문장 이내 쉬운 요약",
   "keyPoints": ["핵심 포인트 1", "핵심 포인트 2", "핵심 포인트 3"],
-  "nomingComment": "노밍의 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지",
+  "nomingComment": "노밍 한마디 — 초보자 관점에서 이 뉴스가 왜 중요한지",
   "keywords": [{"term": "경제 용어", "explanation": "한 줄 쉬운 설명"}]
 }`
 
