@@ -4,6 +4,8 @@ import {
   Globe, ArrowUpDown, Percent, Coins, Wallet, Package,
   Factory, Ship, RefreshCw, Scale,
   AlertCircle, CheckCircle, Zap, Clock, LineChart, PieChart,
+  Eye, ArrowDown, ShoppingBasket, Bell, UserX, AlertTriangle,
+  Minus, Droplet, Truck, Calculator,
 } from 'lucide-react'
 import { BiteInfographic } from '../components/infographic/BiteInfographic'
 
@@ -779,6 +781,268 @@ export const BITE_INFOGRAPHICS = {
         { icon: TrendingUp, label: '실질 가치', sub: '보존·성장',      color: 'green' },
       ]}
       result="인플레이션이 와도 자산 가치를 지켜요"
+    />
+  ),
+
+  /* ── 지표읽기 (61~70) ────────────────────────────────── */
+  61: () => (
+    <BiteInfographic
+      title="코스피 지수 읽기"
+      steps={[
+        { icon: TrendingDown, label: '지수 하락',  sub: '2600→2500',    color: 'red'    },
+        { icon: BarChart2,    label: '시가총액',   sub: '상장기업 합산', color: 'blue'   },
+        { icon: TrendingUp,   label: '경기 반영',  sub: '실물경제 신호', color: 'green'  },
+        { icon: Eye,          label: '내 투자',    sub: '펀드/ETF 영향', color: 'yellow' },
+      ]}
+      result="코스피는 한국 경제의 체온계예요"
+    />
+  ),
+
+  62: () => (
+    <BiteInfographic
+      title="환율 차트 보기"
+      steps={[
+        { icon: DollarSign,   label: '환율 상승',  sub: '1300→1400원',   color: 'red'    },
+        { icon: ArrowDown,    label: '원화 약세',  sub: '달러 대비 하락', color: 'red'    },
+        { icon: ShoppingCart, label: '수입품 인상', sub: '해외직구 비용↑', color: 'yellow' },
+        { icon: Package,      label: '수출 유리',  sub: '기업 경쟁력↑',  color: 'green'  },
+      ]}
+      result="환율 오르면 수입은 비싸지고 수출은 유리해져요"
+    />
+  ),
+
+  63: () => (
+    <BiteInfographic
+      title="소비자물가지수(CPI)"
+      steps={[
+        { icon: ShoppingBasket, label: 'CPI 측정',  sub: '장바구니 가격',  color: 'blue'   },
+        { icon: TrendingUp,     label: '3% 상승',   sub: '작년보다 비싸짐', color: 'red'    },
+        { icon: Wallet,         label: '구매력 하락', sub: '같은 돈으로 덜', color: 'yellow' },
+        { icon: Bell,           label: '금리 인상',  sub: '한은 대응 신호', color: 'green'  },
+      ]}
+      result="CPI가 오르면 내 월급의 실질 가치가 줄어요"
+    />
+  ),
+
+  64: () => (
+    <BiteInfographic
+      title="기준금리 발표 읽기"
+      steps={[
+        { icon: Building2,  label: '한국은행',  sub: '금통위 결정',   color: 'blue'  },
+        { icon: TrendingUp, label: '금리 인상',  sub: '0.25% 올림',   color: 'red'   },
+        { icon: CreditCard, label: '대출이자↑', sub: '변동금리 직격', color: 'red'   },
+        { icon: PiggyBank,  label: '예금이자↑', sub: '저축 유리해짐', color: 'green' },
+      ]}
+      result="기준금리는 모든 금리의 기준이 돼요"
+    />
+  ),
+
+  65: () => (
+    <BiteInfographic
+      title="무역수지 보기"
+      steps={[
+        { icon: Package,      label: '수출',    sub: '해외에 파는 것',  color: 'green'  },
+        { icon: ShoppingCart, label: '수입',    sub: '해외서 사는 것',  color: 'red'    },
+        { icon: Scale,        label: '무역수지', sub: '수출-수입',      color: 'blue'   },
+        { icon: TrendingDown, label: '적자 영향', sub: '환율·외환 압박', color: 'yellow' },
+      ]}
+      result="수출 > 수입이면 흑자, 경제에 좋은 신호예요"
+    />
+  ),
+
+  66: () => (
+    <BiteInfographic
+      title="실업률 지표 읽기"
+      steps={[
+        { icon: Users,        label: '경제활동인구', sub: '일할 의사 있는 사람', color: 'blue'   },
+        { icon: UserX,        label: '실업자',      sub: '구직 중이나 미취업',  color: 'red'    },
+        { icon: TrendingUp,   label: '실업률 상승',  sub: '경기 침체 신호',     color: 'yellow' },
+        { icon: Briefcase,    label: '고용시장',     sub: '취업 난이도 반영',   color: 'green'  },
+      ]}
+      result="실업률 오르면 경기가 나빠지는 신호예요"
+    />
+  ),
+
+  67: () => (
+    <BiteInfographic
+      title="GDP 성장률"
+      steps={[
+        { icon: Globe,        label: 'GDP 측정',  sub: '1년간 생산 총합',  color: 'blue'   },
+        { icon: TrendingUp,   label: '성장률 +2%', sub: '경제 확장 중',    color: 'green'  },
+        { icon: TrendingDown, label: '성장률 -1%', sub: '경기 침체 신호',  color: 'red'    },
+        { icon: Briefcase,    label: '취업·임금',  sub: '내 일자리에 영향', color: 'yellow' },
+      ]}
+      result="GDP 성장률은 나라 경제의 성적표예요"
+    />
+  ),
+
+  68: () => (
+    <BiteInfographic
+      title="주가수익비율(PER)"
+      steps={[
+        { icon: DollarSign,  label: '주가',      sub: '현재 주식 가격',    color: 'blue'   },
+        { icon: BarChart2,   label: '주당순이익', sub: '1주당 버는 돈',    color: 'green'  },
+        { icon: Calculator,  label: 'PER 계산',  sub: '주가 ÷ 순이익',    color: 'yellow' },
+        { icon: Scale,       label: '고평가 판단', sub: 'PER 높을수록 비쌈', color: 'red'   },
+      ]}
+      result="PER로 주식이 싼지 비싼지 판단해요"
+    />
+  ),
+
+  69: () => (
+    <BiteInfographic
+      title="장단기 금리 역전"
+      steps={[
+        { icon: TrendingUp,    label: '단기금리↑', sub: '2년물 금리 상승',  color: 'red'    },
+        { icon: TrendingDown,  label: '장기금리↓', sub: '10년물 금리 하락', color: 'yellow' },
+        { icon: AlertTriangle, label: '역전 발생', sub: '단기 > 장기',      color: 'red'    },
+        { icon: Clock,         label: '침체 신호', sub: '1~2년 후 경기침체', color: 'blue'  },
+      ]}
+      result="장단기 금리 역전은 경기침체의 전조 신호예요"
+    />
+  ),
+
+  70: () => (
+    <BiteInfographic
+      title="공포탐욕지수"
+      steps={[
+        { icon: AlertTriangle, label: '극도 공포',  sub: '지수 0~25',    color: 'red'    },
+        { icon: Minus,         label: '중립',       sub: '지수 45~55',   color: 'blue'   },
+        { icon: TrendingUp,    label: '극도 탐욕',  sub: '지수 75~100',  color: 'yellow' },
+        { icon: ShoppingCart,  label: '역발상 투자', sub: '공포일 때 매수?', color: 'green' },
+      ]}
+      result="공포일 때 사고 탐욕일 때 파는 역발상 전략이 있어요"
+    />
+  ),
+
+  /* ── 실생활경제 (71~80) ──────────────────────────────── */
+  71: () => (
+    <BiteInfographic
+      title="기름값이 오르면"
+      steps={[
+        { icon: Droplet,      label: '유가 상승',  sub: '배럴당 $80→$100', color: 'red'    },
+        { icon: Truck,        label: '운송비↑',   sub: '물류비 전반 인상', color: 'yellow' },
+        { icon: ShoppingCart, label: '물가 상승',  sub: '생필품 가격↑',    color: 'red'    },
+        { icon: TrendingDown, label: '소비 위축',  sub: '가처분소득 감소',  color: 'blue'   },
+      ]}
+      result="기름값 오르면 모든 물가가 연쇄적으로 올라요"
+    />
+  ),
+
+  72: () => (
+    <BiteInfographic
+      title="금리가 오르면 내 대출은"
+      steps={[
+        { icon: TrendingUp,  label: '기준금리↑',  sub: '0.25% 인상',         color: 'red'    },
+        { icon: CreditCard,  label: '변동금리↑',  sub: '대출이자 상승',       color: 'red'    },
+        { icon: Calculator,  label: '월 이자 계산', sub: '3억 × 1% = 25만원↑', color: 'yellow' },
+        { icon: Wallet,      label: '가처분소득↓', sub: '생활비 압박',         color: 'blue'   },
+      ]}
+      result="금리 1% 오르면 3억 대출 월이자 25만원 늘어요"
+    />
+  ),
+
+  73: () => (
+    <BiteInfographic
+      title="환율이 오르면 장바구니는"
+      steps={[
+        { icon: DollarSign,     label: '환율 상승',  sub: '1300→1400원',   color: 'red'    },
+        { icon: Package,        label: '수입원가↑',  sub: '밀·커피·원유',  color: 'yellow' },
+        { icon: ShoppingBasket, label: '식품가격↑',  sub: '빵·라면·과자',  color: 'red'    },
+        { icon: Wallet,         label: '생활비↑',   sub: '월 소비 부담',   color: 'blue'   },
+      ]}
+      result="환율 100원 오르면 수입 식품값 5~10% 올라요"
+    />
+  ),
+
+  74: () => (
+    <BiteInfographic
+      title="아파트값과 금리의 관계"
+      steps={[
+        { icon: TrendingUp,   label: '금리 인상', sub: '대출 부담 증가',  color: 'red'    },
+        { icon: Home,         label: '수요 감소', sub: '집 살 여력 줄어', color: 'yellow' },
+        { icon: TrendingDown, label: '집값 하락', sub: '수요 감소 반영',  color: 'blue'   },
+        { icon: Scale,        label: '반대도 성립', sub: '금리↓ → 집값↑', color: 'green'  },
+      ]}
+      result="금리와 집값은 반대로 움직이는 경향이 있어요"
+    />
+  ),
+
+  75: () => (
+    <BiteInfographic
+      title="최저임금 오르면 물가도 오를까"
+      steps={[
+        { icon: TrendingUp,   label: '최저임금↑', sub: '10% 인상',      color: 'green'  },
+        { icon: Users,        label: '인건비↑',   sub: '사업주 부담 증가', color: 'yellow' },
+        { icon: ShoppingCart, label: '가격 전가',  sub: '치킨·커피값↑',  color: 'red'    },
+        { icon: Scale,        label: '복잡한 균형', sub: '소비↑ vs 물가↑', color: 'blue'  },
+      ]}
+      result="최저임금 인상은 소득도 오르지만 물가도 올려요"
+    />
+  ),
+
+  76: () => (
+    <BiteInfographic
+      title="전기요금 오르면 경제는"
+      steps={[
+        { icon: Zap,          label: '전기료↑',  sub: '20% 인상',      color: 'yellow' },
+        { icon: Factory,      label: '제조원가↑', sub: '기업 비용 증가', color: 'red'    },
+        { icon: ShoppingCart, label: '제품가↑',  sub: '소비자 가격 전가', color: 'red'   },
+        { icon: TrendingDown, label: '기업수익↓', sub: '수익성 악화',    color: 'blue'   },
+      ]}
+      result="전기요금 오르면 제조업부터 소비자까지 다 영향받아요"
+    />
+  ),
+
+  77: () => (
+    <BiteInfographic
+      title="주식 폭락하면 내 연금은"
+      steps={[
+        { icon: TrendingDown, label: '코스피 -30%', sub: '시장 급락',      color: 'red'    },
+        { icon: PiggyBank,    label: 'IRP/퇴직연금', sub: '주식형 비중 하락', color: 'yellow' },
+        { icon: Calculator,   label: '수익률 하락',  sub: '원금 손실 가능', color: 'red'    },
+        { icon: Clock,        label: '장기 관점',   sub: '시간이 회복시켜', color: 'green'  },
+      ]}
+      result="연금은 장기 투자라 단기 폭락에 흔들리지 않아도 돼요"
+    />
+  ),
+
+  78: () => (
+    <BiteInfographic
+      title="중국 경제 흔들리면 한국은"
+      steps={[
+        { icon: TrendingDown, label: '중국 성장↓', sub: '5%→3%로 하락',  color: 'red'    },
+        { icon: Package,      label: '수출 감소',  sub: '한국 대중 수출↓', color: 'yellow' },
+        { icon: DollarSign,   label: '환율 상승',  sub: '원화 약세 압박',  color: 'red'    },
+        { icon: TrendingDown, label: '주식 하락',  sub: '코스피 동반 하락', color: 'blue'   },
+      ]}
+      result="중국은 한국 최대 수출국이라 영향이 커요"
+    />
+  ),
+
+  79: () => (
+    <BiteInfographic
+      title="미국 금리가 오르면 한국은"
+      steps={[
+        { icon: TrendingUp,   label: '미 연준 인상', sub: 'Fed 금리↑',    color: 'red'    },
+        { icon: DollarSign,   label: '달러 강세',   sub: '자본 미국으로', color: 'yellow' },
+        { icon: TrendingDown, label: '원화 약세',   sub: '환율 상승',     color: 'red'    },
+        { icon: ArrowDown,    label: '외국인 매도',  sub: '한국 주식 이탈', color: 'blue'  },
+      ]}
+      result="미국 금리 오르면 달러 강세로 한국 자본이 빠져나가요"
+    />
+  ),
+
+  80: () => (
+    <BiteInfographic
+      title="내 월급의 실질 가치"
+      steps={[
+        { icon: TrendingUp,   label: '명목임금↑',  sub: '연봉 5% 인상',   color: 'green'  },
+        { icon: ShoppingCart, label: '물가상승',   sub: 'CPI 5% 상승',   color: 'red'    },
+        { icon: Calculator,   label: '실질임금',   sub: '명목-물가 = 0%', color: 'yellow' },
+        { icon: Scale,        label: '구매력 유지', sub: '실제론 제자리',  color: 'blue'   },
+      ]}
+      result="물가만큼 임금이 올라야 실질적으로 부자가 돼요"
     />
   ),
 }
