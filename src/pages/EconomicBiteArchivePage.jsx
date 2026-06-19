@@ -6,7 +6,7 @@ import { getTodaysBite } from '../services/biteService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import PageWrapper from '../components/layout/PageWrapper';
 
-const CATEGORIES = ['전체', '기초', '금리', '투자', '저축', '거시경제', '부동산'];
+const CATEGORIES = ['전체', '기초', '금리', '투자', '저축', '거시경제', '부동산', '지표읽기', '실생활경제'];
 
 const DIFFICULTY_LABEL = { easy: '쉬움', medium: '보통', hard: '심화' };
 
