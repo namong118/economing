@@ -5,7 +5,7 @@ export default function FinalCTASection() {
 
   return (
     <section style={{
-      background: 'linear-gradient(170deg, #F0FAF7 0%, #E8FAF3 50%, #FFF9E6 100%)',
+      background: 'linear-gradient(170deg, var(--c-canvas) 0%, var(--c-green-50) 50%, var(--c-yellow-100) 100%)',
       padding: 'clamp(80px, 10vw, 120px) 24px',
       position: 'relative',
       overflow: 'hidden',
@@ -34,12 +34,12 @@ export default function FinalCTASection() {
         {/* 타이틀 */}
         <h2 style={{
           fontSize: 'clamp(26px, 5vw, 42px)',
-          fontWeight: '900', color: '#0F1F18',
+          fontWeight: '900', color: 'var(--c-ink)',
           letterSpacing: '-1.5px', lineHeight: '1.2',
           marginBottom: '16px',
         }}>
           경제 공부,<br/>
-          <span style={{ color: '#52C97A' }}>오늘부터</span> 시작해볼까요?
+          <span style={{ color: 'var(--c-green-500)' }}>오늘부터</span> 시작해볼까요?
         </h2>
 
         <p style={{
@@ -78,8 +78,8 @@ export default function FinalCTASection() {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
               padding: '17px 24px', borderRadius: '16px',
-              background: '#fff', color: '#374151',
-              border: '1.5px solid #E2E8F0', cursor: 'pointer',
+              background: '#fff', color: 'var(--c-slate)',
+              border: '1.5px solid var(--c-line)', cursor: 'pointer',
               fontSize: '16px', fontWeight: '700',
               letterSpacing: '-0.5px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
@@ -97,7 +97,7 @@ export default function FinalCTASection() {
             onClick={() => navigate('/signup')}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: '14px', color: '#94A3B8',
+              fontSize: '14px', color: 'var(--c-muted)',
               fontWeight: '500', letterSpacing: '-0.2px',
               padding: '8px',
             }}

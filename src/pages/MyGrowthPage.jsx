@@ -1,4 +1,5 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -9,7 +10,7 @@ const ECONOMIC_LEVEL = {
                   desc: '경제 공부를 이제 막 시작하시는 분' },
   intermediate: { label: '중급자', emoji: '📚', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE',
                   desc: '기본 개념은 알고 더 깊이 배우고 싶은 분' },
-  advanced:     { label: '고급자', emoji: '🔍', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A',
+  advanced:     { label: '고급자', emoji: '🔍', color: 'var(--c-yellow-500)', bg: 'var(--c-yellow-100)', border: 'var(--c-yellow-border)',
                   desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
 };
 
@@ -78,22 +79,18 @@ function generateAnalysis(profile) {
 function EmptyProfile({ navigate, BASE_URL }) {
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '48px 0' }}>
-      <img
-        src={`${BASE_URL}noming.png`}
-        alt="노밍"
-        style={{ width: '64px', height: '64px', objectFit: 'contain', margin: '0 auto 16px', display: 'block' }}
-      />
-      <h2 style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.6px', marginBottom: '8px' }}>
+      <Sun size={56} color="#F59E0B" style={{ margin: '0 auto 16px', display: 'block' }} />
+      <h2 style={{ fontSize: '20px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.6px', marginBottom: '8px' }}>
         아직 경제 프로필이 없어요
       </h2>
-      <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '28px' }}>
+      <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '28px' }}>
         온보딩을 완료하면 노밍이<br />나에게 딱 맞는 코칭을 시작해요.
       </p>
       <button
         onClick={() => navigate('/onboarding')}
         style={{
           padding: '14px 32px', borderRadius: '14px',
-          background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+          background: 'var(--grad-action)',
           color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
           cursor: 'pointer', letterSpacing: '-0.4px',
           boxShadow: '0 6px 20px rgba(33,197,142,0.35)',
@@ -126,15 +123,15 @@ export default function MyGrowthPage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
+      <div style={{ background: 'var(--c-canvas)', minHeight: 'calc(100vh - 64px)', padding: '32px 0 64px' }}>
         <div style={{ maxWidth: '780px', margin: '0 auto', padding: '0 24px' }}>
 
           {/* ── 페이지 제목 ─────────────────────────────── */}
           <div style={{ marginBottom: '24px' }}>
-            <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px', marginBottom: '4px' }}>
+            <h1 style={{ fontSize: '26px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.8px', marginBottom: '4px' }}>
               나의 경제 프로필
             </h1>
-            <p style={{ fontSize: '14px', color: '#64748B' }}>
+            <p style={{ fontSize: '14px', color: 'var(--c-slate)' }}>
               {profile?.nickname ?? '사용자'}님의 경제 성장 여정이에요
             </p>
           </div>
@@ -146,29 +143,25 @@ export default function MyGrowthPage() {
 
               {/* ── 노밍 한 줄 분석 ──────────────────────── */}
               <div style={{
-                background: 'linear-gradient(145deg, #FFFBEA, #FFF4CC)',
-                border: '1.5px solid #FFE08A',
+                background: 'linear-gradient(145deg, var(--c-yellow-100), var(--c-yellow-100))',
+                border: '1.5px solid var(--c-yellow-border)',
                 borderRadius: '20px', padding: '20px 22px',
                 display: 'flex', gap: '14px', alignItems: 'flex-start',
                 marginBottom: '16px',
               }}>
                 <div style={{ position: 'relative', flexShrink: 0 }}>
-                  <img
-                    src={`${BASE_URL}noming.png`}
-                    alt="노밍"
-                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
-                  />
+                  <Sun size={42} color="#F59E0B" />
                   <div style={{
                     position: 'absolute', bottom: '-2px', right: '-2px',
                     width: '13px', height: '13px', borderRadius: '50%',
-                    background: '#52C97A', border: '2px solid #FFFBEA',
+                    background: 'var(--c-green-500)', border: '2px solid var(--c-yellow-100)',
                   }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '12px', fontWeight: '700', color: '#B45309', marginBottom: '6px', letterSpacing: '0.3px' }}>
+                  <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-amber-700)', marginBottom: '6px', letterSpacing: '0.3px' }}>
                     노밍의 한 줄 분석
                   </p>
-                  <p style={{ fontSize: '15px', color: '#78350F', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.3px' }}>
+                  <p style={{ fontSize: '15px', color: 'var(--c-amber-700)', lineHeight: '1.7', fontWeight: '500', letterSpacing: '-0.3px' }}>
                     {analysis}
                   </p>
                 </div>
@@ -180,22 +173,22 @@ export default function MyGrowthPage() {
                 {/* 경제 수준 */}
                 <div style={{
                   background: '#fff', borderRadius: '18px',
-                  border: `1.5px solid ${econInfo?.border ?? '#E2E8F0'}`,
+                  border: `1.5px solid ${econInfo?.border ?? 'var(--c-line)'}`,
                   padding: '20px',
                 }}>
-                  <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>
+                  <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px', marginBottom: '12px' }}>
                     경제 수준
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                     <span style={{ fontSize: '28px' }}>{econInfo?.emoji ?? '❓'}</span>
                     <span style={{
-                      fontSize: '18px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px',
+                      fontSize: '18px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px',
                     }}>
                       {econInfo?.label ?? '미설정'}
                     </span>
                   </div>
                   {econInfo && (
-                    <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.5', fontWeight: '500' }}>
+                    <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.5', fontWeight: '500' }}>
                       {econInfo.desc}
                     </p>
                   )}
@@ -216,27 +209,27 @@ export default function MyGrowthPage() {
                 {/* 성장 단계 */}
                 <div style={{
                   background: '#fff', borderRadius: '18px',
-                  border: '1.5px solid #DCF5EB',
+                  border: '1.5px solid var(--c-line-soft)',
                   padding: '20px',
                 }}>
-                  <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>
+                  <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px', marginBottom: '12px' }}>
                     성장 단계
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                     <span style={{ fontSize: '28px' }}>{currentLevel.emoji}</span>
-                    <span style={{ fontSize: '18px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>
                       {currentLevel.label} 단계
                     </span>
                   </div>
-                  <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '10px', fontWeight: '500' }}>
+                  <p style={{ fontSize: '12px', color: 'var(--c-slate)', marginBottom: '10px', fontWeight: '500' }}>
                     {xp} XP 획득
                     {nextLevel && ` · ${nextLevel.label}까지 ${xpNeeded} XP`}
                   </p>
                   {/* 진행률 바 */}
-                  <div style={{ height: '6px', background: '#F1F5F9', borderRadius: '100px', overflow: 'hidden' }}>
+                  <div style={{ height: '6px', background: 'var(--c-line-soft)', borderRadius: '100px', overflow: 'hidden' }}>
                     <div style={{
                       height: '100%', borderRadius: '100px',
-                      background: 'linear-gradient(90deg, #52C97A, #1AAD7D)',
+                      background: 'linear-gradient(90deg, var(--c-green-500), var(--c-green-500))',
                       width: `${progressPercent}%`,
                       transition: 'width 0.6s ease',
                     }} />
@@ -252,8 +245,8 @@ export default function MyGrowthPage() {
                             width: isCurrent ? '26px' : '20px',
                             height: isCurrent ? '26px' : '20px',
                             borderRadius: '50%', flexShrink: 0,
-                            background: isCurrent ? '#52C97A' : isPast ? '#DCF5EB' : '#F2FBF5',
-                            border: isCurrent ? '2px solid #fff' : isPast ? '1.5px solid #A7F3D0' : '1.5px solid #E2E8F0',
+                            background: isCurrent ? 'var(--c-green-500)' : isPast ? 'var(--c-line-soft)' : 'var(--c-canvas)',
+                            border: isCurrent ? '2px solid #fff' : isPast ? '1.5px solid var(--c-green-100)' : '1.5px solid var(--c-line)',
                             boxShadow: isCurrent ? '0 0 0 3px rgba(33,197,142,0.2)' : 'none',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: isCurrent ? '13px' : '10px',
@@ -263,7 +256,7 @@ export default function MyGrowthPage() {
                           {i < LEVELS.length - 1 && (
                             <div style={{
                               flex: 1, height: '2px', margin: '0 2px',
-                              background: isPast ? '#52C97A' : '#E2E8F0',
+                              background: isPast ? 'var(--c-green-500)' : 'var(--c-line)',
                               borderRadius: '2px',
                             }} />
                           )}
@@ -278,30 +271,30 @@ export default function MyGrowthPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
                 <div style={{
                   background: '#fff', borderRadius: '16px',
-                  border: '1.5px solid #E2E8F0', padding: '16px 18px',
+                  border: '1.5px solid var(--c-line)', padding: '16px 18px',
                   display: 'flex', alignItems: 'center', gap: '12px',
                 }}>
                   <span style={{ fontSize: '26px' }}>{invInfo?.emoji ?? '❓'}</span>
                   <div>
-                    <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', marginBottom: '3px', letterSpacing: '0.5px' }}>
+                    <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', marginBottom: '3px', letterSpacing: '0.5px' }}>
                       투자 경험
                     </p>
-                    <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.3px' }}>
+                    <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-ink)', letterSpacing: '-0.3px' }}>
                       {invInfo?.label ?? '미설정'}
                     </p>
                   </div>
                 </div>
                 <div style={{
                   background: '#fff', borderRadius: '16px',
-                  border: '1.5px solid #E2E8F0', padding: '16px 18px',
+                  border: '1.5px solid var(--c-line)', padding: '16px 18px',
                   display: 'flex', alignItems: 'center', gap: '12px',
                 }}>
                   <span style={{ fontSize: '26px' }}>{occInfo?.emoji ?? '❓'}</span>
                   <div>
-                    <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', marginBottom: '3px', letterSpacing: '0.5px' }}>
+                    <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', marginBottom: '3px', letterSpacing: '0.5px' }}>
                       현재 상황
                     </p>
-                    <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.3px' }}>
+                    <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-ink)', letterSpacing: '-0.3px' }}>
                       {occInfo?.label ?? '미설정'}
                     </p>
                   </div>
@@ -311,18 +304,18 @@ export default function MyGrowthPage() {
               {/* ── 관심 분야 ─────────────────────────────── */}
               <div style={{
                 background: '#fff', borderRadius: '16px',
-                border: '1.5px solid #E2E8F0', padding: '18px 20px',
+                border: '1.5px solid var(--c-line)', padding: '18px 20px',
                 marginBottom: '20px',
               }}>
-                <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.8px', marginBottom: '12px' }}>
+                <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px', marginBottom: '12px' }}>
                   관심 분야
                 </p>
                 {interests.length > 0 ? (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {interests.map(tag => (
                       <span key={tag} style={{
-                        fontSize: '13px', fontWeight: '700', color: '#52C97A',
-                        background: '#F2FBF5', border: '1.5px solid #DCF5EB',
+                        fontSize: '13px', fontWeight: '700', color: 'var(--c-green-500)',
+                        background: 'var(--c-canvas)', border: '1.5px solid var(--c-line-soft)',
                         borderRadius: '100px', padding: '6px 14px',
                       }}>
                         {tag}
@@ -330,7 +323,7 @@ export default function MyGrowthPage() {
                     ))}
                   </div>
                 ) : (
-                  <p style={{ fontSize: '13px', color: '#94A3B8' }}>관심 분야가 설정되지 않았어요.</p>
+                  <p style={{ fontSize: '13px', color: 'var(--c-muted)' }}>관심 분야가 설정되지 않았어요.</p>
                 )}
               </div>
 
@@ -340,7 +333,7 @@ export default function MyGrowthPage() {
                   onClick={() => navigate('/coach')}
                   style={{
                     flex: 1, padding: '14px', borderRadius: '14px',
-                    background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+                    background: 'var(--grad-action)',
                     color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800',
                     cursor: 'pointer', letterSpacing: '-0.3px',
                     boxShadow: '0 4px 16px rgba(33,197,142,0.3)',
@@ -352,13 +345,13 @@ export default function MyGrowthPage() {
                   onClick={() => navigate('/onboarding')}
                   style={{
                     padding: '14px 20px', borderRadius: '14px',
-                    background: '#fff', color: '#64748B',
-                    border: '1.5px solid #E2E8F0', fontSize: '14px', fontWeight: '700',
+                    background: '#fff', color: 'var(--c-slate)',
+                    border: '1.5px solid var(--c-line)', fontSize: '14px', fontWeight: '700',
                     cursor: 'pointer', whiteSpace: 'nowrap',
                     transition: 'all 0.15s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#52C97A'; e.currentTarget.style.color = '#52C97A'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#64748B'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-green-500)'; e.currentTarget.style.color = 'var(--c-green-500)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-line)'; e.currentTarget.style.color = 'var(--c-slate)'; }}
                 >
                   프로필 다시 설정
                 </button>

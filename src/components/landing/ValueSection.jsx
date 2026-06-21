@@ -1,7 +1,7 @@
 ﻿export default function ValueSection() {
   return (
     <section style={{
-      background: 'linear-gradient(160deg, #0D9B6E 0%, #52C97A 60%, #3ECFA0 100%)',
+      background: 'linear-gradient(160deg, #0D9B6E 0%, var(--c-green-500) 60%, #3ECFA0 100%)',
       padding: 'clamp(60px, 8vw, 100px) 24px',
       overflow: 'hidden',
       position: 'relative',
@@ -54,8 +54,8 @@
           경제 초보자를 위한<br/>
           <span style={{
             display: 'inline-block',
-            background: '#FFC83D',
-            color: '#0F1F18',
+            background: 'var(--c-yellow-500)',
+            color: 'var(--c-ink)',
             borderRadius: '12px',
             padding: '2px 16px',
             marginTop: '6px',

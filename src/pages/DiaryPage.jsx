@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, Newspaper, Lightbulb, HelpCircle, Wallet, Target, PenLine, MessageCircle } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
@@ -8,10 +8,10 @@ import { getJournals, createJournal, updateJournal, deleteJournal } from '../ser
 const SECTIONS = [
   { key: 'learned_today',    Icon: BookOpen,      title: '오늘 배운 것',         desc: '오늘 새롭게 알게 된 경제 개념이나 내용을 적어보세요.',             placeholder: 'ETF는 여러 종목을 담은 투자 바구니와 비슷하다.', type: 'textarea', color: '#3B82F6' },
   { key: 'news_title',       Icon: Newspaper,     title: '오늘의 금융 뉴스',      desc: '오늘 가장 인상 깊게 본 경제 또는 금융 뉴스를 기록해보세요.',       placeholder: '한국은행 기준금리 동결',                           type: 'input',    color: '#8B5CF6' },
-  { key: 'news_thought',     Icon: Lightbulb,     title: '뉴스를 보고 든 생각',   desc: '뉴스를 보고 어떤 생각이 들었나요?',                               placeholder: '금리가 유지되면 예금 금리도 크게 변하지 않을 것 같다.', type: 'textarea', color: '#F59E0B' },
+  { key: 'news_thought',     Icon: Lightbulb,     title: '뉴스를 보고 든 생각',   desc: '뉴스를 보고 어떤 생각이 들었나요?',                               placeholder: '금리가 유지되면 예금 금리도 크게 변하지 않을 것 같다.', type: 'textarea', color: 'var(--c-yellow-500)' },
   { key: 'questions',        Icon: HelpCircle,    title: '아직 궁금한 것',        desc: '아직 잘 이해되지 않는 부분이나 더 공부하고 싶은 내용을 적어보세요.', placeholder: '기준금리가 왜 물가에 영향을 줄까?',                   type: 'textarea', color: '#EF4444' },
   { key: 'consumption_note', Icon: Wallet,        title: '오늘의 소비 돌아보기',  desc: '오늘 가장 기억에 남는 소비를 적어보세요.',                         placeholder: '배달음식 20,000원',                               type: 'textarea', color: '#06B6D4' },
-  { key: 'next_topic',       Icon: Target,        title: '다음에 공부할 것',      desc: '다음에 더 알아보고 싶은 경제 주제를 적어보세요.',                  placeholder: '비상금, ETF, 인플레이션',                          type: 'textarea', color: '#52C97A' },
+  { key: 'next_topic',       Icon: Target,        title: '다음에 공부할 것',      desc: '다음에 더 알아보고 싶은 경제 주제를 적어보세요.',                  placeholder: '비상금, ETF, 인플레이션',                          type: 'textarea', color: 'var(--c-green-500)' },
 ];
 
 const EMPTY_FORM = {
@@ -72,7 +72,7 @@ function SectionCard({ section, value, onChange, readOnly }) {
 
   return (
     <div style={{
-      background: '#fff',
+      background: 'var(--c-surface)',
       border: `1.5px solid ${focused ? section.color + '55' : section.color + '22'}`,
       borderRadius: '16px', padding: '16px', transition: 'border-color 0.15s',
     }}>
@@ -85,16 +85,16 @@ function SectionCard({ section, value, onChange, readOnly }) {
           <section.Icon size={18} color={section.color} />
         </div>
         <div>
-          <p style={{ fontSize: '14px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.3px' }}>
+          <p style={{ fontSize: '14px', fontWeight: '800', color: 'var(--c-ink)', letterSpacing: '-0.3px' }}>
             {section.title}
           </p>
           {!readOnly && (
-            <p style={{ fontSize: '11px', color: '#94A3B8', marginTop: '1px', fontWeight: '500' }}>{section.desc}</p>
+            <p style={{ fontSize: '11px', color: 'var(--c-muted)', marginTop: '1px', fontWeight: '500' }}>{section.desc}</p>
           )}
         </div>
       </div>
       {readOnly ? (
-        <p style={{ fontSize: '14px', color: '#374151', lineHeight: '1.75', whiteSpace: 'pre-wrap', paddingLeft: '46px' }}>
+        <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.75', whiteSpace: 'pre-wrap', paddingLeft: '46px' }}>
           {value}
         </p>
       ) : section.type === 'input' ? (
@@ -103,8 +103,8 @@ function SectionCard({ section, value, onChange, readOnly }) {
           placeholder={section.placeholder} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{
             width: '100%', padding: '10px 14px', borderRadius: '10px', boxSizing: 'border-box',
-            border: `1.5px solid ${focused ? section.color + '66' : '#E2E8F0'}`,
-            fontSize: '14px', color: '#0F172A', background: '#F8FAFC',
+            border: `1.5px solid ${focused ? section.color + '66' : 'var(--c-line)'}`,
+            fontSize: '14px', color: 'var(--c-ink)', background: 'var(--c-surface)',
             outline: 'none', fontFamily: 'inherit', transition: 'border-color 0.15s',
           }}
         />
@@ -115,8 +115,8 @@ function SectionCard({ section, value, onChange, readOnly }) {
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{
             width: '100%', padding: '10px 14px', borderRadius: '10px', boxSizing: 'border-box',
-            border: `1.5px solid ${focused ? section.color + '66' : '#E2E8F0'}`,
-            fontSize: '14px', color: '#0F172A', background: '#F8FAFC',
+            border: `1.5px solid ${focused ? section.color + '66' : 'var(--c-line)'}`,
+            fontSize: '14px', color: 'var(--c-ink)', background: 'var(--c-surface)',
             outline: 'none', resize: 'vertical', lineHeight: '1.65',
             fontFamily: 'inherit', transition: 'border-color 0.15s',
           }}
@@ -139,8 +139,8 @@ function JournalCard({ journal, onClick }) {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
         display: 'block', width: '100%', textAlign: 'left',
-        background: hov ? '#FAFFFE' : '#fff',
-        border: `1.5px solid ${hov ? '#A7F3D0' : '#E8F5EF'}`,
+        background: hov ? 'var(--c-canvas)' : 'var(--c-surface)',
+        border: `1.5px solid ${hov ? 'var(--c-green-100)' : 'var(--c-green-50)'}`,
         borderRadius: '14px', padding: '16px 18px',
         cursor: 'pointer', transition: 'all 0.15s',
         boxShadow: hov ? '0 4px 14px rgba(33,197,142,0.1)' : '0 1px 3px rgba(0,0,0,0.04)',
@@ -149,22 +149,22 @@ function JournalCard({ journal, onClick }) {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '7px' }}>
-          <span style={{ fontSize: '14px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.4px' }}>{date}</span>
-          <span style={{ fontSize: '11px', fontWeight: '600', color: '#94A3B8' }}>{dayName}</span>
+          <span style={{ fontSize: '14px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.4px' }}>{date}</span>
+          <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--c-muted)' }}>{dayName}</span>
         </div>
-        <span style={{ fontSize: '12px', color: '#52C97A', fontWeight: '700', opacity: hov ? 1 : 0.5 }}>보기 →</span>
+        <span style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '700', opacity: hov ? 1 : 0.5 }}>보기 →</span>
       </div>
       {previews.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {previews.map((prev, i) => (
             <div key={i} style={{ display: 'flex', gap: '7px', alignItems: 'flex-start' }}>
               <prev.Icon size={12} color={prev.color} style={{ flexShrink: 0, marginTop: '3px' }} />
-              <p style={{ fontSize: '12px', color: '#475569', lineHeight: '1.7', fontWeight: '500' }}>{prev.text}</p>
+              <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.7', fontWeight: '500' }}>{prev.text}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p style={{ fontSize: '12px', color: '#CBD5E1', fontStyle: 'italic' }}>작성된 내용이 없어요.</p>
+        <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontStyle: 'italic' }}>작성된 내용이 없어요.</p>
       )}
     </button>
   );
@@ -181,7 +181,7 @@ function MonthCalendar({ year, month, journalMap, onDateClick }) {
         {WEEK_DAYS.map((d, i) => (
           <div key={d} style={{
             textAlign: 'center', fontSize: '11px', fontWeight: '700', padding: '4px 0',
-            color: i === 0 ? '#F87171' : i === 6 ? '#60A5FA' : '#94A3B8',
+            color: i === 0 ? '#F87171' : i === 6 ? '#60A5FA' : 'var(--c-muted)',
           }}>
             {d}
           </div>
@@ -207,9 +207,9 @@ function MonthCalendar({ year, month, journalMap, onDateClick }) {
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center', gap: '2px',
                 cursor: 'pointer', transition: 'background 0.1s',
-                background: isToday ? '#52C97A' : 'transparent',
+                background: isToday ? 'var(--c-green-500)' : 'transparent',
               }}
-              onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = '#F0FDF9'; }}
+              onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = 'var(--c-green-50)'; }}
               onMouseLeave={e => { if (!isToday) e.currentTarget.style.background = 'transparent'; }}
             >
               <span style={{
@@ -218,14 +218,14 @@ function MonthCalendar({ year, month, journalMap, onDateClick }) {
                 color: isToday ? '#fff'
                   : dow === 0 ? '#F87171'
                   : dow === 6 ? '#60A5FA'
-                  : '#0F172A',
+                  : 'var(--c-ink)',
               }}>
                 {cell.day}
               </span>
               {hasEntry && (
                 <span style={{
                   width: '5px', height: '5px', borderRadius: '50%', display: 'block',
-                  background: isToday ? 'rgba(255,255,255,0.85)' : '#52C97A',
+                  background: isToday ? 'rgba(255,255,255,0.85)' : 'var(--c-green-500)',
                 }} />
               )}
             </button>
@@ -255,7 +255,7 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
 
       {/* 캘린더 카드 */}
       <div style={{
-        background: '#fff', border: '1.5px solid #E8F5EF',
+        background: 'var(--c-surface)', border: '1.5px solid var(--c-line-soft)',
         borderRadius: '20px', padding: '20px', marginBottom: '14px',
       }}>
         {/* 월 네비게이션 */}
@@ -264,19 +264,19 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
             onClick={onPrevMonth}
             style={{
               width: '34px', height: '34px', borderRadius: '10px',
-              background: '#F8FAFC', border: '1.5px solid #E2E8F0',
-              cursor: 'pointer', fontSize: '14px', color: '#64748B',
+              background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+              cursor: 'pointer', fontSize: '14px', color: 'var(--c-slate)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
             ‹
           </button>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px' }}>
+            <p style={{ fontSize: '16px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>
               {calYear}년 {calMonth + 1}월
             </p>
             {streakCount > 0 && (
-              <p style={{ fontSize: '11px', color: '#52C97A', fontWeight: '700', marginTop: '1px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--c-green-500)', fontWeight: '700', marginTop: '1px' }}>
                 이 달 {streakCount}개 작성 🌱
               </p>
             )}
@@ -285,8 +285,8 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
             onClick={onNextMonth}
             style={{
               width: '34px', height: '34px', borderRadius: '10px',
-              background: '#F8FAFC', border: '1.5px solid #E2E8F0',
-              cursor: 'pointer', fontSize: '14px', color: '#64748B',
+              background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+              cursor: 'pointer', fontSize: '14px', color: 'var(--c-slate)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
@@ -304,20 +304,20 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
         <div style={{
           display: 'flex', alignItems: 'center', gap: '14px',
           marginTop: '14px', padding: '10px 14px',
-          background: '#F8FAFC', borderRadius: '10px',
+          background: 'var(--c-surface)', borderRadius: '10px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#52C97A', display: 'inline-block' }} />
-            <span style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>작성 완료</span>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'inline-block' }} />
+            <span style={{ fontSize: '11px', color: 'var(--c-slate)', fontWeight: '500' }}>작성 완료</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '20px', height: '20px', borderRadius: '8px', background: '#52C97A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ width: '20px', height: '20px', borderRadius: '8px', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontSize: '10px', color: '#fff', fontWeight: '900' }}>오</span>
             </span>
-            <span style={{ fontSize: '11px', color: '#64748B', fontWeight: '500' }}>오늘</span>
+            <span style={{ fontSize: '11px', color: 'var(--c-slate)', fontWeight: '500' }}>오늘</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ fontSize: '11px', color: '#94A3B8', fontStyle: 'italic' }}>날짜 클릭 → 작성/조회</span>
+            <span style={{ fontSize: '11px', color: 'var(--c-muted)', fontStyle: 'italic' }}>날짜 클릭 → 작성/조회</span>
           </div>
         </div>
       </div>
@@ -328,7 +328,7 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
           onClick={onCreateToday}
           style={{
             width: '100%', padding: '14px', borderRadius: '14px', marginBottom: '24px',
-            background: 'linear-gradient(135deg, #52C97A, #1AAD7D)',
+            background: 'var(--grad-action)',
             color: '#fff', border: 'none', fontSize: '15px', fontWeight: '800',
             cursor: 'pointer', letterSpacing: '-0.4px',
             boxShadow: '0 4px 16px rgba(33,197,142,0.3)',
@@ -341,28 +341,28 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
 
       {/* 이 달의 기록 */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: '#94A3B8', fontSize: '13px' }}>
+        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--c-muted)', fontSize: '13px' }}>
           불러오는 중...
         </div>
       ) : monthJournals.length === 0 ? (
         <div style={{
           textAlign: 'center', padding: '40px 20px',
-          background: '#fff', borderRadius: '16px', border: '1.5px solid #E8F5EF',
+          background: 'var(--c-surface)', borderRadius: '16px', border: '1.5px solid var(--c-line-soft)',
         }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-            <BookOpen size={32} color="#888780" />
+            <BookOpen size={32} color="var(--c-muted)" />
           </div>
-          <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', marginBottom: '6px', letterSpacing: '-0.3px' }}>
+          <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-ink)', marginBottom: '6px', letterSpacing: '-0.3px' }}>
             이번 달 경제일기가 없어요
           </p>
-          <p style={{ fontSize: '12px', color: '#94A3B8', lineHeight: '1.7' }}>
+          <p style={{ fontSize: '12px', color: 'var(--c-muted)', lineHeight: '1.7' }}>
             캘린더에서 날짜를 클릭하거나<br />
             위 버튼으로 오늘 일기를 시작해보세요.
           </p>
         </div>
       ) : (
         <div>
-          <p style={{ fontSize: '12px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.5px', marginBottom: '10px' }}>
+          <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.5px', marginBottom: '10px' }}>
             {calYear}년 {calMonth + 1}월 경제일기 · {monthJournals.length}개
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -388,29 +388,29 @@ function FormView({ form, onFieldChange, onSave, onCancel, saving, editMode, err
           onClick={onCancel}
           style={{
             padding: '8px 14px', borderRadius: '10px',
-            background: '#F8FAFC', border: '1.5px solid #E2E8F0',
-            fontSize: '13px', fontWeight: '600', color: '#64748B', cursor: 'pointer',
+            background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+            fontSize: '13px', fontWeight: '600', color: 'var(--c-slate)', cursor: 'pointer',
           }}
         >
           ← 뒤로
         </button>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px' }}>
+          <p style={{ fontSize: '16px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>
             {editMode ? '경제일기 수정' : '경제일기 작성'}
           </p>
-          <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '500' }}>
+          <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '500' }}>
             {date} · {dayName}
           </p>
         </div>
       </div>
 
       <div style={{
-        background: '#F0FDF9', border: '1px solid #A7F3D0',
+        background: 'var(--c-green-50)', border: '1px solid var(--c-green-100)',
         borderRadius: '12px', padding: '11px 15px', marginBottom: '18px',
         display: 'flex', gap: '9px', alignItems: 'center',
       }}>
-        <MessageCircle size={15} color="#065F46" style={{ flexShrink: 0 }} />
-        <p style={{ fontSize: '12px', color: '#065F46', fontWeight: '500', lineHeight: '1.6' }}>
+        <MessageCircle size={15} color="var(--c-forest-900)" style={{ flexShrink: 0 }} />
+        <p style={{ fontSize: '12px', color: 'var(--c-forest-900)', fontWeight: '500', lineHeight: '1.6' }}>
           모든 항목을 채울 필요는 없어요. 기억에 남는 것만 적어도 충분해요.
         </p>
       </div>
@@ -434,8 +434,8 @@ function FormView({ form, onFieldChange, onSave, onCancel, saving, editMode, err
         onClick={onSave} disabled={saving}
         style={{
           width: '100%', padding: '15px', borderRadius: '14px', marginBottom: '40px',
-          background: saving ? '#E2E8F0' : 'linear-gradient(135deg, #52C97A, #1AAD7D)',
-          color: saving ? '#94A3B8' : '#fff', border: 'none',
+          background: saving ? 'var(--c-line)' : 'var(--grad-action)',
+          color: saving ? 'var(--c-muted)' : '#fff', border: 'none',
           fontSize: '15px', fontWeight: '800', cursor: saving ? 'not-allowed' : 'pointer',
           letterSpacing: '-0.4px', transition: 'all 0.15s',
           boxShadow: saving ? 'none' : '0 4px 16px rgba(33,197,142,0.3)',
@@ -461,22 +461,22 @@ function DetailView({ journal, onBack, onEdit, onDelete, deleting }) {
           onClick={onBack}
           style={{
             padding: '8px 14px', borderRadius: '10px',
-            background: '#F8FAFC', border: '1.5px solid #E2E8F0',
-            fontSize: '13px', fontWeight: '600', color: '#64748B', cursor: 'pointer',
+            background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+            fontSize: '13px', fontWeight: '600', color: 'var(--c-slate)', cursor: 'pointer',
           }}
         >
           ← 목록
         </button>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: '16px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.5px' }}>{date}</p>
-          <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '500' }}>{dayName}</p>
+          <p style={{ fontSize: '16px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>{date}</p>
+          <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '500' }}>{dayName}</p>
         </div>
         <button
           onClick={onEdit}
           style={{
             padding: '7px 16px', borderRadius: '10px',
-            background: '#F0FDF9', border: '1.5px solid #A7F3D0',
-            fontSize: '13px', fontWeight: '700', color: '#065F46', cursor: 'pointer',
+            background: 'var(--c-green-50)', border: '1.5px solid var(--c-green-100)',
+            fontSize: '13px', fontWeight: '700', color: 'var(--c-forest-900)', cursor: 'pointer',
           }}
         >
           수정
@@ -489,8 +489,8 @@ function DetailView({ journal, onBack, onEdit, onDelete, deleting }) {
             <SectionCard key={section.key} section={section} value={journal[section.key]} onChange={() => {}} readOnly />
           ))
         ) : (
-          <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', border: '1.5px solid #E8F5EF' }}>
-            <p style={{ fontSize: '13px', color: '#94A3B8' }}>작성된 내용이 없어요.</p>
+          <div style={{ textAlign: 'center', padding: '40px', background: 'var(--c-surface)', borderRadius: '16px', border: '1.5px solid var(--c-line-soft)' }}>
+            <p style={{ fontSize: '13px', color: 'var(--c-muted)' }}>작성된 내용이 없어요.</p>
           </div>
         )}
       </div>
@@ -506,7 +506,7 @@ function DetailView({ journal, onBack, onEdit, onDelete, deleting }) {
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={() => setConfirmDel(false)}
-              style={{ flex: 1, padding: '11px', borderRadius: '10px', background: '#fff', border: '1.5px solid #E2E8F0', fontSize: '13px', fontWeight: '700', color: '#374151', cursor: 'pointer' }}
+              style={{ flex: 1, padding: '11px', borderRadius: '10px', background: 'var(--c-surface)', border: '1.5px solid var(--c-line)', fontSize: '13px', fontWeight: '700', color: 'var(--c-slate)', cursor: 'pointer' }}
             >
               취소
             </button>
@@ -668,7 +668,7 @@ export function DiaryContent() {
 export default function DiaryPage() {
   return (
     <PageWrapper>
-      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)', padding: '28px 0 64px' }}>
+      <div style={{ background: 'var(--c-canvas)', minHeight: 'calc(100vh - 64px)', padding: '28px 0 64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 20px' }}>
           <DiaryContent />
         </div>

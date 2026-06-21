@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X, Sun } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
-import { getCoachResponse } from '../services/coachService';
+import { getCoachResponse, getNomingDailyMessage } from '../services/coachService';
+import { getTodaysBite } from '../services/biteService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import { createConversation, getConversationList, getRecentConversations } from '../services/conversationService';
 import { callSolar } from '../services/solarService';
@@ -209,7 +210,7 @@ function NomingCard({ structured, onSend }) {
 }
 
 /* ── 노밍 인사 카드 ─────────────────────────────────────── */
-function NomingGreeting({ BASE_URL, onHistory }) {
+function NomingGreeting({ onHistory, greetingMsg, greetingLoading }) {
   return (
     <div className="anim-fade" style={{
       background: 'var(--c-yellow-100)',
@@ -217,22 +218,32 @@ function NomingGreeting({ BASE_URL, onHistory }) {
       borderRadius: 16, padding: '16px 18px',
       boxShadow: '0 2px 12px rgba(139,90,0,0.08)',
     }}>
-      {/* 상단: 아바타 + 텍스트 + 기록 버튼 */}
       <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
         <div style={{
           width: 48, height: 48, borderRadius: '50%',
           background: 'rgba(255,200,61,0.2)', border: '1.5px solid var(--c-yellow-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
-          <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 34, height: 34, objectFit: 'contain' }} />
+          <Sun size={30} color="#F59E0B" />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--c-amber-700)', marginBottom: 3, letterSpacing: '-0.3px' }}>
+          <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--c-amber-700)', marginBottom: 4, letterSpacing: '-0.3px' }}>
             노밍이에요!
           </p>
-          <p style={{ fontSize: 12.5, color: 'var(--c-amber-700)', lineHeight: 1.6, letterSpacing: '-0.2px', opacity: 0.85 }}>
-            무엇부터 시작해야 할지 모르겠다면 제가 함께 정리해드릴게요.
-          </p>
+          {greetingLoading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <div style={{ height: 11, width: '90%', borderRadius: 6,
+                background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+              <div style={{ height: 11, width: '65%', borderRadius: 6,
+                background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+            </div>
+          ) : (
+            <p style={{ fontSize: 12.5, color: 'var(--c-amber-700)', lineHeight: 1.6, letterSpacing: '-0.2px', opacity: 0.85 }}>
+              {greetingMsg ?? '무엇부터 시작해야 할지 모르겠다면 제가 함께 정리해드릴게요.'}
+            </p>
+          )}
         </div>
         <button
           onClick={onHistory}
@@ -263,7 +274,7 @@ function LoadingBubble({ BASE_URL }) {
         background: 'rgba(255,200,61,0.15)', border: '1px solid var(--c-yellow-border)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px',
       }}>
-        <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+        <Sun size={22} color="#F59E0B" />
       </div>
       <div style={{
         background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
@@ -290,6 +301,7 @@ function LoadingBubble({ BASE_URL }) {
 
 /* 탭 전환 시 재마운트돼도 질문이 유지되도록 모듈 레벨에 캐시 */
 const _questionsCache = {};
+const _greetingCache  = {};
 
 /* ── 메인 ─────────────────────────────────────────────────── */
 export default function CoachPage() {
@@ -310,7 +322,26 @@ export default function CoachPage() {
   const { userLevel } = useUserLevel();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
-  const cacheKey = user?.id ?? 'guest';
+  const cacheKey = `${user?.id ?? 'guest'}__${userLevel}`;
+
+  const [greetingMsg,     setGreetingMsg]     = useState(null);
+  const [greetingLoading, setGreetingLoading] = useState(true);
+
+  useEffect(() => {
+    const bite = getTodaysBite();
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const gKey = `coach__${bite?.title}__${dateKey}`;
+    if (_greetingCache[gKey] !== undefined) {
+      setGreetingMsg(_greetingCache[gKey]);
+      setGreetingLoading(false);
+      return;
+    }
+    setGreetingLoading(true);
+    getNomingDailyMessage(bite?.title, userLevel)
+      .then(msg => { _greetingCache[gKey] = msg ?? null; setGreetingMsg(msg ?? null); })
+      .catch(() => setGreetingMsg(null))
+      .finally(() => setGreetingLoading(false));
+  }, [userLevel]); // eslint-disable-line
   const [suggestedQuestions, setSuggestedQuestions] = useState(() => _questionsCache[cacheKey] ?? null);
 
   useEffect(() => {
@@ -322,8 +353,19 @@ export default function CoachPage() {
       .then(({ data }) => {
         if (!data?.length) { set(fallback); return; }
         const recentList = data.map(c => `- ${c.question}`).join('\n');
+        const levelDesc = {
+          beginner:     '경제 개념을 처음 접하는 입문자 — 아주 쉬운 생활밀착형 질문',
+          elementary:   '기본 개념(금리·물가·저축)은 아는 초급자 — 쉽고 실용적인 질문',
+          intermediate: '기본 금융 지식을 갖춘 중급자 — 전략·비교·활용 위주 질문',
+          advanced:     '투자 경험이 있는 고급자 — 심화 전략·세금·포트폴리오 질문',
+          expert:       '전문적 지식을 갖춘 전문가 — 거시경제·시장 분석 수준 질문',
+        }[userLevel] ?? '경제 입문자 수준';
         callSolar({
-          system: `당신은 경제 학습 코치입니다. 사용자가 최근에 한 질문들을 보고, 자연스럽게 이어지거나 더 깊이 파고들 수 있는 경제 공부 질문 5개를 추천하세요. 이미 물어본 것과 너무 비슷한 질문은 피하고, 다음 단계로 나아갈 수 있는 질문을 제안하세요.\n반드시 JSON 배열로만 응답하세요: ["질문1", "질문2", "질문3", "질문4", "질문5"]`,
+          system: `당신은 경제 학습 코치입니다.
+사용자 수준: ${levelDesc}
+사용자가 최근에 한 질문들을 보고, 이 수준에 맞게 자연스럽게 이어지거나 더 깊이 파고들 수 있는 경제 공부 질문 5개를 추천하세요.
+이미 물어본 것과 너무 비슷한 질문은 피하고, 사용자 수준에 딱 맞는 난이도로 제안하세요.
+반드시 JSON 배열로만 응답하세요: ["질문1", "질문2", "질문3", "질문4", "질문5"]`,
           messages: [{ role: 'user', content: `최근 질문 목록:\n${recentList}` }],
         })
           .then(content => {
@@ -444,7 +486,7 @@ export default function CoachPage() {
         {/* ── 노밍 인사 카드 + 추천 질문 (빈 상태) ─── */}
         {isEmpty && (
           <div style={{ flexShrink: 0, padding: '16px 16px 0', overflowY: 'auto' }}>
-            <NomingGreeting BASE_URL={BASE_URL} onHistory={() => setDrawerOpen(true)} />
+            <NomingGreeting onHistory={() => setDrawerOpen(true)} greetingMsg={greetingMsg} greetingLoading={greetingLoading} />
 
             <div style={{ marginTop: 16 }}>
               <p style={{
@@ -513,7 +555,7 @@ export default function CoachPage() {
                       background: 'rgba(255,200,61,0.15)', border: '1px solid var(--c-yellow-border)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px',
                     }}>
-                      <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+                      <Sun size={22} color="#F59E0B" />
                     </div>
                   )}
 

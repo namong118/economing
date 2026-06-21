@@ -1,13 +1,13 @@
-/* 진행률 표시 바 컴포넌트 */
+﻿/* 진행률 표시 바 컴포넌트 */
 
-export default function ProgressBar({ current, total, color = '#10B981', height = 6, showLabel = false }) {
+export default function ProgressBar({ current, total, color = 'var(--c-green-500)', height = 6, showLabel = false }) {
   const percent = Math.round((current / total) * 100);
 
   return (
     <div>
       {showLabel && (
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-          <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{current}/{total}</span>
+          <span style={{ fontSize: '12px', color: 'var(--icon-inactive)' }}>{current}/{total}</span>
           <span style={{ fontSize: '12px', color, fontWeight: '600' }}>{percent}%</span>
         </div>
       )}

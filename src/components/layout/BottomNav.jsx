@@ -1,12 +1,12 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Leaf, Newspaper, TrendingUp } from 'lucide-react';
+﻿import { useNavigate, useLocation } from 'react-router-dom';
+import { Home, Leaf, Newspaper, TrendingUp, Sun } from 'lucide-react';
 
 const navItems = [
-  { path: '/home',      Icon: Home,        label: '홈',      type: 'lucide' },
-  { path: '/bites',     Icon: Leaf,        label: '한잎',    type: 'lucide' },
-  { path: '/coach',     Icon: null,        label: '노밍',    type: 'img'    },
-  { path: '/read',      Icon: Newspaper,   label: '경제읽기', type: 'lucide' },
-  { path: '/my-growth', Icon: TrendingUp,  label: '내 성장', type: 'lucide' },
+  { path: '/home',      Icon: Home,       label: '홈'      },
+  { path: '/bites',     Icon: Leaf,       label: '한잎'    },
+  { path: '/coach',     Icon: Sun,        label: '노밍'    },
+  { path: '/read',      Icon: Newspaper,  label: '경제읽기' },
+  { path: '/my-growth', Icon: TrendingUp, label: '내 성장' },
 ];
 
 export default function BottomNav() {
@@ -21,13 +21,13 @@ export default function BottomNav() {
         bottom: 0,
         left: 0,
         right: 0,
-        background: '#FFFFFF',
-        borderTop: '0.5px solid #DCF0E0',
+        background: 'var(--c-surface)',
+        borderTop: '0.5px solid var(--c-line)',
         display: 'flex',
         height: '60px',
         paddingBottom: 'env(safe-area-inset-bottom)',
         zIndex: 100,
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.06)',
+        boxShadow: '0 -2px 12px rgba(8,53,43,0.06)',
       }}
     >
       {navItems.map((item) => {
@@ -42,7 +42,7 @@ export default function BottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '10px 0 12px',
+              padding: '10px 0 10px',
               gap: '3px',
               background: 'none',
               border: 'none',
@@ -51,36 +51,31 @@ export default function BottomNav() {
               position: 'relative',
             }}
           >
-            {item.type === 'img' ? (
-              <img
-                src={`${import.meta.env.BASE_URL}noming.png`}
-                alt="노밍"
-                style={{
-                  width: 22, height: 22, objectFit: 'contain',
-                  opacity: isActive ? 1 : 0.45,
-                }}
-              />
-            ) : (
-              <item.Icon size={22} color={isActive ? '#52C97A' : '#9CA3AF'} />
-            )}
+            {/* 액티브 표시: 상단 pill 인디케이터 */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              width: isActive ? '24px' : '0px',
+              height: '2.5px',
+              borderRadius: '0 0 3px 3px',
+              background: 'var(--c-green-500)',
+              transition: 'width 0.2s ease',
+            }} />
+
+            <item.Icon
+              size={22}
+              color={isActive ? 'var(--c-green-500)' : 'var(--icon-inactive)'}
+              strokeWidth={isActive ? 2.2 : 1.8}
+            />
             <span style={{
               fontSize: '10px',
               fontWeight: isActive ? '700' : '500',
-              color: isActive ? '#52C97A' : '#9CA3AF',
+              color: isActive ? 'var(--c-green-500)' : 'var(--icon-inactive)',
               letterSpacing: '-0.3px',
+              transition: 'color 0.15s',
             }}>
               {item.label}
             </span>
-            {isActive && (
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                width: '4px',
-                height: '4px',
-                borderRadius: '50%',
-                background: '#52C97A',
-              }} />
-            )}
           </button>
         );
       })}

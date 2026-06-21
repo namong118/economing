@@ -33,7 +33,7 @@ export default function CompareGraphic({ data }) {
                     width: '6px', height: '6px', borderRadius: '50%',
                     background: side.color, flexShrink: 0, marginTop: '5px',
                   }} />
-                  <p style={{ fontSize: '12px', color: '#374151', lineHeight: '1.5', fontWeight: '500' }}>
+                  <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.5', fontWeight: '500' }}>
                     {pt}
                   </p>
                 </div>
@@ -46,9 +46,9 @@ export default function CompareGraphic({ data }) {
       {note && (
         <div style={{
           padding: '10px 14px', borderRadius: '10px',
-          background: '#FFFBEA', border: '1px solid #FFE08A',
+          background: 'var(--c-yellow-100)', border: '1px solid var(--c-yellow-border)',
         }}>
-          <p style={{ fontSize: '12px', color: '#78350F', fontWeight: '600', lineHeight: '1.6' }}>
+          <p style={{ fontSize: '12px', color: 'var(--c-amber-700)', fontWeight: '600', lineHeight: '1.6' }}>
             {note}
           </p>
         </div>

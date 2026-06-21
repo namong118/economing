@@ -1,4 +1,5 @@
 ﻿import { useState } from 'react';
+import { Sun } from 'lucide-react';
 
 const SCREENS = [
   {
@@ -46,7 +47,7 @@ export default function AppPreviewSection() {
           </p>
           <h2 style={{
             fontSize: 'clamp(24px, 4vw, 36px)',
-            fontWeight: '900', color: '#0F1F18',
+            fontWeight: '900', color: 'var(--c-ink)',
             letterSpacing: '-1px', lineHeight: '1.25',
           }}>
             이런 화면으로<br/>공부하게 됩니다.
@@ -66,8 +67,8 @@ export default function AppPreviewSection() {
                 padding: '9px 20px', borderRadius: '100px',
                 border: 'none', cursor: 'pointer',
                 fontSize: '14px', fontWeight: active === s.key ? '700' : '500',
-                background: active === s.key ? '#52C97A' : '#F1F5F9',
-                color: active === s.key ? '#fff' : '#64748B',
+                background: active === s.key ? 'var(--c-green-500)' : 'var(--c-line-soft)',
+                color: active === s.key ? '#fff' : 'var(--c-slate)',
                 transition: 'all 0.2s',
               }}
             >
@@ -105,7 +106,7 @@ function PhoneFrame({ children }) {
       }}/>
       {/* 화면 */}
       <div style={{
-        background: '#F2FBF5',
+        background: 'var(--c-canvas)',
         borderRadius: '28px',
         height: '520px',
         overflow: 'hidden',
@@ -122,14 +123,14 @@ function MockTopBar({ title }) {
     <div style={{
       background: '#fff',
       padding: '14px 16px 12px',
-      borderBottom: '1px solid #F1F5F9',
+      borderBottom: '1px solid var(--c-line-soft)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     }}>
-      <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '-0.5px', color: '#52C97A' }}>
+      <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '-0.5px', color: 'var(--c-green-500)' }}>
         ECONOMING
       </span>
-      <span style={{ fontSize: '11px', fontWeight: '700', color: '#0F1F18' }}>{title}</span>
-      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#E8FAF3' }}/>
+      <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-ink)' }}>{title}</span>
+      <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--c-green-50)' }}/>
     </div>
   );
 }
@@ -140,25 +141,25 @@ function HomeScreen() {
       <MockTopBar title="홈" />
       <div style={{ padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {/* 인사 */}
-        <div style={{ background: 'linear-gradient(135deg, #52C97A, #16A374)', borderRadius: '16px', padding: '16px' }}>
+        <div style={{ background: 'var(--grad-action)', borderRadius: '16px', padding: '16px' }}>
           <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>안녕하세요 👋</p>
           <p style={{ fontSize: '14px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>오늘도 성장해봐요!</p>
         </div>
         {/* 오늘의 학습 */}
-        <div style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid #E8FAF3' }}>
-          <p style={{ fontSize: '10px', fontWeight: '700', color: '#52C97A', marginBottom: '8px' }}>📖 오늘의 경제</p>
-          <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', marginBottom: '6px' }}/>
-          <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', width: '70%' }}/>
+        <div style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid var(--c-green-50)' }}>
+          <p style={{ fontSize: '10px', fontWeight: '700', color: 'var(--c-green-500)', marginBottom: '8px' }}>📖 오늘의 경제</p>
+          <div style={{ height: '8px', background: 'var(--c-line-soft)', borderRadius: '4px', marginBottom: '6px' }}/>
+          <div style={{ height: '8px', background: 'var(--c-line-soft)', borderRadius: '4px', width: '70%' }}/>
         </div>
         {/* 로드맵 */}
-        <div style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid #E8FAF3' }}>
-          <p style={{ fontSize: '10px', fontWeight: '700', color: '#374151', marginBottom: '10px' }}>🗺️ 내 로드맵</p>
+        <div style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid var(--c-green-50)' }}>
+          <p style={{ fontSize: '10px', fontWeight: '700', color: 'var(--c-slate)', marginBottom: '10px' }}>🗺️ 내 로드맵</p>
           {[70, 40, 10].map((w, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <div style={{ flex: 1, height: '6px', background: '#F1F5F9', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ width: `${w}%`, height: '100%', background: '#52C97A', borderRadius: '3px' }}/>
+              <div style={{ flex: 1, height: '6px', background: 'var(--c-line-soft)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ width: `${w}%`, height: '100%', background: 'var(--c-green-500)', borderRadius: '3px' }}/>
               </div>
-              <span style={{ fontSize: '9px', color: '#94A3B8', minWidth: '28px' }}>{w}%</span>
+              <span style={{ fontSize: '9px', color: 'var(--c-muted)', minWidth: '28px' }}>{w}%</span>
             </div>
           ))}
         </div>
@@ -174,31 +175,31 @@ function CoachScreen() {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {/* AI 메시지 */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'contain', flexShrink: 0, background: '#E8FAF3' }} />
-          <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid #E8FAF3' }}>
-            <p style={{ fontSize: '11px', color: '#374151', lineHeight: '1.5' }}>ETF는 여러 주식을 묶어서 거래하는 펀드예요. 쉽게 말하면...</p>
+          <Sun size={24} color="#F59E0B" style={{ flexShrink: 0 }} />
+          <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid var(--c-green-50)' }}>
+            <p style={{ fontSize: '11px', color: 'var(--c-slate)', lineHeight: '1.5' }}>ETF는 여러 주식을 묶어서 거래하는 펀드예요. 쉽게 말하면...</p>
           </div>
         </div>
         {/* 사용자 메시지 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ background: 'linear-gradient(135deg, #52C97A, #16A374)', borderRadius: '14px 14px 4px 14px', padding: '10px 12px', maxWidth: '75%' }}>
+          <div style={{ background: 'var(--grad-action)', borderRadius: '14px 14px 4px 14px', padding: '10px 12px', maxWidth: '75%' }}>
             <p style={{ fontSize: '11px', color: '#fff', lineHeight: '1.5' }}>ETF가 뭔지 쉽게 설명해줘</p>
           </div>
         </div>
         {/* AI 답변 */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'contain', flexShrink: 0, background: '#E8FAF3' }} />
-          <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid #E8FAF3' }}>
-            <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '4px', marginBottom: '5px' }}/>
-            <div style={{ height: '7px', background: '#F1F5F9', borderRadius: '4px', width: '80%' }}/>
+          <Sun size={24} color="#F59E0B" style={{ flexShrink: 0 }} />
+          <div style={{ background: '#fff', borderRadius: '14px 14px 14px 4px', padding: '10px 12px', maxWidth: '75%', border: '1px solid var(--c-green-50)' }}>
+            <div style={{ height: '7px', background: 'var(--c-line-soft)', borderRadius: '4px', marginBottom: '5px' }}/>
+            <div style={{ height: '7px', background: 'var(--c-line-soft)', borderRadius: '4px', width: '80%' }}/>
           </div>
         </div>
       </div>
       {/* 입력창 */}
-      <div style={{ padding: '12px 14px', background: '#fff', borderTop: '1px solid #F1F5F9' }}>
-        <div style={{ background: '#F2FBF5', borderRadius: '100px', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: '11px', color: '#94A3B8' }}>궁금한 경제 개념을 물어보세요</span>
-          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#52C97A' }}/>
+      <div style={{ padding: '12px 14px', background: '#fff', borderTop: '1px solid var(--c-line-soft)' }}>
+        <div style={{ background: 'var(--c-canvas)', borderRadius: '100px', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '11px', color: 'var(--c-muted)' }}>궁금한 경제 개념을 물어보세요</span>
+          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--c-green-500)' }}/>
         </div>
       </div>
     </div>
@@ -217,9 +218,9 @@ function DiaryScreen() {
         </div>
         {/* 일기 목록 */}
         {['오늘 ETF에 대해 배웠다', '금리와 물가의 관계', 'GDP가 뭔지 알게 됐다'].map((title, i) => (
-          <div key={i} style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid #F1F5F9' }}>
-            <p style={{ fontSize: '9px', color: '#94A3B8', marginBottom: '6px' }}>2026.06.0{i + 9}</p>
-            <p style={{ fontSize: '12px', fontWeight: '700', color: '#0F1F18', letterSpacing: '-0.3px' }}>{title}</p>
+          <div key={i} style={{ background: '#fff', borderRadius: '14px', padding: '14px', border: '1px solid var(--c-line-soft)' }}>
+            <p style={{ fontSize: '9px', color: 'var(--c-muted)', marginBottom: '6px' }}>2026.06.0{i + 9}</p>
+            <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-ink)', letterSpacing: '-0.3px' }}>{title}</p>
             <div style={{ display: 'flex', gap: '4px', marginTop: '8px' }}>
               {['😊', '📈', '💡'].slice(0, i + 1).map((e, j) => (
                 <span key={j} style={{ fontSize: '14px' }}>{e}</span>
@@ -238,22 +239,22 @@ function GrowthScreen() {
       <MockTopBar title="내 성장" />
       <div style={{ padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {/* 성장 카드 */}
-        <div style={{ background: 'linear-gradient(135deg, #52C97A, #0D9B6E)', borderRadius: '16px', padding: '18px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(135deg, var(--c-green-500), #0D9B6E)', borderRadius: '16px', padding: '18px', textAlign: 'center' }}>
           <div style={{ fontSize: '36px', marginBottom: '8px' }}>🌱</div>
           <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>현재 단계</p>
           <p style={{ fontSize: '16px', fontWeight: '900', color: '#fff', letterSpacing: '-0.5px' }}>새싹 경제인</p>
           <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '100px', height: '6px', marginTop: '12px', overflow: 'hidden' }}>
-            <div style={{ width: '42%', height: '100%', background: '#FFC83D', borderRadius: '100px' }}/>
+            <div style={{ width: '42%', height: '100%', background: 'var(--c-yellow-500)', borderRadius: '100px' }}/>
           </div>
           <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.7)', marginTop: '6px' }}>다음 단계까지 58%</p>
         </div>
         {/* 통계 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           {[['📖', '읽은 글', '12개'], ['📓', '일기', '8개'], ['📚', '저장 용어', '24개'], ['💬', '코치 질문', '16개']].map(([e, l, v]) => (
-            <div key={l} style={{ background: '#fff', borderRadius: '14px', padding: '14px', textAlign: 'center', border: '1px solid #F1F5F9' }}>
+            <div key={l} style={{ background: '#fff', borderRadius: '14px', padding: '14px', textAlign: 'center', border: '1px solid var(--c-line-soft)' }}>
               <p style={{ fontSize: '20px', marginBottom: '4px' }}>{e}</p>
-              <p style={{ fontSize: '9px', color: '#94A3B8', marginBottom: '2px' }}>{l}</p>
-              <p style={{ fontSize: '14px', fontWeight: '800', color: '#0F1F18', letterSpacing: '-0.5px' }}>{v}</p>
+              <p style={{ fontSize: '9px', color: 'var(--c-muted)', marginBottom: '2px' }}>{l}</p>
+              <p style={{ fontSize: '14px', fontWeight: '800', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>{v}</p>
             </div>
           ))}
         </div>

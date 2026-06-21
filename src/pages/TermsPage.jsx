@@ -1,4 +1,4 @@
-/* AI 용어 설명 페이지 — Supabase 저장 연결 버전 */
+﻿/* AI 용어 설명 페이지 — Supabase 저장 연결 버전 */
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -68,13 +68,13 @@ export default function TermsPage() {
         {/* 페이지 헤더 */}
         <div style={{ borderBottom: '1px solid var(--border-light)', background: '#fff', padding: '32px 0 28px' }}>
           <div className="container">
-            <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
               AI 용어 설명
             </p>
-            <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px' }}>
+            <h1 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-1px', marginBottom: '6px' }}>
               경제 용어 사전 🔍
             </h1>
-            <p style={{ fontSize: '15px', color: '#64748B' }}>
+            <p style={{ fontSize: '15px', color: 'var(--c-slate)' }}>
               어려운 경제 용어를 AI가 초보자 눈높이로 설명해드려요
             </p>
           </div>
@@ -94,15 +94,15 @@ export default function TermsPage() {
                     background: '#fff',
                     borderRadius: '16px',
                     padding: '6px 6px 6px 20px',
-                    border: '2px solid #E2E8F0',
+                    border: '2px solid var(--c-line)',
                     boxShadow: 'var(--shadow-sm)',
                     marginBottom: '24px',
                     transition: 'border-color 0.15s',
                   }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = '#10B981'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
+                  onFocus={(e) => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = 'var(--c-line)'}
                 >
-                  <span style={{ fontSize: '18px', display: 'flex', alignItems: 'center', color: '#94A3B8' }}>🔍</span>
+                  <span style={{ fontSize: '18px', display: 'flex', alignItems: 'center', color: 'var(--c-muted)' }}>🔍</span>
                   <input
                     type="text"
                     placeholder="경제 용어를 입력하세요  (예: ETF, 금리, 인플레이션)"
@@ -113,7 +113,7 @@ export default function TermsPage() {
                       flex: 1,
                       border: 'none',
                       fontSize: '15px',
-                      color: '#0F172A',
+                      color: 'var(--c-ink)',
                       background: 'transparent',
                       padding: '10px 0',
                       letterSpacing: '-0.3px',
@@ -122,7 +122,7 @@ export default function TermsPage() {
                   <button
                     onClick={() => handleSearch()}
                     style={{
-                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      background: 'var(--grad-action)',
                       color: '#fff',
                       border: 'none',
                       borderRadius: '12px',
@@ -143,18 +143,18 @@ export default function TermsPage() {
                       key={term}
                       onClick={() => handleSearch(term)}
                       style={{
-                        background: '#F8FAFC',
-                        border: '1.5px solid #E2E8F0',
+                        background: 'var(--c-surface)',
+                        border: '1.5px solid var(--c-line)',
                         borderRadius: '100px',
                         padding: '6px 16px',
                         fontSize: '13px',
                         fontWeight: '600',
-                        color: '#374151',
+                        color: 'var(--c-slate)',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#10B981'; e.currentTarget.style.color = '#10B981'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#374151'; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--c-green-500)'; e.currentTarget.style.color = 'var(--c-green-500)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--c-line)'; e.currentTarget.style.color = 'var(--c-slate)'; }}
                     >
                       {term}
                     </button>
@@ -165,7 +165,7 @@ export default function TermsPage() {
                 {loading && (
                   <div className="anim-fade" style={{ textAlign: 'center', padding: '80px 0' }}>
                     <div style={{ fontSize: '56px', marginBottom: '20px', animation: 'pulse 1.5s infinite' }}>🤖</div>
-                    <p style={{ fontSize: '16px', color: '#64748B', fontWeight: '500' }}>AI가 설명을 준비 중이에요...</p>
+                    <p style={{ fontSize: '16px', color: 'var(--c-slate)', fontWeight: '500' }}>AI가 설명을 준비 중이에요...</p>
                   </div>
                 )}
 
@@ -180,7 +180,7 @@ export default function TermsPage() {
                             width: '72px',
                             height: '72px',
                             borderRadius: '20px',
-                            background: '#ECFDF5',
+                            background: 'var(--c-green-50)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -190,10 +190,10 @@ export default function TermsPage() {
                           {result.emoji}
                         </div>
                         <div>
-                          <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '4px' }}>
+                          <h2 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-1px', marginBottom: '4px' }}>
                             {result.term}
                           </h2>
-                          <p style={{ fontSize: '14px', color: '#64748B' }}>{result.fullName}</p>
+                          <p style={{ fontSize: '14px', color: 'var(--c-slate)' }}>{result.fullName}</p>
                         </div>
                         <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
                           <div style={{ display: 'flex', gap: '10px' }}>
@@ -211,10 +211,10 @@ export default function TermsPage() {
                             style={{
                               padding: '10px 16px',
                               borderRadius: '10px',
-                              background: '#F1F5F9',
+                              background: 'var(--c-line-soft)',
                               border: 'none',
                               fontSize: '13px',
-                              color: '#64748B',
+                              color: 'var(--c-slate)',
                               cursor: 'pointer',
                               fontWeight: '600',
                             }}
@@ -229,30 +229,30 @@ export default function TermsPage() {
                       </div>
 
                       {/* 설명 */}
-                      <p style={{ fontSize: '16px', color: '#374151', lineHeight: '1.8', marginBottom: '24px', letterSpacing: '-0.3px' }}>
+                      <p style={{ fontSize: '16px', color: 'var(--c-slate)', lineHeight: '1.8', marginBottom: '24px', letterSpacing: '-0.3px' }}>
                         {result.explanation}
                       </p>
 
                       {/* 예시 + 핵심 포인트 */}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                        <div style={{ background: '#FFFBEB', borderRadius: '14px', padding: '18px', borderLeft: '3px solid #F59E0B' }}>
+                        <div style={{ background: 'var(--c-yellow-100)', borderRadius: '14px', padding: '18px', borderLeft: '3px solid var(--c-yellow-500)' }}>
                           <p style={{ fontSize: '12px', fontWeight: '700', color: '#D97706', marginBottom: '8px', letterSpacing: '0.3px' }}>
                             💡 예시
                           </p>
-                          <p style={{ fontSize: '14px', color: '#374151', lineHeight: '1.6' }}>{result.example}</p>
+                          <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.6' }}>{result.example}</p>
                         </div>
-                        <div style={{ background: '#ECFDF5', borderRadius: '14px', padding: '18px', borderLeft: '3px solid #10B981' }}>
-                          <p style={{ fontSize: '12px', fontWeight: '700', color: '#059669', marginBottom: '8px', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <CheckCircle size={13} color="#059669" /> 핵심 포인트
+                        <div style={{ background: 'var(--c-green-50)', borderRadius: '14px', padding: '18px', borderLeft: '3px solid var(--c-green-500)' }}>
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-green-500)', marginBottom: '8px', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <CheckCircle size={13} color="var(--c-green-500)" /> 핵심 포인트
                           </p>
-                          <p style={{ fontSize: '14px', color: '#374151', lineHeight: '1.6' }}>{result.point}</p>
+                          <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.6' }}>{result.point}</p>
                         </div>
                       </div>
 
                       {/* 관련 용어 */}
                       {result.relatedTerms?.length > 0 && (
                         <div>
-                          <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '700', marginBottom: '10px', letterSpacing: '0.5px' }}>
+                          <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '700', marginBottom: '10px', letterSpacing: '0.5px' }}>
                             관련 용어
                           </p>
                           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -261,18 +261,18 @@ export default function TermsPage() {
                                 key={term}
                                 onClick={() => handleSearch(term)}
                                 style={{
-                                  background: '#F1F5F9',
-                                  border: '1px solid #E2E8F0',
+                                  background: 'var(--c-line-soft)',
+                                  border: '1px solid var(--c-line)',
                                   borderRadius: '8px',
                                   padding: '6px 14px',
                                   fontSize: '13px',
-                                  color: '#374151',
+                                  color: 'var(--c-slate)',
                                   cursor: 'pointer',
                                   fontWeight: '500',
                                   transition: 'all 0.15s',
                                 }}
-                                onMouseEnter={(e) => { e.currentTarget.style.background = '#ECFDF5'; e.currentTarget.style.color = '#10B981'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.color = '#374151'; }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--c-green-50)'; e.currentTarget.style.color = 'var(--c-green-500)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--c-line-soft)'; e.currentTarget.style.color = 'var(--c-slate)'; }}
                               >
                                 {term}
                               </button>
@@ -290,10 +290,10 @@ export default function TermsPage() {
                     <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                       <span style={{ fontSize: '48px' }}>🤖</span>
                       <div>
-                        <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#0F172A', marginBottom: '8px' }}>
+                        <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--c-ink)', marginBottom: '8px' }}>
                           AI가 쉽게 설명해드려요
                         </h3>
-                        <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.6' }}>
+                        <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.6' }}>
                           어떤 경제 용어든 초보자 눈높이로 설명, 예시, 핵심 포인트까지 알려드려요.
                           <br />위 태그를 클릭하거나 직접 입력해보세요!
                         </p>
@@ -305,7 +305,7 @@ export default function TermsPage() {
 
               {/* ── 오른쪽: 전체 용어 목록 ── */}
               <div>
-                <p style={{ fontSize: '11px', fontWeight: '700', color: '#94A3B8', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px' }}>
+                <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px' }}>
                   전체 용어 목록
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -327,15 +327,15 @@ export default function TermsPage() {
                         boxShadow: 'var(--shadow-xs)',
                         transition: 'all 0.15s ease',
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#A7F3D0'; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--c-green-100)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-light)'; }}
                     >
                       <span style={{ fontSize: '22px' }}>{item.emoji}</span>
                       <div>
-                        <p style={{ fontSize: '14px', fontWeight: '700', color: '#0F172A', letterSpacing: '-0.4px' }}>
+                        <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-ink)', letterSpacing: '-0.4px' }}>
                           {item.term}
                         </p>
-                        <p style={{ fontSize: '11px', color: '#94A3B8' }}>{item.fullName}</p>
+                        <p style={{ fontSize: '11px', color: 'var(--c-muted)' }}>{item.fullName}</p>
                       </div>
                     </button>
                   ))}

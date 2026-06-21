@@ -47,8 +47,8 @@ export default function LandingNav() {
           style={{
             padding: '8px 16px', borderRadius: '10px',
             background: 'none',
-            border: scrolled ? '1.5px solid #E2E8F0' : '1.5px solid rgba(33,197,142,0.4)',
-            color: scrolled ? '#374151' : '#52C97A',
+            border: scrolled ? '1.5px solid var(--c-line)' : '1.5px solid rgba(33,197,142,0.4)',
+            color: scrolled ? 'var(--c-slate)' : 'var(--c-green-500)',
             cursor: 'pointer',
             fontSize: '13px', fontWeight: '600',
             letterSpacing: '-0.2px',
@@ -61,7 +61,7 @@ export default function LandingNav() {
           onClick={() => navigate('/signup')}
           style={{
             padding: '8px 18px', borderRadius: '10px',
-            background: 'linear-gradient(135deg, #52C97A, #16A374)',
+            background: 'var(--grad-action)',
             color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: '13px', fontWeight: '700',
             letterSpacing: '-0.2px',

@@ -1,8 +1,8 @@
-
+﻿
 export default function ComingSoonSection() {
   return (
     <section style={{
-      background: 'linear-gradient(160deg, #064E3B 0%, #0D9B6E 100%)',
+      background: 'linear-gradient(160deg, var(--c-forest-900) 0%, #0D9B6E 100%)',
       padding: 'clamp(60px, 8vw, 100px) 24px',
       position: 'relative',
       overflow: 'hidden',
@@ -54,7 +54,7 @@ export default function ComingSoonSection() {
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           background: 'rgba(255,200,61,0.15)',
           border: '1.5px solid rgba(255,200,61,0.4)',
-          color: '#FFC83D',
+          color: 'var(--c-yellow-500)',
           borderRadius: '100px', padding: '8px 20px',
           fontSize: '14px', fontWeight: '700',
           letterSpacing: '-0.3px', marginBottom: '36px',

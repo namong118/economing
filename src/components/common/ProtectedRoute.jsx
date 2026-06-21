@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+﻿import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export default function ProtectedRoute({ children }) {
@@ -14,10 +14,10 @@ export default function ProtectedRoute({ children }) {
       }}>
         <div style={{
           width: '40px', height: '40px', borderRadius: '50%',
-          border: '3px solid #E2E8F0', borderTopColor: '#10B981',
+          border: '3px solid var(--c-line)', borderTopColor: 'var(--c-green-500)',
           animation: 'spin 0.8s linear infinite',
         }} />
-        <p style={{ fontSize: '14px', color: '#94A3B8', fontWeight: '500' }}>잠시만요...</p>
+        <p style={{ fontSize: '14px', color: 'var(--c-muted)', fontWeight: '500' }}>잠시만요...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );

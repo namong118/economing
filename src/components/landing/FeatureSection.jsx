@@ -1,25 +1,25 @@
-import { BookOpen, NotebookPen, BookMarked } from 'lucide-react';
+import { BookOpen, NotebookPen, BookMarked, Sun } from 'lucide-react';
 
 const BASE_URL = import.meta.env.BASE_URL;
 
 const FEATURES = [
   {
-    icon: <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: 28, height: 28, objectFit: 'contain' }} />,
+    icon: <Sun size={26} color="#F59E0B" />,
     title: 'AI 코치',
     desc: '모르는 경제 개념을\n쉽게 질문하세요.',
-    bg: '#FEF9EC',
-    accent: '#F59E0B',
-    border: '#FDE68A',
-    iconColor: '#F59E0B',
+    bg: 'var(--c-yellow-100)',
+    accent: 'var(--c-yellow-500)',
+    border: 'var(--c-yellow-border)',
+    iconColor: 'var(--c-yellow-500)',
   },
   {
-    icon: <BookOpen size={28} color="#2A7A4B" />,
+    icon: <BookOpen size={28} color="var(--c-forest-700)" />,
     title: '경제 읽기',
     desc: '3분 만에\n경제 개념 하나를 이해해보세요.',
-    bg: '#F0FDF4',
-    accent: '#52C97A',
+    bg: 'var(--c-green-50)',
+    accent: 'var(--c-green-500)',
     border: '#BBF7D0',
-    iconColor: '#52C97A',
+    iconColor: 'var(--c-green-500)',
   },
   {
     icon: <NotebookPen size={28} color="#3B82F6" />,
@@ -52,7 +52,7 @@ export default function FeatureSection() {
         <div style={{ textAlign: 'center', marginBottom: '52px' }}>
           <p style={{
             display: 'inline-block',
-            background: '#E8FAF3', color: '#059669',
+            background: 'var(--c-green-50)', color: 'var(--c-green-500)',
             borderRadius: '100px', padding: '5px 14px',
             fontSize: '13px', fontWeight: '700',
             letterSpacing: '-0.2px', marginBottom: '16px',
@@ -61,7 +61,7 @@ export default function FeatureSection() {
           </p>
           <h2 style={{
             fontSize: 'clamp(24px, 4vw, 36px)',
-            fontWeight: '900', color: '#0F1F18',
+            fontWeight: '900', color: 'var(--c-ink)',
             letterSpacing: '-1px', lineHeight: '1.25',
           }}>
             경제 성장을 위한<br/>4가지 도구
@@ -107,13 +107,13 @@ function FeatureCard({ icon, title, desc, bg, accent, border }) {
       <div>
         <h3 style={{
           fontSize: '17px', fontWeight: '800',
-          color: '#0F1F18', letterSpacing: '-0.5px',
+          color: 'var(--c-ink)', letterSpacing: '-0.5px',
           marginBottom: '6px',
         }}>
           {title}
         </h3>
         <p style={{
-          fontSize: '14px', color: '#64748B',
+          fontSize: '14px', color: 'var(--c-slate)',
           lineHeight: '1.6', letterSpacing: '-0.2px',
           whiteSpace: 'pre-line',
         }}>

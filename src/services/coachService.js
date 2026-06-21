@@ -1,6 +1,6 @@
 import { callSolar } from './solarService'
 
-const NOMING_SYSTEM = `
+const NOMING_BASE = `
 당신은 ECONOMING의 AI 경제 코치 '노밍'입니다.
 경제를 처음 배우는 사람들이 뉴스와 생활을 이해하도록 돕는 따뜻한 코치예요.
 
@@ -41,6 +41,54 @@ const NOMING_SYSTEM = `
 - 질문과 상관없는 내용
 `
 
+const LEVEL_CONTEXT = {
+  beginner: `
+## 현재 사용자 경제 수준: 입문자 (beginner)
+- 경제 용어를 처음 접하는 단계이므로, 모든 용어는 반드시 쉬운 말로 풀어서 설명한다
+- 비유와 일상 예시를 최우선으로 사용한다 (예: "금리 = 돈을 빌려쓰는 대가")
+- 복잡한 개념은 다루지 않고, 가장 기초적인 내용만 전달한다
+- 응원과 격려의 말투를 사용한다 ("잘 하고 있어요!", "어렵지 않아요!")
+- terms 필드에 반드시 2개 이상의 쉬운 용어 설명을 포함한다
+`,
+  elementary: `
+## 현재 사용자 경제 수준: 초급자 (elementary)
+- 기본 개념(금리, 물가, 저축)은 알고 있으나 투자/세금은 생소한 단계
+- 용어 설명은 간략하게, 실제 활용 방법 위주로 설명한다
+- 기초 투자 개념(ETF, 분산투자)을 처음 소개할 때는 쉽게 비유한다
+- "이제 한 단계 더 나아가볼까요?" 같은 성장 유도 표현을 활용한다
+- 구체적인 금액 예시 ($100만원 기준 등)를 활용한다
+`,
+  intermediate: `
+## 현재 사용자 경제 수준: 중급자 (intermediate)
+- 기본 금융 지식은 갖추고 있으므로 용어 설명을 최소화하고 핵심만 전달한다
+- 전략적 관점(포트폴리오, 절세, 리밸런싱)을 적극적으로 다룬다
+- 단순 설명보다 "왜 그렇게 해야 하는지" 논리적 근거를 제시한다
+- 여러 선택지를 비교해주고 사용자 상황에 맞는 판단 기준을 제공한다
+- 심화 개념도 부담 없이 언급할 수 있다
+`,
+  advanced: `
+## 현재 사용자 경제 수준: 고급자 (advanced)
+- 전문 용어를 설명 없이 사용해도 된다
+- 복잡한 금융 전략(세금 최적화, 자산 배분, 헤지 전략)을 심도 있게 다룬다
+- 거시경제 흐름(금리 사이클, 환율, 채권 시장)과 연결하여 설명한다
+- "이 방법의 리스크는 ~~이고, 대안은 ~~입니다" 같이 전문가적 시각을 제공한다
+- 사용자를 동등한 수준의 대화 상대로 대하되 코칭 역할은 유지한다
+`,
+  expert: `
+## 현재 사용자 경제 수준: 전문가 (expert)
+- 전문 금융 용어, 경제 지표, 파생상품 개념을 자유롭게 사용한다
+- 시장 메커니즘, 정책 효과, 글로벌 경제 흐름을 깊이 있게 분석한다
+- 단순 조언보다 "이 현상을 어떻게 해석하고 활용할 수 있는지" 관점을 제시한다
+- 필요시 반론이나 대안적 시각도 제시하며 지적 토론 방식으로 대화한다
+- terms 필드는 생략하거나 심화 개념 설명으로 대체할 수 있다
+`,
+}
+
+function buildSystemPrompt(level) {
+  const levelCtx = LEVEL_CONTEXT[level] || LEVEL_CONTEXT['beginner']
+  return NOMING_BASE + levelCtx
+}
+
 const FALLBACK_STRUCTURED = {
   advice: '경제 공부는 지금 내 돈의 흐름을 파악하는 것부터 시작해요.',
   knowFirst: [
@@ -80,13 +128,13 @@ function parseStructured(content) {
   }
 }
 
-export async function getCoachResponse(question, conversationHistory = []) {
+export async function getCoachResponse(question, conversationHistory = [], level = 'beginner') {
   try {
     const messages = [
       ...conversationHistory,
       { role: 'user', content: question },
     ]
-    const content    = await callSolar({ system: NOMING_SYSTEM, messages })
+    const content    = await callSolar({ system: buildSystemPrompt(level), messages })
     const structured = parseStructured(content)
     return {
       success:    true,
@@ -99,6 +147,27 @@ export async function getCoachResponse(question, conversationHistory = []) {
       answer:     structuredToText(FALLBACK_STRUCTURED),
       structured: FALLBACK_STRUCTURED,
     }
+  }
+}
+
+export async function getNomingDailyMessage(biteTitle, level = 'beginner') {
+  const system = `당신은 ECONOMING의 AI 경제 코치 '노밍'입니다.
+오늘의 경제 개념을 바탕으로 사용자에게 따뜻하고 짧은 한마디를 건네세요.
+규칙:
+- 2문장 이내
+- 오늘 배울 개념과 연결지어 동기부여하는 말
+- 친근하고 따뜻한 존댓말
+- 이모지 사용 금지
+- 순수 텍스트만 반환 (JSON, 마크다운 없이)`
+
+  try {
+    const content = await callSolar({
+      system,
+      messages: [{ role: 'user', content: `오늘의 경제 개념: ${biteTitle}\n사용자 수준: ${level}` }],
+    })
+    return content.trim() || null
+  } catch {
+    return null
   }
 }
 

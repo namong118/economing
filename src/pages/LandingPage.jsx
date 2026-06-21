@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LandingNav from '../components/landing/LandingNav';
@@ -26,7 +26,7 @@ export default function LandingPage() {
     return (
       <div style={{
         minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#F0FAF7',
+        background: 'var(--c-canvas)',
       }}>
         <div style={{ fontSize: '32px', animation: 'spin 1.2s linear infinite' }}>🌱</div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

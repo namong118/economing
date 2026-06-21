@@ -19,7 +19,7 @@ export function NewsTicker() {
       marginTop: 8,
       background: '#fff',
       borderRadius: 8,
-      border: '0.5px solid #B8EBC8',
+      border: '0.5px solid var(--c-line)',
       padding: '8px 12px',
       display: 'flex',
       alignItems: 'center',
@@ -34,7 +34,7 @@ export function NewsTicker() {
         fontSize: 10,
         padding: '2px 8px',
         borderRadius: 20,
-        background: '#52C97A',
+        background: 'var(--c-green-500)',
         color: '#fff',
         fontWeight: 500,
         flexShrink: 0,
@@ -45,11 +45,11 @@ export function NewsTicker() {
       {/* position:relative + 고정 height → 애니메이션 요소를 레이아웃 흐름에서 완전히 분리 */}
       <div style={{ overflow: 'hidden', flex: 1, minWidth: 0, position: 'relative', height: '18px' }}>
         {loading ? (
-          <span style={{ fontSize: 12, color: '#888780', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
+          <span style={{ fontSize: 12, color: 'var(--c-muted)', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
             뉴스 불러오는 중...
           </span>
         ) : headlines.length === 0 ? (
-          <span style={{ fontSize: 12, color: '#888780', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
+          <span style={{ fontSize: 12, color: 'var(--c-muted)', position: 'absolute', top: 0, left: 0, lineHeight: '18px' }}>
             오늘의 경제 뉴스를 불러올 수 없어요
           </span>
         ) : (

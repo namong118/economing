@@ -5,7 +5,7 @@ export default function LandingFooter() {
 
   return (
     <footer style={{
-      background: '#0F1F18',
+      background: 'var(--c-ink)',
       padding: '40px 24px',
     }}>
       <div style={{

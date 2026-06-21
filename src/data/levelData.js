@@ -1,13 +1,14 @@
 /* ECONOMING 성장 단계 & XP 유틸리티 */
+import { Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees } from 'lucide-react';
 
 export const LEVELS = [
-  { key: 'seed',   label: '씨앗', emoji: '🌱', image: 'stage_1_seed.png',   xpRequired: 0   },
-  { key: 'sprout', label: '새싹', emoji: '🌿', image: 'stage_2_sprout.png', xpRequired: 20  },
-  { key: 'leaf',   label: '잎',   emoji: '🍃', image: 'stage_3_leaf.png',   xpRequired: 50  },
-  { key: 'flower', label: '꽃',   emoji: '🌸', image: 'stage_4_flower.png', xpRequired: 100 },
-  { key: 'fruit',  label: '열매', emoji: '🍊', image: 'stage_5_fruit.png',  xpRequired: 180 },
-  { key: 'tree',   label: '나무', emoji: '🌳', image: 'stage_6_tree.png',   xpRequired: 300 },
-  { key: 'forest', label: '숲',   emoji: '🌲', image: 'stage_7_forest.png', xpRequired: 500 },
+  { key: 'seed',   label: '씨앗', emoji: '🌱', Icon: Bean,          xpRequired: 0   },
+  { key: 'sprout', label: '새싹', emoji: '🌿', Icon: Sprout,        xpRequired: 20  },
+  { key: 'leaf',   label: '잎',   emoji: '🍃', Icon: Leaf,          xpRequired: 50  },
+  { key: 'flower', label: '꽃',   emoji: '🌸', Icon: Flower2,       xpRequired: 100 },
+  { key: 'fruit',  label: '열매', emoji: '🍊', Icon: Cherry,        xpRequired: 180 },
+  { key: 'tree',   label: '나무', emoji: '🌳', Icon: TreeDeciduous, xpRequired: 300 },
+  { key: 'forest', label: '숲',   emoji: '🌲', Icon: Trees,         xpRequired: 500 },
 ];
 
 /** XP 값으로 현재 레벨 객체 반환 */

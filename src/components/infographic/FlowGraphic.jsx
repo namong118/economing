@@ -1,4 +1,4 @@
-﻿export default function FlowGraphic({ data }) {
+export default function FlowGraphic({ data }) {
   const { steps } = data;
 
   return (
@@ -10,13 +10,13 @@
             <div style={{
               display: 'flex', alignItems: 'center', gap: '12px',
               padding: '10px 12px', borderRadius: '12px',
-              background: isLast ? '#F0FDF9' : '#F8FAFC',
-              border: `1.5px solid ${isLast ? '#A7F3D0' : '#E2E8F0'}`,
+              background: isLast ? 'var(--c-green-50)' : 'var(--c-surface)',
+              border: `1.5px solid ${isLast ? 'var(--c-green-100)' : 'var(--c-line)'}`,
             }}>
               <div style={{
                 width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
-                background: isLast ? '#52C97A' : '#fff',
-                border: `1.5px solid ${isLast ? '#1AAD7D' : '#E2E8F0'}`,
+                background: isLast ? 'var(--c-green-500)' : '#fff',
+                border: `1.5px solid ${isLast ? 'var(--c-green-500)' : 'var(--c-line)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '18px',
               }}>
@@ -25,20 +25,20 @@
               <div style={{ flex: 1 }}>
                 <p style={{
                   fontSize: '13px', fontWeight: '700',
-                  color: isLast ? '#065F46' : '#0F172A',
+                  color: isLast ? 'var(--c-forest-900)' : 'var(--c-ink)',
                   lineHeight: '1.4',
                 }}>
                   {step.label}
                 </p>
                 {step.note && (
-                  <p style={{ fontSize: '11px', color: '#64748B', marginTop: '3px', fontWeight: '500' }}>
+                  <p style={{ fontSize: '11px', color: 'var(--c-slate)', marginTop: '3px', fontWeight: '500' }}>
                     {step.note}
                   </p>
                 )}
               </div>
               {isLast && (
                 <span style={{
-                  fontSize: '10px', fontWeight: '700', color: '#52C97A',
+                  fontSize: '10px', fontWeight: '700', color: 'var(--c-green-500)',
                   background: '#DCFCE7', borderRadius: '100px', padding: '2px 8px',
                   flexShrink: 0, whiteSpace: 'nowrap',
                 }}>

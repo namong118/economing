@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getConversationList, deleteConversation } from '../../services/conversationService'
 import { Plus, MessageCircle, X } from 'lucide-react'
 
@@ -31,7 +31,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
       width: 240,
       flexShrink: 0,
       background: '#fff',
-      borderRight: '0.5px solid #B8EBC8',
+      borderRight: '0.5px solid var(--c-line)',
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
@@ -43,7 +43,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
           onClick={onNewChat}
           style={{
             width: '100%',
-            background: '#52C97A',
+            background: 'var(--c-green-500)',
             color: '#fff',
             border: 'none',
             borderRadius: 8,
@@ -56,8 +56,8 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
             gap: 7,
             fontFamily: 'inherit',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#1AAD7D' }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#52C97A' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-green-500)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-green-500)' }}
         >
           <Plus size={16} />
           새 대화
@@ -65,12 +65,12 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
       </div>
 
       {/* 구분선 */}
-      <div style={{ height: '0.5px', background: '#B8EBC8', margin: '0 12px' }} />
+      <div style={{ height: '0.5px', background: 'var(--c-line)', margin: '0 12px' }} />
 
       {/* 대화 목록 */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '8px 8px 16px' }}>
         {loading ? (
-          <div style={{ fontSize: 12, color: '#888780', textAlign: 'center', padding: 16 }}>
+          <div style={{ fontSize: 12, color: 'var(--c-muted)', textAlign: 'center', padding: 16 }}>
             불러오는 중...
           </div>
         ) : !user?.id ? (
@@ -78,7 +78,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
             로그인하면<br />대화 기록이 저장돼요
           </div>
         ) : Object.keys(groups).length === 0 ? (
-          <div style={{ fontSize: 12, color: '#888780', textAlign: 'center', padding: 16 }}>
+          <div style={{ fontSize: 12, color: 'var(--c-muted)', textAlign: 'center', padding: 16 }}>
             대화 기록이 없어요
           </div>
         ) : (
@@ -105,12 +105,12 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                     onClick={() => onSelectConversation(conv, convs)}
                     style={{
                       width: '100%',
-                      background: activeId === conv.id ? '#E3F9EC' : hoveredId === conv.id ? '#F2FBF5' : 'transparent',
+                      background: activeId === conv.id ? 'var(--c-green-100)' : hoveredId === conv.id ? 'var(--c-canvas)' : 'transparent',
                       border: 'none',
                       borderRadius: 8,
                       padding: '7px 28px 7px 10px',
                       fontSize: 12,
-                      color: activeId === conv.id ? '#2A7A4B' : '#5F5E5A',
+                      color: activeId === conv.id ? 'var(--c-forest-700)' : 'var(--c-slate)',
                       cursor: 'pointer',
                       textAlign: 'left',
                       display: 'flex',
@@ -120,7 +120,7 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                       transition: 'background 0.12s',
                     }}
                   >
-                    <MessageCircle size={13} color={activeId === conv.id ? '#52C97A' : '#B8EBC8'} style={{ flexShrink: 0 }} />
+                    <MessageCircle size={13} color={activeId === conv.id ? 'var(--c-green-500)' : 'var(--c-line)'} style={{ flexShrink: 0 }} />
                     <span style={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -140,10 +140,10 @@ export function CoachSidebar({ user, onNewChat, onSelectConversation, activeId, 
                         background: 'transparent', border: 'none',
                         padding: 2, cursor: 'pointer',
                         display: 'flex', alignItems: 'center',
-                        color: '#888780',
+                        color: 'var(--c-muted)',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#712B13' }}
-                      onMouseLeave={e => { e.currentTarget.style.color = '#888780' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-warn)' }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-muted)' }}
                     >
                       <X size={12} />
                     </button>

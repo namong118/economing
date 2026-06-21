@@ -24,12 +24,20 @@ const LEVEL_CATEGORY_PRIORITY = {
   expert:       ['거시경제', '투자', '부동산'],
 };
 
-const _recommendCache = {};
+const LS_PREFIX = 'economing_bite_rec__';
+
+function lsGet(key) {
+  try { return JSON.parse(localStorage.getItem(LS_PREFIX + key)); } catch { return null; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); } catch {}
+}
 
 export async function getRecommendedBite(userId, userLevel = 'beginner') {
   const today = new Date().toISOString().slice(0, 10);
   const cacheKey = `${userId}__${userLevel}__${today}`;
-  if (_recommendCache[cacheKey]) return _recommendCache[cacheKey];
+  const cached = lsGet(cacheKey);
+  if (cached) return cached;
 
   try {
     const { data: recentBites } = await supabase
@@ -91,7 +99,7 @@ ${biteList}`,
     const parsed  = JSON.parse(clean);
     const recommended = economicBites.find(b => b.id === parsed.recommended_id);
     const result = recommended ?? getTodaysBite();
-    _recommendCache[cacheKey] = result;
+    lsSet(cacheKey, result);
     return result;
 
   } catch {

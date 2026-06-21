@@ -1,6 +1,8 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { DictionaryProvider } from './context/DictionaryContext';
 import ProtectedRoute  from './components/common/ProtectedRoute';
+import AppShell        from './components/layout/AppShell';
 import LandingPage     from './pages/LandingPage';
 import DiagnosisPage   from './pages/DiagnosisPage';
 import ResultPage      from './pages/ResultPage';
@@ -17,74 +19,43 @@ import ReadingPage     from './pages/ReadingPage';
 import MyGrowthHubPage       from './pages/MyGrowthHubPage';
 import EconomicBitePage      from './pages/EconomicBitePage';
 import EconomicBiteArchivePage from './pages/EconomicBiteArchivePage';
-import { DictionaryProvider } from './context/DictionaryContext';
 
 export default function App() {
   return (
     <Router>
       <AuthProvider>
         <DictionaryProvider>
-        <div className="app-shell">
           <Routes>
+
+            {/* 랜딩: 풀스크린, AppShell 없음 */}
             <Route path="/" element={<LandingPage />} />
 
-            {/* 인증 (TopNav 없는 독립 레이아웃) */}
-            <Route path="/login"      element={<LoginPage />} />
-            <Route path="/signup"     element={<SignupPage />} />
-            <Route path="/onboarding" element={<OnboardingPage />} />
+            {/* 앱 전체: AppShell 레이아웃 */}
+            <Route element={<AppShell />}>
+              <Route path="/login"      element={<LoginPage />} />
+              <Route path="/signup"     element={<SignupPage />} />
+              <Route path="/onboarding" element={<OnboardingPage />} />
 
-            {/* AI 진단 플로우 */}
-            <Route path="/diagnosis" element={<DiagnosisPage />} />
-            <Route path="/result"    element={<ResultPage />} />
+              <Route path="/diagnosis"  element={<DiagnosisPage />} />
+              <Route path="/result"     element={<ResultPage />} />
 
-            {/* ── 학습 영역 (공개) ── */}
-            <Route path="/home"    element={<HomePage />} />
-            <Route path="/coach"   element={<CoachPage />} />
-            <Route path="/read"    element={<ReadingPage />} />
-            <Route path="/terms"   element={<TermsPage />} />
-            <Route path="/bites"   element={<EconomicBiteArchivePage />} />
-            <Route path="/bite/:id" element={<EconomicBitePage />} />
+              <Route path="/home"       element={<HomePage />} />
+              <Route path="/coach"      element={<CoachPage />} />
+              <Route path="/read"       element={<ReadingPage />} />
+              <Route path="/terms"      element={<TermsPage />} />
+              <Route path="/bites"      element={<EconomicBiteArchivePage />} />
+              <Route path="/bite/:id"   element={<EconomicBitePage />} />
 
-            {/* ── 성장 영역 (로그인 필요) ── */}
-            <Route
-              path="/my-growth"
-              element={
-                <ProtectedRoute>
-                  <MyGrowthHubPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/roadmap"
-              element={
-                <ProtectedRoute>
-                  <RoadmapPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/diary"
-              element={
-                <ProtectedRoute>
-                  <DiaryPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dictionary"
-              element={
-                <ProtectedRoute>
-                  <DictionaryPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route path="/my-growth" element={<ProtectedRoute><MyGrowthHubPage /></ProtectedRoute>} />
+              <Route path="/roadmap"   element={<ProtectedRoute><RoadmapPage /></ProtectedRoute>} />
+              <Route path="/diary"     element={<ProtectedRoute><DiaryPage /></ProtectedRoute>} />
+              <Route path="/dictionary" element={<ProtectedRoute><DictionaryPage /></ProtectedRoute>} />
 
-            {/* /profile → /my-growth 로 통합 */}
-            <Route path="/profile" element={<Navigate to="/my-growth" replace />} />
+              <Route path="/profile" element={<Navigate to="/my-growth" replace />} />
+              <Route path="*"        element={<Navigate to="/home" replace />} />
+            </Route>
 
-            <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
-        </div>
         </DictionaryProvider>
       </AuthProvider>
     </Router>

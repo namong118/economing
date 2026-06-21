@@ -6,7 +6,7 @@ export default function HeroSection() {
   return (
     <section style={{
       minHeight: '100vh',
-      background: 'linear-gradient(170deg, #E8FAF3 0%, #F0FAF7 50%, #FFF9E6 100%)',
+      background: 'linear-gradient(170deg, var(--c-green-50) 0%, var(--c-canvas) 50%, var(--c-yellow-100) 100%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -32,7 +32,7 @@ export default function HeroSection() {
       {/* 상단 배지 */}
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: '6px',
-        background: '#D1FAE5', color: '#059669',
+        background: 'var(--c-green-100)', color: 'var(--c-green-500)',
         borderRadius: '100px', padding: '6px 16px',
         fontSize: '13px', fontWeight: '700',
         letterSpacing: '-0.2px', marginBottom: '36px',
@@ -57,7 +57,7 @@ export default function HeroSection() {
       <h1 style={{
         fontSize: 'clamp(28px, 6vw, 48px)',
         fontWeight: '900',
-        color: '#0F1F18',
+        color: 'var(--c-ink)',
         lineHeight: '1.25',
         letterSpacing: '-1.5px',
         textAlign: 'center',
@@ -65,7 +65,7 @@ export default function HeroSection() {
         maxWidth: '520px',
       }}>
         경제 공부,<br/>
-        <span style={{ color: '#52C97A' }}>어디서부터 시작해야</span><br/>
+        <span style={{ color: 'var(--c-green-500)' }}>어디서부터 시작해야</span><br/>
         할지 모르겠다면
       </h1>
 
@@ -89,7 +89,7 @@ export default function HeroSection() {
           onClick={() => navigate('/signup')}
           style={{
             padding: '18px 32px', borderRadius: '18px',
-            background: 'linear-gradient(135deg, #52C97A, #16A374)',
+            background: 'var(--grad-action)',
             color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: '17px', fontWeight: '800',
             letterSpacing: '-0.5px',
@@ -105,8 +105,8 @@ export default function HeroSection() {
           onClick={() => navigate('/login')}
           style={{
             padding: '16px 32px', borderRadius: '18px',
-            background: 'rgba(255,255,255,0.8)', color: '#374151',
-            border: '1.5px solid #D1FAE5', cursor: 'pointer',
+            background: 'rgba(255,255,255,0.8)', color: 'var(--c-slate)',
+            border: '1.5px solid var(--c-green-100)', cursor: 'pointer',
             fontSize: '15px', fontWeight: '600',
             letterSpacing: '-0.3px',
             backdropFilter: 'blur(8px)',

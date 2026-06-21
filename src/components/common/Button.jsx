@@ -1,4 +1,4 @@
-/* 재사용 가능한 버튼 컴포넌트 */
+﻿/* 재사용 가능한 버튼 컴포넌트 */
 
 const styles = {
   base: {
@@ -17,18 +17,18 @@ const styles = {
     letterSpacing: '-0.2px',
   },
   primary: {
-    background: 'linear-gradient(135deg, #10B981, #059669)',
+    background: 'var(--grad-action)',
     color: '#fff',
     boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
   },
   secondary: {
     background: '#F3F4F6',
-    color: '#374151',
+    color: 'var(--c-slate)',
   },
   outline: {
     background: 'transparent',
-    color: '#10B981',
-    border: '2px solid #10B981',
+    color: 'var(--c-green-500)',
+    border: '2px solid var(--c-green-500)',
   },
   ghost: {
     background: 'transparent',

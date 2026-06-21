@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { useDictionaryCtx } from '../context/DictionaryContext';
@@ -9,10 +9,10 @@ import PageWrapper from '../components/layout/PageWrapper';
 
 /* ── 정적 매핑 ────────────────────────────────────────────── */
 const ECONOMIC_LEVEL = {
-  beginner:     { label: '입문자', emoji: '🌱', color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', desc: '경제 공부를 이제 막 시작하시는 분' },
+  beginner:     { label: '입문자', emoji: '🌱', color: 'var(--c-green-500)', bg: 'var(--c-green-50)', border: 'var(--c-green-100)', desc: '경제 공부를 이제 막 시작하시는 분' },
   elementary:   { label: '초급자', emoji: '📖', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', desc: '기본 용어는 알지만 뉴스가 아직 어려운 분' },
   intermediate: { label: '중급자', emoji: '📚', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE', desc: '기본 개념은 알고 더 깊이 배우고 싶은 분' },
-  advanced:     { label: '고급자', emoji: '🔍', color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
+  advanced:     { label: '고급자', emoji: '🔍', color: 'var(--c-yellow-500)', bg: 'var(--c-yellow-100)', border: 'var(--c-yellow-border)', desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
   expert:       { label: '전문가', emoji: '🏆', color: '#EF4444', bg: '#FEF2F2', border: '#FECACA', desc: '경제를 깊이 이해하고 투자 전략까지 세우는 분' },
 };
 const INVESTMENT_EXP = {
@@ -64,49 +64,6 @@ function generateAnalysis(profile) {
   return "노밍이 분석 중이에요. 온보딩을 완료하면 맞춤 코칭을 받을 수 있어요!";
 }
 
-/* ── 개발자 정보 아코디언 ─────────────────────────────────── */
-function DevInfo({ user, profile, provider }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ marginBottom: '12px' }}>
-      <button
-        onClick={() => setOpen(v => !v)}
-        style={{
-          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: 'none', border: '0.5px solid #B8EBC8',
-          borderRadius: open ? '12px 12px 0 0' : '12px',
-          padding: '12px 16px', cursor: 'pointer',
-        }}
-      >
-        <span style={{ fontSize: '13px', fontWeight: '600', color: '#888780' }}>🛠 개발자 정보 보기</span>
-        <span style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: '600' }}>{open ? '닫기 ↑' : '펼치기 ↓'}</span>
-      </button>
-      {open && (
-        <div style={{ border: '0.5px solid #B8EBC8', borderTop: 'none', borderRadius: '0 0 12px 12px', overflow: 'hidden' }}>
-          {[
-            { k: 'user.id',    v: user?.id },
-            { k: 'email',      v: user?.email || '(소셜 로그인)' },
-            { k: 'provider',   v: provider },
-            { k: 'level',      v: profile?.level },
-            { k: 'xp',         v: String(profile?.xp ?? 0) },
-            { k: 'created_at', v: profile?.created_at?.slice(0, 10) },
-          ].map(({ k, v }) => (
-            <div key={k} style={{ display: 'flex', gap: '12px', padding: '10px 16px', borderBottom: '1px solid #F1F5F9' }}>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: '#888780', fontFamily: 'monospace', minWidth: '100px', flexShrink: 0 }}>{k}</span>
-              <span style={{ fontSize: '12px', color: '#5F5E5A', fontFamily: 'monospace', wordBreak: 'break-all' }}>{v}</span>
-            </div>
-          ))}
-          <details style={{ padding: '10px 16px' }}>
-            <summary style={{ fontSize: '11px', color: '#888780', cursor: 'pointer', fontWeight: '700', fontFamily: 'monospace' }}>user_metadata</summary>
-            <pre style={{ margin: '8px 0 0', fontSize: '11px', color: '#5F5E5A', lineHeight: '1.6', overflowX: 'auto' }}>
-              {JSON.stringify(user?.user_metadata, null, 2)}
-            </pre>
-          </details>
-        </div>
-      )}
-    </div>
-  );
-}
 
 /* ── 요약 탭 ──────────────────────────────────────────────── */
 function SummaryTab() {
@@ -131,37 +88,33 @@ function SummaryTab() {
   return (
     <div>
       {/* ── 2. 성장 단계 ── */}
-      <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '20px', marginBottom: '16px' }}>
-        <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px', marginBottom: '14px' }}>성장 단계</p>
+      <div style={{ background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px solid var(--c-line)', padding: '20px', marginBottom: '16px' }}>
+        <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px', marginBottom: '14px' }}>성장 단계</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <img src={`${BASE_URL}${currentLevel.image}`} alt={currentLevel.label} style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} />
+          <currentLevel.Icon size={36} style={{ flexShrink: 0 }} />
           <div>
-            <p style={{ fontSize: '17px', fontWeight: '900', color: '#2A7A4B', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
-            <p style={{ fontSize: '13px', color: '#888780', fontWeight: '500' }}>
+            <p style={{ fontSize: '17px', fontWeight: '900', color: 'var(--c-forest-700)', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
+            <p style={{ fontSize: '13px', color: 'var(--c-muted)', fontWeight: '500' }}>
               {xp} XP 획득 {nextLevel ? `· ${nextLevel.label}까지 ${xpNeeded} XP 남음` : '· 🏆 최고 단계 달성!'}
             </p>
           </div>
         </div>
         <div style={{ position: 'relative', height: '36px', marginBottom: '4px' }}>
           {/* 트랙 배경 */}
-          <div style={{ position: 'absolute', left: '14px', right: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: '#F1F5F9', borderRadius: '100px' }} />
+          <div style={{ position: 'absolute', left: '14px', right: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: 'var(--c-line-soft)', borderRadius: '100px' }} />
           {/* 진행 채움 */}
-          <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: 'linear-gradient(90deg,#52C97A,#1AAD7D)', borderRadius: '100px', width: `calc(${overallProgress.toFixed(4)} * (100% - 28px))`, transition: 'width 0.6s' }} />
+          <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', height: '5px', background: 'linear-gradient(90deg,var(--c-green-500),var(--c-green-500))', borderRadius: '100px', width: `calc(${overallProgress.toFixed(4)} * (100% - 28px))`, transition: 'width 0.6s' }} />
           {/* 아이콘 */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
             {LEVELS.map((l, i) => {
               const isCurrent = l.key === currentLevel.key;
               const isPast    = i < stageIndex;
               return (
-                <img
+                <l.Icon
                   key={l.key}
                   title={l.label}
-                  src={`${BASE_URL}${l.image}`}
-                  alt={l.label}
+                  size={isCurrent ? 32 : 26}
                   style={{
-                    width: isCurrent ? 32 : 26,
-                    height: isCurrent ? 32 : 26,
-                    objectFit: 'contain',
                     flexShrink: 0,
                     opacity: isCurrent ? 1 : isPast ? 0.85 : 0.3,
                     filter: isCurrent ? 'drop-shadow(0 0 4px rgba(33,197,142,0.5))' : 'none',
@@ -177,41 +130,41 @@ function SummaryTab() {
 
       {/* ── 3. 경제 프로필 ── */}
       {isOnboarded ? (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8', padding: '14px 16px', marginBottom: '16px' }}>
+        <div style={{ background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px solid var(--c-line)', padding: '14px 16px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <p style={{ fontSize: '11px', fontWeight: '700', color: '#888780', letterSpacing: '0.8px' }}>경제 프로필</p>
+            <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px' }}>경제 프로필</p>
             <button
               onClick={() => navigate('/onboarding')}
-              style={{ background: 'none', border: 'none', fontSize: '12px', color: '#888780', cursor: 'pointer', fontWeight: '600', padding: 0 }}
-              onMouseEnter={e => e.currentTarget.style.color = '#52C97A'}
-              onMouseLeave={e => e.currentTarget.style.color = '#888780'}
+              style={{ background: 'none', border: 'none', fontSize: '12px', color: 'var(--c-muted)', cursor: 'pointer', fontWeight: '600', padding: 0 }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--c-green-500)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--c-muted)'}
             >
               ✏️ 수정
             </button>
           </div>
           <div style={{ display: 'flex', gap: '0' }}>
             {econInfo && (
-              <div style={{ flex: 1, paddingRight: '8px', borderRight: '1px solid #e8f5ee' }}>
-                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>경제 수준</p>
-                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{econInfo.label}</p>
+              <div style={{ flex: 1, paddingRight: '8px', borderRight: '1px solid var(--c-green-50)' }}>
+                <p style={{ fontSize: '10px', color: 'var(--c-muted)', marginBottom: '3px' }}>경제 수준</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-forest-700)', lineHeight: 1.2 }}>{econInfo.label}</p>
               </div>
             )}
             {invInfo && (
-              <div style={{ flex: 1, padding: '0 8px', borderRight: '1px solid #e8f5ee' }}>
-                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>투자 경험</p>
-                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{invInfo.label}</p>
+              <div style={{ flex: 1, padding: '0 8px', borderRight: '1px solid var(--c-green-50)' }}>
+                <p style={{ fontSize: '10px', color: 'var(--c-muted)', marginBottom: '3px' }}>투자 경험</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-forest-700)', lineHeight: 1.2 }}>{invInfo.label}</p>
               </div>
             )}
             {occInfo && (
-              <div style={{ flex: 1, padding: '0 8px', borderRight: interests.length > 0 ? '1px solid #e8f5ee' : 'none' }}>
-                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>현재 상황</p>
-                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>{occInfo.label}</p>
+              <div style={{ flex: 1, padding: '0 8px', borderRight: interests.length > 0 ? '1px solid var(--c-green-50)' : 'none' }}>
+                <p style={{ fontSize: '10px', color: 'var(--c-muted)', marginBottom: '3px' }}>현재 상황</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-forest-700)', lineHeight: 1.2 }}>{occInfo.label}</p>
               </div>
             )}
             {interests.length > 0 && (
               <div style={{ flex: 1, paddingLeft: '8px' }}>
-                <p style={{ fontSize: '10px', color: '#aaa', marginBottom: '3px' }}>관심 분야</p>
-                <p style={{ fontSize: '12px', fontWeight: '700', color: '#2A7A4B', lineHeight: 1.2 }}>
+                <p style={{ fontSize: '10px', color: 'var(--c-muted)', marginBottom: '3px' }}>관심 분야</p>
+                <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-forest-700)', lineHeight: 1.2 }}>
                   {interests.slice(0, 2).join(', ')}{interests.length > 2 ? ` +${interests.length - 2}` : ''}
                 </p>
               </div>
@@ -219,22 +172,21 @@ function SummaryTab() {
           </div>
         </div>
       ) : (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '0.5px dashed #B8EBC8', padding: '28px', textAlign: 'center', marginBottom: '16px' }}>
-          <img src={`${BASE_URL}noming.png`} alt="노밍" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 10px', display: 'block' }} />
-          <p style={{ fontSize: '15px', fontWeight: '800', color: '#2A7A4B', marginBottom: '5px' }}>경제 성장 진단을 완료해보세요</p>
-          <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.6', marginBottom: '16px' }}>온보딩을 완료하면 노밍이 맞춤 코칭을 시작해요.</p>
-          <button onClick={() => navigate('/diagnosis')} style={{ padding: '10px 24px', borderRadius: '12px', background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}>
+        <div style={{ background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px dashed var(--c-line)', padding: '28px', textAlign: 'center', marginBottom: '16px' }}>
+          <Sun size={44} color="#F59E0B" style={{ margin: '0 auto 10px', display: 'block' }} />
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '5px' }}>경제 성장 진단을 완료해보세요</p>
+          <p style={{ fontSize: '13px', color: 'var(--c-muted)', lineHeight: '1.6', marginBottom: '16px' }}>온보딩을 완료하면 노밍이 맞춤 코칭을 시작해요.</p>
+          <button onClick={() => navigate('/diagnosis')} style={{ padding: '10px 24px', borderRadius: '12px', background: 'linear-gradient(135deg,var(--c-green-500),var(--c-green-500))', color: '#fff', border: 'none', fontSize: '14px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}>
             진단 시작하기 →
           </button>
         </div>
       )}
 
 
-      {/* ── 개발자 정보 / 로그아웃 ── */}
-      <DevInfo user={user} profile={profile} provider={provider} />
+      {/* ── 로그아웃 ── */}
       <button
         onClick={handleSignOut}
-        style={{ width: '100%', padding: '13px', borderRadius: '12px', background: '#F2FBF5', color: '#712B13', border: '0.5px solid #B8EBC8', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
+        style={{ width: '100%', padding: '13px', borderRadius: '12px', background: 'var(--c-canvas)', color: 'var(--c-warn)', border: '0.5px solid var(--c-line)', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}
       >
         로그아웃
       </button>
@@ -244,25 +196,25 @@ function SummaryTab() {
 
 /* ── 출처 뱃지 맵 ─────────────────────────────────────────── */
 const SOURCE_STYLE = {
-  economic_bite: { label: '경제 한잎', Icon: Leaf,          bg: '#F0FDF4', color: '#15803D', border: '#86EFAC' },
-  coach:         { label: '노밍 대화', Icon: MessageCircle, bg: '#FFFBEA', color: '#92400E', border: '#FDE68A' },
+  economic_bite: { label: '경제 한잎', Icon: Leaf,          bg: 'var(--c-green-50)', color: 'var(--c-forest-700)', border: 'var(--c-green-300)' },
+  coach:         { label: '노밍 대화', Icon: MessageCircle, bg: 'var(--c-yellow-100)', color: 'var(--c-amber-700)', border: 'var(--c-yellow-border)' },
   news:          { label: '경제 읽기', Icon: Newspaper,     bg: '#EFF6FF', color: '#1D4ED8', border: '#BFDBFE' },
 };
 
 /* ── 용어 카드 (새 스키마) ────────────────────────────────── */
 function TermCard({ term, onDelete, deleting }) {
   const [confirmDel, setConfirmDel] = useState(false);
-  const src = SOURCE_STYLE[term.sourceType] ?? { label: '기타', icon: '📖', bg: '#F8FAFC', color: '#888780', border: '#E2E8F0' };
+  const src = SOURCE_STYLE[term.sourceType] ?? { label: '기타', icon: '📖', bg: 'var(--c-surface)', color: 'var(--c-muted)', border: 'var(--c-line)' };
 
   return (
     <div style={{
-      background: '#fff', border: '0.5px solid #B8EBC8',
+      background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
       borderRadius: '12px', padding: '14px',
       display: 'flex', flexDirection: 'column', gap: '8px',
     }}>
       {/* 용어명 + 출처 뱃지 */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
-        <p style={{ fontSize: '15px', fontWeight: '800', color: '#2A7A4B', letterSpacing: '-0.4px', lineHeight: 1.3 }}>
+        <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', letterSpacing: '-0.4px', lineHeight: 1.3 }}>
           {term.term}
         </p>
         <span style={{
@@ -277,19 +229,19 @@ function TermCard({ term, onDelete, deleting }) {
 
       {/* 뜻 */}
       {term.meaning && (
-        <p style={{ fontSize: '12px', color: '#5F5E5A', lineHeight: '1.65' }}>
+        <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.65' }}>
           {term.meaning.length > 90 ? term.meaning.slice(0, 90) + '…' : term.meaning}
         </p>
       )}
 
       {/* 저장일 + 삭제 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
-        <span style={{ fontSize: '11px', color: '#CBD5E1', fontWeight: '500' }}>{term.savedAt}</span>
+        <span style={{ fontSize: '11px', color: 'var(--c-muted)', fontWeight: '500' }}>{term.savedAt}</span>
         {confirmDel ? (
           <div style={{ display: 'flex', gap: '5px' }}>
             <button
               onClick={() => setConfirmDel(false)}
-              style={{ padding: '4px 10px', borderRadius: '7px', background: '#F8FAFC', border: '0.5px solid #B8EBC8', fontSize: '11px', fontWeight: '600', color: '#888780', cursor: 'pointer' }}
+              style={{ padding: '4px 10px', borderRadius: '7px', background: 'var(--c-surface)', border: '0.5px solid var(--c-line)', fontSize: '11px', fontWeight: '600', color: 'var(--c-muted)', cursor: 'pointer' }}
             >
               취소
             </button>
@@ -303,9 +255,9 @@ function TermCard({ term, onDelete, deleting }) {
         ) : (
           <button
             onClick={() => setConfirmDel(true)}
-            style={{ padding: '4px 10px', borderRadius: '7px', background: 'none', border: '0.5px solid #B8EBC8', fontSize: '11px', fontWeight: '600', color: '#888780', cursor: 'pointer' }}
+            style={{ padding: '4px 10px', borderRadius: '7px', background: 'none', border: '0.5px solid var(--c-line)', fontSize: '11px', fontWeight: '600', color: 'var(--c-muted)', cursor: 'pointer' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#FECACA'; e.currentTarget.style.color = '#EF4444'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#B8EBC8'; e.currentTarget.style.color = '#888780'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-line)'; e.currentTarget.style.color = 'var(--c-muted)'; }}
           >
             삭제
           </button>
@@ -338,35 +290,35 @@ function DictionaryTabContent() {
 
       {/* 검색 */}
       <div style={{ position: 'relative', marginBottom: '16px' }}>
-        <Search size={15} color="#888780" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+        <Search size={15} color="var(--c-muted)" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="용어 검색..."
           style={{
             width: '100%', padding: '12px 16px 12px 42px', boxSizing: 'border-box',
-            borderRadius: '14px', border: '0.5px solid #B8EBC8',
-            fontSize: '14px', color: '#2A7A4B', background: '#fff',
+            borderRadius: '14px', border: '0.5px solid var(--c-line)',
+            fontSize: '14px', color: 'var(--c-forest-700)', background: 'var(--c-surface)',
             outline: 'none', fontFamily: 'inherit',
           }}
-          onFocus={e => e.currentTarget.style.borderColor = '#52C97A'}
-          onBlur={e => e.currentTarget.style.borderColor = '#B8EBC8'}
+          onFocus={e => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
+          onBlur={e => e.currentTarget.style.borderColor = 'var(--c-line)'}
         />
       </div>
 
       {!loaded ? (
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#888780', fontSize: '13px' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--c-muted)', fontSize: '13px' }}>
           불러오는 중…
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: '12px', border: '0.5px solid #B8EBC8' }}>
+        <div style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px solid var(--c-line)' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-            <BookMarked size={32} color="#888780" />
+            <BookMarked size={32} color="var(--c-muted)" />
           </div>
-          <p style={{ fontSize: '15px', fontWeight: '800', color: '#2A7A4B', marginBottom: '6px', letterSpacing: '-0.3px' }}>
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '6px', letterSpacing: '-0.3px' }}>
             {search ? '검색 결과가 없어요' : '아직 저장한 용어가 없어요'}
           </p>
-          <p style={{ fontSize: '13px', color: '#888780', lineHeight: '1.7' }}>
+          <p style={{ fontSize: '13px', color: 'var(--c-muted)', lineHeight: '1.7' }}>
             {search
               ? '다른 검색어를 시도해보세요.'
               : '경제 한잎·노밍 대화·경제 읽기에서\n용어 옆 ＋ 버튼을 눌러 저장해보세요.'}
@@ -374,7 +326,7 @@ function DictionaryTabContent() {
         </div>
       ) : (
         <>
-          <p style={{ fontSize: '12px', fontWeight: '700', color: '#888780', letterSpacing: '0.4px', marginBottom: '12px' }}>
+          <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.4px', marginBottom: '12px' }}>
             {search ? `"${search}" 검색 결과 · ` : ''}{filtered.length}개
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -411,8 +363,8 @@ export default function MyGrowthHubPage() {
     return (
       <PageWrapper>
         <div style={{ padding: '80px 24px', textAlign: 'center' }}>
-          <p style={{ color: '#888780', marginBottom: '16px' }}>로그인이 필요해요.</p>
-          <button onClick={() => navigate('/login')} style={{ padding: '12px 28px', borderRadius: '12px', background: 'linear-gradient(135deg,#52C97A,#1AAD7D)', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '14px' }}>
+          <p style={{ color: 'var(--c-muted)', marginBottom: '16px' }}>로그인이 필요해요.</p>
+          <button onClick={() => navigate('/login')} style={{ padding: '12px 28px', borderRadius: '12px', background: 'linear-gradient(135deg,var(--c-green-500),var(--c-green-500))', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '14px' }}>
             로그인하기
           </button>
         </div>
@@ -422,7 +374,7 @@ export default function MyGrowthHubPage() {
 
   return (
     <PageWrapper>
-      <div style={{ background: '#F2FBF5', minHeight: 'calc(100vh - 64px)' }}>
+      <div style={{ background: 'var(--c-canvas)' }}>
 
         {/* 탭 카드 + 콘텐츠 */}
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px 20px 80px' }}>
@@ -443,22 +395,22 @@ export default function MyGrowthHubPage() {
                     display: 'flex', flexDirection: 'column',
                     alignItems: 'center', gap: '8px',
                     cursor: 'pointer', fontFamily: 'inherit',
-                    border: isActive ? 'none' : '0.5px solid #B8EBC8',
-                    background: isActive ? '#52C97A' : '#fff',
+                    border: isActive ? 'none' : '0.5px solid var(--c-line)',
+                    background: isActive ? 'var(--c-green-500)' : 'var(--c-surface)',
                     transition: 'background 0.15s',
                   }}
                 >
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '12px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: isActive ? 'rgba(255,255,255,0.2)' : '#F2FBF5',
+                    background: isActive ? 'rgba(255,255,255,0.2)' : 'var(--c-canvas)',
                   }}>
-                    <Icon size={22} color={isActive ? '#fff' : '#3A9A5C'} />
+                    <Icon size={22} color={isActive ? '#fff' : 'var(--c-forest-700)'} />
                   </div>
                   <span style={{
                     fontSize: '13px',
                     fontWeight: isActive ? 600 : 500,
-                    color: isActive ? '#fff' : '#2A7A4B',
+                    color: isActive ? '#fff' : 'var(--c-forest-700)',
                   }}>
                     {label}
                   </span>

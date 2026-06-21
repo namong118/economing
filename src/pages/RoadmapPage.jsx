@@ -1,4 +1,4 @@
-/* 학습 로드맵 페이지 — 5단계 경제 성장 경로 */
+﻿/* 학습 로드맵 페이지 — 5단계 경제 성장 경로 */
 import { useState } from 'react';
 import { Map, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -25,17 +25,17 @@ export default function RoadmapPage() {
       <div className="anim-fade">
 
         {/* 헤더 */}
-        <div style={{ borderBottom: '1px solid #F1F5F9', background: '#fff', padding: '32px 0 28px' }}>
+        <div style={{ borderBottom: '1px solid var(--c-line-soft)', background: 'var(--c-surface)', padding: '32px 0 28px' }}>
           <div className="container">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
                   학습 로드맵
                 </p>
-                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  경제 성장 5단계 로드맵 <Map size={26} color="#0F172A" />
+                <h1 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  경제 성장 5단계 로드맵 <Map size={26} color="var(--c-ink)" />
                 </h1>
-                <p style={{ fontSize: '15px', color: '#64748B' }}>
+                <p style={{ fontSize: '15px', color: 'var(--c-slate)' }}>
                   {info
                     ? `${info.label}을 위한 맞춤 시작점 · STEP ${startStep}부터 시작하세요`
                     : '돈의 흐름부터 부동산까지, 단계별로 배워요'}
@@ -57,8 +57,8 @@ export default function RoadmapPage() {
                   onClick={() => navigate('/diagnosis')}
                   style={{
                     padding: '9px 18px', borderRadius: '10px',
-                    background: '#F1F5F9', border: 'none',
-                    fontSize: '13px', fontWeight: '600', color: '#64748B', cursor: 'pointer',
+                    background: 'var(--c-line-soft)', border: 'none',
+                    fontSize: '13px', fontWeight: '600', color: 'var(--c-slate)', cursor: 'pointer',
                   }}
                 >
                   수준 재진단
@@ -84,22 +84,22 @@ export default function RoadmapPage() {
                       style={{
                         width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
                         background: isDone
-                          ? '#10B981'
+                          ? 'var(--c-green-500)'
                           : isCurrent
                           ? step.color
-                          : '#E2E8F0',
+                          : 'var(--c-line)',
                         border: expandedStep === idx ? `3px solid ${step.color}` : '3px solid transparent',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: '18px', cursor: 'pointer', transition: 'all 0.2s',
                         boxShadow: expandedStep === idx ? `0 0 0 3px ${step.color}22` : 'none',
                       }}
                     >
-                      {isDone ? <CheckCircle size={18} color="#10B981" /> : step.emoji}
+                      {isDone ? <CheckCircle size={18} color="var(--c-green-500)" /> : step.emoji}
                     </button>
                     {idx < roadmap.length - 1 && (
                       <div style={{
                         width: '48px', height: '3px', flexShrink: 0,
-                        background: isDone ? '#10B981' : '#E2E8F0',
+                        background: isDone ? 'var(--c-green-500)' : 'var(--c-line)',
                         transition: 'background 0.3s',
                       }} />
                     )}
@@ -122,8 +122,8 @@ export default function RoadmapPage() {
                       border: isCurrent
                         ? `2px solid ${step.color}55`
                         : isExpanded
-                        ? '1.5px solid #CBD5E1'
-                        : '1.5px solid #F1F5F9',
+                        ? '1.5px solid var(--c-line)'
+                        : '1.5px solid var(--c-line-soft)',
                       transition: 'all 0.2s ease',
                       opacity: isDone ? 0.75 : 1,
                     }}
@@ -136,7 +136,7 @@ export default function RoadmapPage() {
                       <div style={{
                         width: '56px', height: '56px', borderRadius: '16px', flexShrink: 0,
                         background: isDone
-                          ? '#ECFDF5'
+                          ? 'var(--c-green-50)'
                           : isCurrent
                           ? `linear-gradient(135deg, ${step.color}, ${step.color}88)`
                           : `${step.color}12`,
@@ -144,12 +144,12 @@ export default function RoadmapPage() {
                         fontSize: '28px',
                         boxShadow: isCurrent ? `0 4px 14px ${step.color}35` : 'none',
                       }}>
-                        {isDone ? <CheckCircle size={18} color="#10B981" /> : step.emoji}
+                        {isDone ? <CheckCircle size={18} color="var(--c-green-500)" /> : step.emoji}
                       </div>
 
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: '700', color: isCurrent ? step.color : '#94A3B8', letterSpacing: '0.5px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: '700', color: isCurrent ? step.color : 'var(--c-muted)', letterSpacing: '0.5px' }}>
                             STEP {step.step}
                           </span>
                           {isCurrent && (
@@ -158,25 +158,25 @@ export default function RoadmapPage() {
                             </span>
                           )}
                           {isDone && (
-                            <span style={{ background: '#ECFDF5', color: '#059669', fontSize: '10px', fontWeight: '700', padding: '2px 8px', borderRadius: '100px' }}>
+                            <span style={{ background: 'var(--c-green-50)', color: 'var(--c-green-500)', fontSize: '10px', fontWeight: '700', padding: '2px 8px', borderRadius: '100px' }}>
                               완료
                             </span>
                           )}
                         </div>
-                        <h3 style={{ fontSize: '17px', fontWeight: '800', color: isDone ? '#94A3B8' : '#0F172A', letterSpacing: '-0.5px' }}>
+                        <h3 style={{ fontSize: '17px', fontWeight: '800', color: isDone ? 'var(--c-muted)' : 'var(--c-ink)', letterSpacing: '-0.5px' }}>
                           {step.title}
                         </h3>
                       </div>
 
-                      <span style={{ fontSize: '18px', color: '#CBD5E1', transform: isExpanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
+                      <span style={{ fontSize: '18px', color: 'var(--c-muted)', transform: isExpanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
                         ›
                       </span>
                     </div>
 
                     {/* 펼쳐진 내용 */}
                     {isExpanded && (
-                      <div className="anim-slide" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #F1F5F9' }}>
-                        <p style={{ fontSize: '14px', color: '#64748B', lineHeight: '1.7', marginBottom: '16px' }}>
+                      <div className="anim-slide" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid var(--c-line-soft)' }}>
+                        <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '16px' }}>
                           {step.description}
                         </p>
 
@@ -184,9 +184,9 @@ export default function RoadmapPage() {
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
                           {step.topics.map(topic => (
                             <span key={topic} style={{
-                              background: '#F8FAFC', border: '1px solid #E2E8F0',
+                              background: 'var(--c-surface)', border: '1px solid var(--c-line)',
                               borderRadius: '8px', padding: '5px 12px',
-                              fontSize: '13px', color: '#374151', fontWeight: '500',
+                              fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500',
                             }}>
                               {topic}
                             </span>
@@ -195,7 +195,7 @@ export default function RoadmapPage() {
 
                         {/* 이 단계 관련 추천 질문 */}
                         <div style={{ marginBottom: '20px' }}>
-                          <p style={{ fontSize: '12px', fontWeight: '700', color: '#94A3B8', letterSpacing: '0.5px', marginBottom: '10px' }}>
+                          <p style={{ fontSize: '12px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.5px', marginBottom: '10px' }}>
                             AI 코치에게 물어보세요
                           </p>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -205,12 +205,12 @@ export default function RoadmapPage() {
                                 onClick={() => navigate('/coach', { state: { initialQuestion: q } })}
                                 style={{
                                   textAlign: 'left', padding: '10px 14px', borderRadius: '10px',
-                                  background: '#F8FAFC', border: '1.5px solid #E2E8F0',
-                                  fontSize: '13px', color: '#374151', cursor: 'pointer',
+                                  background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+                                  fontSize: '13px', color: 'var(--c-slate)', cursor: 'pointer',
                                   transition: 'all 0.15s',
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.borderColor = step.color; e.currentTarget.style.color = step.color; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.color = '#374151'; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-line)'; e.currentTarget.style.color = 'var(--c-slate)'; }}
                               >
                                 💬 {q}
                               </button>
@@ -219,7 +219,7 @@ export default function RoadmapPage() {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: '12px', color: '#94A3B8' }}>⏱ 예상 기간: {step.duration}</span>
+                          <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>⏱ 예상 기간: {step.duration}</span>
                           <button
                             onClick={() => navigate('/coach', { state: { initialQuestion: `${step.title}에 대해 알고 싶어요` } })}
                             style={{
@@ -240,14 +240,14 @@ export default function RoadmapPage() {
 
             {/* 하단 안내 */}
             {!level && (
-              <Card style={{ marginTop: '24px', background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', border: '1.5px solid #A7F3D0', padding: '24px' }}>
+              <Card style={{ marginTop: '24px', background: 'linear-gradient(135deg, var(--c-green-50), var(--c-green-100))', border: '1.5px solid var(--c-green-100)', padding: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '36px' }}>🎯</span>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: '16px', fontWeight: '700', color: '#0F172A', marginBottom: '4px' }}>
+                    <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--c-ink)', marginBottom: '4px' }}>
                       어느 단계부터 시작해야 할지 모르겠나요?
                     </p>
-                    <p style={{ fontSize: '14px', color: '#64748B' }}>
+                    <p style={{ fontSize: '14px', color: 'var(--c-slate)' }}>
                       5문항 진단으로 나에게 맞는 시작 단계를 바로 알려드려요.
                     </p>
                   </div>
@@ -255,7 +255,7 @@ export default function RoadmapPage() {
                     onClick={() => navigate('/diagnosis')}
                     style={{
                       padding: '10px 22px', borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      background: 'var(--grad-action)',
                       color: '#fff', border: 'none', fontSize: '14px',
                       fontWeight: '700', cursor: 'pointer', flexShrink: 0,
                       boxShadow: '0 4px 12px rgba(16,185,129,0.3)',

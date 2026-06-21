@@ -44,9 +44,9 @@ export default function SaveTermButton({
         gap:            sm ? 3 : 4,
         padding:        sm ? '3px 9px' : '6px 13px',
         borderRadius:   100,
-        background:     saved ? '#F0FDF4' : '#FAFBFC',
-        border:         `1.5px solid ${saved ? '#86EFAC' : '#E2E8F0'}`,
-        color:          saved ? '#15803D' : '#64748B',
+        background:     saved ? 'var(--c-green-50)' : '#FAFBFC',
+        border:         `1.5px solid ${saved ? 'var(--c-green-300)' : 'var(--c-line)'}`,
+        color:          saved ? 'var(--c-forest-700)' : 'var(--c-slate)',
         fontSize:       sm ? 11 : 12,
         fontWeight:     700,
         cursor:         saved ? 'default' : loading ? 'wait' : 'pointer',
@@ -58,16 +58,16 @@ export default function SaveTermButton({
       }}
       onMouseEnter={e => {
         if (!saved && !loading) {
-          e.currentTarget.style.background    = '#F0FDF4';
-          e.currentTarget.style.borderColor   = '#86EFAC';
-          e.currentTarget.style.color         = '#15803D';
+          e.currentTarget.style.background    = 'var(--c-green-50)';
+          e.currentTarget.style.borderColor   = 'var(--c-green-300)';
+          e.currentTarget.style.color         = 'var(--c-forest-700)';
         }
       }}
       onMouseLeave={e => {
         if (!saved && !loading) {
           e.currentTarget.style.background    = '#FAFBFC';
-          e.currentTarget.style.borderColor   = '#E2E8F0';
-          e.currentTarget.style.color         = '#64748B';
+          e.currentTarget.style.borderColor   = 'var(--c-line)';
+          e.currentTarget.style.color         = 'var(--c-slate)';
         }
       }}
     >

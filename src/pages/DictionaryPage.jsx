@@ -1,4 +1,4 @@
-/* 나만의 경제 사전 페이지 — Supabase 연결 버전 */
+﻿/* 나만의 경제 사전 페이지 — Supabase 연결 버전 */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookMarked, Calendar, Search, Loader2, Inbox } from 'lucide-react';
@@ -57,17 +57,17 @@ export default function DictionaryPage() {
     <PageWrapper>
       <div className="anim-fade">
         {/* 페이지 헤더 */}
-        <div style={{ borderBottom: '1px solid var(--border-light)', background: '#fff', padding: '32px 0 28px' }}>
+        <div style={{ borderBottom: '1px solid var(--border-light)', background: 'var(--c-surface)', padding: '32px 0 28px' }}>
           <div className="container">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <p style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
                   내 단어장
                 </p>
-                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0F172A', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  나만의 경제 사전 <BookMarked size={24} color="#10B981" />
+                <h1 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  나만의 경제 사전 <BookMarked size={24} color="var(--c-green-500)" />
                 </h1>
-                <p style={{ fontSize: '15px', color: '#64748B' }}>
+                <p style={{ fontSize: '15px', color: 'var(--c-slate)' }}>
                   내가 저장한 경제 용어 모음
                 </p>
               </div>
@@ -75,7 +75,7 @@ export default function DictionaryPage() {
                 onClick={() => navigate('/terms')}
                 style={{
                   padding: '12px 24px', borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #10B981, #059669)',
+                  background: 'var(--grad-action)',
                   color: '#fff', border: 'none', fontSize: '14px',
                   fontWeight: '700', cursor: 'pointer',
                   boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
@@ -94,7 +94,7 @@ export default function DictionaryPage() {
               {[
                 { Icon: BookMarked, value: isLoading ? '...' : items.length, label: '저장된 용어', color: '#EC4899', bg: '#FDF2F8' },
                 { Icon: Calendar,   value: items[items.length - 1]?.savedAt ?? '-', label: '첫 저장일', color: '#6366F1', bg: '#EEF2FF' },
-                { Icon: Search,     value: filtered.length, label: '검색 결과', color: '#F59E0B', bg: '#FFFBEB' },
+                { Icon: Search,     value: filtered.length, label: '검색 결과', color: 'var(--c-yellow-500)', bg: 'var(--c-yellow-100)' },
               ].map((stat) => (
                 <Card key={stat.label} style={{ background: stat.bg, border: 'none', padding: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -103,7 +103,7 @@ export default function DictionaryPage() {
                       <p style={{ fontSize: '18px', fontWeight: '900', color: stat.color, letterSpacing: '-0.6px', lineHeight: 1 }}>
                         {stat.value}
                       </p>
-                      <p style={{ fontSize: '12px', color: '#64748B', marginTop: '3px' }}>{stat.label}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--c-slate)', marginTop: '3px' }}>{stat.label}</p>
                     </div>
                   </div>
                 </Card>
@@ -124,25 +124,25 @@ export default function DictionaryPage() {
                 <div
                   style={{
                     display: 'flex', alignItems: 'center', gap: '12px',
-                    background: '#fff', borderRadius: '14px',
-                    border: '2px solid #E2E8F0', padding: '4px 16px',
+                    background: 'var(--c-surface)', borderRadius: '14px',
+                    border: '2px solid var(--c-line)', padding: '4px 16px',
                     marginBottom: '20px', boxShadow: 'var(--shadow-xs)',
                   }}
                 >
-                  <Search size={16} color="#94A3B8" style={{ flexShrink: 0 }} />
+                  <Search size={16} color="var(--c-muted)" style={{ flexShrink: 0 }} />
                   <input
                     type="text" placeholder="저장된 용어 검색..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{
                       flex: 1, border: 'none', fontSize: '15px',
-                      padding: '12px 0', background: 'transparent', color: '#0F172A',
+                      padding: '12px 0', background: 'transparent', color: 'var(--c-ink)',
                     }}
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      style={{ color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}
+                      style={{ color: 'var(--c-muted)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}
                     >
                       ✕
                     </button>
@@ -153,16 +153,16 @@ export default function DictionaryPage() {
                 {isLoading ? (
                   <Card style={{ textAlign: 'center', padding: '60px' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-                      <Loader2 size={40} color="#94A3B8" />
+                      <Loader2 size={40} color="var(--c-muted)" />
                     </div>
-                    <p style={{ fontSize: '15px', color: '#94A3B8' }}>불러오는 중...</p>
+                    <p style={{ fontSize: '15px', color: 'var(--c-muted)' }}>불러오는 중...</p>
                   </Card>
                 ) : filtered.length === 0 ? (
                   <Card style={{ textAlign: 'center', padding: '60px' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-                      {items.length === 0 ? <Inbox size={48} color="#94A3B8" /> : <Search size={48} color="#94A3B8" />}
+                      {items.length === 0 ? <Inbox size={48} color="var(--c-muted)" /> : <Search size={48} color="var(--c-muted)" />}
                     </div>
-                    <p style={{ fontSize: '16px', color: '#374151', fontWeight: '700', marginBottom: '8px' }}>
+                    <p style={{ fontSize: '16px', color: 'var(--c-slate)', fontWeight: '700', marginBottom: '8px' }}>
                       {items.length === 0 ? '아직 저장된 용어가 없어요' : '검색 결과가 없어요'}
                     </p>
                     {items.length === 0 && (
@@ -170,7 +170,7 @@ export default function DictionaryPage() {
                         onClick={() => navigate('/terms')}
                         style={{
                           marginTop: '12px', padding: '10px 24px',
-                          borderRadius: '10px', background: '#10B981',
+                          borderRadius: '10px', background: 'var(--c-green-500)',
                           color: '#fff', border: 'none', fontSize: '14px',
                           fontWeight: '700', cursor: 'pointer',
                         }}
@@ -187,8 +187,8 @@ export default function DictionaryPage() {
                         hoverable
                         onClick={() => setSelected(selected?.id === item.id ? null : item)}
                         style={{
-                          border: selected?.id === item.id ? '2px solid #10B981' : '1.5px solid var(--border-light)',
-                          background: selected?.id === item.id ? '#ECFDF5' : '#fff',
+                          border: selected?.id === item.id ? '2px solid var(--c-green-500)' : '1.5px solid var(--border-light)',
+                          background: selected?.id === item.id ? 'var(--c-green-50)' : 'var(--c-surface)',
                           padding: '18px', cursor: 'pointer', position: 'relative',
                         }}
                       >
@@ -209,14 +209,14 @@ export default function DictionaryPage() {
                         </button>
 
                         <div style={{ fontSize: '28px', marginBottom: '12px' }}>{item.emoji || '📌'}</div>
-                        <p style={{ fontSize: '16px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.5px', marginBottom: '3px' }}>
+                        <p style={{ fontSize: '16px', fontWeight: '800', color: 'var(--c-ink)', letterSpacing: '-0.5px', marginBottom: '3px' }}>
                           {item.term}
                         </p>
-                        <p style={{ fontSize: '12px', color: '#94A3B8', marginBottom: '8px' }}>{item.fullName}</p>
-                        <p style={{ fontSize: '12px', color: '#64748B', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        <p style={{ fontSize: '12px', color: 'var(--c-muted)', marginBottom: '8px' }}>{item.fullName}</p>
+                        <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                           {item.explanation}
                         </p>
-                        <p style={{ fontSize: '11px', color: '#94A3B8', marginTop: '10px' }}>저장 {item.savedAt}</p>
+                        <p style={{ fontSize: '11px', color: 'var(--c-muted)', marginTop: '10px' }}>저장 {item.savedAt}</p>
                       </Card>
                     ))}
                   </div>
@@ -233,26 +233,26 @@ export default function DictionaryPage() {
                           {selected.emoji || '📌'}
                         </div>
                         <div>
-                          <h3 style={{ fontSize: '22px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.8px' }}>
+                          <h3 style={{ fontSize: '22px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.8px' }}>
                             {selected.term}
                           </h3>
-                          <p style={{ fontSize: '13px', color: '#64748B' }}>{selected.fullName}</p>
+                          <p style={{ fontSize: '13px', color: 'var(--c-slate)' }}>{selected.fullName}</p>
                         </div>
                       </div>
                       <button
                         onClick={() => setSelected(null)}
-                        style={{ color: '#94A3B8', background: '#F1F5F9', border: 'none', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', fontSize: '14px' }}
+                        style={{ color: 'var(--c-muted)', background: 'var(--c-line-soft)', border: 'none', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', fontSize: '14px' }}
                       >
                         ✕
                       </button>
                     </div>
 
-                    <p style={{ fontSize: '15px', color: '#374151', lineHeight: '1.8', marginBottom: '20px', letterSpacing: '-0.3px' }}>
+                    <p style={{ fontSize: '15px', color: 'var(--c-slate)', lineHeight: '1.8', marginBottom: '20px', letterSpacing: '-0.3px' }}>
                       {selected.explanation}
                     </p>
 
                     <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>저장일: {selected.savedAt}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>저장일: {selected.savedAt}</span>
                       <button
                         onClick={() => handleDelete(selected.id)}
                         style={{
