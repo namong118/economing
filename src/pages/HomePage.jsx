@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Zap, MessageCircle, NotebookPen } from 'lucide-react';
+import { Leaf, Zap, MessageCircle, NotebookPen, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite, recordBiteView } from '../services/biteService';
-import { getRecommendedQuestions } from '../services/coachService';
+import { getLevelByXp } from '../data/levelData';
+import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
@@ -26,22 +27,23 @@ const _questionsCache = {};
 
 export default function HomePage() {
   const navigate             = useNavigate();
-  const { user, profile }    = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { userLevel }        = useUserLevel();
 
-  const [bite, setBite]      = useState(() => getTodaysBite());
+  const [bite, setBite]      = useState(null);
 
   const d    = new Date();
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const today = `${d.getMonth() + 1}월 ${d.getDate()}일 ${days[d.getDay()]}`;
 
-  /* 맞춤 한잎 */
+  /* 맞춤 한잎 — auth 확정 후에만 실행 */
   useEffect(() => {
+    if (authLoading) return;
     if (!user?.id) { setBite(getTodaysBite()); return; }
     getRecommendedBite(user.id, userLevel)
       .then(b => { setBite(b); recordBiteView(user.id, b.id); })
       .catch(() => setBite(getTodaysBite()));
-  }, [user?.id, userLevel]); // eslint-disable-line
+  }, [user?.id, userLevel, authLoading]); // eslint-disable-line
 
   /* 뉴스 */
   const [todayNews,   setTodayNews]   = useState(null);
@@ -92,14 +94,14 @@ export default function HomePage() {
   useEffect(() => {
     if (!user?.id || !bite?.id) return;
     const todayStr = new Date().toISOString().slice(0, 10);
-    Promise.all([
+    Promise.allSettled([
       supabase.from('user_bite_history').select('id').eq('user_id', user.id).eq('bite_id', bite.id).gte('viewed_at', todayStr).limit(1),
       supabase.from('user_quiz_results').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
       supabase.from('coach_conversations').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
-      supabase.from('diary').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
+      supabase.from('economic_journals').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
     ]).then(results => {
-      setTodoDone(results.map(({ data }) => (data?.length ?? 0) > 0));
-    }).catch(() => {});
+      setTodoDone(results.map(r => r.status === 'fulfilled' ? (r.value?.data?.length ?? 0) > 0 : false));
+    });
   }, [user?.id, bite?.id]);
 
   const todos = [
@@ -109,10 +111,29 @@ export default function HomePage() {
     { title: '경제일기 쓰기',    Icon: NotebookPen,   iconColor: 'var(--c-slate)', path: '/diary',            done: todoDone[3] },
   ];
 
-  const nomingIntro = profile?.noming_intro
-    ?.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const _nomingMsgCache = HomePage._nomingMsgCache ?? (HomePage._nomingMsgCache = {});
+  const nomingCacheKey  = bite?.title ? `${bite.title}__${new Date().toISOString().slice(0, 10)}` : null;
+
+  const [nomingIntro, setNomingIntro]           = useState(null);
+  const [nomingIntroLoading, setNomingIntroLoading] = useState(true);
+
+  useEffect(() => {
+    if (!nomingCacheKey) return;
+    if (_nomingMsgCache[nomingCacheKey]) {
+      setNomingIntro(_nomingMsgCache[nomingCacheKey]);
+      setNomingIntroLoading(false);
+      return;
+    }
+    setNomingIntroLoading(true);
+    getNomingDailyMessage(bite.title, userLevel)
+      .then(msg => {
+        const result = msg || null;
+        _nomingMsgCache[nomingCacheKey] = result;
+        setNomingIntro(result);
+      })
+      .catch(() => setNomingIntro(null))
+      .finally(() => setNomingIntroLoading(false));
+  }, [nomingCacheKey]); // eslint-disable-line
 
   const InfographicComp = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
 
@@ -132,7 +153,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 80px', boxSizing: 'border-box' }}>
+      <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 32px', boxSizing: 'border-box' }}>
 
         {/* ── XP / 그리팅 카드 ── */}
         {user ? (
@@ -140,27 +161,35 @@ export default function HomePage() {
             background: 'var(--grad-action)', borderRadius: 18,
             padding: '20px', marginBottom: 14, color: '#fff',
             boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
+            position: 'relative', overflow: 'hidden',
           }}>
-            {/* 상단: 인사 + 아바타 */}
+            {/* 배경 장식 원 */}
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, background: 'rgba(255,255,255,0.12)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
+
+            {/* 상단: 인사 + 레벨 배지 */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4 }}>{today}</div>
                 <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.4px' }}>
                   {profile?.nickname ? `${profile.nickname}님, 안녕하세요!` : '안녕하세요!'}
                 </div>
-                <div style={{ fontSize: 12, opacity: 0.8, marginTop: 3 }}>
-                  {LEVEL_LABEL[userLevel] ?? '학습자'} · {profile?.xp ?? 0} XP 달성
-                </div>
               </div>
-              <div style={{
-                width: 48, height: 48, borderRadius: '50%',
-                background: 'rgba(255,255,255,0.22)',
-                border: '2px solid rgba(255,255,255,0.45)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, fontWeight: 800, flexShrink: 0,
-              }}>
-                {(profile?.nickname || user.email || '?')[0].toUpperCase()}
-              </div>
+              {(() => {
+                const { Icon: LvIcon, label } = getLevelByXp(profile?.xp ?? 0);
+                return (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.92)',
+                    borderRadius: 100, padding: '5px 11px',
+                    border: '0.5px solid rgba(255,255,255,0.3)',
+                    fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  }}>
+                    <LvIcon size={13} color="rgba(255,255,255,0.9)" />
+                    {label}
+                  </span>
+                );
+              })()}
             </div>
 
             {/* XP 진행 바 */}
@@ -243,50 +272,74 @@ export default function HomePage() {
 
         {/* ── 카드 1: 오늘의 한잎 — Dark Forest Hero ── */}
         <div style={{ background: 'var(--c-surface)', borderRadius: 16, border: '0.5px solid var(--c-line)', overflow: 'hidden', marginBottom: 12, boxShadow: 'var(--shadow-card)' }}>
-
-          {/* Hero: dark forest 헤더 */}
-          <div style={{
-            background: 'linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%)',
-            padding: '18px 16px 16px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.3px' }}>오늘의 경제 한잎</span>
-              <div style={{ display: 'flex', gap: 5 }}>
-                <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '0.5px solid rgba(255,255,255,0.25)' }}>
-                  {bite?.category}
-                </span>
-                <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,196,61,0.2)', color: 'var(--c-yellow-500)', border: '0.5px solid rgba(255,196,61,0.4)' }}>
-                  {{ easy: '쉬움', medium: '보통', hard: '심화' }[bite?.difficulty] ?? ''}
-                </span>
+          {!bite ? (
+            /* 스켈레톤 */
+            <div style={{ padding: 0 }}>
+              <div style={{
+                background: 'linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%)',
+                padding: '18px 16px 20px',
+              }}>
+                <div style={{ height: 12, width: 90, borderRadius: 6, background: 'rgba(255,255,255,0.15)', marginBottom: 14 }} />
+                <div style={{ height: 22, width: '70%', borderRadius: 6, background: 'rgba(255,255,255,0.18)', marginBottom: 10 }} />
+                <div style={{ height: 12, width: '90%', borderRadius: 6, background: 'rgba(255,255,255,0.1)', marginBottom: 6 }} />
+                <div style={{ height: 12, width: '75%', borderRadius: 6, background: 'rgba(255,255,255,0.1)' }} />
+              </div>
+              <div style={{ padding: '14px 16px 16px' }}>
+                <div style={{ height: 100, borderRadius: 10, background: 'var(--c-canvas)',
+                  backgroundImage: 'linear-gradient(90deg,var(--c-canvas) 25%,var(--c-green-50) 50%,var(--c-canvas) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite', marginBottom: 12 }} />
+                <div style={{ height: 40, borderRadius: 10, background: 'var(--c-green-100)',
+                  backgroundImage: 'linear-gradient(90deg,var(--c-green-100) 25%,var(--c-canvas) 50%,var(--c-green-100) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
               </div>
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
-              {bite?.title}
-            </div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.65 }}>
-              {bite?.description}
-            </div>
-          </div>
-
-          {/* 인포그래픽 + 버튼 */}
-          <div style={{ padding: '14px 16px 16px' }}>
-            <div style={{ background: 'var(--c-canvas)', borderRadius: 10, padding: '16px 12px', marginBottom: 12 }}>
-              {InfographicComp ? (
-                <InfographicComp />
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div style={{ fontSize: 36 }}>{CATEGORY_ICON[bite?.category] ?? '📌'}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-forest-700)' }}>{bite?.title}</div>
+          ) : (
+            <>
+              {/* Hero: dark forest 헤더 */}
+              <div style={{
+                background: 'linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%)',
+                padding: '18px 16px 16px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.3px' }}>오늘의 경제 한잎</span>
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '0.5px solid rgba(255,255,255,0.25)' }}>
+                      {bite.category}
+                    </span>
+                    <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,196,61,0.2)', color: 'var(--c-yellow-500)', border: '0.5px solid rgba(255,196,61,0.4)' }}>
+                      {{ easy: '쉬움', medium: '보통', hard: '심화' }[bite.difficulty] ?? ''}
+                    </span>
+                  </div>
                 </div>
-              )}
-            </div>
-            <button
-              onClick={() => navigate(`/bite/${bite?.id}`)}
-              style={{ width: '100%', background: 'var(--grad-action)', color: '#fff', border: 'none', borderRadius: 10, padding: '11px', fontSize: 14, fontWeight: 600, cursor: 'pointer', letterSpacing: '-0.3px' }}
-            >
-              🍃 오늘의 한잎 배우기 →
-            </button>
-          </div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
+                  {bite.title}
+                </div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.65 }}>
+                  {bite.description}
+                </div>
+              </div>
+
+              {/* 인포그래픽 + 버튼 */}
+              <div style={{ padding: '14px 16px 16px' }}>
+                <div style={{ background: 'var(--c-canvas)', borderRadius: 10, padding: '16px 12px', marginBottom: 12 }}>
+                  {InfographicComp ? (
+                    <InfographicComp />
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                      <div style={{ fontSize: 36 }}>{CATEGORY_ICON[bite.category] ?? '📌'}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-forest-700)' }}>{bite.title}</div>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => navigate(`/bite/${bite.id}`)}
+                  style={{ width: '100%', background: 'var(--grad-action)', color: '#fff', border: 'none', borderRadius: 10, padding: '11px', fontSize: 14, fontWeight: 600, cursor: 'pointer', letterSpacing: '-0.3px' }}
+                >
+                  오늘의 한잎 배우기 →
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── 카드 2: 오늘의 추천 뉴스 ── */}
@@ -313,8 +366,7 @@ export default function HomePage() {
                   padding: '8px 12px', fontSize: 12, color: 'var(--c-amber-700)',
                   marginBottom: 10, display: 'flex', gap: 6, alignItems: 'flex-start',
                 }}>
-                  <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍"
-                    style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }} />
+                  <Sun size={16} color="#F59E0B" style={{ flexShrink: 0 }} />
                   {todayNews.nomingComment.replace(/^노밍[이의]?\s*한마디\s*[-—–]\s*/u, '')}
                 </div>
               )}
@@ -346,8 +398,7 @@ export default function HomePage() {
               background: 'rgba(255,200,61,0.25)', border: '1.5px solid var(--c-yellow-border)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
-              <img src={`${import.meta.env.BASE_URL}noming.png`} alt="노밍"
-                style={{ width: 28, height: 28, objectFit: 'contain' }} />
+              <Sun size={24} color="#F59E0B" />
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍 한마디</div>
@@ -359,9 +410,20 @@ export default function HomePage() {
             background: 'rgba(255,255,255,0.6)', borderRadius: 12,
             padding: '12px 14px', fontSize: 13, color: 'var(--c-amber-700)',
             lineHeight: 1.75, border: '0.5px solid var(--c-yellow-border)', marginBottom: 12,
-            fontWeight: 500,
+            fontWeight: 500, minHeight: 60,
           }}>
-            {nomingIntro ? nomingIntro : (
+            {nomingIntroLoading ? (
+              <div style={{
+                height: 13, borderRadius: 6, marginBottom: 8,
+                background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+              }}>
+                <div style={{ height: 13, width: '60%', borderRadius: 6, marginTop: 6,
+                  background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                }} />
+              </div>
+            ) : nomingIntro ? nomingIntro : (
               <>오늘의 주제는 <strong style={{ color: 'var(--c-amber-700)' }}>{bite?.title}</strong>이에요. 궁금한 게 있으면 바로 물어보세요!</>
             )}
           </div>
@@ -399,11 +461,12 @@ export default function HomePage() {
             style={{
               width: '100%', background: 'var(--c-yellow-500)', border: 'none',
               borderRadius: 10, padding: '11px 12px', fontSize: 13, fontWeight: 700,
-              color: 'var(--c-forest-900)', cursor: 'pointer', letterSpacing: '-0.3px',
+              color: '#fff', cursor: 'pointer', letterSpacing: '-0.3px',
               display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6,
+              marginTop: 14,
             }}
           >
-            💬 노밍에게 직접 질문하기
+            노밍에게 직접 질문하기
           </button>
         </div>
 
