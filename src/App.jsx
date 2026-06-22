@@ -18,7 +18,8 @@ import OnboardingPage  from './pages/OnboardingPage';
 import ReadingPage     from './pages/ReadingPage';
 import MyGrowthHubPage       from './pages/MyGrowthHubPage';
 import EconomicBitePage      from './pages/EconomicBitePage';
-import EconomicBiteArchivePage from './pages/EconomicBiteArchivePage';
+import EconomicBiteArchivePage      from './pages/EconomicBiteArchivePage';
+import IndependenceDiagnosisPage    from './pages/IndependenceDiagnosisPage';
 
 export default function App() {
   return (
@@ -36,7 +37,8 @@ export default function App() {
               <Route path="/signup"     element={<SignupPage />} />
               <Route path="/onboarding" element={<OnboardingPage />} />
 
-              <Route path="/diagnosis"  element={<DiagnosisPage />} />
+              <Route path="/diagnosis"    element={<DiagnosisPage />} />
+              <Route path="/independence" element={<IndependenceDiagnosisPage />} />
               <Route path="/result"     element={<ResultPage />} />
 
               <Route path="/home"       element={<HomePage />} />

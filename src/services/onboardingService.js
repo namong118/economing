@@ -1,6 +1,15 @@
 import { callSolar } from './solarService'
 import { supabase } from './supabaseClient'
 
+const GOAL_LABELS = {
+  home:       '내 집 마련 / 부동산 투자',
+  stock:      '주식 / ETF 투자 시작',
+  saving:     '목돈 모으기',
+  foundation: '재무 기초 다지기',
+  retirement: '노후 준비',
+  business:   '사업 자금 마련',
+}
+
 const LABELS = {
   economic_level: {
     beginner:     '경제 입문자 (GDP·금리도 생소한 수준)',
@@ -113,6 +122,109 @@ export function calculateCategoryPriority(interests) {
   return priority
 }
 
+export async function generateIndependenceRoadmap(answers, independenceResult) {
+  const system = `당신은 ECONOMING의 AI 경제 코치 노밍입니다.
+사용자의 재무 상태와 목표를 바탕으로 경제 자립 로드맵을 생성합니다.
+
+절대 금지:
+- 특정 투자 종목 추천
+- 수익률 예측
+- 특정 금융 상품 가입 권유
+
+가능한 것:
+- 재무 기초 습관 제안
+- 학습 순서 안내
+- 계좌 종류 일반적 설명 (ISA, IRP 등)
+- 단계별 목표 설정 가이드
+
+응답 형식 (JSON만 반환):
+{
+  "currentStatus": "현재 재무 상태 한 줄 요약",
+  "goalPath": "목표까지 예상 기간과 방향",
+  "steps": [
+    {
+      "order": 1,
+      "title": "단계 제목",
+      "description": "이 단계에서 할 것",
+      "actions": ["구체적 행동 1", "구체적 행동 2"],
+      "estimatedDays": 30,
+      "category": "기초 | 저축 | 투자 | 절세 | 부동산 | 연금"
+    }
+  ],
+  "todayAction": "오늘 당장 5분 안에 할 수 있는 행동 1가지",
+  "warning": null
+}
+
+steps는 4~6개, 현실적이고 실천 가능하게.`
+
+  const userProfile = `나이대: ${answers.age_group ?? '미입력'}
+월 소득: ${answers.income_range ?? '미입력'}
+재무 목표: ${GOAL_LABELS[answers.financial_goal] ?? '미입력'}
+경제 지식 수준: ${answers.economic_level ?? '미입력'}
+투자 경험: ${answers.investment_experience ?? '미입력'}
+관심 분야: ${(answers.interests ?? []).join(', ') || '미입력'}
+재무 자립도 점수: ${independenceResult.score}/50점 (${independenceResult.label})`
+
+  const content = await callSolar({ system, messages: [{ role: 'user', content: userProfile }] })
+
+  try {
+    const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    return JSON.parse(clean)
+  } catch {
+    return {
+      currentStatus: '재무 기초부터 차근차근 시작해요',
+      goalPath: '6개월 안에 기반을 만들어봐요',
+      steps: [
+        {
+          order: 1,
+          title: '비상금 만들기',
+          description: '생활비 3개월치 비상금부터',
+          actions: ['월 지출 파악하기', '자동이체 저축 설정'],
+          estimatedDays: 90,
+          category: '기초',
+        },
+      ],
+      todayAction: '오늘 내 통장 잔액을 확인하고 월 지출을 메모해보세요',
+      warning: null,
+    }
+  }
+}
+
+export async function generateTodayAction(userId, financialGoal, independenceLevel) {
+  const { data: prof } = await supabase
+    .from('profiles')
+    .select('today_action, today_action_date')
+    .eq('id', userId)
+    .single()
+
+  const today = new Date().toISOString().slice(0, 10)
+  if (prof?.today_action_date === today && prof?.today_action) {
+    return prof.today_action
+  }
+
+  const system = `당신은 ECONOMING의 AI 코치 노밍입니다.
+사용자의 재무 목표와 자립 수준에 맞게
+오늘 5분 안에 할 수 있는 행동 1가지를 제안합니다.
+
+규칙:
+- 투자 종목 추천 금지
+- 오늘 바로 실천 가능한 것만
+- 1~2문장으로 간결하게
+- 따뜻하고 응원하는 말투`
+
+  const content = await callSolar({
+    system,
+    messages: [{ role: 'user', content: `재무 목표: ${GOAL_LABELS[financialGoal] ?? '재무 기초 다지기'}, 자립 단계: ${independenceLevel}` }],
+  })
+
+  await supabase
+    .from('profiles')
+    .update({ today_action: content, today_action_date: today })
+    .eq('id', userId)
+
+  return content
+}
+
 export async function completeOnboarding(userId, answers) {
   const categoryPriority = calculateCategoryPriority(answers.interests)
 
@@ -125,6 +237,9 @@ export async function completeOnboarding(userId, answers) {
       investment_experience:  answers.investment_experience,
       occupation:             answers.occupation,
       interests:              answers.interests ?? [],
+      financial_goal:         answers.financial_goal ?? null,
+      age_group:              answers.age_group ?? null,
+      income_range:           answers.income_range ?? null,
       bite_category_priority: categoryPriority,
       diagnosis_scores:       answers.diagnosis_scores ?? null,
       diagnosis_total:        answers.diagnosis_total ?? null,

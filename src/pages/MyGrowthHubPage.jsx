@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight } from 'lucide-react';
+import { generateTodayAction } from '../services/onboardingService';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { useDictionaryCtx } from '../context/DictionaryContext';
@@ -346,18 +347,163 @@ function DictionaryTabContent() {
 }
 
 
+/* ── 경제 자립 탭 ─────────────────────────────────────────── */
+const INDEPENDENCE_LEVEL_COLOR = {
+  seed:   '#78909C',
+  sprout: '#66BB6A',
+  leaf:   '#26A69A',
+  flower: '#AB47BC',
+  fruit:  '#FFA726',
+};
+
+function IndependenceTab() {
+  const navigate = useNavigate();
+  const { user, profile, refreshProfile } = useAuth();
+
+  const [todayAction, setTodayAction] = useState(profile?.today_action ?? null);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const diagnosis = profile?.independence_diagnosis ?? null;
+  const roadmap   = profile?.independence_roadmap   ?? null;
+  const score     = profile?.independence_score     ?? null;
+
+  useEffect(() => {
+    if (!user?.id || !diagnosis) return;
+    const today = new Date().toISOString().slice(0, 10);
+    if (profile?.today_action_date === today && profile?.today_action) {
+      setTodayAction(profile.today_action);
+      return;
+    }
+    setActionLoading(true);
+    generateTodayAction(user.id, profile?.financial_goal, diagnosis.level)
+      .then(action => { setTodayAction(action); refreshProfile(); })
+      .catch(() => {})
+      .finally(() => setActionLoading(false));
+  }, [user?.id]); // eslint-disable-line
+
+  const levelColor = INDEPENDENCE_LEVEL_COLOR[diagnosis?.level] ?? 'var(--c-green-500)';
+
+  return (
+    <div>
+      {/* 자립 진단 결과 카드 */}
+      <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+          <Shield size={13} color="#3A9A5C" />
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#3A9A5C', letterSpacing: '0.3px' }}>경제 자립 진단</span>
+        </div>
+
+        {diagnosis && score !== null ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                background: levelColor, display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                flexDirection: 'column', flexShrink: 0,
+              }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>{score}</span>
+                <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.8)' }}>/ 50</span>
+              </div>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#2A7A4B' }}>{diagnosis.label}</div>
+                <div style={{ fontSize: 12, color: '#888780', marginTop: 2 }}>{diagnosis.desc}</div>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/independence')}
+              style={{ width: '100%', padding: '8px', borderRadius: 8, background: '#F2FBF5', border: '0.5px solid #B8EBC8', color: '#2A7A4B', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            >
+              재진단하기 →
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => navigate('/independence')}
+            style={{ width: '100%', padding: 12, borderRadius: 8, background: 'var(--grad-action)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}
+          >
+            경제 자립 진단 시작하기 →
+          </button>
+        )}
+      </div>
+
+      {/* 자립 로드맵 */}
+      {roadmap && (
+        <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+            <ChevronRight size={13} color="#3A9A5C" />
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#3A9A5C', letterSpacing: '0.3px' }}>나의 자립 로드맵</span>
+          </div>
+          <div style={{ fontSize: 13, color: '#2A7A4B', fontWeight: 600, marginBottom: 12, lineHeight: 1.5 }}>
+            {roadmap.goalPath}
+          </div>
+          {(roadmap.steps ?? []).map((step, i) => (
+            <div key={i} style={{
+              display: 'flex', gap: 10, padding: '8px 0',
+              borderBottom: i < roadmap.steps.length - 1 ? '0.5px solid #f0f7f3' : 'none',
+            }}>
+              <div style={{
+                width: 24, height: 24, borderRadius: '50%',
+                background: i === 0 ? 'var(--c-green-500)' : '#E3F9EC',
+                color: i === 0 ? '#fff' : '#3A9A5C',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, fontWeight: 600, flexShrink: 0,
+              }}>
+                {step.order}
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#2A7A4B' }}>{step.title}</div>
+                <div style={{ fontSize: 11, color: '#888780', marginTop: 2 }}>{step.description}</div>
+              </div>
+            </div>
+          ))}
+          {roadmap.warning && (
+            <div style={{ marginTop: 10, padding: '8px 12px', background: '#FFF8E1', borderRadius: 8, border: '0.5px solid #FFE082', fontSize: 11, color: '#F57F17', lineHeight: 1.5 }}>
+              {roadmap.warning}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 오늘의 행동 제안 */}
+      {(todayAction || actionLoading) && (
+        <div style={{ background: '#FFFBEE', borderRadius: 12, border: '0.5px solid #FAC775', padding: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', marginBottom: 8, letterSpacing: '0.3px' }}>
+            오늘의 행동 제안
+          </div>
+          {actionLoading ? (
+            <div style={{ height: 36, background: 'rgba(250,199,117,0.2)', borderRadius: 6, animation: 'shimmer 1.5s infinite', backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg,rgba(250,199,117,0.1) 25%,rgba(250,199,117,0.3) 50%,rgba(250,199,117,0.1) 75%)' }} />
+          ) : (
+            <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.7 }}>{todayAction}</div>
+          )}
+        </div>
+      )}
+
+      {/* 진단 전 안내 */}
+      {!diagnosis && (
+        <div style={{ background: 'var(--c-surface)', borderRadius: 12, border: '0.5px solid var(--c-line)', padding: 20, textAlign: 'center', marginTop: 12 }}>
+          <Shield size={32} color="var(--c-muted)" style={{ margin: '0 auto 10px', display: 'block' }} />
+          <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-forest-700)', marginBottom: 6 }}>재무 자립도를 진단해보세요</p>
+          <p style={{ fontSize: 12, color: 'var(--c-muted)', lineHeight: 1.6 }}>10문항으로 나의 경제 자립 수준을<br />파악하고 맞춤 로드맵을 받아봐요.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── 탭 카드 설정 ─────────────────────────────────────────── */
 const TAB_CARDS = [
-  { key: 'summary',    label: '요약',    Icon: LayoutDashboard },
-  { key: 'diary',      label: '경제일기', Icon: BookOpen },
-  { key: 'dictionary', label: '경제사전', Icon: BookMarked },
+  { key: 'summary',      label: '요약',    Icon: LayoutDashboard },
+  { key: 'independence', label: '경제자립', Icon: Shield },
+  { key: 'diary',        label: '경제일기', Icon: BookOpen },
+  { key: 'dictionary',   label: '경제사전', Icon: BookMarked },
 ];
 
 /* ── 메인 ─────────────────────────────────────────────────── */
 export default function MyGrowthHubPage() {
   const { user }    = useAuth();
   const navigate    = useNavigate();
-  const [activeTab, setActiveTab] = useState('summary');
+  const location    = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.tab ?? 'summary');
 
   if (!user) {
     return (
@@ -381,8 +527,8 @@ export default function MyGrowthHubPage() {
 
           {/* 카드 그리드 */}
           <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '8px', marginBottom: '16px',
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '6px', marginBottom: '16px',
           }}>
             {TAB_CARDS.map(({ key, label, Icon }) => {
               const isActive = activeTab === key;
@@ -391,9 +537,9 @@ export default function MyGrowthHubPage() {
                   key={key}
                   onClick={() => setActiveTab(key)}
                   style={{
-                    borderRadius: '12px', padding: '14px 12px',
+                    borderRadius: '12px', padding: '10px 6px',
                     display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: '8px',
+                    alignItems: 'center', gap: '6px',
                     cursor: 'pointer', fontFamily: 'inherit',
                     border: isActive ? 'none' : '0.5px solid var(--c-line)',
                     background: isActive ? 'var(--c-green-500)' : 'var(--c-surface)',
@@ -401,16 +547,17 @@ export default function MyGrowthHubPage() {
                   }}
                 >
                   <div style={{
-                    width: '44px', height: '44px', borderRadius: '12px',
+                    width: '38px', height: '38px', borderRadius: '10px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: isActive ? 'rgba(255,255,255,0.2)' : 'var(--c-canvas)',
                   }}>
-                    <Icon size={22} color={isActive ? '#fff' : 'var(--c-forest-700)'} />
+                    <Icon size={20} color={isActive ? '#fff' : 'var(--c-forest-700)'} />
                   </div>
                   <span style={{
-                    fontSize: '13px',
+                    fontSize: '11px',
                     fontWeight: isActive ? 600 : 500,
                     color: isActive ? '#fff' : 'var(--c-forest-700)',
+                    letterSpacing: '-0.2px',
                   }}>
                     {label}
                   </span>
@@ -420,9 +567,10 @@ export default function MyGrowthHubPage() {
           </div>
 
           {/* 탭 콘텐츠 */}
-          {activeTab === 'summary'    && <SummaryTab />}
-          {activeTab === 'diary'      && <DiaryContent />}
-          {activeTab === 'dictionary' && <DictionaryTabContent />}
+          {activeTab === 'summary'      && <SummaryTab />}
+          {activeTab === 'independence' && <IndependenceTab />}
+          {activeTab === 'diary'        && <DiaryContent />}
+          {activeTab === 'dictionary'   && <DictionaryTabContent />}
         </div>
 
       </div>

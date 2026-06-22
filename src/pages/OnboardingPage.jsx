@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen, TrendingUp, Briefcase, PiggyBank,
-  GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper, Sun,
+  GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper, Sun, Sunset,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { completeOnboarding } from '../services/onboardingService';
@@ -162,14 +162,66 @@ const STEPS = [
       { value: '경제 뉴스', icon: <Newspaper size={18} color="var(--c-forest-700)" />,   label: '경제 뉴스', desc: '경제 흐름 읽는 법' },
     ],
   },
+  {
+    id: 'financial_goal',
+    question: '경제적으로\n이루고 싶은 목표는?',
+    nomingMsg: '목표에 맞는 자립 로드맵을\n함께 만들어드릴게요.',
+    multi: false,
+    showDesc: true,
+    options: FINANCIAL_GOALS,
+  },
+  {
+    id: 'age_group',
+    question: '나이대가\n어떻게 되세요?',
+    nomingMsg: '나이대에 맞는 재무 전략은\n조금씩 달라요.',
+    multi: false,
+    showDesc: true,
+    options: AGE_GROUPS,
+  },
+  {
+    id: 'income_range',
+    question: '월 소득 구간은\n어떻게 되세요?',
+    nomingMsg: '현실적인 목표를 세우려면\n소득 수준을 알아야 해요.',
+    multi: false,
+    showDesc: true,
+    options: INCOME_RANGES,
+  },
 ];
 
-const STEP_COLORS = ['var(--c-green-500)', '#3B82F6', '#8B5CF6', 'var(--c-yellow-500)', '#EF4444'];
+/* ── 재무 목표 / 나이 / 소득 ─────────────────────────────────── */
+const FINANCIAL_GOALS = [
+  { value: 'home',       icon: <Home size={18} color="var(--c-forest-700)" />,       label: '내 집 마련',    desc: '청약, 매매, 전세 전략' },
+  { value: 'stock',      icon: <TrendingUp size={18} color="var(--c-forest-700)" />,  label: '주식/ETF 투자',  desc: '계좌 개설부터 첫 투자까지' },
+  { value: 'saving',     icon: <PiggyBank size={18} color="var(--c-forest-700)" />,   label: '목돈 모으기',   desc: '결혼/여행/창업 자금 마련' },
+  { value: 'foundation', icon: <BookOpen size={18} color="var(--c-forest-700)" />,    label: '재무 기초',      desc: '비상금, 저축, 지출 관리' },
+  { value: 'retirement', icon: <Sunset size={18} color="var(--c-forest-700)" />,      label: '노후 준비',      desc: '연금, IRP, 장기 자산 관리' },
+  { value: 'business',   icon: <Briefcase size={18} color="var(--c-forest-700)" />,   label: '사업 자금',      desc: '창업 / 사업 확장 준비' },
+];
+const AGE_GROUPS = [
+  { value: '20s_early', label: '20대 초반', desc: '만 19~24세' },
+  { value: '20s_late',  label: '20대 후반', desc: '만 25~29세' },
+  { value: '30s_early', label: '30대 초반', desc: '만 30~34세' },
+  { value: '30s_late',  label: '30대 후반', desc: '만 35~39세' },
+  { value: '40s',       label: '40대',       desc: '만 40~49세' },
+  { value: '50s_plus',  label: '50대 이상',  desc: '만 50세~' },
+];
+const INCOME_RANGES = [
+  { value: 'none',      label: '소득 없음',      desc: '학생 / 준비 중' },
+  { value: 'under200',  label: '200만원 미만',   desc: '월 세전 기준' },
+  { value: '200_300',   label: '200~300만원',    desc: '월 세전 기준' },
+  { value: '300_500',   label: '300~500만원',    desc: '월 세전 기준' },
+  { value: '500_plus',  label: '500만원 이상',   desc: '월 세전 기준' },
+];
+
+const STEP_COLORS = ['var(--c-green-500)', '#3B82F6', '#8B5CF6', 'var(--c-yellow-500)', '#EF4444', '#EC4899'];
 
 /* ── 완료 화면 ────────────────────────────────────────────────── */
 function CompletionScreen({ answers, onComplete, saving }) {
   const BASE_URL = import.meta.env.BASE_URL;
   const LEVEL_LABEL = { beginner: '입문자', elementary: '초급자', intermediate: '중급자', advanced: '고급자', expert: '전문가' };
+  const GOAL_LABEL = { home: '내 집 마련', stock: '주식/ETF 투자', saving: '목돈 모으기', foundation: '재무 기초', retirement: '노후 준비', business: '사업 자금' };
+  const AGE_LABEL  = { '20s_early': '20대 초반', '20s_late': '20대 후반', '30s_early': '30대 초반', '30s_late': '30대 후반', '40s': '40대', '50s_plus': '50대 이상' };
+  const INC_LABEL  = { none: '소득 없음', under200: '200만원 미만', '200_300': '200~300만원', '300_500': '300~500만원', '500_plus': '500만원 이상' };
 
   return (
     <div className="anim-fade" style={{ textAlign: 'center', padding: '16px 0' }}>
@@ -190,8 +242,11 @@ function CompletionScreen({ answers, onComplete, saving }) {
         {[
           { label: '경제 수준', value: LEVEL_LABEL[answers.economic_level] ?? '-' },
           { label: '투자 경험', value: { none: '없음', etf: 'ETF', stock: '주식' }[answers.investment_experience] ?? '-' },
-          { label: '상황',     value: { student: '학생', employee: '직장인', freelancer: '프리랜서', business: '사업자' }[answers.occupation] ?? '-' },
+          { label: '상황',      value: { student: '학생', employee: '직장인', freelancer: '프리랜서', business: '사업자' }[answers.occupation] ?? '-' },
           { label: '관심 분야', value: (answers.interests ?? []).join(' · ') || '-' },
+          ...(answers.financial_goal ? [{ label: '재무 목표',  value: GOAL_LABEL[answers.financial_goal] ?? '-' }] : []),
+          ...(answers.age_group      ? [{ label: '나이대',     value: AGE_LABEL[answers.age_group] ?? '-' }] : []),
+          ...(answers.income_range   ? [{ label: '월 소득',    value: INC_LABEL[answers.income_range] ?? '-' }] : []),
         ].map(row => (
           <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '8px 0', borderBottom: '1px solid var(--c-green-50)' }}>
             <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '600' }}>{row.label}</span>
@@ -464,12 +519,14 @@ export default function OnboardingPage() {
                     {selected && (
                       <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
                     )}
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--c-green-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {opt.icon}
-                    </div>
+                    {opt.icon && (
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--c-green-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        {opt.icon}
+                      </div>
+                    )}
                     <div>
                       <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-ink)', letterSpacing: '-0.4px', marginBottom: '2px' }}>{opt.label}</p>
-                      {step.options.length <= 3 && (
+                      {(step.options.length <= 3 || step.showDesc) && opt.desc && (
                         <p style={{ fontSize: '12px', color: 'var(--c-slate)', lineHeight: '1.4', fontWeight: '500' }}>{opt.desc}</p>
                       )}
                     </div>

@@ -470,6 +470,29 @@ export default function HomePage() {
           </button>
         </div>
 
+        {/* ── 카드 4: 오늘의 행동 제안 ── */}
+        {user && profile?.today_action && (
+          <div style={{
+            background: '#FFFBEE', borderRadius: 16,
+            border: '1px solid #FAC775', padding: 16, marginTop: 12,
+            boxShadow: '0 2px 12px rgba(139,90,0,0.06)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <img src={`${import.meta.env.BASE_URL}noming.png`} style={{ width: 24, height: 24, objectFit: 'contain', borderRadius: 4 }} alt="" />
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', letterSpacing: '0.3px' }}>노밍의 오늘 행동 제안</span>
+            </div>
+            <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.75 }}>
+              {profile.today_action}
+            </div>
+            <button
+              onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
+              style={{ marginTop: 10, background: 'none', border: '0.5px solid #FAC775', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600 }}
+            >
+              자립 로드맵 보기 →
+            </button>
+          </div>
+        )}
+
       </div>
     </PageWrapper>
   );
