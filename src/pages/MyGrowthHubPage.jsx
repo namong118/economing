@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
 import { supabase } from '../services/supabaseClient';
 import { useAuth } from '../context/AuthContext';
@@ -364,6 +364,7 @@ function IndependenceTab() {
   const [todayAction,    setTodayAction]    = useState(profile?.today_action ?? null);
   const [actionLoading,  setActionLoading]  = useState(false);
   const [completedSteps, setCompletedSteps] = useState(profile?.roadmap_completed_steps ?? []);
+  const [expandedStep,   setExpandedStep]   = useState(null);
 
   const diagnosis = profile?.independence_diagnosis ?? null;
   const roadmap   = profile?.independence_roadmap   ?? null;
@@ -483,52 +484,155 @@ function IndependenceTab() {
           </div>
 
           {(roadmap.steps ?? []).map((step, i) => {
-            const isDone = completedSteps.includes(step.order);
+            const isDone    = completedSteps.includes(step.order);
+            const isExpanded = expandedStep === step.order;
             return (
               <div key={i} style={{
-                display: 'flex', gap: 10, padding: '12px 0',
                 borderBottom: i < roadmap.steps.length - 1 ? '0.5px solid #f0f7f3' : 'none',
-                opacity: isDone ? 0.6 : 1,
+                opacity: isDone ? 0.65 : 1,
                 transition: 'opacity 0.2s',
               }}>
-                {/* 완료 토글 버튼 */}
+                {/* ── 헤더 행 (클릭으로 펼치기) ── */}
                 <div
-                  onClick={() => toggleStepComplete(step.order)}
-                  style={{
+                  onClick={() => setExpandedStep(isExpanded ? null : step.order)}
+                  style={{ display: 'flex', gap: 10, padding: '12px 0', cursor: 'pointer', alignItems: 'center' }}
+                >
+                  <div style={{
                     width: 28, height: 28, borderRadius: '50%',
                     background: isDone ? '#52C97A' : '#E3F9EC',
                     color: isDone ? '#fff' : '#3A9A5C',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 12, fontWeight: 700, flexShrink: 0,
-                    cursor: 'pointer', border: '0.5px solid #B8EBC8',
-                    transition: 'background 0.2s',
-                  }}
-                >
-                  {isDone ? '✓' : step.order}
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{
-                    fontSize: 13, fontWeight: 600, color: '#2A7A4B',
-                    textDecoration: isDone ? 'line-through' : 'none',
-                    marginBottom: 2,
+                    border: '0.5px solid #B8EBC8', transition: 'background 0.2s',
                   }}>
-                    {step.title}
+                    {isDone ? '✓' : step.order}
                   </div>
-                  <div style={{ fontSize: 11, color: '#888780', lineHeight: 1.5 }}>
-                    {step.description}
-                  </div>
-                  {!isDone && step.actions?.map((action, j) => (
-                    <div key={j} style={{ fontSize: 11, color: '#3A9A5C', marginTop: 4, display: 'flex', gap: 5 }}>
-                      <span style={{ flexShrink: 0 }}>→</span>
-                      <span>{action}</span>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontSize: 13, fontWeight: 600, color: '#2A7A4B',
+                      textDecoration: isDone ? 'line-through' : 'none',
+                    }}>
+                      {step.title}
                     </div>
-                  ))}
+                    {!isExpanded && (
+                      <div style={{ fontSize: 11, color: '#888780', marginTop: 1 }}>
+                        {step.category}{step.estimatedDays ? ` · ${step.estimatedDays}일` : ''}
+                      </div>
+                    )}
+                  </div>
+
+                  <ChevronDown
+                    size={15} color="#B8C8BE"
+                    style={{ flexShrink: 0, transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+                  />
                 </div>
 
-                {!isDone && step.estimatedDays && (
-                  <div style={{ fontSize: 10, color: '#B0B0A8', flexShrink: 0, marginTop: 2, whiteSpace: 'nowrap' }}>
-                    {step.estimatedDays}일
+                {/* ── 펼쳐진 상세 내용 ── */}
+                {isExpanded && (
+                  <div style={{ paddingBottom: 16, paddingLeft: 38 }}>
+
+                    {/* 설명 */}
+                    {step.description && (
+                      <div style={{ fontSize: 13, color: '#444', lineHeight: 1.75, marginBottom: 12 }}>
+                        {step.description}
+                      </div>
+                    )}
+
+                    {/* 왜 중요한지 */}
+                    {step.why && (
+                      <div style={{ background: '#F0FBF4', borderRadius: 8, border: '0.5px solid #B8EBC8', padding: '10px 12px', marginBottom: 12 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: '#3A9A5C', marginBottom: 4, letterSpacing: '0.3px' }}>왜 중요한가요?</div>
+                        <div style={{ fontSize: 12, color: '#2A7A4B', lineHeight: 1.65 }}>{step.why}</div>
+                      </div>
+                    )}
+
+                    {/* 행동 목록 */}
+                    {step.actions?.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 8, letterSpacing: '0.3px' }}>실천 행동</div>
+                        {step.actions.map((action, j) => (
+                          <div key={j} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
+                            <div style={{
+                              width: 18, height: 18, borderRadius: 4, border: '1.5px solid #B8EBC8',
+                              background: '#F0FBF4', flexShrink: 0, marginTop: 1,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              <span style={{ fontSize: 9, color: '#3A9A5C', fontWeight: 700 }}>
+                                {j === 0 ? '오늘' : j === 1 ? '주' : '월'}
+                              </span>
+                            </div>
+                            <span style={{ fontSize: 12, color: '#444', lineHeight: 1.6 }}>{action}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 완료 기준 */}
+                    {step.checkPoints?.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 8, letterSpacing: '0.3px' }}>이렇게 되면 완료예요</div>
+                        {step.checkPoints.map((cp, j) => (
+                          <div key={j} style={{ display: 'flex', gap: 6, alignItems: 'flex-start', marginBottom: 5 }}>
+                            <span style={{ color: '#52C97A', fontWeight: 700, fontSize: 13, flexShrink: 0, lineHeight: 1.5 }}>✓</span>
+                            <span style={{ fontSize: 12, color: '#2A7A4B', lineHeight: 1.6 }}>{cp}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 노밍 팁 */}
+                    {step.nomingTip && (
+                      <div style={{
+                        background: 'var(--c-yellow-100)', borderRadius: 10,
+                        border: '0.5px solid var(--c-yellow-border)',
+                        padding: '10px 12px', marginBottom: 12,
+                        display: 'flex', gap: 8, alignItems: 'flex-start',
+                      }}>
+                        <Sun size={16} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
+                        <div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: '#854F0B', marginBottom: 3 }}>노밍 팁</div>
+                          <div style={{ fontSize: 12, color: '#633806', lineHeight: 1.65 }}>{step.nomingTip}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 관련 경제한잎 */}
+                    {step.relatedBites?.length > 0 && (
+                      <div style={{ marginBottom: 14 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 6, letterSpacing: '0.3px' }}>관련 경제한잎</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {step.relatedBites.map((kw, j) => (
+                            <button
+                              key={j}
+                              onClick={(e) => { e.stopPropagation(); navigate('/coach', { state: { question: `${kw}에 대해 알려줘` } }); }}
+                              style={{
+                                padding: '4px 10px', borderRadius: 20,
+                                background: '#E3F9EC', border: '0.5px solid #B8EBC8',
+                                fontSize: 11, color: '#2A7A4B', fontWeight: 600, cursor: 'pointer',
+                              }}
+                            >
+                              {kw} →
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 완료하기 버튼 */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleStepComplete(step.order); if (!isDone) setExpandedStep(null); }}
+                      style={{
+                        width: '100%', padding: '10px', borderRadius: 10,
+                        background: isDone ? '#F2FBF5' : 'var(--grad-action)',
+                        border: isDone ? '0.5px solid #B8EBC8' : 'none',
+                        color: isDone ? '#3A9A5C' : '#fff',
+                        fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                        boxShadow: isDone ? 'none' : '0 4px 14px rgba(33,197,142,0.25)',
+                      }}
+                    >
+                      {isDone ? '완료 취소하기' : '이 단계 완료하기 ✓'}
+                    </button>
                   </div>
                 )}
               </div>
