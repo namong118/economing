@@ -1,3 +1,5 @@
+import InfographicIcon from './InfographicIcon';
+
 export default function CompareGraphic({ data }) {
   const { left, right, note } = data;
 
@@ -16,7 +18,7 @@ export default function CompareGraphic({ data }) {
               display: 'flex', alignItems: 'center', gap: '7px',
               borderBottom: `1px solid ${side.color}22`,
             }}>
-              <span style={{ fontSize: '17px' }}>{side.icon}</span>
+              <InfographicIcon name={side.icon} size={17} color={side.color} />
               <p style={{ fontSize: '13px', fontWeight: '800', color: side.color, letterSpacing: '-0.3px' }}>
                 {side.label}
               </p>

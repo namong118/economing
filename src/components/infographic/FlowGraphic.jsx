@@ -1,3 +1,5 @@
+import InfographicIcon from './InfographicIcon';
+
 export default function FlowGraphic({ data }) {
   const { steps } = data;
 
@@ -18,9 +20,8 @@ export default function FlowGraphic({ data }) {
                 background: isLast ? 'var(--c-green-500)' : '#fff',
                 border: `1.5px solid ${isLast ? 'var(--c-green-500)' : 'var(--c-line)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '18px',
               }}>
-                {step.icon}
+                <InfographicIcon name={step.icon} size={18} color={isLast ? '#fff' : 'var(--c-forest-700)'} />
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{

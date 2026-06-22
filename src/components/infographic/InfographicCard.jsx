@@ -1,3 +1,4 @@
+import { BarChart2 } from 'lucide-react';
 import FlowGraphic from './FlowGraphic';
 import CollectionGraphic from './CollectionGraphic';
 import CompareGraphic from './CompareGraphic';
@@ -22,7 +23,7 @@ export default function InfographicCard({ data }) {
         padding: '10px 16px',
         display: 'flex', alignItems: 'center', gap: '8px',
       }}>
-        <span style={{ fontSize: '15px', flexShrink: 0 }}>📊</span>
+        <BarChart2 size={15} color="var(--c-forest-700)" style={{ flexShrink: 0 }} />
         <div>
           <p style={{ fontSize: '10px', fontWeight: '700', color: 'var(--c-forest-900)', letterSpacing: '0.5px', marginBottom: '1px' }}>
             노밍 한눈에 이해하기

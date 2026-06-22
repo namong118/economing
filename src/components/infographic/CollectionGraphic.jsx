@@ -1,3 +1,5 @@
+import InfographicIcon from './InfographicIcon';
+
 export default function CollectionGraphic({ data }) {
   const { items, result } = data;
 
@@ -11,7 +13,7 @@ export default function CollectionGraphic({ data }) {
             padding: '10px 12px', borderRadius: '12px', minWidth: '60px',
             background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
           }}>
-            <span style={{ fontSize: '22px' }}>{item.icon}</span>
+            <InfographicIcon name={item.icon} size={22} color="var(--c-forest-700)" />
             <span style={{ fontSize: '11px', fontWeight: '600', color: 'var(--c-slate)', textAlign: 'center' }}>
               {item.label}
             </span>
@@ -34,7 +36,7 @@ export default function CollectionGraphic({ data }) {
         background: 'linear-gradient(135deg, var(--c-green-50), #DCFCE7)',
         border: '2px solid var(--c-green-100)',
       }}>
-        <span style={{ fontSize: '30px', flexShrink: 0 }}>{result.icon}</span>
+        <InfographicIcon name={result.icon} size={28} color="var(--c-forest-700)" />
         <div>
           <p style={{ fontSize: '15px', fontWeight: '900', color: 'var(--c-forest-900)', letterSpacing: '-0.4px' }}>
             {result.label}
