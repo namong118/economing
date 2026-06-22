@@ -8,7 +8,7 @@ import { getTodaysBite } from '../services/biteService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import { createConversation, getConversationList, getRecentConversations } from '../services/conversationService';
 import { callSolar } from '../services/solarService';
-import { getInfographic } from '../data/infographicData';
+import { getOrGenerateInfographic } from '../services/infographicService';
 import InfographicCard from '../components/infographic/InfographicCard';
 import SaveTermButton from '../components/common/SaveTermButton';
 
@@ -414,8 +414,10 @@ export default function CoachPage() {
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-    const { answer, structured } = await getCoachResponse(q, history, userLevel);
-    const infographic = getInfographic(q);
+    const [{ answer, structured }, infographic] = await Promise.all([
+      getCoachResponse(q, history, userLevel),
+      getOrGenerateInfographic(q),
+    ]);
     setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
     setLoading(false);
 
