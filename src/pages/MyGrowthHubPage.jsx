@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
+import { supabase } from '../services/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
 import { useDictionaryCtx } from '../context/DictionaryContext';
@@ -360,13 +361,36 @@ function IndependenceTab() {
   const navigate = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
 
-  const [todayAction, setTodayAction] = useState(profile?.today_action ?? null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [todayAction,    setTodayAction]    = useState(profile?.today_action ?? null);
+  const [actionLoading,  setActionLoading]  = useState(false);
+  const [completedSteps, setCompletedSteps] = useState(profile?.roadmap_completed_steps ?? []);
 
   const diagnosis = profile?.independence_diagnosis ?? null;
   const roadmap   = profile?.independence_roadmap   ?? null;
   const score     = profile?.independence_score     ?? null;
+  const totalSteps = roadmap?.steps?.length ?? 1;
+  const progress   = Math.round((completedSteps.length / totalSteps) * 100);
 
+  /* 단계 완료 토글 */
+  const toggleStepComplete = async (stepOrder) => {
+    const isCompleted = completedSteps.includes(stepOrder);
+    const updated = isCompleted
+      ? completedSteps.filter(s => s !== stepOrder)
+      : [...completedSteps, stepOrder];
+
+    setCompletedSteps(updated);
+
+    await supabase
+      .from('profiles')
+      .update({ roadmap_completed_steps: updated })
+      .eq('id', user.id);
+
+    if (!isCompleted && updated.length === totalSteps) {
+      setTimeout(() => alert('모든 단계를 완료했어요! 노밍이 자랑스러워요!'), 100);
+    }
+  };
+
+  /* 오늘의 행동 — 미완료 첫 단계 기반으로 갱신 */
   useEffect(() => {
     if (!user?.id || !diagnosis) return;
     const today = new Date().toISOString().slice(0, 10);
@@ -375,7 +399,8 @@ function IndependenceTab() {
       return;
     }
     setActionLoading(true);
-    generateTodayAction(user.id, profile?.financial_goal, diagnosis.level)
+    const currentStep = roadmap?.steps?.find(s => !completedSteps.includes(s.order));
+    generateTodayAction(user.id, profile?.financial_goal, diagnosis.level, currentStep)
       .then(action => { setTodayAction(action); refreshProfile(); })
       .catch(() => {})
       .finally(() => setActionLoading(false));
@@ -429,33 +454,87 @@ function IndependenceTab() {
       {/* 자립 로드맵 */}
       {roadmap && (
         <div style={{ background: '#fff', borderRadius: 12, border: '0.5px solid #B8EBC8', padding: 16, marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-            <ChevronRight size={13} color="#3A9A5C" />
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#3A9A5C', letterSpacing: '0.3px' }}>나의 자립 로드맵</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <ChevronRight size={13} color="#3A9A5C" />
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#3A9A5C', letterSpacing: '0.3px' }}>나의 자립 로드맵</span>
+            </div>
+            <span style={{ fontSize: 11, color: '#52C97A', fontWeight: 600 }}>
+              {completedSteps.length}/{totalSteps} 완료
+            </span>
           </div>
+
+          {/* 진행률 바 */}
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+              <span style={{ fontSize: 11, color: '#888780' }}>진행률</span>
+              <span style={{ fontSize: 11, color: '#52C97A', fontWeight: 600 }}>{progress}%</span>
+            </div>
+            <div style={{ background: '#E3F9EC', borderRadius: 20, height: 6 }}>
+              <div style={{
+                background: '#52C97A', height: 6, borderRadius: 20,
+                width: `${progress}%`, transition: 'width 0.4s ease',
+              }} />
+            </div>
+          </div>
+
           <div style={{ fontSize: 13, color: '#2A7A4B', fontWeight: 600, marginBottom: 12, lineHeight: 1.5 }}>
             {roadmap.goalPath}
           </div>
-          {(roadmap.steps ?? []).map((step, i) => (
-            <div key={i} style={{
-              display: 'flex', gap: 10, padding: '8px 0',
-              borderBottom: i < roadmap.steps.length - 1 ? '0.5px solid #f0f7f3' : 'none',
-            }}>
-              <div style={{
-                width: 24, height: 24, borderRadius: '50%',
-                background: i === 0 ? 'var(--c-green-500)' : '#E3F9EC',
-                color: i === 0 ? '#fff' : '#3A9A5C',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 600, flexShrink: 0,
+
+          {(roadmap.steps ?? []).map((step, i) => {
+            const isDone = completedSteps.includes(step.order);
+            return (
+              <div key={i} style={{
+                display: 'flex', gap: 10, padding: '12px 0',
+                borderBottom: i < roadmap.steps.length - 1 ? '0.5px solid #f0f7f3' : 'none',
+                opacity: isDone ? 0.6 : 1,
+                transition: 'opacity 0.2s',
               }}>
-                {step.order}
+                {/* 완료 토글 버튼 */}
+                <div
+                  onClick={() => toggleStepComplete(step.order)}
+                  style={{
+                    width: 28, height: 28, borderRadius: '50%',
+                    background: isDone ? '#52C97A' : '#E3F9EC',
+                    color: isDone ? '#fff' : '#3A9A5C',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 12, fontWeight: 700, flexShrink: 0,
+                    cursor: 'pointer', border: '0.5px solid #B8EBC8',
+                    transition: 'background 0.2s',
+                  }}
+                >
+                  {isDone ? '✓' : step.order}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontSize: 13, fontWeight: 600, color: '#2A7A4B',
+                    textDecoration: isDone ? 'line-through' : 'none',
+                    marginBottom: 2,
+                  }}>
+                    {step.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#888780', lineHeight: 1.5 }}>
+                    {step.description}
+                  </div>
+                  {!isDone && step.actions?.map((action, j) => (
+                    <div key={j} style={{ fontSize: 11, color: '#3A9A5C', marginTop: 4, display: 'flex', gap: 5 }}>
+                      <span style={{ flexShrink: 0 }}>→</span>
+                      <span>{action}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {!isDone && step.estimatedDays && (
+                  <div style={{ fontSize: 10, color: '#B0B0A8', flexShrink: 0, marginTop: 2, whiteSpace: 'nowrap' }}>
+                    {step.estimatedDays}일
+                  </div>
+                )}
               </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#2A7A4B' }}>{step.title}</div>
-                <div style={{ fontSize: 11, color: '#888780', marginTop: 2 }}>{step.description}</div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
+
           {roadmap.warning && (
             <div style={{ marginTop: 10, padding: '8px 12px', background: '#FFF8E1', borderRadius: 8, border: '0.5px solid #FFE082', fontSize: 11, color: '#F57F17', lineHeight: 1.5 }}>
               {roadmap.warning}
@@ -471,7 +550,7 @@ function IndependenceTab() {
             오늘의 행동 제안
           </div>
           {actionLoading ? (
-            <div style={{ height: 36, background: 'rgba(250,199,117,0.2)', borderRadius: 6, animation: 'shimmer 1.5s infinite', backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg,rgba(250,199,117,0.1) 25%,rgba(250,199,117,0.3) 50%,rgba(250,199,117,0.1) 75%)' }} />
+            <div style={{ height: 36, background: 'rgba(250,199,117,0.2)', borderRadius: 6, backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg,rgba(250,199,117,0.1) 25%,rgba(250,199,117,0.3) 50%,rgba(250,199,117,0.1) 75%)', animation: 'shimmer 1.5s infinite' }} />
           ) : (
             <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.7 }}>{todayAction}</div>
           )}

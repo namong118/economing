@@ -190,7 +190,7 @@ steps는 4~6개, 현실적이고 실천 가능하게.`
   }
 }
 
-export async function generateTodayAction(userId, financialGoal, independenceLevel) {
+export async function generateTodayAction(userId, financialGoal, independenceLevel, currentStep = null) {
   const { data: prof } = await supabase
     .from('profiles')
     .select('today_action, today_action_date')
@@ -212,9 +212,13 @@ export async function generateTodayAction(userId, financialGoal, independenceLev
 - 1~2문장으로 간결하게
 - 따뜻하고 응원하는 말투`
 
+  const stepContext = currentStep
+    ? `\n현재 진행 중인 단계: ${currentStep.title} — ${currentStep.description}`
+    : ''
+
   const content = await callSolar({
     system,
-    messages: [{ role: 'user', content: `재무 목표: ${GOAL_LABELS[financialGoal] ?? '재무 기초 다지기'}, 자립 단계: ${independenceLevel}` }],
+    messages: [{ role: 'user', content: `재무 목표: ${GOAL_LABELS[financialGoal] ?? '재무 기초 다지기'}, 자립 단계: ${independenceLevel}${stepContext}` }],
   })
 
   await supabase
