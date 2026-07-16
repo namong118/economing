@@ -84,9 +84,12 @@ const LEVEL_CONTEXT = {
 `,
 }
 
-function buildSystemPrompt(level) {
+function buildSystemPrompt(level, context = null) {
   const levelCtx = LEVEL_CONTEXT[level] || LEVEL_CONTEXT['beginner']
-  return NOMING_BASE + levelCtx
+  const contextPrompt = context
+    ? `\n\n## 현재 컨텍스트\n사용자가 ${context} 관련해서 질문하고 있습니다. 이 맥락에 맞게 답변해주세요.`
+    : ''
+  return NOMING_BASE + contextPrompt + levelCtx
 }
 
 const FALLBACK_STRUCTURED = {
@@ -128,13 +131,13 @@ function parseStructured(content) {
   }
 }
 
-export async function getCoachResponse(question, conversationHistory = [], level = 'beginner') {
+export async function getCoachResponse(question, conversationHistory = [], level = 'beginner', context = null) {
   try {
     const messages = [
       ...conversationHistory,
       { role: 'user', content: question },
     ]
-    const content    = await callSolar({ system: buildSystemPrompt(level), messages })
+    const content    = await callSolar({ system: buildSystemPrompt(level, context), messages })
     const structured = parseStructured(content)
     return {
       success:    true,

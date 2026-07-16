@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X, Sun } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
@@ -306,6 +306,7 @@ const _greetingCache  = {};
 /* ── 메인 ─────────────────────────────────────────────────── */
 export default function CoachPage() {
   const location    = useLocation();
+  const navigate    = useNavigate();
   const [messages,         setMessages]         = useState([]);
   const [input,            setInput]            = useState('');
   const [loading,          setLoading]          = useState(false);
@@ -317,6 +318,7 @@ export default function CoachPage() {
   const bottomRef   = useRef(null);
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
+  const contextRef  = useRef(null);
 
   const { user, profile } = useAuth();
   const { userLevel } = useUserLevel();
@@ -383,8 +385,13 @@ export default function CoachPage() {
   }, [cacheKey]); // eslint-disable-line
 
   useEffect(() => {
-    const q = location.state?.question;
-    if (q && !initSent.current) { initSent.current = true; send(q); }
+    const state = location.state;
+    if (state?.question && !initSent.current) {
+      initSent.current = true;
+      contextRef.current = state.context ?? null;
+      navigate(location.pathname, { replace: true, state: {} });
+      send(state.question);
+    }
   }, []); // eslint-disable-line
 
   useEffect(() => {
@@ -414,8 +421,10 @@ export default function CoachPage() {
     setLoading(true);
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
+    const context = contextRef.current;
+    contextRef.current = null;
     const [{ answer, structured }, infographic] = await Promise.all([
-      getCoachResponse(q, history, userLevel),
+      getCoachResponse(q, history, userLevel, context),
       getOrGenerateInfographic(q),
     ]);
     setMessages(prev => [...prev, { role: 'noming', structured, infographic }]);
