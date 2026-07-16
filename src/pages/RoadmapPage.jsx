@@ -1,22 +1,94 @@
-﻿/* 학습 로드맵 페이지 — 5단계 경제 성장 경로 */
-import { useState } from 'react';
+﻿/* 학습 로드맵 페이지 — AI 개인화 로드맵 (있으면) 또는 5단계 공통 경로 */
+import { useEffect, useMemo, useState } from 'react';
 import { Map, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { roadmap, levelStartStep } from '../data/roadmapData';
+import { roadmap as staticRoadmap, levelStartStep } from '../data/roadmapData';
 import { levelInfo } from '../data/diagnosisQuestions';
+import { initProgress, completeStep, getProgress } from '../services/roadmapService';
 import PageWrapper from '../components/layout/PageWrapper';
 import Card from '../components/common/Card';
 
+const STEP_EMOJIS = ['💰', '🏦', '📈', '🧾', '🏠'];
+const STEP_COLORS = ['var(--c-green-500)', '#6366F1', 'var(--c-yellow-500)', '#EC4899', '#8B5CF6'];
+
+/* AI(Solar)가 생성한 { currentStage, goal, steps } 구조를 기존 정적 로드맵 카드 형태로 변환 */
+function normalizeAiRoadmap(aiRoadmap) {
+  return (aiRoadmap.steps ?? []).map((s, idx) => {
+    const topics = s.topics ?? [];
+    return {
+      step:           s.order ?? idx + 1,
+      title:          s.title,
+      description:    s.description,
+      topics,
+      duration:       s.estimatedDays ? `${s.estimatedDays}일` : '기간 미정',
+      emoji:          STEP_EMOJIS[idx % STEP_EMOJIS.length],
+      color:          STEP_COLORS[idx % STEP_COLORS.length],
+      coachQuestions: topics.length > 0
+        ? topics.slice(0, 3).map(t => `${t}에 대해 알려주세요`)
+        : [`${s.title}에 대해 더 알고 싶어요`],
+    };
+  });
+}
+
 export default function RoadmapPage() {
   const navigate = useNavigate();
-  const { userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
   const [localLevel] = useLocalStorage('economing_level', null);
 
   const level     = userProfile?.level || localLevel;
   const startStep = level ? levelStartStep[level] ?? 1 : null;
   const info      = level ? levelInfo[level] : null;
+
+  const aiRoadmap    = userProfile?.roadmap;
+  const hasAiRoadmap = Array.isArray(aiRoadmap?.steps) && aiRoadmap.steps.length > 0;
+  const roadmap = useMemo(
+    () => (hasAiRoadmap ? normalizeAiRoadmap(aiRoadmap) : staticRoadmap),
+    [hasAiRoadmap, aiRoadmap]
+  );
+
+  const [progress, setProgress] = useState([]);
+  const hasProgress = Boolean(user?.id) && progress.length > 0;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      if (!user?.id) {
+        if (!cancelled) setProgress([]);
+        return;
+      }
+
+      const { data } = await getProgress(user.id);
+      if (cancelled) return;
+
+      if (!data || data.length === 0) {
+        await initProgress(user.id, roadmap.length);
+        const { data: fresh } = await getProgress(user.id);
+        if (!cancelled) setProgress(fresh ?? []);
+      } else {
+        setProgress(data);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [user?.id, roadmap.length]);
+
+  const completedSteps = useMemo(
+    () => new Set(progress.filter(p => p.completed).map(p => p.step)),
+    [progress]
+  );
+  const firstIncompleteIdx = roadmap.findIndex(step => !completedSteps.has(step.step));
+
+  const handleCompleteStep = async (step) => {
+    if (!user?.id) return;
+    setProgress(prev => [
+      ...prev.filter(p => p.step !== step),
+      { user_id: user.id, step, completed: true, completed_at: new Date().toISOString() },
+    ]);
+    await completeStep(user.id, step);
+  };
 
   const [expandedStep, setExpandedStep] = useState(startStep ? startStep - 1 : 0);
 
@@ -33,10 +105,12 @@ export default function RoadmapPage() {
                   학습 로드맵
                 </p>
                 <h1 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  경제 성장 5단계 로드맵 <Map size={26} color="var(--c-ink)" />
+                  {hasAiRoadmap ? '나만의 AI 맞춤 로드맵' : '경제 성장 5단계 로드맵'} <Map size={26} color="var(--c-ink)" />
                 </h1>
                 <p style={{ fontSize: '15px', color: 'var(--c-slate)' }}>
-                  {info
+                  {hasAiRoadmap
+                    ? (aiRoadmap.goal || aiRoadmap.currentStage || '노밍이 짜준 맞춤 로드맵이에요')
+                    : info
                     ? `${info.label}을 위한 맞춤 시작점 · STEP ${startStep}부터 시작하세요`
                     : '돈의 흐름부터 부동산까지, 단계별로 배워요'}
                 </p>
@@ -75,8 +149,8 @@ export default function RoadmapPage() {
             {/* 진행 표시바 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '32px', overflowX: 'auto' }} className="no-scrollbar">
               {roadmap.map((step, idx) => {
-                const isDone    = startStep && step.step < startStep;
-                const isCurrent = startStep && step.step === startStep;
+                const isDone    = hasProgress ? completedSteps.has(step.step) : Boolean(startStep && step.step < startStep);
+                const isCurrent = hasProgress ? idx === firstIncompleteIdx : Boolean(startStep && step.step === startStep);
                 return (
                   <div key={step.step} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                     <button
@@ -111,8 +185,8 @@ export default function RoadmapPage() {
             {/* 스텝 카드들 */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {roadmap.map((step, idx) => {
-                const isDone    = startStep && step.step < startStep;
-                const isCurrent = startStep && step.step === startStep;
+                const isDone    = hasProgress ? completedSteps.has(step.step) : Boolean(startStep && step.step < startStep);
+                const isCurrent = hasProgress ? idx === firstIncompleteIdx : Boolean(startStep && step.step === startStep);
                 const isExpanded = expandedStep === idx;
 
                 return (
@@ -218,18 +292,32 @@ export default function RoadmapPage() {
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
                           <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>⏱ 예상 기간: {step.duration}</span>
-                          <button
-                            onClick={() => navigate('/coach', { state: { initialQuestion: `${step.title}에 대해 알고 싶어요` } })}
-                            style={{
-                              padding: '8px 18px', borderRadius: '10px',
-                              background: step.color, color: '#fff', border: 'none',
-                              fontSize: '13px', fontWeight: '700', cursor: 'pointer',
-                            }}
-                          >
-                            🤖 AI 코치에게 질문하기 →
-                          </button>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            {user && !isDone && (
+                              <button
+                                onClick={() => handleCompleteStep(step.step)}
+                                style={{
+                                  padding: '8px 14px', borderRadius: '10px',
+                                  background: 'var(--c-surface)', border: `1.5px solid ${step.color}`,
+                                  fontSize: '13px', fontWeight: '700', color: step.color, cursor: 'pointer',
+                                }}
+                              >
+                                ✅ 완료로 표시
+                              </button>
+                            )}
+                            <button
+                              onClick={() => navigate('/coach', { state: { initialQuestion: `${step.title}에 대해 알고 싶어요` } })}
+                              style={{
+                                padding: '8px 18px', borderRadius: '10px',
+                                background: step.color, color: '#fff', border: 'none',
+                                fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+                              }}
+                            >
+                              🤖 AI 코치에게 질문하기 →
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}

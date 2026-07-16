@@ -1,5 +1,6 @@
 import { callSolar } from './solarService'
 import { supabase } from './supabaseClient'
+import { initProgress } from './roadmapService'
 
 const GOAL_LABELS = {
   home:       '내 집 마련 / 부동산 투자',
@@ -280,6 +281,7 @@ export async function completeOnboarding(userId, answers) {
       .from('profiles')
       .update({ roadmap, noming_intro: nomingIntro })
       .eq('id', userId)
+    await initProgress(userId, roadmap?.steps?.length || 4)
     return { roadmap, nomingIntro, categoryPriority }
   } catch {
     return { roadmap: null, nomingIntro: null, categoryPriority }

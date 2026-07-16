@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   financial_goal         TEXT,                         -- 재무 목표 (home/stock/saving/foundation/retirement/business)
   age_group              TEXT,                         -- 나이대 (20s_early/20s_late/30s_early/30s_late/40s/50s_plus)
   income_range           TEXT,                         -- 월 소득 구간 (none/under200/200_300/300_500/500_plus)
+  roadmap                JSONB,                        -- AI 개인화 로드맵 (온보딩 시 Solar 생성)
+  noming_intro           TEXT,                         -- AI 코치 첫 인사말 (온보딩 시 Solar 생성)
   independence_score     INTEGER,                      -- 자립 진단 총점 (10~50점)
   -- ──────────────────────────────────────────────────────────────────
   onboarding_completed   BOOLEAN     DEFAULT FALSE,
@@ -68,6 +70,8 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed  BOOLEAN DEFA
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS financial_goal        TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS age_group             TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS income_range          TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS roadmap               JSONB;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS noming_intro          TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_score    INTEGER;
 
 -- 레벨 컬럼: 기존 CHECK 제약 제거 후 새 단계 시스템으로 마이그레이션

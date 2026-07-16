@@ -9,6 +9,7 @@ import Button from '../components/common/Button';
 import { useAuth } from '../context/AuthContext';
 import { updateLevel } from '../services/profileService';
 import { initProgress } from '../services/roadmapService';
+import { roadmap as staticRoadmap } from '../data/roadmapData';
 
 const LEVEL_ICONS = {
   beginner:     Sprout,
@@ -33,7 +34,7 @@ export default function ResultPage() {
     if (user) {
       await Promise.all([
         updateLevel(user.id, level),
-        initProgress(user.id),
+        initProgress(user.id, staticRoadmap.length),
       ]);
       await refreshProfile();
       navigate('/onboarding', { state: { economic_level: level }, replace: true });
