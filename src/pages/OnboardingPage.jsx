@@ -123,6 +123,31 @@ const _REMOVED = [
   },
 ];
 
+/* ── 재무 목표 / 나이 / 소득 ─────────────────────────────────── */
+const FINANCIAL_GOALS = [
+  { value: 'home',       icon: <Home size={18} color="var(--c-forest-700)" />,       label: '내 집 마련',    desc: '청약, 매매, 전세 전략' },
+  { value: 'stock',      icon: <TrendingUp size={18} color="var(--c-forest-700)" />,  label: '주식/ETF 투자',  desc: '계좌 개설부터 첫 투자까지' },
+  { value: 'saving',     icon: <PiggyBank size={18} color="var(--c-forest-700)" />,   label: '목돈 모으기',   desc: '결혼/여행/창업 자금 마련' },
+  { value: 'foundation', icon: <BookOpen size={18} color="var(--c-forest-700)" />,    label: '재무 기초',      desc: '비상금, 저축, 지출 관리' },
+  { value: 'retirement', icon: <Sunset size={18} color="var(--c-forest-700)" />,      label: '노후 준비',      desc: '연금, IRP, 장기 자산 관리' },
+  { value: 'business',   icon: <Briefcase size={18} color="var(--c-forest-700)" />,   label: '사업 자금',      desc: '창업 / 사업 확장 준비' },
+];
+const AGE_GROUPS = [
+  { value: '20s_early', label: '20대 초반', desc: '만 19~24세' },
+  { value: '20s_late',  label: '20대 후반', desc: '만 25~29세' },
+  { value: '30s_early', label: '30대 초반', desc: '만 30~34세' },
+  { value: '30s_late',  label: '30대 후반', desc: '만 35~39세' },
+  { value: '40s',       label: '40대',       desc: '만 40~49세' },
+  { value: '50s_plus',  label: '50대 이상',  desc: '만 50세~' },
+];
+const INCOME_RANGES = [
+  { value: 'none',      label: '소득 없음',      desc: '학생 / 준비 중' },
+  { value: 'under200',  label: '200만원 미만',   desc: '월 세전 기준' },
+  { value: '200_300',   label: '200~300만원',    desc: '월 세전 기준' },
+  { value: '300_500',   label: '300~500만원',    desc: '월 세전 기준' },
+  { value: '500_plus',  label: '500만원 이상',   desc: '월 세전 기준' },
+];
+
 /* ── 설문 데이터 ─────────────────────────────────────────────── */
 const STEPS = [
   {
@@ -186,31 +211,6 @@ const STEPS = [
     showDesc: true,
     options: INCOME_RANGES,
   },
-];
-
-/* ── 재무 목표 / 나이 / 소득 ─────────────────────────────────── */
-const FINANCIAL_GOALS = [
-  { value: 'home',       icon: <Home size={18} color="var(--c-forest-700)" />,       label: '내 집 마련',    desc: '청약, 매매, 전세 전략' },
-  { value: 'stock',      icon: <TrendingUp size={18} color="var(--c-forest-700)" />,  label: '주식/ETF 투자',  desc: '계좌 개설부터 첫 투자까지' },
-  { value: 'saving',     icon: <PiggyBank size={18} color="var(--c-forest-700)" />,   label: '목돈 모으기',   desc: '결혼/여행/창업 자금 마련' },
-  { value: 'foundation', icon: <BookOpen size={18} color="var(--c-forest-700)" />,    label: '재무 기초',      desc: '비상금, 저축, 지출 관리' },
-  { value: 'retirement', icon: <Sunset size={18} color="var(--c-forest-700)" />,      label: '노후 준비',      desc: '연금, IRP, 장기 자산 관리' },
-  { value: 'business',   icon: <Briefcase size={18} color="var(--c-forest-700)" />,   label: '사업 자금',      desc: '창업 / 사업 확장 준비' },
-];
-const AGE_GROUPS = [
-  { value: '20s_early', label: '20대 초반', desc: '만 19~24세' },
-  { value: '20s_late',  label: '20대 후반', desc: '만 25~29세' },
-  { value: '30s_early', label: '30대 초반', desc: '만 30~34세' },
-  { value: '30s_late',  label: '30대 후반', desc: '만 35~39세' },
-  { value: '40s',       label: '40대',       desc: '만 40~49세' },
-  { value: '50s_plus',  label: '50대 이상',  desc: '만 50세~' },
-];
-const INCOME_RANGES = [
-  { value: 'none',      label: '소득 없음',      desc: '학생 / 준비 중' },
-  { value: 'under200',  label: '200만원 미만',   desc: '월 세전 기준' },
-  { value: '200_300',   label: '200~300만원',    desc: '월 세전 기준' },
-  { value: '300_500',   label: '300~500만원',    desc: '월 세전 기준' },
-  { value: '500_plus',  label: '500만원 이상',   desc: '월 세전 기준' },
 ];
 
 const STEP_COLORS = ['var(--c-green-500)', '#3B82F6', '#8B5CF6', 'var(--c-yellow-500)', '#EF4444', '#EC4899'];
