@@ -47,7 +47,14 @@ CREATE TABLE IF NOT EXISTS profiles (
   income_range           TEXT,                         -- 월 소득 구간 (none/under200/200_300/300_500/500_plus)
   roadmap                JSONB,                        -- AI 개인화 로드맵 (온보딩 시 Solar 생성)
   noming_intro           TEXT,                         -- AI 코치 첫 인사말 (온보딩 시 Solar 생성)
-  independence_score     INTEGER,                      -- 자립 진단 총점 (10~50점)
+  -- ── 경제 자립 기능 (IndependenceDiagnosisPage / MyGrowthHubPage) ──
+  independence_score      INTEGER,                     -- 자립 진단 총점 (10~50점)
+  independence_diagnosis   JSONB,                      -- 자립 진단 결과 (점수/레벨/카테고리별 점수)
+  independence_roadmap    JSONB,                       -- AI 생성 자립 로드맵 (steps 포함)
+  today_action             TEXT,                       -- 오늘의 실천 제안 (AI 생성, 일 1회 캐시)
+  today_action_date        DATE,                       -- today_action이 생성된 날짜 (캐시 기준일)
+  roadmap_completed_steps  INTEGER[]  DEFAULT '{}',    -- 자립 로드맵에서 완료 처리한 step order 목록
+  roadmap_custom_todos     JSONB      DEFAULT '{}',    -- 자립 로드맵 단계별 사용자 커스텀 할일
   -- ──────────────────────────────────────────────────────────────────
   onboarding_completed   BOOLEAN     DEFAULT FALSE,
   current_step           INTEGER     DEFAULT 1,
@@ -72,7 +79,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS age_group             TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS income_range          TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS roadmap               JSONB;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS noming_intro          TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_score    INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_score      INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_diagnosis  JSONB;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_roadmap   JSONB;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS today_action            TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS today_action_date       DATE;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS roadmap_completed_steps INTEGER[] DEFAULT '{}';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS roadmap_custom_todos    JSONB DEFAULT '{}';
 
 -- 레벨 컬럼: 기존 CHECK 제약 제거 후 새 단계 시스템으로 마이그레이션
 ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_level_check;

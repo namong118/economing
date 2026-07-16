@@ -360,11 +360,15 @@ const INDEPENDENCE_LEVEL_COLOR = {
 function IndependenceTab() {
   const navigate = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
+  const BASE_URL = import.meta.env.BASE_URL;
 
   const [todayAction,    setTodayAction]    = useState(profile?.today_action ?? null);
   const [actionLoading,  setActionLoading]  = useState(false);
   const [completedSteps, setCompletedSteps] = useState(profile?.roadmap_completed_steps ?? []);
   const [expandedStep,   setExpandedStep]   = useState(null);
+  const [addingStep,     setAddingStep]     = useState(null);
+  const [newTodoText,    setNewTodoText]    = useState('');
+  const [customTodos,    setCustomTodos]    = useState(profile?.roadmap_custom_todos ?? {});
 
   const diagnosis = profile?.independence_diagnosis ?? null;
   const roadmap   = profile?.independence_roadmap   ?? null;
@@ -389,6 +393,44 @@ function IndependenceTab() {
     if (!isCompleted && updated.length === totalSteps) {
       setTimeout(() => alert('모든 단계를 완료했어요! 노밍이 자랑스러워요!'), 100);
     }
+  };
+
+  /* 커스텀 할일 저장 — 실패 시 이전 상태로 롤백 + 알림 */
+  const persistCustomTodos = async (updated, previous) => {
+    const { error } = await supabase.from('profiles').update({ roadmap_custom_todos: updated }).eq('id', user.id);
+    if (error) {
+      console.error('커스텀 할일 저장 실패:', error);
+      setCustomTodos(previous);
+      alert('저장에 실패했어요. 다시 시도해주세요.');
+    }
+  };
+
+  /* 커스텀 할일 추가 */
+  const addCustomTodo = async (stepOrder) => {
+    if (!newTodoText.trim()) return;
+    const previous = customTodos;
+    const newTodo = { id: Date.now().toString(), text: newTodoText.trim(), done: false, createdAt: new Date().toISOString() };
+    const updated = { ...customTodos, [stepOrder]: [...(customTodos[stepOrder] ?? []), newTodo] };
+    setCustomTodos(updated);
+    setNewTodoText('');
+    setAddingStep(null);
+    await persistCustomTodos(updated, previous);
+  };
+
+  /* 커스텀 할일 완료 토글 */
+  const toggleCustomTodo = async (stepOrder, todoId) => {
+    const previous = customTodos;
+    const updated = { ...customTodos, [stepOrder]: customTodos[stepOrder].map(t => t.id === todoId ? { ...t, done: !t.done } : t) };
+    setCustomTodos(updated);
+    await persistCustomTodos(updated, previous);
+  };
+
+  /* 커스텀 할일 삭제 */
+  const deleteCustomTodo = async (stepOrder, todoId) => {
+    const previous = customTodos;
+    const updated = { ...customTodos, [stepOrder]: customTodos[stepOrder].filter(t => t.id !== todoId) };
+    setCustomTodos(updated);
+    await persistCustomTodos(updated, previous);
   };
 
   /* 오늘의 행동 — 미완료 첫 단계 기반으로 갱신 */
@@ -547,30 +589,46 @@ function IndependenceTab() {
                       </div>
                     )}
 
-                    {/* 행동 목록 */}
-                    {step.actions?.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 8, letterSpacing: '0.3px' }}>실천 행동</div>
-                        {step.actions.map((action, j) => (
-                          <div key={j} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
-                            <div style={{
-                              width: 18, height: 18, borderRadius: 4, border: '1.5px solid #B8EBC8',
-                              background: '#F0FBF4', flexShrink: 0, marginTop: 1,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <span style={{ fontSize: 9, color: '#3A9A5C', fontWeight: 700 }}>
-                                {j === 0 ? '오늘' : j === 1 ? '주' : '월'}
-                              </span>
+                    {/* 행동 목록 — 객체 형식(today/this_week/this_month) 또는 배열 형식 모두 지원 */}
+                    {step.actions && (
+                      <div style={{ marginBottom: 4 }}>
+                        {typeof step.actions === 'object' && !Array.isArray(step.actions) ? (
+                          <>
+                            {step.actions.today && (
+                              <div style={{ background: '#E3F9EC', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#2A7A4B', marginBottom: 4 }}>⚡ 지금 당장 (5분)</div>
+                                <div style={{ fontSize: 12, color: '#2A7A4B', lineHeight: 1.65 }}>{step.actions.today}</div>
+                              </div>
+                            )}
+                            {step.actions.this_week && (
+                              <div style={{ background: '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#3A9A5C', marginBottom: 4 }}>📅 이번 주 안에</div>
+                                <div style={{ fontSize: 12, color: '#3A9A5C', lineHeight: 1.65 }}>{step.actions.this_week}</div>
+                              </div>
+                            )}
+                            {step.actions.this_month && (
+                              <div style={{ background: '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 4 }}>🗓️ 이번 달 안에</div>
+                                <div style={{ fontSize: 12, color: '#888780', lineHeight: 1.65 }}>{step.actions.this_month}</div>
+                              </div>
+                            )}
+                          </>
+                        ) : Array.isArray(step.actions) && step.actions.length > 0 && (
+                          step.actions.map((action, j) => (
+                            <div key={j} style={{ background: j === 0 ? '#E3F9EC' : '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
+                              <div style={{ fontSize: 10, fontWeight: 700, color: j === 0 ? '#2A7A4B' : '#3A9A5C', marginBottom: 4 }}>
+                                {j === 0 ? '⚡ 지금 당장' : j === 1 ? '📅 이번 주 안에' : '🗓️ 이번 달 안에'}
+                              </div>
+                              <div style={{ fontSize: 12, color: j === 0 ? '#2A7A4B' : '#3A9A5C', lineHeight: 1.65 }}>{action}</div>
                             </div>
-                            <span style={{ fontSize: 12, color: '#444', lineHeight: 1.6 }}>{action}</span>
-                          </div>
-                        ))}
+                          ))
+                        )}
                       </div>
                     )}
 
                     {/* 완료 기준 */}
                     {step.checkPoints?.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
+                      <div style={{ borderTop: '0.5px solid #E3F9EC', paddingTop: 10, marginBottom: 12 }}>
                         <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 8, letterSpacing: '0.3px' }}>이렇게 되면 완료예요</div>
                         {step.checkPoints.map((cp, j) => (
                           <div key={j} style={{ display: 'flex', gap: 6, alignItems: 'flex-start', marginBottom: 5 }}>
@@ -584,15 +642,15 @@ function IndependenceTab() {
                     {/* 노밍 팁 */}
                     {step.nomingTip && (
                       <div style={{
-                        background: 'var(--c-yellow-100)', borderRadius: 10,
-                        border: '0.5px solid var(--c-yellow-border)',
+                        background: '#FFFBEE', borderRadius: 8,
+                        border: '0.5px solid #FAC775',
                         padding: '10px 12px', marginBottom: 12,
                         display: 'flex', gap: 8, alignItems: 'flex-start',
                       }}>
-                        <Sun size={16} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
+                        <Sun size={15} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
                         <div>
                           <div style={{ fontSize: 10, fontWeight: 700, color: '#854F0B', marginBottom: 3 }}>노밍 팁</div>
-                          <div style={{ fontSize: 12, color: '#633806', lineHeight: 1.65 }}>{step.nomingTip}</div>
+                          <div style={{ fontSize: 11, color: '#633806', lineHeight: 1.65 }}>{step.nomingTip}</div>
                         </div>
                       </div>
                     )}
@@ -632,6 +690,91 @@ function IndependenceTab() {
                       }}
                     >
                       {isDone ? '완료 취소하기' : '이 단계 완료하기 ✓'}
+                    </button>
+
+                    {/* 내 계획 추가 */}
+                    <div style={{ marginTop: 12 }}>
+                      <div style={{ fontSize: 10, color: '#888780', marginBottom: 8 }}>📝 내가 추가한 계획</div>
+
+                      {(customTodos[step.order] ?? []).map(todo => (
+                        <div key={todo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
+                          <div
+                            onClick={() => toggleCustomTodo(step.order, todo.id)}
+                            style={{
+                              width: 18, height: 18, borderRadius: 4, flexShrink: 0,
+                              background: todo.done ? '#52C97A' : '#fff',
+                              border: '1.5px solid ' + (todo.done ? '#52C97A' : '#B8EBC8'),
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {todo.done && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                          </div>
+                          <span style={{ fontSize: 12, flex: 1, color: '#2A7A4B', textDecoration: todo.done ? 'line-through' : 'none', opacity: todo.done ? 0.6 : 1 }}>
+                            {todo.text}
+                          </span>
+                          <button
+                            onClick={() => deleteCustomTodo(step.order, todo.id)}
+                            style={{ background: 'none', border: 'none', color: '#B8EBC8', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: '0 2px' }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+
+                      {addingStep === step.order ? (
+                        <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                          <input
+                            autoFocus
+                            value={newTodoText}
+                            onChange={e => setNewTodoText(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && addCustomTodo(step.order)}
+                            placeholder="예: 부동산 책 한 권 읽기"
+                            style={{ flex: 1, padding: '7px 10px', borderRadius: 8, border: '1px solid #52C97A', fontSize: 12, outline: 'none', background: '#fff', fontFamily: 'inherit' }}
+                          />
+                          <button
+                            onClick={() => addCustomTodo(step.order)}
+                            style={{ padding: '7px 12px', borderRadius: 8, background: '#52C97A', border: 'none', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}
+                          >
+                            추가
+                          </button>
+                          <button
+                            onClick={() => { setAddingStep(null); setNewTodoText(''); }}
+                            style={{ padding: '7px 10px', borderRadius: 8, background: '#F2FBF5', border: '0.5px solid #B8EBC8', color: '#888780', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}
+                          >
+                            취소
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setAddingStep(step.order)}
+                          style={{ width: '100%', marginTop: 8, padding: '7px', borderRadius: 8, border: '1px dashed #B8EBC8', background: 'transparent', color: '#888780', fontSize: 12, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
+                        >
+                          + 내 계획 추가하기
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 노밍 바로 질문하기 */}
+                    <button
+                      onClick={() => navigate('/coach', {
+                        state: {
+                          question: `${step.title}에 대해 더 자세히 알고 싶어요. ${step.description}`,
+                          context: `자립 로드맵 ${step.order}단계`,
+                        }
+                      })}
+                      style={{
+                        width: '100%', marginTop: 10,
+                        padding: '9px 12px', borderRadius: 8,
+                        background: '#FFFBEE', border: '0.5px solid #FAC775',
+                        color: '#854F0B', fontSize: 12, fontWeight: 500,
+                        cursor: 'pointer', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center', gap: 6,
+                        fontFamily: 'inherit',
+                      }}
+                    >
+                      <img src={`${BASE_URL}noming.png`} style={{ width: 18, height: 18, objectFit: 'contain' }} alt="" />
+                      노밍에게 이 단계 더 물어보기 →
                     </button>
                   </div>
                 )}
