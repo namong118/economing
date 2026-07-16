@@ -42,6 +42,10 @@ CREATE TABLE IF NOT EXISTS profiles (
   investment_experience  TEXT,                         -- 투자 경험 (none/etf/stock)
   occupation             TEXT,                         -- 직업
   interests              TEXT[]      DEFAULT '{}',     -- 관심 분야 (복수 선택)
+  financial_goal         TEXT,                         -- 재무 목표 (home/stock/saving/foundation/retirement/business)
+  age_group              TEXT,                         -- 나이대 (20s_early/20s_late/30s_early/30s_late/40s/50s_plus)
+  income_range           TEXT,                         -- 월 소득 구간 (none/under200/200_300/300_500/500_plus)
+  independence_score     INTEGER,                      -- 자립 진단 총점 (10~50점)
   -- ──────────────────────────────────────────────────────────────────
   onboarding_completed   BOOLEAN     DEFAULT FALSE,
   current_step           INTEGER     DEFAULT 1,
@@ -61,6 +65,10 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS investment_experience TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS occupation            TEXT;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS interests             TEXT[] DEFAULT '{}';
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed  BOOLEAN DEFAULT FALSE;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS financial_goal        TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS age_group             TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS income_range          TEXT;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS independence_score    INTEGER;
 
 -- 레벨 컬럼: 기존 CHECK 제약 제거 후 새 단계 시스템으로 마이그레이션
 ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_level_check;
