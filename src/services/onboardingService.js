@@ -290,10 +290,12 @@ export async function completeOnboarding(userId, answers) {
       generateRoadmap(answers),
       generateNomingIntro(answers),
     ])
-    await supabase
+    const { error: saveError } = await supabase
       .from('profiles')
       .update({ roadmap, noming_intro: nomingIntro })
       .eq('id', userId)
+    if (saveError) console.error('개인화 로드맵 저장 실패:', saveError)
+
     await initProgress(userId, roadmap?.steps?.length || 4)
     return { roadmap, nomingIntro, categoryPriority }
   } catch {

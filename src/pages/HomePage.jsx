@@ -119,7 +119,8 @@ export default function HomePage() {
       const after = updated.streak_days ?? before;
       const bonusXp = STREAK_MILESTONES[after];
       if (after !== before && bonusXp) {
-        await addXp(user.id, bonusXp);
+        const { error: xpError } = await addXp(user.id, bonusXp);
+        if (xpError) console.error('스트릭 보너스 XP 지급 실패:', xpError);
         setStreakMilestone({ days: after, xp: bonusXp });
         setTimeout(() => setStreakMilestone(null), 2600);
       }

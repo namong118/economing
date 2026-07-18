@@ -83,11 +83,17 @@ export default function RoadmapPage() {
 
   const handleCompleteStep = async (step) => {
     if (!user?.id) return;
+    const previous = progress;
     setProgress(prev => [
       ...prev.filter(p => p.step !== step),
       { user_id: user.id, step, completed: true, completed_at: new Date().toISOString() },
     ]);
-    await completeStep(user.id, step);
+    const { error } = await completeStep(user.id, step);
+    if (error) {
+      console.error('단계 완료 저장 실패:', error);
+      setProgress(previous);
+      alert('저장에 실패했어요. 다시 시도해주세요.');
+    }
   };
 
   const [expandedStep, setExpandedStep] = useState(startStep ? startStep - 1 : 0);

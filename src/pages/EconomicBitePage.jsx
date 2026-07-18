@@ -116,7 +116,7 @@ export default function EconomicBitePage() {
   const diffStyle = DIFFICULTY_STYLE[bite.difficulty] ?? DIFFICULTY_STYLE.medium;
   const CatIcon = catStyle.Icon;
 
-  function handleOption(idx) {
+  async function handleOption(idx) {
     if (quizRevealed) return;
     setQuizSelected(idx);
     setQuizRevealed(true);
@@ -124,8 +124,13 @@ export default function EconomicBitePage() {
       setShowXP(true);
       setTimeout(() => setShowXP(false), 1900);
       if (user?.id) {
-        addXp(user.id, 10);
-        supabase.from('user_quiz_results').insert({ user_id: user.id, bite_id: bite.id, is_correct: true });
+        const { error: xpError } = await addXp(user.id, 10);
+        if (xpError) console.error('퀴즈 XP 지급 실패:', xpError);
+
+        const { error: resultError } = await supabase
+          .from('user_quiz_results')
+          .insert({ user_id: user.id, bite_id: bite.id, is_correct: true });
+        if (resultError) console.error('퀴즈 결과 저장 실패:', resultError);
       }
     }
   }

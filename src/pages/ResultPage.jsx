@@ -32,10 +32,12 @@ export default function ResultPage() {
   const handleStart = async () => {
     setUserLevel(level);
     if (user) {
-      await Promise.all([
+      const [levelResult, progressResult] = await Promise.all([
         updateLevel(user.id, level),
         initProgress(user.id, staticRoadmap.length),
       ]);
+      if (levelResult?.error) console.error('레벨 저장 실패:', levelResult.error);
+      if (progressResult?.error) console.error('로드맵 초기화 실패:', progressResult.error);
       await refreshProfile();
       navigate('/onboarding', { state: { economic_level: level }, replace: true });
     } else {

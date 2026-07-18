@@ -139,9 +139,14 @@ export async function fetchAndSummarizeNews(query = '경제') {
 export async function markAsRead(userId) {
   if (!userId) return { success: false }
   try {
-    await addXp(userId, 5)
+    const { error } = await addXp(userId, 5)
+    if (error) {
+      console.error('읽기 완료 XP 지급 실패:', error)
+      return { success: false }
+    }
     return { success: true, xpGranted: 5 }
-  } catch {
+  } catch (err) {
+    console.error('읽기 완료 처리 실패:', err)
     return { success: false }
   }
 }

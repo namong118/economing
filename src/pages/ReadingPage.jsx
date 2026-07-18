@@ -270,7 +270,11 @@ export default function ReadingPage() {
     if (!user) { navigate('/login'); return; }
     if (readMap[idx]) return;
     setReadMap(prev => ({ ...prev, [idx]: true }));
-    await markAsRead(user.id);
+    const { success } = await markAsRead(user.id);
+    if (!success) {
+      setReadMap(prev => ({ ...prev, [idx]: false }));
+      alert('저장에 실패했어요. 다시 시도해주세요.');
+    }
   }
 
   return (

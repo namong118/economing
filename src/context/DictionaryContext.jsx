@@ -39,9 +39,15 @@ export function DictionaryProvider({ children }) {
   }, [user, isSaved]);
 
   const remove = useCallback(async (id) => {
-    await apiDelete(id);
+    const previous = terms;
     setTerms(prev => prev.filter(t => t.id !== id));
-  }, []);
+    const { error } = await apiDelete(id);
+    if (error) {
+      console.error('용어 삭제 실패:', error);
+      setTerms(previous);
+      alert('삭제에 실패했어요. 다시 시도해주세요.');
+    }
+  }, [terms]);
 
   return (
     <DictionaryContext.Provider value={{ terms, loaded, isSaved, save, remove }}>
