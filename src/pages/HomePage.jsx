@@ -4,6 +4,7 @@ import { Leaf, Zap, MessageCircle, NotebookPen, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite, recordBiteView } from '../services/biteService';
+import { addXp, updateStreak } from '../services/profileService';
 import { getLevelByXp } from '../data/levelData';
 import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
@@ -25,9 +26,12 @@ function xpInfo(xp = 0) {
 
 const _questionsCache = {};
 
+/* 연속 학습일 마일스톤 → 보너스 XP */
+const STREAK_MILESTONES = { 3: 10, 7: 30, 30: 100, 100: 300 };
+
 export default function HomePage() {
   const navigate             = useNavigate();
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, refreshProfile, loading: authLoading } = useAuth();
   const { userLevel }        = useUserLevel();
 
   const [bite, setBite]      = useState(null);
@@ -91,6 +95,9 @@ export default function HomePage() {
   /* 할일 완료 여부 */
   const [todoDone, setTodoDone] = useState([false, false, false, false]);
 
+  /* 연속 학습일 마일스톤 축하 토스트 */
+  const [streakMilestone, setStreakMilestone] = useState(null);
+
   useEffect(() => {
     if (!user?.id || !bite?.id) return;
     const todayStr = new Date().toISOString().slice(0, 10);
@@ -99,10 +106,27 @@ export default function HomePage() {
       supabase.from('user_quiz_results').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
       supabase.from('coach_conversations').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
       supabase.from('economic_journals').select('id').eq('user_id', user.id).gte('created_at', todayStr).limit(1),
-    ]).then(results => {
-      setTodoDone(results.map(r => r.status === 'fulfilled' ? (r.value?.data?.length ?? 0) > 0 : false));
+    ]).then(async results => {
+      const done = results.map(r => r.status === 'fulfilled' ? (r.value?.data?.length ?? 0) > 0 : false);
+      setTodoDone(done);
+
+      if (!done.some(Boolean)) return;
+
+      const before = profile?.streak_days ?? 0;
+      const { data: updated, error } = await updateStreak(user.id);
+      if (error || !updated) return;
+
+      const after = updated.streak_days ?? before;
+      const bonusXp = STREAK_MILESTONES[after];
+      if (after !== before && bonusXp) {
+        await addXp(user.id, bonusXp);
+        setStreakMilestone({ days: after, xp: bonusXp });
+        setTimeout(() => setStreakMilestone(null), 2600);
+      }
+
+      refreshProfile();
     });
-  }, [user?.id, bite?.id]);
+  }, [user?.id, bite?.id]); // eslint-disable-line
 
   const todos = [
     { title: '한잎 읽기',        Icon: Leaf,          iconColor: 'var(--c-forest-700)', path: `/bite/${bite?.id}`, done: todoDone[0] },
@@ -151,7 +175,28 @@ export default function HomePage() {
           0%   { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
+        @keyframes streakToast {
+          0%   { opacity: 0; transform: translate(-50%, -12px); }
+          10%  { opacity: 1; transform: translate(-50%, 0); }
+          85%  { opacity: 1; transform: translate(-50%, 0); }
+          100% { opacity: 0; transform: translate(-50%, -12px); }
+        }
       `}</style>
+
+      {streakMilestone && (
+        <div style={{
+          position: 'fixed', top: 16, left: '50%', zIndex: 50,
+          background: 'var(--grad-action)', color: '#fff',
+          padding: '12px 22px', borderRadius: 100,
+          fontSize: 14, fontWeight: 800, letterSpacing: '-0.3px',
+          boxShadow: '0 6px 20px rgba(31,190,134,0.4)',
+          display: 'flex', alignItems: 'center', gap: 8,
+          animation: 'streakToast 2.6s ease-out forwards',
+          pointerEvents: 'none', whiteSpace: 'nowrap',
+        }}>
+          🔥 {streakMilestone.days}일 연속 학습! +{streakMilestone.xp} XP
+        </div>
+      )}
 
       <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 32px', boxSizing: 'border-box' }}>
 

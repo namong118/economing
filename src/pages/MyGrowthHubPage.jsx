@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
 import { supabase } from '../services/supabaseClient';
 import { useAuth } from '../context/AuthContext';
@@ -129,6 +129,31 @@ function SummaryTab() {
           </div>
         </div>
       </div>
+
+      {/* ── 연속 학습일 ── */}
+      {(profile?.streak_days ?? 0) > 0 && (
+        <div style={{
+          background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px solid var(--c-line)',
+          padding: '16px 20px', marginBottom: '16px',
+          display: 'flex', alignItems: 'center', gap: '14px',
+        }}>
+          <div style={{
+            width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+            background: 'var(--c-yellow-100)', border: '1px solid var(--c-yellow-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Flame size={22} color="#F59E0B" />
+          </div>
+          <div>
+            <p style={{ fontSize: '17px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.5px' }}>
+              {profile.streak_days}일 연속 학습 중
+            </p>
+            <p style={{ fontSize: '12px', color: 'var(--c-muted)', fontWeight: '500' }}>
+              매일 한 잎씩, 꾸준히 잘 하고 있어요!
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ── 3. 경제 프로필 ── */}
       {isOnboarded ? (
