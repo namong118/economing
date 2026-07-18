@@ -179,6 +179,7 @@ export default function IndependenceDiagnosisPage() {
       return;
     }
     setSaving(true);
+    let hadError = false;
     try {
       const diagnosisData = {
         score: result.score,
@@ -189,13 +190,18 @@ export default function IndependenceDiagnosisPage() {
         categories: QUESTIONS.map((q, i) => ({ category: q.category, score: result.scores[i] })),
       };
 
-      await supabase
+      const { error: diagnosisError } = await supabase
         .from('profiles')
         .update({
           independence_score:     result.score,
           independence_diagnosis: diagnosisData,
         })
         .eq('id', user.id);
+
+      if (diagnosisError) {
+        console.error('자립 진단 저장 실패:', diagnosisError);
+        hadError = true;
+      }
 
       const answers = {
         financial_goal:       profile?.financial_goal,
@@ -212,17 +218,24 @@ export default function IndependenceDiagnosisPage() {
       ]);
 
       if (roadmap.status === 'fulfilled' && roadmap.value) {
-        await supabase
+        const { error: roadmapError } = await supabase
           .from('profiles')
           .update({ independence_roadmap: roadmap.value })
           .eq('id', user.id);
+
+        if (roadmapError) {
+          console.error('자립 로드맵 저장 실패:', roadmapError);
+          hadError = true;
+        }
       }
 
       await refreshProfile();
     } catch (err) {
       console.error('자립 진단 저장 실패:', err);
+      hadError = true;
     } finally {
       setSaving(false);
+      if (hadError) alert('일부 저장에 실패했어요. 다시 시도해주세요.');
       navigate('/my-growth', { state: { tab: 'independence' } });
     }
   };

@@ -250,10 +250,12 @@ export async function generateTodayAction(userId, financialGoal, independenceLev
     messages: [{ role: 'user', content: `재무 목표: ${GOAL_LABELS[financialGoal] ?? '재무 기초 다지기'}, 자립 단계: ${independenceLevel}${stepContext}` }],
   })
 
-  await supabase
+  const { error } = await supabase
     .from('profiles')
     .update({ today_action: content, today_action_date: today })
     .eq('id', userId)
+
+  if (error) console.error('오늘의 행동 저장 실패:', error)
 
   return content
 }

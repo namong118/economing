@@ -400,7 +400,7 @@ export default function OnboardingPage() {
       setAiResult(result);
     } catch (err) {
       console.error('온보딩 완료 실패:', err);
-      navigate('/home', { replace: true });
+      alert('저장에 실패했어요. 다시 시도해주세요.');
     } finally {
       setSaving(false);
     }

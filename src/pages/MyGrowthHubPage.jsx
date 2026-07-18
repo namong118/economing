@@ -379,16 +379,24 @@ function IndependenceTab() {
   /* 단계 완료 토글 */
   const toggleStepComplete = async (stepOrder) => {
     const isCompleted = completedSteps.includes(stepOrder);
+    const previous = completedSteps;
     const updated = isCompleted
       ? completedSteps.filter(s => s !== stepOrder)
       : [...completedSteps, stepOrder];
 
     setCompletedSteps(updated);
 
-    await supabase
+    const { error } = await supabase
       .from('profiles')
       .update({ roadmap_completed_steps: updated })
       .eq('id', user.id);
+
+    if (error) {
+      console.error('완료 상태 저장 실패:', error);
+      setCompletedSteps(previous);
+      alert('저장에 실패했어요. 다시 시도해주세요.');
+      return;
+    }
 
     if (!isCompleted && updated.length === totalSteps) {
       setTimeout(() => alert('모든 단계를 완료했어요! 노밍이 자랑스러워요!'), 100);
