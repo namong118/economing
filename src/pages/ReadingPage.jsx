@@ -5,6 +5,7 @@ import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { fetchAndSummarizeNews, markAsRead } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
+import IndicesTicker from '../components/reading/IndicesTicker';
 
 const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산', '미국경제', '글로벌경제'];
 
@@ -283,6 +284,9 @@ export default function ReadingPage() {
 
       <div style={{ background: 'var(--c-canvas)', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
+
+          {/* 지표/지수 티커 */}
+          <IndicesTicker />
 
           {/* 카테고리 필터 */}
           <div style={{
