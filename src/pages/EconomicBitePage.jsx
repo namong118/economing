@@ -412,6 +412,18 @@ export default function EconomicBitePage() {
                 </span>
               </div>
             )}
+
+            {quizRevealed && quizData.quiz.explanation && (
+              <div style={{
+                marginTop: 8, padding: '12px 14px', borderRadius: 10,
+                background: 'var(--c-canvas)', border: '0.5px solid var(--c-line)',
+                fontSize: 12.5, lineHeight: 1.65, color: 'var(--c-slate)',
+                display: 'flex', alignItems: 'flex-start', gap: 8,
+              }}>
+                <Lightbulb size={14} color="var(--c-amber-700)" style={{ flexShrink: 0, marginTop: 1 }} />
+                <span>{quizData.quiz.explanation}</span>
+              </div>
+            )}
           </div>
         )}
 
