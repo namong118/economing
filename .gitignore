@@ -29,3 +29,7 @@ dist-ssr
 
 # Supabase CLI local cache
 supabase/.temp/
+
+# 콘텐츠 갭 분석 스크립트 산출물 (일회성, 커밋 대상 아님)
+scripts/.cache/
+scripts/output/
