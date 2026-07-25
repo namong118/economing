@@ -8,6 +8,8 @@ import {
   Minus, Droplet, Truck, Calculator,
 } from 'lucide-react'
 import { BiteInfographic } from '../components/infographic/BiteInfographic'
+import { CompositionInfographic } from '../components/infographic/CompositionInfographic'
+import { ComparisonInfographic } from '../components/infographic/ComparisonInfographic'
 
 export const BITE_INFOGRAPHICS = {
 
@@ -74,14 +76,15 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   6: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="GDP를 구성하는 4요소"
-      steps={[
-        { icon: Users,     label: '소비',     sub: '가계 지출',  color: 'green'  },
-        { icon: Briefcase, label: '기업 투자', sub: '설비·R&D',  color: 'green'  },
-        { icon: Landmark,  label: '정부 지출', sub: '공공서비스', color: 'green'  },
+      items={[
+        { icon: Users,     label: '소비',     sub: '가계 지출',   color: 'green'  },
+        { icon: Briefcase, label: '기업 투자', sub: '설비·R&D',   color: 'green'  },
+        { icon: Landmark,  label: '정부 지출', sub: '공공서비스',  color: 'green'  },
         { icon: Ship,      label: '순수출',   sub: '수출 - 수입', color: 'yellow' },
       ]}
+      total={{ icon: Globe, label: 'GDP', sub: '네 가지의 합', color: 'blue' }}
       result="나라 경제 규모를 재는 대표 지표"
     />
   ),
@@ -187,14 +190,14 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   15: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="자산배분 전략"
-      steps={[
+      items={[
         { icon: LineChart, label: '주식',      sub: '고수익·고위험', color: 'yellow' },
         { icon: PiggyBank, label: '채권·예금', sub: '안전자산',     color: 'green'  },
         { icon: Coins,     label: '금·현금',   sub: '방어자산',     color: 'blue'   },
-        { icon: PieChart,  label: '분산 완성', sub: '리스크 분산',  color: 'green'  },
       ]}
+      total={{ icon: PieChart, label: '분산 완성', sub: '리스크 분산', color: 'green' }}
       result="달걀을 여러 바구니에 나눠 담아요"
     />
   ),
@@ -226,14 +229,15 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   18: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="포트폴리오 구성"
-      steps={[
-        { icon: PieChart,  label: '비율 설계', sub: '목표 배분',  color: 'green'  },
-        { icon: LineChart, label: '주식',      sub: '성장 자산',  color: 'yellow' },
-        { icon: PiggyBank, label: '채권·예금', sub: '방어 자산',  color: 'green'  },
-        { icon: RefreshCw, label: '리밸런싱',  sub: '정기 점검', color: 'green'  },
+      items={[
+        { icon: LineChart, label: '주식', sub: '성장 자산',   color: 'yellow' },
+        { icon: PiggyBank, label: '채권', sub: '방어 자산',   color: 'green'  },
+        { icon: Wallet,    label: '현금', sub: '유동성 확보', color: 'blue'   },
+        { icon: Coins,     label: '금',   sub: '안전자산',    color: 'blue'   },
       ]}
+      total={{ icon: PieChart, label: '포트폴리오', sub: '분산 완성', color: 'green' }}
       result="내 투자 자산의 전체 지도"
     />
   ),
@@ -369,13 +373,11 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   29: () => (
-    <BiteInfographic
+    <ComparisonInfographic
       title="레버리지 양날의 검"
-      steps={[
-        { icon: Wallet,       label: '자기 자본', sub: '100만원',  color: 'green'  },
-        { icon: CreditCard,   label: '대출 추가', sub: '+200만원', color: 'yellow' },
-        { icon: TrendingUp,   label: '상승 시',   sub: '수익 3배', color: 'green'  },
-        { icon: TrendingDown, label: '하락 시',   sub: '손실 3배', color: 'red'    },
+      branches={[
+        { icon: TrendingUp,   label: '상승 시', sub: '수익 3배로 확대', color: 'green' },
+        { icon: TrendingDown, label: '하락 시', sub: '손실 3배로 확대', color: 'red'   },
       ]}
       result="수익도 손실도 모두 커지는 양날의 검"
     />
@@ -499,14 +501,14 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   39: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="재무제표 3대 구성"
-      steps={[
-        { icon: Factory,   label: '기업 경영',  sub: '사업 활동', color: 'green'  },
+      items={[
         { icon: LineChart, label: '손익계산서', sub: '수익·비용', color: 'yellow' },
         { icon: Scale,     label: '재무상태표', sub: '자산·부채', color: 'yellow' },
         { icon: Wallet,    label: '현금흐름표', sub: '실제 현금', color: 'green'  },
       ]}
+      total={{ icon: Factory, label: '재무제표', sub: '3대 구성의 합', color: 'green' }}
       result="기업의 재정 건강을 보는 X-레이"
     />
   ),
@@ -551,14 +553,13 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   43: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="자산의 종류"
-      steps={[
-        { icon: Home,      label: '실물자산', sub: '부동산·자동차',  color: 'green'  },
-        { icon: LineChart, label: '금융자산', sub: '주식·채권·예금', color: 'green'  },
-        { icon: Scale,     label: '순자산',   sub: '자산 - 부채',   color: 'yellow' },
-        { icon: Wallet,    label: '재정 건강', sub: '꾸준히 늘리기', color: 'green'  },
+      items={[
+        { icon: Home,      label: '실물자산', sub: '부동산·자동차',  color: 'green' },
+        { icon: LineChart, label: '금융자산', sub: '주식·채권·예금', color: 'green' },
       ]}
+      total={{ icon: Wallet, label: '자산', sub: '실물+금융의 합', color: 'blue' }}
       result="내가 가진 모든 경제적 가치"
     />
   ),
@@ -577,14 +578,14 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   45: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="경상수지 구성"
-      steps={[
-        { icon: Ship,       label: '무역수지', sub: '수출 - 수입', color: 'green'  },
-        { icon: Globe,      label: '서비스수지', sub: '유학·여행', color: 'yellow' },
-        { icon: DollarSign, label: '소득수지',  sub: '배당·이자', color: 'green'  },
-        { icon: BarChart2,  label: '경상수지',  sub: '종합 결산', color: 'green'  },
+      items={[
+        { icon: Ship,       label: '무역수지',   sub: '수출 - 수입', color: 'green'  },
+        { icon: Globe,      label: '서비스수지', sub: '유학·여행',   color: 'yellow' },
+        { icon: DollarSign, label: '소득수지',   sub: '배당·이자',   color: 'green'  },
       ]}
+      total={{ icon: BarChart2, label: '경상수지', sub: '종합 결산', color: 'green' }}
       result="한국의 국제 거래 종합 성적표"
     />
   ),
@@ -720,14 +721,15 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   56: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="4대보험 보장 영역"
-      steps={[
-        { icon: Briefcase,   label: '직장 가입',    sub: '자동 등록',  color: 'green' },
-        { icon: Users,       label: '국민연금',      sub: '노후 대비', color: 'green' },
-        { icon: Building2,   label: '건강·고용보험', sub: '의료·실업', color: 'green' },
-        { icon: CheckCircle, label: '산재보험',      sub: '업무 사고', color: 'green' },
+      items={[
+        { icon: Users,       label: '국민연금', sub: '노후 대비', color: 'green' },
+        { icon: Droplet,     label: '건강보험', sub: '의료비',   color: 'green' },
+        { icon: Building2,   label: '고용보험', sub: '실업급여', color: 'green' },
+        { icon: CheckCircle, label: '산재보험', sub: '업무 사고', color: 'green' },
       ]}
+      total={{ icon: Briefcase, label: '4대보험', sub: '직장인 필수 공제', color: 'blue' }}
       result="직장인의 기본 사회 안전망"
     />
   ),
@@ -799,13 +801,11 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   62: () => (
-    <BiteInfographic
-      title="환율 차트 보기"
-      steps={[
-        { icon: DollarSign,   label: '환율 상승',  sub: '1300→1400원',   color: 'red'    },
-        { icon: ArrowDown,    label: '원화 약세',  sub: '달러 대비 하락', color: 'red'    },
-        { icon: ShoppingCart, label: '수입품 인상', sub: '해외직구 비용↑', color: 'yellow' },
-        { icon: Package,      label: '수출 유리',  sub: '기업 경쟁력↑',  color: 'green'  },
+    <ComparisonInfographic
+      title="환율 오르면(원화 약세)"
+      branches={[
+        { icon: ShoppingCart, label: '수입품 인상', sub: '해외직구 비용↑', color: 'red'   },
+        { icon: Package,      label: '수출 유리',   sub: '기업 경쟁력↑',   color: 'green' },
       ]}
       result="환율 오르면 수입은 비싸지고 수출은 유리해져요"
     />
@@ -825,12 +825,10 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   64: () => (
-    <BiteInfographic
-      title="기준금리 발표 읽기"
-      steps={[
-        { icon: Building2,  label: '한국은행',  sub: '금통위 결정',   color: 'blue'  },
-        { icon: TrendingUp, label: '금리 인상',  sub: '0.25% 올림',   color: 'red'   },
-        { icon: CreditCard, label: '대출이자↑', sub: '변동금리 직격', color: 'red'   },
+    <ComparisonInfographic
+      title="기준금리 인상 시"
+      branches={[
+        { icon: CreditCard, label: '대출이자↑', sub: '변동금리 직격',  color: 'red'   },
         { icon: PiggyBank,  label: '예금이자↑', sub: '저축 유리해짐', color: 'green' },
       ]}
       result="기준금리는 모든 금리의 기준이 돼요"
@@ -864,15 +862,13 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   67: () => (
-    <BiteInfographic
+    <ComparisonInfographic
       title="GDP 성장률"
-      steps={[
-        { icon: Globe,        label: 'GDP 측정',  sub: '1년간 생산 총합',  color: 'blue'   },
-        { icon: TrendingUp,   label: '성장률 +2%', sub: '경제 확장 중',    color: 'green'  },
-        { icon: TrendingDown, label: '성장률 -1%', sub: '경기 침체 신호',  color: 'red'    },
-        { icon: Briefcase,    label: '취업·임금',  sub: '내 일자리에 영향', color: 'yellow' },
+      branches={[
+        { icon: TrendingUp,   label: '성장률 +2%', sub: '경제 확장 중',   color: 'green' },
+        { icon: TrendingDown, label: '성장률 -1%', sub: '경기 침체 신호', color: 'red'   },
       ]}
-      result="GDP 성장률은 나라 경제의 성적표예요"
+      result="성장률에 따라 취업·임금까지 갈리는 나라 경제의 성적표"
     />
   ),
 
@@ -890,15 +886,13 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   69: () => (
-    <BiteInfographic
+    <ComparisonInfographic
       title="장단기 금리 역전"
-      steps={[
-        { icon: TrendingUp,    label: '단기금리↑', sub: '2년물 금리 상승',  color: 'red'    },
-        { icon: TrendingDown,  label: '장기금리↓', sub: '10년물 금리 하락', color: 'yellow' },
-        { icon: AlertTriangle, label: '역전 발생', sub: '단기 > 장기',      color: 'red'    },
-        { icon: Clock,         label: '침체 신호', sub: '1~2년 후 경기침체', color: 'blue'  },
+      branches={[
+        { icon: TrendingUp,   label: '단기금리↑', sub: '2년물 금리 상승',  color: 'red'    },
+        { icon: TrendingDown, label: '장기금리↓', sub: '10년물 금리 하락', color: 'yellow' },
       ]}
-      result="장단기 금리 역전은 경기침체의 전조 신호예요"
+      result="역전 발생(단기 > 장기) = 경기침체 전조 신호"
     />
   ),
 
@@ -962,7 +956,6 @@ export const BITE_INFOGRAPHICS = {
         { icon: TrendingUp,   label: '금리 인상', sub: '대출 부담 증가',  color: 'red'    },
         { icon: Home,         label: '수요 감소', sub: '집 살 여력 줄어', color: 'yellow' },
         { icon: TrendingDown, label: '집값 하락', sub: '수요 감소 반영',  color: 'blue'   },
-        { icon: Scale,        label: '반대도 성립', sub: '금리↓ → 집값↑', color: 'green'  },
       ]}
       result="금리와 집값은 반대로 움직이는 경향이 있어요"
     />
