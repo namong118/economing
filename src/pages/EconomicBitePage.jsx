@@ -280,13 +280,15 @@ export default function EconomicBitePage() {
                       </p>
                     )}
                   </div>
-                  <SaveTermButton
-                    term={term}
-                    meaning={rel?.summary || ''}
-                    sourceType="economic_bite"
-                    sourceId={String(bite.id)}
-                    size="sm"
-                  />
+                  {rel && (
+                    <SaveTermButton
+                      term={term}
+                      meaning={rel.summary}
+                      sourceType="economic_bite"
+                      sourceId={String(bite.id)}
+                      size="sm"
+                    />
+                  )}
                 </div>
               );
             })}

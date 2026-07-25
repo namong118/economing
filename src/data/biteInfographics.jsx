@@ -1045,6 +1045,19 @@ export const BITE_INFOGRAPHICS = {
       result="물가만큼 임금이 올라야 실질적으로 부자가 돼요"
     />
   ),
+
+  81: () => (
+    <BiteInfographic
+      title="코스닥 지수 읽기"
+      steps={[
+        { icon: Factory,      label: '중소·벤처·기술주', sub: '코스피보다 작은 기업',  color: 'blue'   },
+        { icon: ArrowUpDown,  label: '변동성 큼',        sub: '하루 변동폭이 더 커요',  color: 'yellow' },
+        { icon: TrendingDown, label: '금리 인상기',      sub: '성장주라 더 크게 하락',  color: 'red'    },
+        { icon: Eye,          label: '내 투자',          sub: '벤처펀드·테마 ETF 영향', color: 'yellow' },
+      ]}
+      result="코스닥은 코스피보다 변동성이 큰 성장주 중심 지수예요"
+    />
+  ),
 }
 
 export function getBiteInfographic(id) {
