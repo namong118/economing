@@ -8,7 +8,9 @@
  * 설계 원칙: 키워드 추출은 기존 70개 콘텐츠와 완전히 무관하게 수행한다.
  * (뉴스 → 개념어 추출 → 그 다음 70개와 대조. 절대 역순으로 하지 않는다.)
  *
- * 실행: node scripts/analyze-content-gap.mjs [--refresh]
+ * 실행: node scripts/analyze-content-gap.mjs [--refresh] [--refresh-classify]
+ *   --refresh          뉴스 재수집 + 개념어 재추출 (+ 갭 분류도 함께 재실행)
+ *   --refresh-classify 갭 분류만 재실행 (개념어 추출 캐시는 그대로 재사용)
  * 프로덕션 코드는 읽기만 하며 수정하지 않는다.
  */
 
@@ -24,17 +26,26 @@ import indicatorsData from '../src/data/indicatorsData.js'
 config({ path: '.env.local' })
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.resolve(__dirname, '..')
 const CACHE_DIR = path.join(__dirname, '.cache')
 const CACHE_PATH = path.join(CACHE_DIR, 'keywords.json')
+const CLASSIFY_CACHE_PATH = path.join(CACHE_DIR, 'classification.json')
 const OUTPUT_DIR = path.join(__dirname, 'output')
 const OUTPUT_PATH = path.join(OUTPUT_DIR, 'content-gap-report.md')
 
+// 캐시 스키마 버전 — 기사 단위 attribution({concept, articles})이 추가된 시점에 올림.
+// 구버전 캐시(평면 문자열 배열)는 호환되지 않으므로 --refresh를 요구한다.
+const CACHE_SCHEMA_VERSION = 2
+const CLASSIFY_SCHEMA_VERSION = 1
+const TOP_GAP_CLASSIFY_COUNT = 50
+const CLASSIFY_BATCH_SIZE = 10
+
 const REFRESH = process.argv.includes('--refresh')
+// 갭 분류만 다시 하고 싶을 때 (키워드 재추출은 비용이 크므로 별도 플래그로 분리)
+const REFRESH_CLASSIFY = REFRESH || process.argv.includes('--refresh-classify')
 const TARGET_ARTICLE_COUNT = 300
 const BATCH_SIZE = 10
 
-const NEWS_QUERIES = ['경제', '금리', '증시', '부동산', '환율', '물가', '투자', '세금']
+const NEWS_QUERIES = ['금리', '증시', '부동산', '환율', '물가', '투자', '세금', '수출', '가계부채']
 
 // 뉴스 검색 쿼리(혹은 news_cache의 기존 category 값) → 콘텐츠 카테고리 매핑
 // Tier 3 카테고리 폴백과 6번 수급 비교에 쓰이는 판단값. '경제'처럼 너무 포괄적인
@@ -49,7 +60,9 @@ const QUERY_TO_CONTENT_CATEGORY = {
   '물가': '거시경제',
   '글로벌경제': '거시경제',
   '세금': '실생활경제',
-  '경제': null,
+  '수출': '거시경제',
+  '가계부채': '실생활경제',
+  '경제': null, // news_cache에 남아있는 구 카테고리, 너무 포괄적이라 미분류 처리
 }
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
@@ -64,8 +77,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ── 1단계: 뉴스 수집 ──────────────────────────────────────────────
 
+// category='경제'는 너무 포괄적이라 지자체 홍보/일반 기사가 많이 섞여 갭 목록을
+// 오염시킨다 (실측: news_cache 150건 중 105건이 '경제' 태그). 제외하고 로드한다.
 async function fetchCachedNews() {
-  const { data, error } = await supabase.from('news_cache').select('category, date, data')
+  const { data, error } = await supabase.from('news_cache').select('category, date, data').neq('category', '경제')
   if (error) throw new Error(`news_cache 조회 실패: ${error.message}`)
 
   const articles = []
@@ -134,7 +149,18 @@ function chunk(arr, size) {
 
 // ── 2단계: 개념어 추출 (Solar) ─────────────────────────────────────
 
-const EXTRACT_SYSTEM = `다음 기사들에서 경제/금융 "개념어"만 추출해라. 기업명, 인명, 기관명, 지역명, 날짜는 제외한다. 학습 콘텐츠의 주제가 될 수 있는 일반 개념만. JSON 배열로만 응답: ["개념1","개념2",...]. 그 외 텍스트 금지.`
+// 개념마다 등장한 기사 번호([1],[2]...)를 함께 받아서 기사 단위 커버리지 계산에 쓴다.
+const EXTRACT_SYSTEM = `다음 기사들에서 경제/금융 "개념어"만 추출해라. 기업명, 인명, 기관명, 지역명, 날짜는 제외한다. 개인 투자자나 소비자가 배워두면 실제로 도움이 되는 경제·금융 개념만 포함한다. 특정 지역·기관의 정책 사업명, 행사명, 복권·경품 등은 제외한다. 각 개념이 등장한 기사 번호도 함께 표시해라. JSON 배열로만 응답, 다른 텍스트 금지: [{"concept":"개념명","articles":[1,3]}, ...]`
+
+// AI가 형식을 완전히 안 지켜도(문자열만 반환 등) 최대한 살려서 쓴다
+function normalizeExtractedItem(x) {
+  if (typeof x === 'string' && x.trim()) return { concept: x.trim(), articles: [] }
+  if (x && typeof x === 'object' && typeof x.concept === 'string' && x.concept.trim()) {
+    const articles = Array.isArray(x.articles) ? x.articles.filter((n) => Number.isInteger(n)) : []
+    return { concept: x.concept.trim(), articles }
+  }
+  return null
+}
 
 async function extractConceptsFromBatch(batch) {
   const content = batch
@@ -154,7 +180,8 @@ async function extractConceptsFromBatch(batch) {
     const clean = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     const match = clean.match(/\[[\s\S]*\]/)
     const parsed = JSON.parse(match ? match[0] : clean)
-    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string' && x.trim()) : []
+    if (!Array.isArray(parsed)) return []
+    return parsed.map(normalizeExtractedItem).filter(Boolean)
   } catch {
     console.warn(`  ⚠ Solar 응답 파싱 실패, 원본 일부: ${raw.slice(0, 150)}`)
     return []
@@ -175,8 +202,8 @@ async function extractAllConcepts(articles) {
       const concepts = await extractConceptsFromBatch(batch)
       batches.push({
         category,
-        exampleTitle: batch[0]?.title ?? '',
-        concepts,
+        articleTitles: batch.map((a) => a.title),
+        concepts, // [{ concept, articles: [1-based index into articleTitles] }]
       })
     }
   }
@@ -203,7 +230,6 @@ function splitParenthetical(s) {
   return [(before + after).trim(), inside.trim()].filter(Boolean)
 }
 
-// 조사를 제거해도 원본 형태는 그대로 살려서 함께 반환한다 (오매칭 방지, 정보 손실 방지)
 function stripTrailingParticle(s) {
   for (const p of TRAILING_PARTICLES) {
     if (s.length > p.length + 1 && s.endsWith(p)) return s.slice(0, -p.length)
@@ -211,21 +237,35 @@ function stripTrailingParticle(s) {
   return null
 }
 
-// 매칭(대조)용 — 괄호 안팎, 조사 제거형까지 모두 후보로 반환
-function normalizeVariants(raw) {
+// 원형 그대로의 매칭 후보만 (조사 제거 없음)
+function primaryVariants(raw) {
   const variants = new Set()
   for (const part of splitParenthetical(raw)) {
     const cleaned = stripWhitespace(part).toUpperCase()
-    if (!cleaned) continue
-    variants.add(cleaned)
+    if (cleaned) variants.add(cleaned)
+  }
+  return [...variants]
+}
+
+// 조사를 제거한 폴백 후보만 — 원형이 매칭 안 될 때만 시도한다 (2단계 매칭용)
+function particleStrippedVariants(raw) {
+  const variants = new Set()
+  for (const part of splitParenthetical(raw)) {
+    const cleaned = stripWhitespace(part).toUpperCase()
     const stripped = stripTrailingParticle(cleaned)
     if (stripped) variants.add(stripped)
   }
   return [...variants]
 }
 
+// 콘텐츠 쪽 용어 색인을 만들 때는 원형+조사제거형을 굳이 순서 구분할 필요가 없어
+// 둘 다 합쳐서 키로 등록한다 (색인은 순서가 없는 조회 테이블이라 안전함)
+function normalizeVariants(raw) {
+  return [...new Set([...primaryVariants(raw), ...particleStrippedVariants(raw)])]
+}
+
 // 뉴스에서 뽑힌 개념어를 배치 간에 집계(그룹핑)할 때 쓰는 대표키 하나
-// (괄호 바깥쪽 + 조사 제거 우선형을 대표로 삼는다)
+// (괄호 바깥쪽 + 조사 제거 우선형을 대표로 삼는다 — 매칭 순서와 무관한 별개 목적)
 function canonicalKey(raw) {
   const outer = splitParenthetical(raw)[0] ?? raw
   const cleaned = stripWhitespace(outer).toUpperCase()
@@ -241,7 +281,7 @@ function printNormalizationSamples(concepts) {
     ;(changed ? interesting : plain).push({ raw: c, variants })
   }
   const sample = [...interesting, ...plain].slice(0, 20)
-  console.log('\n[정규화 샘플 20개] (원본 → 매칭용 변형들)')
+  console.log('\n[정규화 샘플 20개] (원본 → 매칭용 변형들, 실제 매칭은 원형 우선 → 조사제거형은 폴백)')
   for (const s of sample) {
     console.log(`  "${s.raw}" → [${s.variants.join(', ')}]`)
   }
@@ -268,15 +308,20 @@ function buildTermIndex(items, includeRelatedTerms) {
 function aggregateConcepts(batches) {
   const agg = new Map()
   for (const batch of batches) {
-    for (const rawConcept of batch.concepts) {
+    for (const { concept: rawConcept, articles: positions } of batch.concepts) {
       const key = canonicalKey(rawConcept)
       if (!key) continue
       if (!agg.has(key)) {
-        agg.set(key, { displayRaw: rawConcept, count: 0, categories: new Map(), exampleTitle: batch.exampleTitle })
+        agg.set(key, { displayRaw: rawConcept, count: 0, categories: new Map(), articleTitleSet: new Set() })
       }
       const entry = agg.get(key)
-      entry.count += 1
-      entry.categories.set(batch.category, (entry.categories.get(batch.category) ?? 0) + 1)
+      const occurrences = positions.length || 1 // AI가 번호를 안 줬어도 최소 1회는 카운트
+      entry.count += occurrences
+      entry.categories.set(batch.category, (entry.categories.get(batch.category) ?? 0) + occurrences)
+      for (const pos of positions) {
+        const title = batch.articleTitles[pos - 1]
+        if (title) entry.articleTitleSet.add(title)
+      }
     }
   }
   return agg
@@ -286,32 +331,29 @@ function dominantCategory(categoryCounts) {
   return [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
 }
 
+// 원형 변형들로만 먼저 조회하고, 아무것도 안 걸리면 그때만 조사 제거형으로 재시도한다.
+function tryMatch(variants, tier1Index, tier2Index) {
+  for (const v of variants) {
+    if (tier1Index.has(v)) return { matchTier: 1, matchedItems: tier1Index.get(v) }
+  }
+  for (const v of variants) {
+    if (tier2Index.has(v)) return { matchTier: 2, matchedItems: tier2Index.get(v) }
+  }
+  return null
+}
+
 function matchAllTiers(aggMap, tier1Index, tier2Index, categoriesWithContent) {
   const results = []
   for (const entry of aggMap.values()) {
-    const variants = normalizeVariants(entry.displayRaw)
     const domCat = dominantCategory(entry.categories)
 
-    let matchTier = null
-    let matchedItems = null
+    let match = tryMatch(primaryVariants(entry.displayRaw), tier1Index, tier2Index)
+    if (!match) match = tryMatch(particleStrippedVariants(entry.displayRaw), tier1Index, tier2Index)
+
+    let matchTier = match?.matchTier ?? null
+    let matchedItems = match?.matchedItems ?? null
     let fallbackCategory = null
 
-    for (const v of variants) {
-      if (tier1Index.has(v)) {
-        matchTier = 1
-        matchedItems = tier1Index.get(v)
-        break
-      }
-    }
-    if (!matchTier) {
-      for (const v of variants) {
-        if (tier2Index.has(v)) {
-          matchTier = 2
-          matchedItems = tier2Index.get(v)
-          break
-        }
-      }
-    }
     if (!matchTier) {
       const mapped = QUERY_TO_CONTENT_CATEGORY[domCat] ?? null
       if (mapped && categoriesWithContent.has(mapped)) {
@@ -321,10 +363,10 @@ function matchAllTiers(aggMap, tier1Index, tier2Index, categoriesWithContent) {
     }
 
     results.push({
-      concept: entry.displayRaw,
+      concept: entry.displayRaw, // 리포트/갭 목록에는 항상 이 원형만 노출한다
       count: entry.count,
       dominantCategory: domCat,
-      exampleTitle: entry.exampleTitle,
+      articleTitleSet: entry.articleTitleSet,
       matchTier,
       matchedItems,
       fallbackCategory,
@@ -333,13 +375,160 @@ function matchAllTiers(aggMap, tier1Index, tier2Index, categoriesWithContent) {
   return results
 }
 
+function exampleTitleOf(conceptResult) {
+  return [...conceptResult.articleTitleSet][0] ?? '(기사 매핑 없음)'
+}
+
+// ── 개선 1: 3종 커버리지 지표 ─────────────────────────────────────
+
+function computeCoverage(conceptResults, predicate, totalArticles, totalFreq) {
+  const covered = conceptResults.filter(predicate)
+  const freqCovered = covered.reduce((s, c) => s + c.count, 0)
+  const articleSet = new Set()
+  for (const c of covered) for (const t of c.articleTitleSet) articleSet.add(t)
+  const total = conceptResults.length
+  return {
+    uniqueCovered: covered.length,
+    uniqueTotal: total,
+    uniquePct: total ? (covered.length / total) * 100 : 0,
+    freqCovered,
+    freqTotal: totalFreq,
+    freqPct: totalFreq ? (freqCovered / totalFreq) * 100 : 0,
+    articleCovered: articleSet.size,
+    articleTotal: totalArticles,
+    articlePct: totalArticles ? (articleSet.size / totalArticles) * 100 : 0,
+  }
+}
+
+// ── 갭 분류 (ALIAS / NEW / OUT) ───────────────────────────────────
+
+const CLASSIFY_SYSTEM_HEADER = `다음은 뉴스에 등장했지만 우리 콘텐츠에 없는 것으로 보이는 경제 개념어 목록이다. 아래 기존 콘텐츠 제목 목록과 비교해서 각 번호별로 하나씩 분류해라.
+
+[기존 콘텐츠 제목 목록]
+__TITLES__
+
+분류 기준:
+- ALIAS: 기존 한잎의 내용을 그대로 읽는 것만으로 이 뉴스 개념이 충분히 이해되는 경우
+  (예: '물가' 뉴스를 읽는 데 '인플레이션' 한잎이면 충분함 → ALIAS). 이 경우 maps_to에
+  대응되는 기존 제목을 정확히 그대로 적어라.
+- NEW: 기존 한잎을 읽어도 이 개념은 별도 설명이 필요한 경우. 상위어/하위어 관계는
+  항상 NEW다 (예: '레버리지 ETF'는 'ETF' 한잎만으로는 부족하므로 ALIAS가 아니라 NEW).
+- OUT: 개인 투자자·소비자 학습 콘텐츠로 부적합하다 (지역/기관 홍보성, 일회성 이슈 등).
+
+애매하면 ALIAS 대신 NEW로 분류해라 (ALIAS 오분류가 더 위험함 — 실제로는 다른 개념인데 같다고 묶으면 잘못된 콘텐츠가 노출됨).
+
+JSON 배열로만 응답, 다른 텍스트 금지: [{"index":1,"verdict":"ALIAS","maps_to":"대응 제목 또는 null","reason":"한 줄"}]`
+
+function buildClassifySystem() {
+  return CLASSIFY_SYSTEM_HEADER.replace('__TITLES__', ALL_CONTENT.map((item) => item.title).join(', '))
+}
+
+async function classifyBatch(batch, systemPrompt) {
+  const content = batch.map((g, i) => `[${i + 1}] ${g.concept}`).join('\n')
+  const { data, error } = await supabase.functions.invoke('solar', {
+    body: { system: systemPrompt, messages: [{ role: 'user', content }] },
+  })
+  if (error) {
+    console.warn(`  ⚠ 분류 Solar 호출 실패: ${error.message}`)
+    return []
+  }
+
+  const raw = data?.content ?? '[]'
+  try {
+    const clean = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    const match = clean.match(/\[[\s\S]*\]/)
+    const parsed = JSON.parse(match ? match[0] : clean)
+    if (!Array.isArray(parsed)) return []
+
+    const results = []
+    for (const item of parsed) {
+      const idx = Number(item?.index)
+      if (!Number.isInteger(idx) || idx < 1 || idx > batch.length) continue
+      const verdict = ['ALIAS', 'NEW', 'OUT'].includes(item?.verdict) ? item.verdict : null
+      if (!verdict) continue
+      const g = batch[idx - 1]
+      results.push({
+        term: g.concept,
+        count: g.count,
+        exampleTitle: exampleTitleOf(g),
+        dominantCategory: g.dominantCategory,
+        verdict,
+        mapsTo: verdict === 'ALIAS' ? item.maps_to ?? null : null,
+        reason: typeof item.reason === 'string' ? item.reason : '',
+      })
+    }
+    return results
+  } catch {
+    console.warn(`  ⚠ 분류 응답 파싱 실패, 원본 일부: ${raw.slice(0, 150)}`)
+    return []
+  }
+}
+
+async function classifyAllGaps(gapsTop) {
+  const systemPrompt = buildClassifySystem()
+  const results = []
+  const chunks = chunk(gapsTop, CLASSIFY_BATCH_SIZE)
+  for (let i = 0; i < chunks.length; i++) {
+    process.stdout.write(`\r  갭 분류 중... ${i + 1}/${chunks.length}`)
+    results.push(...(await classifyBatch(chunks[i], systemPrompt)))
+  }
+  console.log('')
+  return results
+}
+
+function loadClassifyCache(currentTerms) {
+  if (REFRESH_CLASSIFY || !fs.existsSync(CLASSIFY_CACHE_PATH)) return null
+  const loaded = JSON.parse(fs.readFileSync(CLASSIFY_CACHE_PATH, 'utf-8'))
+  if (loaded.meta?.schemaVersion !== CLASSIFY_SCHEMA_VERSION) {
+    console.log('갭 분류 캐시가 구버전이라 재사용할 수 없어요 — 재분류를 진행해요.')
+    return null
+  }
+  const cachedTerms = loaded.meta?.terms ?? []
+  const same = cachedTerms.length === currentTerms.length && cachedTerms.every((t, i) => t === currentTerms[i])
+  if (!same) {
+    console.log('갭 목록이 이전 분류 캐시와 달라서 재사용할 수 없어요 — 재분류를 진행해요.')
+    return null
+  }
+  console.log(`캐시된 갭 분류 결과를 재사용해요 (${loaded.meta.generatedAt} 생성, --refresh-classify로 재분류 가능)`)
+  return loaded.results
+}
+
+function saveClassifyCache(terms, results) {
+  fs.writeFileSync(
+    CLASSIFY_CACHE_PATH,
+    JSON.stringify(
+      { meta: { schemaVersion: CLASSIFY_SCHEMA_VERSION, generatedAt: new Date().toISOString(), terms }, results },
+      null,
+      2
+    )
+  )
+}
+
+// ALIAS를 전부 매칭 완료로 간주했을 때의 시뮬레이션 (실제 매칭 로직은 건드리지 않음)
+// 사용자 지시대로 Tier 1(제목 완전 일치) 기준으로 시뮬레이션한다 — Tier 2는 포함하지 않음
+function buildAliasSimulation(conceptResults, classifyResults, totalArticles, totalFreq) {
+  const aliasKeys = new Set(classifyResults.filter((r) => r.verdict === 'ALIAS').map((r) => canonicalKey(r.term)))
+  const before = computeCoverage(conceptResults, (c) => c.matchTier === 1, totalArticles, totalFreq)
+  const after = computeCoverage(
+    conceptResults,
+    (c) => c.matchTier === 1 || aliasKeys.has(canonicalKey(c.concept)),
+    totalArticles,
+    totalFreq
+  )
+  return { before, after, aliasAppliedCount: aliasKeys.size }
+}
+
 // ── 5단계: 리포트 ────────────────────────────────────────────────
 
-function buildReport({ collectionSummary, matchRates, hitConcentration, deadStock, gaps, categorySupplyDemand }) {
+function buildReport({ collectionSummary, coverageRows, hitConcentration, deadStock, gaps, categorySupplyDemand, classifyResults, aliasSimulation }) {
   const lines = []
   lines.push('# ECONOMING 콘텐츠 갭 분석 리포트')
   lines.push('')
   lines.push(`생성 시각: ${new Date().toISOString()}`)
+  lines.push('')
+  lines.push('> **실질 커버리지는 Tier 1(제목 완전 일치) 기준이다.** 카테고리 존재율(구 Tier 3)은')
+  lines.push('> "경제 뉴스의 모든 개념은 경제 카테고리 8개 중 하나에 속한다"는 동어반복에 가까워')
+  lines.push('> 정보값이 낮으므로 참고용으로만 병기한다.')
   lines.push('')
 
   lines.push('## 1. 수집 요약')
@@ -350,13 +539,22 @@ function buildReport({ collectionSummary, matchRates, hitConcentration, deadStoc
   lines.push(`- 추출된 고유 개념어 수: ${collectionSummary.uniqueConceptCount}개`)
   lines.push('')
 
-  lines.push('## 2. 매칭률 (Tier 1/2/3)')
+  lines.push('## 2. 커버리지 (Tier 1/2 × 3종 지표, 카테고리 존재율은 참고용)')
   lines.push('')
-  lines.push('| Tier | 정의 | 매칭 개념 수 | 매칭률 |')
-  lines.push('|---|---|---|---|')
-  for (const r of matchRates) {
-    lines.push(`| ${r.tier} | ${r.desc} | ${r.covered}/${r.total} | ${r.pct.toFixed(1)}% |`)
+  lines.push('- **고유 개념 커버리지**: 매칭된 고유 개념 수 / 전체 고유 개념 수 (콘텐츠 다양성)')
+  lines.push('- **빈도 가중 커버리지**: 매칭된 개념의 등장 횟수 합 / 전체 등장 횟수 합')
+  lines.push('- **기사 단위 커버리지**: 우리 콘텐츠가 하나라도 등장한 기사 수 / 전체 기사 수 (실사용 체감치)')
+  lines.push('')
+  lines.push('| 구분 | 정의 | 고유 개념 커버리지 | 빈도 가중 커버리지 | 기사 단위 커버리지 |')
+  lines.push('|---|---|---|---|---|')
+  for (const r of coverageRows) {
+    lines.push(
+      `| ${r.tier} | ${r.desc} | ${r.cov.uniqueCovered}/${r.cov.uniqueTotal} (${r.cov.uniquePct.toFixed(1)}%) | ${r.cov.freqCovered}/${r.cov.freqTotal} (${r.cov.freqPct.toFixed(1)}%) | ${r.cov.articleCovered}/${r.cov.articleTotal} (${r.cov.articlePct.toFixed(1)}%) |`
+    )
   }
+  lines.push('')
+  lines.push('※ "카테고리 존재율"은 해당 개념과 같은 카테고리에 콘텐츠가 하나라도 있다는 뜻일 뿐,')
+  lines.push('그 개념을 실제로 다룬다는 뜻이 아니다. 실질 커버리지 판단에는 쓰지 않는다.')
   lines.push('')
 
   lines.push('## 3. 히트 편중 분석 (Tier 2 기준)')
@@ -384,12 +582,12 @@ function buildReport({ collectionSummary, matchRates, hitConcentration, deadStoc
 
   lines.push('## 5. 갭 목록 — 뉴스에는 있지만 우리에게 없는 개념 TOP 40')
   lines.push('')
-  lines.push('(Tier 3 카테고리 폴백까지 적용해도 매칭되지 않은 개념만 포함 — 가장 엄격한 기준)')
+  lines.push('(Tier 1 — 제목 완전 일치 — 미매칭 개념만 포함. 카테고리 존재율은 갭 판정에 쓰지 않음. 조사 제거형이 아닌 원형만 표시)')
   lines.push('')
   lines.push('| 순위 | 개념어 | 등장 횟수 | 기사 제목 예시 |')
   lines.push('|---|---|---|---|')
   gaps.forEach((g, i) => {
-    lines.push(`| ${i + 1} | ${g.concept} | ${g.count} | ${g.exampleTitle} |`)
+    lines.push(`| ${i + 1} | ${g.concept} | ${g.count} | ${exampleTitleOf(g)} |`)
   })
   lines.push('')
 
@@ -404,6 +602,60 @@ function buildReport({ collectionSummary, matchRates, hitConcentration, deadStoc
   }
   lines.push('')
 
+  if (classifyResults) {
+    const aliasList = classifyResults.filter((r) => r.verdict === 'ALIAS')
+    const newList = classifyResults.filter((r) => r.verdict === 'NEW')
+    const outList = classifyResults.filter((r) => r.verdict === 'OUT')
+    const total = classifyResults.length || 1
+
+    lines.push(`## 7. 갭 분류 (ALIAS / NEW / OUT) — 상위 ${classifyResults.length}개 대상`)
+    lines.push('')
+    lines.push('| 분류 | 개수 | 비율 |')
+    lines.push('|---|---|---|')
+    lines.push(`| ALIAS (표기만 다름) | ${aliasList.length} | ${((aliasList.length / total) * 100).toFixed(1)}% |`)
+    lines.push(`| NEW (신규 제작 필요) | ${newList.length} | ${((newList.length / total) * 100).toFixed(1)}% |`)
+    lines.push(`| OUT (노이즈) | ${outList.length} | ${((outList.length / total) * 100).toFixed(1)}% |`)
+    lines.push('')
+
+    lines.push('### ALIAS 목록 (aliases 필드 초안)')
+    lines.push('')
+    lines.push('| 개념어 | 대응 한잎 | 등장 횟수 | 사유 |')
+    lines.push('|---|---|---|---|')
+    for (const r of aliasList.sort((a, b) => b.count - a.count)) {
+      lines.push(`| ${r.term} | ${r.mapsTo ?? '(미지정)'} | ${r.count} | ${r.reason} |`)
+    }
+    lines.push('')
+
+    lines.push('### NEW 목록 (콘텐츠 제작 우선순위)')
+    lines.push('')
+    lines.push('| 개념어 | 추정 카테고리 | 등장 횟수 | 사유 |')
+    lines.push('|---|---|---|---|')
+    for (const r of newList.sort((a, b) => b.count - a.count)) {
+      const estCategory = QUERY_TO_CONTENT_CATEGORY[r.dominantCategory] ?? r.dominantCategory ?? '미분류'
+      lines.push(`| ${r.term} | ${estCategory} | ${r.count} | ${r.reason} |`)
+    }
+    lines.push('')
+  }
+
+  if (aliasSimulation) {
+    lines.push('## 8. ALIAS 반영 시 예상 커버리지 (시뮬레이션 — 실제로 반영하지 않음)')
+    lines.push('')
+    lines.push(`Tier 1 매칭 기준으로, 상위 갭 중 ALIAS로 분류된 ${aliasSimulation.aliasAppliedCount}개를 매칭 완료로 가정했을 때:`)
+    lines.push('')
+    lines.push('| 지표 | 현재 (Tier 2) | ALIAS 반영 시뮬레이션 |')
+    lines.push('|---|---|---|')
+    lines.push(
+      `| 고유 개념 커버리지 | ${aliasSimulation.before.uniqueCovered}/${aliasSimulation.before.uniqueTotal} (${aliasSimulation.before.uniquePct.toFixed(1)}%) | ${aliasSimulation.after.uniqueCovered}/${aliasSimulation.after.uniqueTotal} (${aliasSimulation.after.uniquePct.toFixed(1)}%) |`
+    )
+    lines.push(
+      `| 빈도 가중 커버리지 | ${aliasSimulation.before.freqCovered}/${aliasSimulation.before.freqTotal} (${aliasSimulation.before.freqPct.toFixed(1)}%) | ${aliasSimulation.after.freqCovered}/${aliasSimulation.after.freqTotal} (${aliasSimulation.after.freqPct.toFixed(1)}%) |`
+    )
+    lines.push(
+      `| 기사 단위 커버리지 | ${aliasSimulation.before.articleCovered}/${aliasSimulation.before.articleTotal} (${aliasSimulation.before.articlePct.toFixed(1)}%) | ${aliasSimulation.after.articleCovered}/${aliasSimulation.after.articleTotal} (${aliasSimulation.after.articlePct.toFixed(1)}%) |`
+    )
+    lines.push('')
+  }
+
   return lines.join('\n')
 }
 
@@ -415,8 +667,13 @@ async function main() {
 
   let cached = null
   if (!REFRESH && fs.existsSync(CACHE_PATH)) {
-    cached = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8'))
-    console.log(`캐시된 개념어를 재사용해요 (${cached.meta.generatedAt} 생성, --refresh로 재추출 가능)`)
+    const loaded = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf-8'))
+    if (loaded.meta?.schemaVersion === CACHE_SCHEMA_VERSION) {
+      cached = loaded
+      console.log(`캐시된 개념어를 재사용해요 (${cached.meta.generatedAt} 생성, --refresh로 재추출 가능)`)
+    } else {
+      console.log('캐시가 구버전 스키마라 재사용할 수 없어요 — 재추출을 진행해요.')
+    }
   }
 
   let collectionSummary
@@ -460,6 +717,7 @@ async function main() {
       JSON.stringify(
         {
           meta: {
+            schemaVersion: CACHE_SCHEMA_VERSION,
             generatedAt: new Date().toISOString(),
             cacheArticleCount: cachedArticles.length,
             freshArticleCount: freshArticles.length,
@@ -486,15 +744,13 @@ async function main() {
   const categoriesWithContent = new Set(ALL_CONTENT.map((i) => i.category))
   const conceptResults = matchAllTiers(agg, tier1Index, tier2Index, categoriesWithContent)
 
-  const total = conceptResults.length
-  const tier1Covered = conceptResults.filter((c) => c.matchTier === 1).length
-  const tier2Covered = conceptResults.filter((c) => c.matchTier === 1 || c.matchTier === 2).length
-  const tier3Covered = conceptResults.filter((c) => c.matchTier !== null).length
+  const totalArticles = new Set(batches.flatMap((b) => b.articleTitles)).size
+  const totalFreq = conceptResults.reduce((s, c) => s + c.count, 0)
 
-  const matchRates = [
-    { tier: 'Tier 1', desc: 'title 완전 일치만', covered: tier1Covered, total, pct: total ? (tier1Covered / total) * 100 : 0 },
-    { tier: 'Tier 2', desc: 'Tier 1 + relatedTerms', covered: tier2Covered, total, pct: total ? (tier2Covered / total) * 100 : 0 },
-    { tier: 'Tier 3', desc: 'Tier 2 + category 폴백', covered: tier3Covered, total, pct: total ? (tier3Covered / total) * 100 : 0 },
+  const coverageRows = [
+    { tier: 'Tier 1', desc: 'title 완전 일치만', cov: computeCoverage(conceptResults, (c) => c.matchTier === 1, totalArticles, totalFreq) },
+    { tier: 'Tier 2', desc: 'Tier 1 + relatedTerms', cov: computeCoverage(conceptResults, (c) => c.matchTier === 1 || c.matchTier === 2, totalArticles, totalFreq) },
+    { tier: '카테고리 존재율(참고용)', desc: 'Tier 2 + 같은 카테고리 콘텐츠 존재 여부', cov: computeCoverage(conceptResults, (c) => c.matchTier !== null, totalArticles, totalFreq) },
   ]
 
   // 히트 편중 (Tier 2 매칭 기준)
@@ -517,10 +773,21 @@ async function main() {
 
   const deadStock = ALL_CONTENT.filter((item) => !biteHits.has(item.id))
 
-  const gaps = conceptResults
-    .filter((c) => c.matchTier === null)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 40)
+  // 갭 = Tier 1(제목 완전 일치) 미매칭 개념. Tier 3(카테고리 존재)는 절대 갭
+  // 판정에 쓰지 않는다 — 카테고리 폴백은 참고용 지표일 뿐 "다룬다"는 뜻이 아님.
+  const gapsSorted = conceptResults.filter((c) => c.matchTier !== 1).sort((a, b) => b.count - a.count)
+  const gaps = gapsSorted.slice(0, 40)
+  const gapsTop50 = gapsSorted.slice(0, TOP_GAP_CLASSIFY_COUNT)
+
+  console.log(`\n갭 분류 (ALIAS/NEW/OUT) — 상위 ${gapsTop50.length}개 대상`)
+  const gapTerms = gapsTop50.map((g) => g.concept)
+  let classifyResults = loadClassifyCache(gapTerms)
+  if (!classifyResults) {
+    classifyResults = await classifyAllGaps(gapsTop50)
+    saveClassifyCache(gapTerms, classifyResults)
+    console.log(`갭 분류 결과를 캐시에 저장했어요: ${CLASSIFY_CACHE_PATH}`)
+  }
+  const aliasSimulation = buildAliasSimulation(conceptResults, classifyResults, totalArticles, totalFreq)
 
   // 카테고리별 수급 비교
   const supplyByCategory = new Map()
@@ -539,20 +806,72 @@ async function main() {
     }))
     .sort((a, b) => b.demand - a.demand)
 
-  const report = buildReport({ collectionSummary, matchRates, hitConcentration, deadStock, gaps, categorySupplyDemand })
+  const report = buildReport({ collectionSummary, coverageRows, hitConcentration, deadStock, gaps, categorySupplyDemand, classifyResults, aliasSimulation })
   fs.writeFileSync(OUTPUT_PATH, report)
   console.log(`\n리포트 저장 완료: ${OUTPUT_PATH}`)
 
-  // 콘솔 요약 (2, 3, 5번)
-  console.log('\n========== 2. 매칭률 ==========')
-  console.table(matchRates.map((r) => ({ Tier: r.tier, 정의: r.desc, 매칭: `${r.covered}/${r.total}`, 매칭률: `${r.pct.toFixed(1)}%` })))
+  // 콘솔 요약
+  console.log('\n========== 2. 커버리지 (Tier 1/2 × 3종 지표, 카테고리 존재율은 참고용) ==========')
+  console.table(
+    coverageRows.map((r) => ({
+      구분: r.tier,
+      정의: r.desc,
+      고유개념: `${r.cov.uniqueCovered}/${r.cov.uniqueTotal} (${r.cov.uniquePct.toFixed(1)}%)`,
+      빈도가중: `${r.cov.freqCovered}/${r.cov.freqTotal} (${r.cov.freqPct.toFixed(1)}%)`,
+      기사단위: `${r.cov.articleCovered}/${r.cov.articleTotal} (${r.cov.articlePct.toFixed(1)}%)`,
+    }))
+  )
 
   console.log('\n========== 3. 히트 편중 (Tier 2 기준) ==========')
   console.log(`상위 10개 콘텐츠가 전체 히트의 ${hitConcentration.top10Pct.toFixed(1)}%를 차지`)
   console.table(sortedHits.slice(0, 10).map((h, i) => ({ 순위: i + 1, 제목: h.item.title, 카테고리: h.item.category, 히트: h.hits })))
 
-  console.log('\n========== 5. 갭 목록 TOP 40 ==========')
-  console.table(gaps.map((g, i) => ({ 순위: i + 1, 개념어: g.concept, 등장횟수: g.count, 기사예시: g.exampleTitle?.slice(0, 40) })))
+  console.log('\n========== 5. 갭 목록 TOP 20 ==========')
+  console.table(gaps.slice(0, 20).map((g, i) => ({ 순위: i + 1, 개념어: g.concept, 등장횟수: g.count, 기사예시: exampleTitleOf(g).slice(0, 40) })))
+
+  const aliasList = classifyResults.filter((r) => r.verdict === 'ALIAS').sort((a, b) => b.count - a.count)
+  const newList = classifyResults.filter((r) => r.verdict === 'NEW').sort((a, b) => b.count - a.count)
+  const outList = classifyResults.filter((r) => r.verdict === 'OUT')
+  const classifyTotal = classifyResults.length || 1
+
+  console.log(`\n========== 7. 갭 분류 (상위 ${classifyResults.length}개 대상) ==========`)
+  console.table([
+    { 분류: 'ALIAS (표기만 다름)', 개수: aliasList.length, 비율: `${((aliasList.length / classifyTotal) * 100).toFixed(1)}%` },
+    { 분류: 'NEW (신규 제작 필요)', 개수: newList.length, 비율: `${((newList.length / classifyTotal) * 100).toFixed(1)}%` },
+    { 분류: 'OUT (노이즈)', 개수: outList.length, 비율: `${((outList.length / classifyTotal) * 100).toFixed(1)}%` },
+  ])
+
+  console.log('\n[ALIAS 목록] (aliases 필드 초안)')
+  console.table(aliasList.map((r) => ({ 개념어: r.term, 대응한잎: r.mapsTo ?? '(미지정)', 등장횟수: r.count })))
+
+  console.log('\n[NEW 목록] (콘텐츠 제작 우선순위)')
+  console.table(
+    newList.map((r) => ({
+      개념어: r.term,
+      추정카테고리: QUERY_TO_CONTENT_CATEGORY[r.dominantCategory] ?? r.dominantCategory ?? '미분류',
+      등장횟수: r.count,
+    }))
+  )
+
+  console.log('\n========== 8. ALIAS 반영 시뮬레이션 ==========')
+  console.log(`ALIAS ${aliasSimulation.aliasAppliedCount}개를 매칭 완료로 가정했을 때 (Tier 1 기준):`)
+  console.table([
+    {
+      지표: '고유 개념 커버리지',
+      현재: `${aliasSimulation.before.uniqueCovered}/${aliasSimulation.before.uniqueTotal} (${aliasSimulation.before.uniquePct.toFixed(1)}%)`,
+      시뮬레이션: `${aliasSimulation.after.uniqueCovered}/${aliasSimulation.after.uniqueTotal} (${aliasSimulation.after.uniquePct.toFixed(1)}%)`,
+    },
+    {
+      지표: '빈도 가중 커버리지',
+      현재: `${aliasSimulation.before.freqCovered}/${aliasSimulation.before.freqTotal} (${aliasSimulation.before.freqPct.toFixed(1)}%)`,
+      시뮬레이션: `${aliasSimulation.after.freqCovered}/${aliasSimulation.after.freqTotal} (${aliasSimulation.after.freqPct.toFixed(1)}%)`,
+    },
+    {
+      지표: '기사 단위 커버리지',
+      현재: `${aliasSimulation.before.articleCovered}/${aliasSimulation.before.articleTotal} (${aliasSimulation.before.articlePct.toFixed(1)}%)`,
+      시뮬레이션: `${aliasSimulation.after.articleCovered}/${aliasSimulation.after.articleTotal} (${aliasSimulation.after.articlePct.toFixed(1)}%)`,
+    },
+  ])
 }
 
 main().catch((err) => {
