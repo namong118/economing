@@ -44,13 +44,15 @@ export default function LoginPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     const { error: e } = await signInWithGoogle();
-    if (e) { setError('Google 로그인 중 오류가 발생했어요.'); setGoogleLoading(false); }
+    if (e) setError('Google 로그인 중 오류가 발생했어요.');
+    setGoogleLoading(false);
   };
 
   const handleKakao = async () => {
     setKakaoLoading(true);
     const { error: e } = await signInWithKakao();
-    if (e) { setError('카카오 로그인 중 오류가 발생했어요.'); setKakaoLoading(false); }
+    if (e) setError('카카오 로그인 중 오류가 발생했어요.');
+    setKakaoLoading(false);
   };
 
   const handleSubmit = async (e) => {

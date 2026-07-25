@@ -1,0 +1,23 @@
+{
+  "appId": "com.economing.app",
+  "appName": "ECONOMING",
+  "webDir": "dist",
+  "plugins": {
+    "SocialLogin": {
+      "providers": {
+        "google": true,
+        "facebook": false,
+        "apple": false,
+        "twitter": false
+      }
+    },
+    "SystemBars": {
+      "insetsHandling": "disable"
+    },
+    "EdgeToEdge": {
+      "backgroundColor": "#F4FAF6",
+      "statusBarColor": "#F4FAF6",
+      "navigationBarColor": "#F4FAF6"
+    }
+  }
+}

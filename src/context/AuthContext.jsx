@@ -1,8 +1,30 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 import { supabase } from '../services/supabaseClient';
-import { signIn, signUp, signOut } from '../services/authService';
+import { signIn, signUp, signOut, NATIVE_OAUTH_REDIRECT, initNativeGoogleSignIn } from '../services/authService';
 import { upsertProfile } from '../services/profileService';
 import { getMockSession } from '../services/mockStore';
+
+// 네이티브 앱에서 인앱 브라우저 OAuth 완료 후 돌아온 콜백 URL(#access_token=...)을 세션으로 변환
+async function handleNativeOAuthCallback(url) {
+  if (!url.startsWith(NATIVE_OAUTH_REDIRECT)) return;
+
+  const hash = url.split('#')[1] ?? '';
+  const params = new URLSearchParams(hash);
+  const access_token = params.get('access_token');
+  const refresh_token = params.get('refresh_token');
+
+  if (access_token && refresh_token) {
+    const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+    if (error) console.error('네이티브 로그인 세션 설정 실패:', error);
+  } else {
+    console.error('네이티브 로그인 콜백에 토큰 없음:', url);
+  }
+
+  await Browser.close().catch(() => {});
+}
 
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
 
@@ -109,9 +131,19 @@ export function AuthProvider({ children }) {
       }
     );
 
+    // 3) 네이티브 앱: 카카오 인앱 브라우저 로그인 완료 후 돌아오는 콜백 처리 + Google 네이티브 로그인 초기화
+    let urlOpenListener;
+    if (Capacitor.isNativePlatform()) {
+      initNativeGoogleSignIn();
+      CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+        handleNativeOAuthCallback(url);
+      }).then(listener => { urlOpenListener = listener; });
+    }
+
     return () => {
       mounted.current = false;
       subscription.unsubscribe();
+      urlOpenListener?.remove();
     };
   }, []);
 
