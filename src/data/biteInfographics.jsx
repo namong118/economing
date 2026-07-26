@@ -1240,6 +1240,185 @@ export const BITE_INFOGRAPHICS = {
       result="주가와 환율, 두 가지를 함께 봐야 해요"
     />
   ),
+
+  98: () => (
+    <BiteInfographic
+      title="관세가 붙는 과정"
+      steps={[
+        { icon: Ship,    label: '수입품',   sub: '해외에서 들여옴',   color: 'green'  },
+        { icon: Percent, label: '관세 부과', sub: '세금 추가',        color: 'yellow' },
+        { icon: Home,    label: '국내 산업', sub: '가격 경쟁력 보호', color: 'green'  },
+      ]}
+      result="수입품에 매기는 세금, 국내 산업 보호 수단"
+    />
+  ),
+
+  99: () => (
+    <BiteInfographic
+      title="공급망의 흐름"
+      steps={[
+        { icon: Factory,       label: '원자재·부품', sub: '여러 나라에서', color: 'green'  },
+        { icon: Truck,         label: '운송·조립',  sub: '여러 단계',    color: 'yellow' },
+        { icon: ShoppingCart,  label: '소비자',     sub: '완제품 도착',   color: 'green'  },
+      ]}
+      result="한 단계만 막혀도 전체가 멈출 수 있어요"
+    />
+  ),
+
+  100: () => (
+    <CompositionInfographic
+      title="상황마다 다른 세금"
+      items={[
+        { icon: Wallet,       label: '소득세',    sub: '번 돈에',   color: 'green'  },
+        { icon: ShoppingCart, label: '부가가치세', sub: '소비할 때', color: 'yellow' },
+        { icon: LineChart,    label: '거래세',    sub: '거래할 때', color: 'green'  },
+      ]}
+      total={{ icon: Landmark, label: '세금', sub: '상황별로 다름', color: 'blue' }}
+      result="버는 것·쓰는 것·거래하는 것마다 다른 세금이 붙어요"
+    />
+  ),
+
+  101: () => (
+    <ComparisonInfographic
+      title="시점이 다른 두 세금"
+      branches={[
+        { icon: Users,  label: '상속',  sub: '사망 후 물려받음', color: 'yellow' },
+        { icon: Wallet, label: '증여',  sub: '생전에 미리 받음', color: 'green'  },
+      ]}
+      result="시점만 다를 뿐 재산 이전에 붙는 세금"
+    />
+  ),
+
+  102: () => (
+    <BiteInfographic
+      title="거래세가 붙는 과정"
+      steps={[
+        { icon: LineChart, label: '자산 매도', sub: '주식·부동산 등', color: 'green'  },
+        { icon: Percent,   label: '거래세',   sub: '거래할 때 부과', color: 'yellow' },
+        { icon: Wallet,    label: '실수령액', sub: '거래세만큼 감소', color: 'red'    },
+      ]}
+      result="사고팔 때마다 붙는 세금"
+    />
+  ),
+
+  103: () => (
+    <BiteInfographic
+      title="IRP 계좌의 역할"
+      steps={[
+        { icon: Briefcase, label: '이직·퇴직', sub: '퇴직금 발생',     color: 'yellow' },
+        { icon: Wallet,    label: 'IRP 계좌',  sub: '개인이 직접 개설', color: 'green'  },
+        { icon: PiggyBank, label: '노후자금',  sub: '하나로 모아 운용', color: 'green'  },
+      ]}
+      result="이직해도 유지되는 내 퇴직연금 계좌"
+    />
+  ),
+
+  104: () => (
+    <CompositionInfographic
+      title="자산관리를 이루는 것들"
+      items={[
+        { icon: PiggyBank,  label: '저축',    sub: '안전하게 모으기', color: 'green'  },
+        { icon: TrendingUp, label: '투자',    sub: '위험 감수 성장',  color: 'yellow' },
+        { icon: Calculator, label: '세금 관리', sub: '혜택 챙기기',    color: 'green'  },
+      ]}
+      total={{ icon: CheckCircle, label: '자산관리', sub: '전체를 운용', color: 'blue' }}
+      result="배운 것들을 실제 삶에 연결하는 것"
+    />
+  ),
+
+  105: () => (
+    <ComparisonInfographic
+      title="경쟁 시장과 독점 시장"
+      branches={[
+        { icon: Users,         label: '경쟁 시장', sub: '여러 기업, 소비자 선택권', color: 'green' },
+        { icon: AlertTriangle, label: '독점 시장', sub: '소수 기업, 가격 결정력',  color: 'red'   },
+      ]}
+      result="경쟁이 없으면 소비자의 협상력이 약해져요"
+    />
+  ),
+
+  106: () => (
+    <CompositionInfographic
+      title="집을 갖거나 빌리는 방법"
+      items={[
+        { icon: Home,       label: '매매', sub: '직접 소유',    color: 'green'  },
+        { icon: Wallet,     label: '전세', sub: '보증금+무이자', color: 'yellow' },
+        { icon: CreditCard, label: '월세', sub: '매달 지출',    color: 'green'  },
+      ]}
+      total={{ icon: Building2, label: '부동산', sub: '사고팔고 빌리는 시장', color: 'blue' }}
+      result="집을 갖거나 빌리는 여러 방법"
+    />
+  ),
+
+  107: () => (
+    <BiteInfographic
+      title="대출 규제가 작동하는 이유"
+      steps={[
+        { icon: AlertTriangle, label: '집값·부채 우려', sub: '과열 신호',    color: 'red'    },
+        { icon: Scale,         label: '대출 규제',    sub: 'LTV·DSR 한도', color: 'yellow' },
+        { icon: Home,          label: '대출 가능액',  sub: '한도 안에서만', color: 'green'  },
+      ]}
+      result="집값·가계빚 과열을 막기 위한 정책 수단"
+    />
+  ),
+
+  108: () => (
+    <ComparisonInfographic
+      title="개인의 빚과 나라의 빚"
+      branches={[
+        { icon: Wallet, label: '개인의 부채', sub: '내가 진 빚 (1장)',      color: 'green'  },
+        { icon: Globe,  label: '가계부채',   sub: '나라 전체 가계 빚 총량', color: 'yellow' },
+      ]}
+      result="같은 '빚'이지만 보는 범위가 달라요"
+    />
+  ),
+
+  109: () => (
+    <CompositionInfographic
+      title="집값이 마련되는 방식"
+      items={[
+        { icon: Landmark, label: '대출금',  sub: 'LTV 한도까지', color: 'yellow' },
+        { icon: Wallet,   label: '자기자본', sub: '내가 마련',    color: 'green'  },
+      ]}
+      total={{ icon: Home, label: '집값', sub: '전체 매매가', color: 'blue' }}
+      result="대출과 내 돈을 합쳐 집값을 마련해요"
+    />
+  ),
+
+  110: () => (
+    <CompositionInfographic
+      title="보유세의 구성"
+      items={[
+        { icon: Home,      label: '재산세',    sub: '모든 소유자',    color: 'green'  },
+        { icon: Building2, label: '종합부동산세', sub: '고가·다주택 추가', color: 'yellow' },
+      ]}
+      total={{ icon: Landmark, label: '보유세', sub: '매년 납부', color: 'blue' }}
+      result="부동산을 갖고 있는 동안 매년 내는 세금"
+    />
+  ),
+
+  111: () => (
+    <ComparisonInfographic
+      title="보유할 때와 팔 때의 세금"
+      branches={[
+        { icon: Clock,     label: '보유세',   sub: '갖고 있는 동안 매년', color: 'yellow' },
+        { icon: RefreshCw, label: '양도소득세', sub: '팔 때 차익에 한 번', color: 'green'  },
+      ]}
+      result="보유 중이냐 판 순간이냐로 붙는 세금이 달라요"
+    />
+  ),
+
+  112: () => (
+    <BiteInfographic
+      title="재개발·재건축의 흐름"
+      steps={[
+        { icon: Home,       label: '낡은 건물',    sub: '노후 주택',    color: 'red'    },
+        { icon: RefreshCw,  label: '재건축·재개발', sub: '허물고 다시 짓기', color: 'yellow' },
+        { icon: Building2,  label: '새 아파트',    sub: '가치 상승 기대', color: 'green'  },
+      ]}
+      result="낡은 집이 새 아파트로 바뀌는 과정"
+    />
+  ),
 }
 
 export function getBiteInfographic(id) {

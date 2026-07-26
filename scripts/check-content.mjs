@@ -24,9 +24,9 @@ import { getCurriculumSequence } from '../src/data/curriculum.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const INFOGRAPHICS_PATH = path.join(__dirname, '..', 'src', 'data', 'biteInfographics.jsx')
 
-const EXPECTED_BITE_COUNT = 86
+const EXPECTED_BITE_COUNT = 101
 const EXPECTED_INDICATOR_COUNT = 11
-const EXPECTED_QUIZ_COUNT = 86
+const EXPECTED_QUIZ_COUNT = 101
 const ANSWER_POSITION_WARN_RATIO = 0.4
 
 let hasFailure = false
@@ -178,7 +178,7 @@ report('6. 퀴즈 구조 이상', structuralIssues)
 // ── 8. 커리큘럼(chapter/order/curriculum.js) 정합성 ─────────────────
 
 const EXPECTED_CURRICULUM_TOTAL = 96
-const EXPECTED_CURRICULUM_PENDING = 15
+const EXPECTED_CURRICULUM_PENDING = 0
 
 report(
   '8a. inCurriculum=true인데 chapter/order가 없는 한잎',
