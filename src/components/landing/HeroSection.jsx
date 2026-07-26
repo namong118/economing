@@ -5,13 +5,13 @@ export default function HeroSection() {
 
   return (
     <section style={{
-      minHeight: '100vh',
+      minHeight: '100dvh',
       background: 'linear-gradient(170deg, var(--c-green-50) 0%, var(--c-canvas) 50%, var(--c-yellow-100) 100%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '80px 24px 60px',
+      padding: '80px 24px calc(76px + env(safe-area-inset-bottom))',
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -121,7 +121,7 @@ export default function HeroSection() {
 
       {/* 스크롤 힌트 */}
       <div style={{
-        position: 'absolute', bottom: '28px',
+        position: 'absolute', bottom: 'calc(28px + env(safe-area-inset-bottom))',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
         color: '#A0C0B4', fontSize: '12px', fontWeight: '500',
         animation: 'heroFloat 2s ease-in-out infinite',
