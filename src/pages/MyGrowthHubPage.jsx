@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
+import { resetBiteProgress } from '../services/biteService';
 import { supabase } from '../services/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
@@ -29,6 +30,75 @@ const OCCUPATION = {
   business:   { label: '사업자',   emoji: '🏢' },
 };
 const PROVIDER_LABEL = { google: 'Google', kakao: '카카오', email: '이메일' };
+
+/* ── 개발자 메뉴: 학습 진도 초기화 (테스트용) ──────────────── */
+function DevMenu({ userId }) {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState('idle'); // idle | confirm | loading | done | error
+  const [message, setMessage] = useState('');
+
+  const handleReset = async () => {
+    setStep('loading');
+    const { error } = await resetBiteProgress(userId);
+    if (error) {
+      setStep('error');
+      setMessage(error.message || '초기화에 실패했어요.');
+    } else {
+      setStep('done');
+      setMessage('학습 진도가 초기화됐어요. 아카이브에서 확인해보세요.');
+    }
+  };
+
+  return (
+    <div style={{ marginBottom: '16px' }}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: 'none', border: '0.5px solid var(--c-line)',
+          borderRadius: open ? '12px 12px 0 0' : '12px',
+          padding: '10px 14px', cursor: 'pointer', fontFamily: 'inherit',
+        }}
+      >
+        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-muted)' }}>🛠 개발자 메뉴</span>
+        <span style={{ fontSize: '11px', color: '#CBD5E1', fontWeight: '600' }}>{open ? '닫기 ↑' : '펼치기 ↓'}</span>
+      </button>
+      {open && (
+        <div style={{ border: '0.5px solid var(--c-line)', borderTop: 'none', borderRadius: '0 0 12px 12px', padding: '12px 14px' }}>
+          {step === 'done' ? (
+            <p style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '700' }}>✅ {message}</p>
+          ) : step === 'confirm' ? (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={handleReset}
+                style={{ flex: 1, padding: '8px', borderRadius: '10px', background: '#FEF2F2', color: '#DC2626', border: '1.5px solid #FECACA', fontSize: '12px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
+              >
+                정말 초기화 (되돌릴 수 없음)
+              </button>
+              <button
+                onClick={() => setStep('idle')}
+                style={{ padding: '8px 14px', borderRadius: '10px', background: 'none', color: 'var(--c-muted)', border: '0.5px solid var(--c-line)', fontSize: '12px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
+              >
+                취소
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setStep('confirm')}
+              disabled={step === 'loading'}
+              style={{ width: '100%', padding: '8px', borderRadius: '10px', background: 'none', color: '#DC2626', border: '1.5px solid #FECACA', fontSize: '12px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              {step === 'loading' ? '초기화 중...' : '🧪 학습 진도 초기화 (테스트용)'}
+            </button>
+          )}
+          {step === 'error' && (
+            <p style={{ fontSize: '11px', color: '#DC2626', marginTop: '6px' }}>⚠️ {message}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /* ── 노밍 분석 ────────────────────────────────────────────── */
 function generateAnalysis(profile) {
@@ -209,6 +279,9 @@ function SummaryTab() {
         </div>
       )}
 
+
+      {/* ── 개발자 메뉴 ── */}
+      <DevMenu userId={user?.id} />
 
       {/* ── 로그아웃 ── */}
       <button
