@@ -304,8 +304,18 @@ input, textarea { font-family: var(--font); outline: none; }
   }
 }
 
-/* ≥1024px: 좌측 브랜드 패널 */
+/* ≥1024px: 좌측 브랜드 패널 — 폭·배치는 원래 그대로(640px), 화면 중앙에 1200px 블록 구성 유지.
+   1200px 바깥의 "빈 여백"은 패널을 넓혀서가 아니라 .ds-root 배경을 화면 전체로 확장해서 해결한다.
+   그린→노랑 대각선 그라데이션 — .ds-brand는 배경이 없어(transparent) 이 배경 한 겹만 보이므로
+   패널 안팎에 경계선이 생기지 않는다. */
 @media (min-width: 1024px) {
+  .ds-root {
+    /* 640px 패널이 앱 컬럼(560px)과 함께 가운데 정렬될 때, 패널의 왼쪽 시작 위치 근사값.
+       블롭을 패널 콘텐츠 주변에 앵커링하는 데 쓴다 (뷰포트 폭이 바뀌어도 같은 상대 위치 유지) */
+    --panel-left: calc(50% - 600px);
+    position: relative;
+    background: linear-gradient(135deg, var(--c-green-50) 0%, var(--c-yellow-100) 100%);
+  }
   .ds-brand {
     display: flex;
     flex: 1;
@@ -315,7 +325,6 @@ input, textarea { font-family: var(--font); outline: none; }
     flex-direction: column;
     justify-content: center;
     padding: 56px 64px;
-    background: linear-gradient(180deg, #F4FAF6 0%, #FFFFFF 62%);
   }
   .ds-app {
     position: relative;
@@ -324,29 +333,32 @@ input, textarea { font-family: var(--font); outline: none; }
       -24px 0 48px rgba(0,0,0,0.10),
        24px 0 48px rgba(0,0,0,0.10);
   }
+
+  /* 브랜드 콘텐츠(로고·문구·통계 카드) 주변에 분포하는 블롭 — .ds-root/.ps-root의 직속 자식이라
+     .ds-brand의 overflow:hidden에 갇히지 않고 앱 컬럼 뒤로 살짝 지나갈 수 있다. z-index:0으로
+     명시해서 .ds-app(z-index:1, 불투명 배경)보다 항상 아래에 깔리도록 보장한다. */
+  .ds-blob { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .ds-blob1 { top: -100px; left: calc(var(--panel-left) - 80px); width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(31,190,134,.30), transparent 65%);
+    filter: blur(70px);
+    animation: bpBlobFloat 20s ease-in-out infinite; }
+  .ds-blob2 { bottom: -8vw; right: -8vw; width: clamp(420px, 30vw, 700px); height: clamp(420px, 30vw, 700px);
+    background: radial-gradient(circle, rgba(255,200,61,.24), transparent 65%);
+    filter: blur(85px);
+    animation: bpBlobFloat2 26s ease-in-out infinite 3s; }
+  .ds-blob3 { top: 22%; right: 4vw; width: clamp(320px, 19vw, 500px); height: clamp(320px, 19vw, 500px);
+    background: radial-gradient(circle, rgba(16,185,129,.20), transparent 65%);
+    filter: blur(65px);
+    animation: bpBlobFloat3 17s ease-in-out infinite 1s; }
+  .ds-blob4 { top: 50%; left: calc(var(--panel-left) - 70px); width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(110,231,183,.18), transparent 65%);
+    filter: blur(55px);
+    animation: bpBlobFloat 23s ease-in-out infinite 5s; }
 }
 
 /* ===== BrandPanel ===== */
 .bp-inner { position: relative; max-width: 400px; }
 
-/* 블롭 배경 */
-.bp-blob { position: absolute; border-radius: 50%; pointer-events: none; }
-.bp-blob1 { top: -100px; left: -80px; width: 480px; height: 480px;
-  background: radial-gradient(circle, rgba(31,190,134,.30), transparent 65%);
-  filter: blur(70px);
-  animation: bpBlobFloat 20s ease-in-out infinite; }
-.bp-blob2 { bottom: -120px; right: -60px; width: 420px; height: 420px;
-  background: radial-gradient(circle, rgba(255,200,61,.26), transparent 65%);
-  filter: blur(80px);
-  animation: bpBlobFloat2 26s ease-in-out infinite 3s; }
-.bp-blob3 { top: 25%; right: -60px; width: 320px; height: 320px;
-  background: radial-gradient(circle, rgba(16,185,129,.22), transparent 65%);
-  filter: blur(60px);
-  animation: bpBlobFloat3 17s ease-in-out infinite 1s; }
-.bp-blob4 { top: 50%; left: -70px; width: 280px; height: 280px;
-  background: radial-gradient(circle, rgba(110,231,183,.18), transparent 65%);
-  filter: blur(55px);
-  animation: bpBlobFloat 23s ease-in-out infinite 5s; }
 .bp-leaf-deco { position: absolute; pointer-events: none; height: auto; }
 .bp-grain { position: absolute; inset: 0; border-radius: inherit; opacity: .045; pointer-events: none; z-index: 1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
@@ -421,7 +433,7 @@ input, textarea { font-family: var(--font); outline: none; }
   50%     { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bp-blob,.bp-ring,.bp-app-icon,.bp-caret { animation: none !important; }
+  .ds-blob,.bp-ring,.bp-app-icon,.bp-caret { animation: none !important; }
   .bp-reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
 }
 

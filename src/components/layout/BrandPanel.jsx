@@ -46,8 +46,6 @@ export default function BrandPanel() {
   const learners = useCountUp(learnerTarget);
   const leaves   = useCountUp(leavesTarget);
 
-  const [mouse, setMouse] = useState({ x: 0, y: 0, on: false });
-
   /* 타이핑 */
   useEffect(() => {
     let pi = 0, ci = 0, del = false, timer;
@@ -94,33 +92,12 @@ export default function BrandPanel() {
   };
   const reset = (e) => { e.currentTarget.style.transform = 'translate(0,0)'; };
 
-  const onMouseMove = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    setMouse({ x: e.clientX - r.left, y: e.clientY - r.top, on: true });
-  };
-  const onMouseLeave = () => setMouse(m => ({ ...m, on: false }));
-
   return (
     <aside
       className="ds-brand"
       ref={panelRef}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
     >
-      {/* 오로라 블롭 */}
-      <span className="bp-blob bp-blob1" />
-      <span className="bp-blob bp-blob2" />
-      <span className="bp-blob bp-blob3" />
-      <span className="bp-blob bp-blob4" />
       <span className="bp-grain" />
-
-      {/* 마우스 spotlight */}
-      <span style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', zIndex: 2,
-        transition: 'opacity .3s',
-        opacity: mouse.on ? 1 : 0,
-        background: `radial-gradient(circle 220px at ${mouse.x}px ${mouse.y}px, rgba(31,190,134,.13), transparent 70%)`,
-      }} />
 
       <div className="bp-inner">
         {/* 앱 아이콘 히어로 */}
