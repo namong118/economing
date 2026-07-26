@@ -1051,6 +1051,195 @@ export const BITE_INFOGRAPHICS = {
       result="코스닥은 코스피보다 변동성이 큰 성장주 중심 지수예요"
     />
   ),
+
+  82: () => (
+    <BiteInfographic
+      title="금리가 작동하는 방식"
+      steps={[
+        { icon: Wallet,  label: '원금',  sub: '맡기거나 빌린 돈', color: 'green'  },
+        { icon: Percent, label: '금리',  sub: '붙는 비율',       color: 'yellow' },
+        { icon: Coins,   label: '이자',  sub: '주고받는 대가',    color: 'green'  },
+      ]}
+      result="돈을 빌리거나 맡길 때 붙는 대가"
+    />
+  ),
+
+  83: () => (
+    <BiteInfographic
+      title="순자산 계산 흐름"
+      steps={[
+        { icon: Wallet,       label: '자산',   sub: '가진 것 전체',   color: 'green' },
+        { icon: CreditCard,   label: '부채',   sub: '갚아야 할 빚',   color: 'red'   },
+        { icon: CheckCircle,  label: '순자산', sub: '자산 − 부채',    color: 'blue'  },
+      ]}
+      result="자산에서 부채를 뺀, 진짜 내 재산"
+    />
+  ),
+
+  84: () => (
+    <BiteInfographic
+      title="마이너스통장 사용 흐름"
+      steps={[
+        { icon: CreditCard, label: '한도 설정', sub: '미리 정한 한도',   color: 'yellow' },
+        { icon: Wallet,     label: '필요할 때 인출', sub: '잔액 마이너스 가능', color: 'green' },
+        { icon: Percent,    label: '쓴 만큼 이자', sub: '사용 금액만',    color: 'yellow' },
+      ]}
+      result="필요한 만큼만 빌려 쓰는 통장"
+    />
+  ),
+
+  85: () => (
+    <BiteInfographic
+      title="파킹통장의 원리"
+      steps={[
+        { icon: Wallet,    label: '자유입출금', sub: '언제든 넣고 빼기', color: 'green'  },
+        { icon: Percent,   label: '이자 지급',  sub: '하루만 맡겨도',    color: 'yellow' },
+        { icon: PiggyBank, label: '파킹',      sub: '잠깐 돈을 세워둠', color: 'green'  },
+      ]}
+      result="자유롭게 넣고 빼면서도 이자를 받는 통장"
+    />
+  ),
+
+  86: () => (
+    <ComparisonInfographic
+      title="같은 이자, 세금 유무의 차이"
+      branches={[
+        { icon: AlertCircle,  label: '일반 과세', sub: '15.4% 세금 차감', color: 'red'   },
+        { icon: CheckCircle,  label: '비과세',   sub: '세금 없이 100% 수령', color: 'green' },
+      ]}
+      result="같은 이자라도 세금 유무로 실수령액이 달라져요"
+    />
+  ),
+
+  87: () => (
+    <BiteInfographic
+      title="금리인하요구권 신청 흐름"
+      steps={[
+        { icon: TrendingUp,  label: '신용 개선', sub: '취업·소득 증가', color: 'green'  },
+        { icon: AlertCircle, label: '인하 신청', sub: '은행에 요구',    color: 'yellow' },
+        { icon: CheckCircle, label: '금리 인하', sub: '이자 부담 감소',  color: 'green'  },
+      ]}
+      result="형편이 좋아지면 대출 금리도 낮출 수 있어요"
+    />
+  ),
+
+  88: () => (
+    <BiteInfographic
+      title="보험이 작동하는 원리"
+      steps={[
+        { icon: Users,       label: '가입자',     sub: '보험료 납부', color: 'green' },
+        { icon: Coins,       label: '보험료 모임', sub: '큰 돈으로',   color: 'yellow' },
+        { icon: AlertCircle, label: '사고 발생',  sub: '일부에게만',  color: 'red'   },
+        { icon: CheckCircle, label: '보험금 지급', sub: '위험 분산',   color: 'green' },
+      ]}
+      result="많은 사람이 위험을 나눠 부담하는 원리"
+    />
+  ),
+
+  89: () => (
+    <CompositionInfographic
+      title="기름값의 구성"
+      items={[
+        { icon: Droplet,  label: '원유·유통', sub: '원가+마진', color: 'green'  },
+        { icon: Landmark, label: '유류세',   sub: '교통세 등', color: 'yellow' },
+      ]}
+      total={{ icon: ShoppingBasket, label: '기름값', sub: '주유소 가격', color: 'blue' }}
+      result="기름값의 상당 부분은 세금이에요"
+    />
+  ),
+
+  90: () => (
+    <ComparisonInfographic
+      title="정해지는 방식이 다른 두 금리"
+      branches={[
+        { icon: Landmark,  label: '기준금리',  sub: '중앙은행이 결정', color: 'yellow' },
+        { icon: LineChart, label: '국채 금리', sub: '시장이 결정',    color: 'green'  },
+      ]}
+      result="같은 금리라도 정해지는 방식이 달라요"
+    />
+  ),
+
+  91: () => (
+    <BiteInfographic
+      title="대출금리가 정해지는 과정"
+      steps={[
+        { icon: Users,   label: '신청자',   sub: '신용도·소득', color: 'green'  },
+        { icon: Percent, label: '대출금리', sub: '적용 비율',   color: 'yellow' },
+        { icon: Wallet,  label: '실제 이자', sub: '내가 내는 돈', color: 'red'    },
+      ]}
+      result="내가 실제로 부담하는 대출 이자율"
+    />
+  ),
+
+  92: () => (
+    <CompositionInfographic
+      title="대출금리의 구성"
+      items={[
+        { icon: Landmark, label: '기준금리', sub: '정책 금리',    color: 'yellow' },
+        { icon: Percent,  label: '가산금리', sub: '신용 위험 반영', color: 'red'    },
+      ]}
+      total={{ icon: Wallet, label: '대출금리', sub: '내가 내는 금리', color: 'blue' }}
+      result="기준금리에 가산금리를 더한 값"
+    />
+  ),
+
+  93: () => (
+    <ComparisonInfographic
+      title="평소 인상 폭과 빅스텝 비교"
+      branches={[
+        { icon: TrendingUp,    label: '베이비스텝', sub: '0.25%p 인상', color: 'yellow' },
+        { icon: AlertTriangle, label: '빅스텝',    sub: '0.5%p 인상',  color: 'red'    },
+      ]}
+      result="평소보다 두 배 큰 폭의 금리 인상"
+    />
+  ),
+
+  94: () => (
+    <ComparisonInfographic
+      title="저축과 투자의 차이"
+      branches={[
+        { icon: PiggyBank,  label: '저축', sub: '원금 보장·낮은 수익',   color: 'green'  },
+        { icon: TrendingUp, label: '투자', sub: '위험 감수·높은 기대수익', color: 'yellow' },
+      ]}
+      result="위험을 감수하고 돈을 불리는 것이 투자예요"
+    />
+  ),
+
+  95: () => (
+    <ComparisonInfographic
+      title="주식과 암호화폐의 변동성 비교"
+      branches={[
+        { icon: LineChart,     label: '주식',   sub: '상대적으로 완만한 변동', color: 'green' },
+        { icon: AlertTriangle, label: '암호화폐', sub: '훨씬 큰 변동성',      color: 'red'   },
+      ]}
+      result="암호화폐는 가격 변동이 훨씬 커요"
+    />
+  ),
+
+  96: () => (
+    <CompositionInfographic
+      title="ESG의 세 가지 요소"
+      items={[
+        { icon: Globe, label: '환경(E)',   sub: '기후·오염', color: 'green'  },
+        { icon: Users, label: '사회(S)',   sub: '인권·노동', color: 'yellow' },
+        { icon: Scale, label: '지배구조(G)', sub: '투명 경영', color: 'green'  },
+      ]}
+      total={{ icon: CheckCircle, label: 'ESG 투자', sub: '셋을 함께 평가', color: 'blue' }}
+      result="재무 실적 외의 것까지 함께 보는 투자"
+    />
+  ),
+
+  97: () => (
+    <BiteInfographic
+      title="서학개미의 수익 구조"
+      steps={[
+        { icon: Globe,       label: '해외 주식 매수', sub: '주로 미국',    color: 'green'  },
+        { icon: ArrowUpDown, label: '환율 변동',     sub: '추가 변수',    color: 'yellow' },
+        { icon: Wallet,      label: '원화 환산 수익', sub: '주가+환율 결합', color: 'green'  },
+      ]}
+      result="주가와 환율, 두 가지를 함께 봐야 해요"
+    />
+  ),
 }
 
 export function getBiteInfographic(id) {

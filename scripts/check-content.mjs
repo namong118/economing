@@ -19,13 +19,14 @@ import { fileURLToPath } from 'node:url'
 import economicBites from '../src/data/economicBites.js'
 import indicatorsData from '../src/data/indicatorsData.js'
 import BITE_QUIZZES from '../src/data/biteQuizzes.js'
+import { getCurriculumSequence } from '../src/data/curriculum.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const INFOGRAPHICS_PATH = path.join(__dirname, '..', 'src', 'data', 'biteInfographics.jsx')
 
-const EXPECTED_BITE_COUNT = 70
+const EXPECTED_BITE_COUNT = 86
 const EXPECTED_INDICATOR_COUNT = 11
-const EXPECTED_QUIZ_COUNT = 70
+const EXPECTED_QUIZ_COUNT = 86
 const ANSWER_POSITION_WARN_RATIO = 0.4
 
 let hasFailure = false
@@ -173,6 +174,53 @@ for (const idStr of Object.keys(BITE_QUIZZES)) {
   }
 }
 report('6. 퀴즈 구조 이상', structuralIssues)
+
+// ── 8. 커리큘럼(chapter/order/curriculum.js) 정합성 ─────────────────
+
+const EXPECTED_CURRICULUM_TOTAL = 96
+const EXPECTED_CURRICULUM_PENDING = 15
+
+report(
+  '8a. inCurriculum=true인데 chapter/order가 없는 한잎',
+  economicBites
+    .filter((b) => b.inCurriculum && (b.chapter == null || b.order == null))
+    .map((b) => ({ id: b.id, title: b.title }))
+)
+
+const orderDupIssues = []
+const seenOrderKeys = new Map()
+for (const b of economicBites) {
+  if (!b.inCurriculum) continue
+  const key = `${b.chapter}-${b.order}`
+  if (seenOrderKeys.has(key)) {
+    orderDupIssues.push({ id: b.id, title: b.title, detail: `챕터 ${b.chapter}의 order ${b.order}가 "${seenOrderKeys.get(key)}"와 중복` })
+  } else {
+    seenOrderKeys.set(key, b.title)
+  }
+}
+report('8b. 같은 챕터 안에서 order 중복', orderDupIssues)
+
+const curriculumSequence = getCurriculumSequence()
+
+if (curriculumSequence.length !== EXPECTED_CURRICULUM_TOTAL) {
+  report('8c. curriculum.js 총 항목 수가 96이 아님', [
+    { id: '-', title: '-', detail: `실제 ${curriculumSequence.length}개` },
+  ])
+}
+
+report(
+  '8d. curriculum.js가 참조하는 id 중 economicBites에 없는 것',
+  curriculumSequence
+    .filter((item) => !item.pending && item.id != null && !biteIdSet.has(item.id))
+    .map((item) => ({ id: item.id, title: item.title ?? '(제목 없음)', detail: `${item.chapterName}(${item.chapter}챕터)에서 참조` }))
+)
+
+const pendingCount = curriculumSequence.filter((item) => item.pending).length
+if (pendingCount !== EXPECTED_CURRICULUM_PENDING) {
+  report('8e. curriculum.js pending 개수가 31이 아님', [
+    { id: '-', title: '-', detail: `실제 ${pendingCount}개` },
+  ])
+}
 
 // ── 문제 출력 ─────────────────────────────────────────────────────
 

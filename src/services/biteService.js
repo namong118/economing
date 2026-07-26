@@ -1,4 +1,5 @@
 import economicBites from '../data/economicBites';
+import { getCurriculumOrderedBiteIds } from '../data/curriculum';
 import { callSolar } from './solarService';
 import { supabase } from './supabaseClient';
 
@@ -33,7 +34,59 @@ function lsSet(key, value) {
   try { localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); } catch {}
 }
 
-export async function getRecommendedBite(userId, userLevel = 'beginner') {
+/**
+ * 커리큘럼 순서(chapter -> order) 기반 추천.
+ * user_bite_history에서 이미 본 카드를 걸러내고, 커리큘럼 순서상 아직 안 본
+ * 첫 번째 카드를 반환한다. pending(아직 안 만든 31개)은 getCurriculumOrderedBiteIds()가
+ * 이미 걸러서 반환하므로 여기서 따로 건너뛸 필요가 없다.
+ * 전부 봤으면 복습 모드로 폴백(가장 오래전에 본 것부터) — 이건 임시 처리이고
+ * 나중에 제대로 설계할 것.
+ * AI(Solar) 호출은 제거했다: 순서가 정해져 있으면 AI가 고를 이유가 없고,
+ * 판단 근거로 쓰던 category/difficulty는 내부 일관성이 없는 필드로 밝혀졌다.
+ * 기존 AI 추천 로직은 되돌릴 수 있도록 getRecommendedBiteAI로 남겨뒀다.
+ */
+export async function getRecommendedBite(userId) {
+  const today = new Date().toISOString().slice(0, 10);
+  const cacheKey = `${userId}__${today}`;
+  const cached = lsGet(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const { data: history } = await supabase
+      .from('user_bite_history')
+      .select('bite_id, viewed_at')
+      .eq('user_id', userId);
+
+    const viewedIds = new Set((history ?? []).map(h => h.bite_id));
+    const orderedIds = getCurriculumOrderedBiteIds();
+    const nextId = orderedIds.find(id => !viewedIds.has(id));
+
+    let result;
+    if (nextId != null) {
+      result = economicBites.find(b => b.id === nextId) ?? getTodaysBite();
+    } else if (history && history.length > 0) {
+      const oldest = [...history].sort(
+        (a, b) => new Date(a.viewed_at) - new Date(b.viewed_at)
+      )[0];
+      result = economicBites.find(b => b.id === oldest.bite_id) ?? getTodaysBite();
+    } else {
+      result = getTodaysBite();
+    }
+
+    lsSet(cacheKey, result);
+    return result;
+
+  } catch {
+    return getTodaysBite();
+  }
+}
+
+/**
+ * [레거시, 미사용] AI(Solar) 기반 추천 — difficulty/category로 후보 15개를 거른 뒤
+ * Solar에게 고르게 했던 이전 방식. 커리큘럼 순서 기반으로 교체하면서 되돌릴 수 있도록
+ * 남겨둔다. 지우지 말 것.
+ */
+export async function getRecommendedBiteAI(userId, userLevel = 'beginner') {
   const today = new Date().toISOString().slice(0, 10);
   const cacheKey = `${userId}__${userLevel}__${today}`;
   const cached = lsGet(cacheKey);
