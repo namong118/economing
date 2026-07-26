@@ -13,6 +13,7 @@ import PageWrapper from '../components/layout/PageWrapper';
 import SaveTermButton from '../components/common/SaveTermButton';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
+import { recordBiteView } from '../services/biteService';
 import { supabase } from '../services/supabaseClient';
 
 const CATEGORY_STYLE = {
@@ -134,6 +135,8 @@ export default function EconomicBitePage() {
     if (quizRevealed) return;
     setQuizSelected(idx);
     setQuizRevealed(true);
+    // 퀴즈에 답을 고른 시점 = 본문을 실제로 읽었다고 볼 수 있는 시점. 정답/오답과 무관하게 기록.
+    if (user?.id) recordBiteView(user.id, bite.id);
     if (idx === quizData.quiz.answer) {
       setShowXP(true);
       setTimeout(() => setShowXP(false), 1900);

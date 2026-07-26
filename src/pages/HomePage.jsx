@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Leaf, Zap, MessageCircle, NotebookPen, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
-import { getTodaysBite, getRecommendedBite, recordBiteView } from '../services/biteService';
+import { getTodaysBite, getRecommendedBite } from '../services/biteService';
 import { addXp, updateStreak } from '../services/profileService';
 import { getLevelByXp } from '../data/levelData';
 import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
@@ -46,7 +46,7 @@ export default function HomePage() {
     if (authLoading) return;
     if (!user?.id) { setBite(getTodaysBite()); return; }
     getRecommendedBite(user.id, userLevel)
-      .then(b => { setBite(b); recordBiteView(user.id, b.id); })
+      .then(b => setBite(b))
       .catch(() => setBite(getTodaysBite()));
   }, [user?.id, userLevel, authLoading]); // eslint-disable-line
 
