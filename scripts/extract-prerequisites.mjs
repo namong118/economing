@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// 2026-07-26 실행. 선행 개념 그래프로 커리큘럼 순서를 잡으려 했으나
+// 70개 중 44개가 선행 없음으로 나와 실패. 난이도와 선행 깊이가
+// 별개 축임을 확인한 근거. 결과는 docs/curriculum/history/curriculum-order.md
 /**
  * economicBites.js 70개 각각의 "선행 개념"을 추출한다 (지표 11개는 제외).
  * relatedTerms는 상호 참조 링크일 뿐 선행 관계가 아니므로 쓰지 않는다 —
