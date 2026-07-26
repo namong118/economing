@@ -38,6 +38,7 @@
           letterSpacing: '-0.3px',
           textDecoration: 'line-through',
           marginBottom: '12px',
+          wordBreak: 'keep-all',
         }}>
           경제 용어 사전이 아닙니다.&nbsp;&nbsp;투자 추천 서비스도 아닙니다.
         </p>
@@ -50,6 +51,7 @@
           lineHeight: '1.2',
           letterSpacing: '-1.5px',
           marginBottom: '28px',
+          wordBreak: 'keep-all',
         }}>
           경제 초보자를 위한<br/>
           <span style={{
