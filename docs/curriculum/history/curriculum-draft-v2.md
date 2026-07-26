@@ -2,7 +2,7 @@
 
 생성 시각: 2026-07-26T02:51:42.466Z
 
-v1(scripts/output/curriculum-draft.md, 고정 10챕터x10개)의 문제 3가지를 고쳐서 다시 짰다.
+v1(curriculum-draft.md, 같은 history/ 폴더, 고정 10챕터x10개)의 문제 3가지를 고쳐서 다시 짰다.
 개수를 먼저 정하지 않고 주제 덩어리를 먼저 잡은 뒤 챕터 순서와 이름을 붙였다. difficulty 태그는
 참고만 하고 정렬에 쓰지 않았다(태그 자체가 내부적으로 일관성이 없기 때문 — 예: 인플레이션=easy인데
 디플레이션=medium, ETF=easy인데 인덱스 펀드=medium).
