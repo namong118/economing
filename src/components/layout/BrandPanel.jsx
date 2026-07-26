@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Users, ChevronRight, Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees, Sun } from 'lucide-react';
 
 const BASE = import.meta.env.BASE_URL;
@@ -12,6 +12,14 @@ const STAGES = [
   { Icon: Cherry,        name: '열매' },
   { Icon: TreeDeciduous, name: '나무' },
   { Icon: Trees,         name: '숲'   },
+];
+
+/* 발표용 페이지 메뉴 — PresentationShell 라우트로 연결 (데스크톱 전용) */
+const PRESENTATION_LINKS = [
+  { to: '/about',         label: '소개 · 기획 의도' },
+  { to: '/profile-intro', label: '나의 소개' },
+  { to: '/guide',         label: '사용법' },
+  { to: '/tech',          label: '기술 스택' },
 ];
 
 const PHRASES = ['경제를 쉽게,', '성장을 즐겁게,', '매일 한 잎씩.'];
@@ -38,6 +46,7 @@ function useCountUp(target, dur = 1600) {
 
 export default function BrandPanel() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [txt, setTxt] = useState('');
   const panelRef = useRef(null);
 
@@ -100,6 +109,19 @@ export default function BrandPanel() {
       <span className="bp-grain" />
 
       <div className="bp-inner">
+        {/* 발표용 페이지 메뉴 */}
+        <nav className="bp-nav bp-reveal" aria-label="발표 자료">
+          {PRESENTATION_LINKS.map(link => (
+            <button
+              key={link.to}
+              className={`bp-nav-link ${pathname === link.to ? 'bp-nav-link-active' : ''}`}
+              onClick={() => navigate(link.to)}
+            >
+              {link.label}
+            </button>
+          ))}
+        </nav>
+
         {/* 앱 아이콘 히어로 */}
         <div className="bp-hero bp-reveal">
           <span className="bp-ring" />

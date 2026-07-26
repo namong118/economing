@@ -3,7 +3,12 @@ import { AuthProvider } from './context/AuthContext';
 import { DictionaryProvider } from './context/DictionaryContext';
 import ProtectedRoute  from './components/common/ProtectedRoute';
 import AppShell        from './components/layout/AppShell';
+import PresentationShell from './components/layout/PresentationShell';
 import LandingPage     from './pages/LandingPage';
+import AboutPage        from './pages/AboutPage';
+import ProfileIntroPage from './pages/ProfileIntroPage';
+import GuidePage        from './pages/GuidePage';
+import TechStackPage    from './pages/TechStackPage';
 import DiagnosisPage   from './pages/DiagnosisPage';
 import ResultPage      from './pages/ResultPage';
 import HomePage        from './pages/HomePage';
@@ -51,6 +56,14 @@ export default function App() {
 
               <Route path="/profile" element={<Navigate to="/my-growth" replace />} />
               <Route path="*"        element={<Navigate to="/home" replace />} />
+            </Route>
+
+            {/* 발표용 페이지: PresentationShell 레이아웃 (AppShell과 별개) */}
+            <Route element={<PresentationShell />}>
+              <Route path="/about"         element={<AboutPage />} />
+              <Route path="/profile-intro" element={<ProfileIntroPage />} />
+              <Route path="/guide"         element={<GuidePage />} />
+              <Route path="/tech"          element={<TechStackPage />} />
             </Route>
 
           </Routes>

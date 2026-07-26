@@ -406,6 +406,16 @@ input, textarea { font-family: var(--font); outline: none; }
 }
 .ds-outline:hover { background: #F1FBF6; box-shadow: 0 10px 24px rgba(31,190,134,.18); }
 
+/* 발표용 페이지 메뉴 (데스크톱 전용 — .ds-brand가 ≥1024px에서만 보이므로 별도 미디어쿼리 불필요) */
+.bp-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.bp-nav-link {
+  background: none; border: 1.5px solid transparent; color: #54635C;
+  font-weight: 700; font-size: 13px; padding: 8px 14px; border-radius: 100px;
+  cursor: pointer; font-family: var(--font); transition: all .18s;
+}
+.bp-nav-link:hover { background: #F1FBF6; color: #0B5D49; }
+.bp-nav-link-active { background: #0B5D49; color: #fff; }
+
 @keyframes bpBlobFloat {
   0%,100% { transform: translate(0,0) scale(1); }
   33%      { transform: translate(30px,-28px) scale(1.12); }
@@ -435,6 +445,65 @@ input, textarea { font-family: var(--font); outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .ds-blob,.bp-ring,.bp-app-icon,.bp-caret { animation: none !important; }
   .bp-reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* ===== PresentationShell: 브랜드 패널(고정폭) + 발표용 콘텐츠(가변폭) ===== */
+
+/* 기본(모바일): 단일 컬럼, 브랜드 패널은 숨김(.ds-brand 재사용 규칙 그대로 적용), 페이지 전체 자연 스크롤 */
+.ps-root {
+  display: flex;
+  min-height: 100vh;
+  background: var(--c-surface);
+}
+.ps-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  /* 배경을 일부러 비워둠(투명) — .ps-root의 그라데이션+블롭이 콘텐츠 영역까지 끊기지 않고
+     이어지도록 한다. 블롭은 흐릿하고(blur 55~85px) 옅어서(opacity .18~.30) 본문 텍스트
+     대비를 해치지 않는다 */
+}
+.ps-back-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 18px 32px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--c-line-soft);
+}
+.ps-back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: 1.5px solid var(--c-line); color: var(--c-slate);
+  font-weight: 700; font-size: 14px; padding: 9px 16px; border-radius: 100px;
+  cursor: pointer; font-family: var(--font); transition: all .18s;
+}
+.ps-back-btn:hover { border-color: #1FBE86; color: #0B5D49; background: #F1FBF6; }
+.ps-page { max-width: 960px; margin: 0 auto; padding: 64px 40px 120px; }
+.ps-page-title { font-size: 32px; font-weight: 900; letter-spacing: -.02em; color: var(--c-ink); margin-bottom: 12px; }
+.ps-page-empty { font-size: 15px; color: var(--c-muted); font-weight: 600; }
+
+/* ≥1024px: 좌측 패널 고정, 우측만 내부 스크롤 */
+@media (min-width: 1024px) {
+  html:has(.ps-root), body:has(.ps-root) { height: 100vh; overflow: hidden; }
+  .ps-root {
+    /* PresentationShell의 사이드바(.ds-brand)는 항상 고정 640px로 화면 맨 왼쪽에 붙으므로
+       .ds-root처럼 가운데 정렬 보정이 필요 없다 — 블롭은 이 0을 기준으로 앵커링된다 */
+    --panel-left: 0px;
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    /* .ds-root와 같은 그라데이션 — DesktopShell → PresentationShell 전환 시 배경이 안 튀도록 */
+    background: linear-gradient(135deg, var(--c-green-50) 0%, var(--c-yellow-100) 100%);
+  }
+  .ps-content {
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .ps-content::-webkit-scrollbar { display: none; }
 }
 
 /* ===== 스크롤 탑 버튼 ===== */
