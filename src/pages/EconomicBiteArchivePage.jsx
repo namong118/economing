@@ -1,224 +1,293 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, Circle, Sparkles } from 'lucide-react';
 import economicBites from '../data/economicBites';
-import { getTodaysBite, getRecommendedBite } from '../services/biteService';
-import { useUserLevel } from '../hooks/useUserLevel';
+import {
+  CURRICULUM_CHAPTERS,
+  getAllChaptersProgress,
+  getChapterProgress,
+  getCurriculumOrderedBiteIds,
+} from '../data/curriculum';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../services/supabaseClient';
 import PageWrapper from '../components/layout/PageWrapper';
 
-const CATEGORIES = ['전체', '기초', '금리', '투자', '저축', '거시경제', '부동산', '실생활경제'];
+const EXCLUDED_BITES = economicBites.filter((b) => !b.inCurriculum);
+const TOTAL_PROGRESS = getAllChaptersProgress().reduce(
+  (acc, c) => ({ total: acc.total + c.total, completed: acc.completed + c.completed }),
+  { total: 0, completed: 0 }
+);
 
-const DIFFICULTY_LABEL = { easy: '쉬움', medium: '보통', hard: '심화' };
+function ProgressBar({ ratio, height = 6 }) {
+  return (
+    <div style={{ background: 'var(--c-line-soft)', borderRadius: 99, height, overflow: 'hidden' }}>
+      <div style={{
+        background: 'var(--c-green-500)', borderRadius: 99, height: '100%',
+        width: `${Math.round(ratio * 100)}%`, transition: 'width 0.4s ease',
+      }} />
+    </div>
+  );
+}
 
-const LEVEL_DIFFICULTY_MAP = {
-  beginner:     ['easy'],
-  elementary:   ['easy', 'medium'],
-  intermediate: ['medium'],
-  advanced:     ['medium', 'hard'],
-  expert:       ['hard'],
-};
-
-function BiteCard({ bite, isToday, isRecommended, navigate }) {
+/* 학습 완료 / 학습 가능 카드 — 실제 콘텐츠가 있는 항목 */
+function BiteArchiveCard({ bite, done, navigate }) {
   const [hov, setHov] = useState(false);
-  const isEasy = bite.difficulty === 'easy';
-
   return (
     <div
       onClick={() => navigate(`/bite/${bite.id}`)}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        background: 'var(--c-surface)',
-        border: `1px solid ${hov || isToday ? 'var(--c-green-500)' : 'var(--c-line)'}`,
-        borderRadius: 14,
-        padding: '16px 18px',
-        cursor: 'pointer',
+        background: done ? 'var(--c-green-50)' : 'var(--c-surface)',
+        border: `1px solid ${hov ? 'var(--c-green-500)' : done ? 'var(--c-green-100)' : 'var(--c-line)'}`,
+        borderRadius: 12, padding: '12px 14px', cursor: 'pointer',
         transition: 'border-color 0.15s',
-        position: 'relative',
-        boxShadow: 'var(--shadow-card)',
+        display: 'flex', alignItems: 'center', gap: 10,
       }}
     >
-      {isToday && (
-        <div style={{
-          position: 'absolute', top: 12, right: 14,
-          background: 'var(--c-green-500)', color: '#fff',
-          fontSize: 10, fontWeight: 700,
-          padding: '2px 8px', borderRadius: 100,
+      <div style={{
+        width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: done ? 'var(--c-green-500)' : 'var(--c-green-100)',
+      }}>
+        {done
+          ? <Check size={14} color="#fff" />
+          : <Circle size={8} color="var(--c-forest-700)" fill="var(--c-forest-700)" />}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-ink)', letterSpacing: '-0.3px' }}>
+          {bite.title}
+        </div>
+        <p style={{
+          fontSize: 12, color: 'var(--c-slate)', lineHeight: 1.5, marginTop: 2,
+          display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
         }}>
-          오늘
+          {bite.summary}
+        </p>
+      </div>
+      {done && (
+        <span style={{
+          fontSize: 10, fontWeight: 700, color: 'var(--c-forest-700)',
+          background: 'var(--c-green-100)', borderRadius: 'var(--r-full)',
+          padding: '2px 8px', flexShrink: 0,
+        }}>
+          완료
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* 준비 중(pending) 카드 — 아직 콘텐츠가 없는 항목. 클릭 불가 */
+function PendingCard({ title }) {
+  return (
+    <div style={{
+      background: 'var(--c-canvas)', border: '1px dashed var(--c-line)',
+      borderRadius: 12, padding: '12px 14px', cursor: 'default',
+      display: 'flex', alignItems: 'center', gap: 10, opacity: 0.65,
+    }}>
+      <div style={{
+        width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'var(--c-line-soft)',
+      }}>
+        <Circle size={8} color="var(--c-muted)" fill="var(--c-muted)" />
+      </div>
+      <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600, color: 'var(--c-muted)' }}>
+        {title}
+      </div>
+      <span style={{
+        fontSize: 10, fontWeight: 700, color: 'var(--c-muted)',
+        background: 'var(--c-line-soft)', borderRadius: 'var(--r-full)',
+        padding: '2px 8px', flexShrink: 0,
+      }}>
+        준비 중
+      </span>
+    </div>
+  );
+}
+
+/* 챕터 하나의 학습 진도. built/pending은 curriculum.js의 getChapterProgress를 그대로 쓰고(제작 진도),
+   learned(=user_bite_history 기준 본 카드 수)만 페이지에서 계산한다 — curriculum.js는 "본 카드"라는
+   사용자별 개념을 모르기 때문. 진도 바는 항상 learned/built(학습 진도) 기준으로 채운다 — 제작 진도가 아님. */
+function getChapterLearningStats(chapter, viewedIds) {
+  const { total, completed: built } = getChapterProgress(chapter.number);
+  const learned = chapter.items.filter((it) => !it.pending && viewedIds.has(it.id)).length;
+  return { learned, built, pending: total - built };
+}
+
+function ChapterSection({ chapter, viewedIds, expanded, onToggle, navigate }) {
+  const { learned, built, pending } = getChapterLearningStats(chapter, viewedIds);
+  const ratio = built > 0 ? learned / built : 0;
+
+  return (
+    <div style={{
+      background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
+      borderRadius: 14, marginBottom: 10, overflow: 'hidden', boxShadow: 'var(--shadow-card)',
+    }}>
+      <div
+        onClick={onToggle}
+        style={{
+          padding: '14px 16px', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}
+      >
+        {expanded
+          ? <ChevronDown size={16} color="var(--c-slate)" style={{ flexShrink: 0 }} />
+          : <ChevronRight size={16} color="var(--c-slate)" style={{ flexShrink: 0 }} />}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-forest-700)', letterSpacing: '-0.3px' }}>
+              {chapter.number}장 · {chapter.name}
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--c-muted)', flexShrink: 0 }}>
+              학습 {learned}/{built}{pending > 0 && ` · 준비 중 ${pending}`}
+            </span>
+          </div>
+          {chapter.subtitle && (
+            <div style={{ fontSize: 11, color: 'var(--c-muted)', marginTop: 2 }}>
+              {chapter.subtitle}
+            </div>
+          )}
+          <div style={{ marginTop: 8 }}>
+            <ProgressBar ratio={ratio} height={4} />
+          </div>
+        </div>
+      </div>
+
+      {expanded && (
+        <div style={{ padding: '0 16px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {chapter.items.map((item, idx) => {
+            if (item.pending) {
+              return <PendingCard key={`pending-${idx}`} title={item.title} />;
+            }
+            const bite = economicBites.find((b) => b.id === item.id);
+            if (!bite) return null;
+            return (
+              <BiteArchiveCard
+                key={bite.id}
+                bite={bite}
+                done={viewedIds.has(bite.id)}
+                navigate={navigate}
+              />
+            );
+          })}
         </div>
       )}
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-        {/* 카테고리 뱃지 — 색 분기 없이 통일 */}
-        <span style={{
-          fontSize: 11, fontWeight: 700,
-          background: 'var(--c-green-50)', color: 'var(--c-forest-700)',
-          borderRadius: 'var(--r-full)', padding: '2px 9px',
-        }}>
-          {bite.category}
-        </span>
-        {/* 난이도 뱃지 — 쉬움만 살짝 강조, 나머지 중립 */}
-        <span style={{
-          fontSize: 11, fontWeight: 600,
-          background: isEasy ? 'var(--c-green-100)' : 'var(--c-line-soft)',
-          color: isEasy ? 'var(--c-forest-700)' : 'var(--c-slate)',
-          borderRadius: 'var(--r-full)', padding: '2px 9px',
-        }}>
-          {DIFFICULTY_LABEL[bite.difficulty]}
-        </span>
-        {isRecommended && (
-          <span style={{
-            fontSize: 10, padding: '2px 8px', borderRadius: 'var(--r-full)',
-            background: 'var(--c-green-100)', color: 'var(--c-forest-700)',
-            fontWeight: 700,
-          }}>
-            ✓ 내 수준
-          </span>
-        )}
-      </div>
-
-      <div style={{
-        fontSize: 15, fontWeight: 700, color: 'var(--c-ink)',
-        letterSpacing: '-0.4px', marginBottom: 6,
-      }}>
-        {bite.title}
-      </div>
-
-      <p style={{
-        fontSize: 13, color: 'var(--c-slate)', lineHeight: 1.6,
-        fontWeight: 400,
-        display: '-webkit-box', WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical', overflow: 'hidden',
-      }}>
-        {bite.summary}
-      </p>
     </div>
   );
 }
 
 export default function EconomicBiteArchivePage() {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [todaysBite, setTodaysBite] = useState(null);
   const { user } = useAuth();
-  const { userLevel } = useUserLevel();
-  const recommendedDifficulties = LEVEL_DIFFICULTY_MAP[userLevel] ?? ['easy'];
+
+  const [viewedIds, setViewedIds] = useState(new Set());
+  const [expandedChapters, setExpandedChapters] = useState(new Set());
+  const hasAutoExpanded = useRef(false);
 
   useEffect(() => {
-    if (user?.id) {
-      getRecommendedBite(user.id, userLevel).then(setTodaysBite).catch(() => setTodaysBite(getTodaysBite()));
-    } else {
-      setTodaysBite(getTodaysBite());
+    let cancelled = false;
+    async function loadHistory() {
+      if (!user?.id) return;
+      const { data } = await supabase
+        .from('user_bite_history')
+        .select('bite_id')
+        .eq('user_id', user.id);
+      if (cancelled) return;
+      setViewedIds(new Set((data ?? []).map((r) => r.bite_id)));
     }
-  }, [user?.id, userLevel]); // eslint-disable-line
+    loadHistory();
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
-  const filtered = selectedCategory === '전체'
-    ? economicBites
-    : economicBites.filter(b => b.category === selectedCategory);
+  /* 현재 학습 중인 챕터(= 커리큘럼 순서상 첫 미완료 카드가 속한 챕터)만 기본으로 펼침 — 한 번만 초기화 */
+  useEffect(() => {
+    if (hasAutoExpanded.current) return;
+    const orderedIds = getCurriculumOrderedBiteIds();
+    const nextId = orderedIds.find((id) => !viewedIds.has(id));
+    if (nextId == null) return;
+    const nextBite = economicBites.find((b) => b.id === nextId);
+    if (!nextBite) return;
+    setExpandedChapters(new Set([nextBite.chapter]));
+    hasAutoExpanded.current = true;
+  }, [viewedIds]);
+
+  function toggleChapter(chapterNumber) {
+    setExpandedChapters((prev) => {
+      const next = new Set(prev);
+      if (next.has(chapterNumber)) next.delete(chapterNumber);
+      else next.add(chapterNumber);
+      return next;
+    });
+  }
+
+  const curriculumIds = getCurriculumOrderedBiteIds();
+  const learnedCount = curriculumIds.filter((id) => viewedIds.has(id)).length;
+  const overallLearningRatio = TOTAL_PROGRESS.completed > 0 ? learnedCount / TOTAL_PROGRESS.completed : 0;
 
   return (
     <PageWrapper>
       <div style={{ background: 'var(--c-canvas)', minHeight: 'calc(100vh - 64px)', padding: '20px 0 80px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 20px' }}>
 
-          {/* ── 오늘의 한잎 다크 히어로 배너 ── */}
-          <div
-            onClick={() => todaysBite && navigate(`/bite/${todaysBite.id}`)}
-            style={{
-              background: 'linear-gradient(145deg, #0F6B52 0%, #06352B 100%)',
-              borderRadius: 18, padding: '20px', marginBottom: 20,
-              cursor: todaysBite ? 'pointer' : 'default',
-              boxShadow: '0 4px 24px rgba(6,53,43,0.28)',
-              position: 'relative', overflow: 'hidden',
-            }}
-          >
-            <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.04)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-            {todaysBite ? (
-              <>
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
-                      <Leaf size={11} color="rgba(255,255,255,0.65)" />
-                      <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.3px' }}>
-                        오늘의 추천 한잎
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: '-0.4px', marginBottom: 6, lineHeight: 1.35 }}>
-                      {todaysBite.title}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 400, lineHeight: 1.55 }}>
-                      {todaysBite.summary.length > 52 ? todaysBite.summary.slice(0, 52) + '...' : todaysBite.summary}
-                    </div>
-                  </div>
-                  <div style={{ width: 40, height: 40, flexShrink: 0, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Leaf size={18} color="rgba(255,255,255,0.9)" />
-                  </div>
-                </div>
-                <div style={{ marginTop: 14 }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.75)', background: 'rgba(255,255,255,0.12)', border: '0.5px solid rgba(255,255,255,0.2)', borderRadius: 100, padding: '4px 12px' }}>
-                    읽으러 가기 →
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ height: 11, width: 100, borderRadius: 6, background: 'rgba(255,255,255,0.15)', animation: 'shimmer 1.5s infinite', backgroundSize: '200% 100%' }} />
-                <div style={{ height: 20, width: '70%', borderRadius: 6, background: 'rgba(255,255,255,0.15)', animation: 'shimmer 1.5s infinite', backgroundSize: '200% 100%' }} />
-                <div style={{ height: 14, width: '55%', borderRadius: 6, background: 'rgba(255,255,255,0.1)', animation: 'shimmer 1.5s infinite', backgroundSize: '200% 100%' }} />
-              </div>
-            )}
+          {/* ── 전체 진도 ── */}
+          <div style={{
+            background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
+            borderRadius: 16, padding: '18px 18px', marginBottom: 20,
+            boxShadow: 'var(--shadow-card)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-forest-700)', letterSpacing: '-0.2px' }}>
+                학습 진도
+              </span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: 'var(--c-forest-700)' }}>
+                {learnedCount} / {TOTAL_PROGRESS.completed} <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--c-muted)' }}>완료</span>
+              </span>
+            </div>
+            <ProgressBar ratio={overallLearningRatio} height={8} />
+            <p style={{ fontSize: 11, color: 'var(--c-muted)', marginTop: 10, lineHeight: 1.5 }}>
+              11개 챕터, 96개 단어로 이루어진 초보자 경제 용어 커리큘럼이에요. 아직 준비 중인 카드도
+              전체 구조를 볼 수 있도록 함께 표시했어요.
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--c-muted)', fontWeight: 600, marginTop: 4 }}>
+              콘텐츠 준비 {TOTAL_PROGRESS.completed} / {TOTAL_PROGRESS.total}
+            </p>
           </div>
 
-          {/* ── 카테고리 필터 ── */}
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
-            {CATEGORIES.map(cat => {
-              const isActive = selectedCategory === cat;
-              const count = cat !== '전체' ? economicBites.filter(b => b.category === cat).length : null;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  style={{
-                    padding: '6px 12px', borderRadius: 'var(--r-full)',
-                    background: isActive ? 'var(--c-green-500)' : 'var(--c-surface)',
-                    color: isActive ? '#fff' : 'var(--c-slate)',
-                    border: `1px solid ${isActive ? 'var(--c-green-500)' : 'var(--c-line)'}`,
-                    fontSize: 12, fontWeight: isActive ? 700 : 500,
-                    cursor: 'pointer', transition: 'all 0.15s',
-                    display: 'flex', alignItems: 'center', gap: 3,
-                  }}
-                >
-                  {cat}
-                  {count !== null && (
-                    <span style={{ color: isActive ? 'rgba(255,255,255,0.75)' : 'var(--c-muted)', fontWeight: 500 }}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          {/* ── 11챕터 ── */}
+          {CURRICULUM_CHAPTERS.map((chapter) => (
+            <ChapterSection
+              key={chapter.number}
+              chapter={chapter}
+              viewedIds={viewedIds}
+              expanded={expandedChapters.has(chapter.number)}
+              onToggle={() => toggleChapter(chapter.number)}
+              navigate={navigate}
+            />
+          ))}
 
-          {/* ── 개수 ── */}
-          <p style={{ fontSize: 11, color: 'var(--c-muted)', fontWeight: 500, marginBottom: 12 }}>
-            {filtered.length}개의 경제 한잎
-          </p>
-
-          {/* ── 카드 목록 ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {filtered.map(bite => (
-              <BiteCard
-                key={bite.id}
-                bite={bite}
-                isToday={todaysBite && bite.id === todaysBite.id}
-                isRecommended={recommendedDifficulties.includes(bite.difficulty)}
-                navigate={navigate}
-              />
-            ))}
+          {/* ── 심화: 커리큘럼 밖 ── */}
+          <div style={{ marginTop: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+              <Sparkles size={14} color="var(--c-slate)" />
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-slate)' }}>
+                심화 — 커리큘럼 밖
+              </span>
+            </div>
+            <p style={{ fontSize: 11, color: 'var(--c-muted)', marginBottom: 10, lineHeight: 1.5 }}>
+              투자 분석 심화 개념이에요. 순서 없이 필요할 때 찾아보세요.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {EXCLUDED_BITES.map((bite) => (
+                <BiteArchiveCard
+                  key={bite.id}
+                  bite={bite}
+                  done={viewedIds.has(bite.id)}
+                  navigate={navigate}
+                />
+              ))}
+            </div>
           </div>
 
         </div>

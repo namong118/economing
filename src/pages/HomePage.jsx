@@ -10,6 +10,7 @@ import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coac
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
+import { CURRICULUM_CHAPTERS, getChapterProgress } from '../data/curriculum';
 import PageWrapper from '../components/layout/PageWrapper';
 
 const LEVEL_LABEL = {
@@ -48,6 +49,27 @@ export default function HomePage() {
       .then(b => { setBite(b); recordBiteView(user.id, b.id); })
       .catch(() => setBite(getTodaysBite()));
   }, [user?.id, userLevel, authLoading]); // eslint-disable-line
+
+  /* 오늘의 한잎이 속한 챕터의 학습 진도 — "N장 · 이름 · 학습한 개수/그 챕터의 학습 가능 카드 수" */
+  const [chapterLearned, setChapterLearned] = useState(null);
+  const chapterInfo = bite?.chapter ? CURRICULUM_CHAPTERS.find(c => c.number === bite.chapter) : null;
+
+  useEffect(() => {
+    if (!user?.id || !chapterInfo) { setChapterLearned(null); return; }
+    const builtIds = chapterInfo.items.filter(it => !it.pending).map(it => it.id);
+    let cancelled = false;
+    supabase
+      .from('user_bite_history')
+      .select('bite_id')
+      .eq('user_id', user.id)
+      .in('bite_id', builtIds)
+      .then(({ data }) => {
+        if (cancelled) return;
+        setChapterLearned(new Set((data ?? []).map(r => r.bite_id)).size);
+      })
+      .catch(() => { if (!cancelled) setChapterLearned(null); });
+    return () => { cancelled = true; };
+  }, [user?.id, chapterInfo?.number]); // eslint-disable-line
 
   /* 뉴스 */
   const [todayNews,   setTodayNews]   = useState(null);
@@ -348,18 +370,18 @@ export default function HomePage() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                   <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.3px' }}>오늘의 경제 한잎</span>
-                  <div style={{ display: 'flex', gap: 5 }}>
-                    <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '0.5px solid rgba(255,255,255,0.25)' }}>
-                      {bite.category}
-                    </span>
-                    <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,196,61,0.2)', color: 'var(--c-yellow-500)', border: '0.5px solid rgba(255,196,61,0.4)' }}>
-                      {{ easy: '쉬움', medium: '보통', hard: '심화' }[bite.difficulty] ?? ''}
-                    </span>
-                  </div>
+                  <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '0.5px solid rgba(255,255,255,0.25)' }}>
+                    {bite.category}
+                  </span>
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
                   {bite.title}
                 </div>
+                {chapterInfo && (
+                  <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>
+                    {chapterInfo.number}장 · {chapterInfo.name} · {chapterLearned ?? 0}/{getChapterProgress(chapterInfo.number).completed}
+                  </div>
+                )}
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.65 }}>
                   {bite.description}
                 </div>

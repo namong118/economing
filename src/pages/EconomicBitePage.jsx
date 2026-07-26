@@ -8,6 +8,7 @@ import {
 import economicBites, { getBiteById } from '../data/economicBites';
 import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import { getBiteQuiz } from '../data/biteQuizzes';
+import { CURRICULUM_CHAPTERS, getCurriculumSequence } from '../data/curriculum';
 import PageWrapper from '../components/layout/PageWrapper';
 import SaveTermButton from '../components/common/SaveTermButton';
 import { useAuth } from '../context/AuthContext';
@@ -21,12 +22,6 @@ const CATEGORY_STYLE = {
   '저축':     { badge: 'var(--c-green-100)', badgeText: 'var(--c-forest-900)', Icon: PiggyBank },
   '부동산':   { badge: '#FCE7F3', badgeText: '#831843', Icon: Home },
   '기초':     { badge: '#EDE9FE', badgeText: '#4C1D95', Icon: BookOpen },
-};
-
-const DIFFICULTY_STYLE = {
-  easy:   { label: '쉬움', bg: 'var(--c-green-100)',  text: 'var(--c-forest-700)' },
-  medium: { label: '보통', bg: 'var(--c-yellow-100)', text: 'var(--c-amber-700)'  },
-  hard:   { label: '심화', bg: '#FFE4E6',             text: '#BE123C'             },
 };
 
 const ANIM = `
@@ -113,8 +108,27 @@ export default function EconomicBitePage() {
   }
 
   const catStyle = CATEGORY_STYLE[bite.category] ?? { badge: 'var(--c-line)', badgeText: 'var(--c-slate)', Icon: MapPin };
-  const diffStyle = DIFFICULTY_STYLE[bite.difficulty] ?? DIFFICULTY_STYLE.medium;
   const CatIcon = catStyle.Icon;
+
+  const chapterInfo = bite.chapter ? CURRICULUM_CHAPTERS.find((c) => c.number === bite.chapter) : null;
+
+  /* 챕터 안 이전(경계 넘지 않음) / 전체 커리큘럼 안 다음(다음 챕터로 넘어갈 수 있음) — 둘 다 pending은 건너뜀 */
+  const sequence = bite.inCurriculum ? getCurriculumSequence() : [];
+  const currentIndex = bite.inCurriculum ? sequence.findIndex((s) => s.id === bite.id) : -1;
+
+  let prevBite = null;
+  if (currentIndex > -1) {
+    const currentChapter = sequence[currentIndex].chapter;
+    for (let i = currentIndex - 1; i >= 0 && sequence[i].chapter === currentChapter; i--) {
+      if (!sequence[i].pending) { prevBite = economicBites.find((b) => b.id === sequence[i].id); break; }
+    }
+  }
+  let nextBite = null;
+  if (currentIndex > -1) {
+    for (let i = currentIndex + 1; i < sequence.length; i++) {
+      if (!sequence[i].pending) { nextBite = economicBites.find((b) => b.id === sequence[i].id); break; }
+    }
+  }
 
   async function handleOption(idx) {
     if (quizRevealed) return;
@@ -161,14 +175,16 @@ export default function EconomicBitePage() {
             }}>
               <CatIcon size={10} /> {bite.category}
             </span>
-            <span style={{
-              fontSize: 11, fontWeight: 600,
-              background: 'rgba(255,200,61,0.2)', color: 'var(--c-yellow-500)',
-              borderRadius: 100, padding: '3px 10px',
-              border: '0.5px solid rgba(255,200,61,0.4)',
-            }}>
-              {diffStyle.label}
-            </span>
+            {chapterInfo && (
+              <span style={{
+                fontSize: 11, fontWeight: 600,
+                background: 'rgba(255,200,61,0.2)', color: 'var(--c-yellow-500)',
+                borderRadius: 100, padding: '3px 10px',
+                border: '0.5px solid rgba(255,200,61,0.4)',
+              }}>
+                {chapterInfo.number}장 · {chapterInfo.name}
+              </span>
+            )}
             <span style={{
               fontSize: 11, fontWeight: 600,
               background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
@@ -429,37 +445,41 @@ export default function EconomicBitePage() {
           </div>
         )}
 
-        {/* ── 이전 / 다음 ── */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          {bite.id > 1 && (
-            <button
-              onClick={() => navigate(`/bite/${bite.id - 1}`)}
-              style={{
-                flex: 1, padding: '11px 12px', borderRadius: 10,
-                border: '1px solid var(--c-line)', background: 'var(--c-surface)',
-                color: 'var(--c-forest-700)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                transition: 'border-color 0.15s',
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--c-line)'}
-            >
-              ← 이전 한잎
-            </button>
-          )}
-          <button
-            onClick={() => navigate(`/bite/${bite.id < 60 ? bite.id + 1 : 1}`)}
-            style={{
-              flex: 1, padding: '11px 12px', borderRadius: 10,
-              border: '1px solid var(--c-line)', background: 'var(--c-surface)',
-              color: 'var(--c-forest-700)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              transition: 'border-color 0.15s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--c-line)'}
-          >
-            다음 한잎 →
-          </button>
-        </div>
+        {/* ── 이전 / 다음 (챕터 순서 기준, pending 카드는 건너뜀) ── */}
+        {(prevBite || nextBite) && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            {prevBite && (
+              <button
+                onClick={() => navigate(`/bite/${prevBite.id}`)}
+                style={{
+                  flex: 1, padding: '11px 12px', borderRadius: 10,
+                  border: '1px solid var(--c-line)', background: 'var(--c-surface)',
+                  color: 'var(--c-forest-700)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--c-line)'}
+              >
+                ← {prevBite.title}
+              </button>
+            )}
+            {nextBite && (
+              <button
+                onClick={() => navigate(`/bite/${nextBite.id}`)}
+                style={{
+                  flex: 1, padding: '11px 12px', borderRadius: 10,
+                  border: '1px solid var(--c-line)', background: 'var(--c-surface)',
+                  color: 'var(--c-forest-700)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--c-green-500)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--c-line)'}
+              >
+                {nextBite.title} →
+              </button>
+            )}
+          </div>
+        )}
 
         {/* ── 완료 CTA ── */}
         <div style={{
