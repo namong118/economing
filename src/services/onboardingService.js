@@ -1,6 +1,5 @@
 import { callSolar } from './solarService'
 import { supabase } from './supabaseClient'
-import { initProgress } from './roadmapService'
 
 const GOAL_LABELS = {
   home:       '내 집 마련 / 부동산 투자',
@@ -32,6 +31,7 @@ const LABELS = {
   },
 }
 
+// 미사용 — 커리큘럼으로 대체 (2026-07-26). completeOnboarding에서 더 이상 호출하지 않음.
 export async function generateRoadmap(answers) {
   const system = `당신은 ECONOMING의 AI 코치 노밍입니다.
 사용자의 경제 수준과 관심사를 바탕으로 맞춤 학습 로드맵을 생성합니다.
@@ -286,19 +286,15 @@ export async function completeOnboarding(userId, answers) {
 
   // 2단계: Solar AI 호출 후 결과 추가 저장 (실패해도 온보딩은 완료 상태 유지)
   try {
-    const [roadmap, nomingIntro] = await Promise.all([
-      generateRoadmap(answers),
-      generateNomingIntro(answers),
-    ])
+    const nomingIntro = await generateNomingIntro(answers)
     const { error: saveError } = await supabase
       .from('profiles')
-      .update({ roadmap, noming_intro: nomingIntro })
+      .update({ noming_intro: nomingIntro })
       .eq('id', userId)
-    if (saveError) console.error('개인화 로드맵 저장 실패:', saveError)
+    if (saveError) console.error('노밍 인사말 저장 실패:', saveError)
 
-    await initProgress(userId, roadmap?.steps?.length || 4)
-    return { roadmap, nomingIntro, categoryPriority }
+    return { nomingIntro, categoryPriority }
   } catch {
-    return { roadmap: null, nomingIntro: null, categoryPriority }
+    return { nomingIntro: null, categoryPriority }
   }
 }

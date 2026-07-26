@@ -8,7 +8,6 @@ import DiagnosisPage   from './pages/DiagnosisPage';
 import ResultPage      from './pages/ResultPage';
 import HomePage        from './pages/HomePage';
 import CoachPage       from './pages/CoachPage';
-import RoadmapPage     from './pages/RoadmapPage';
 import DiaryPage       from './pages/DiaryPage';
 import LoginPage       from './pages/LoginPage';
 import SignupPage      from './pages/SignupPage';
@@ -48,7 +47,6 @@ export default function App() {
               <Route path="/indicator/:id" element={<IndicatorPage />} />
 
               <Route path="/my-growth" element={<ProtectedRoute><MyGrowthHubPage /></ProtectedRoute>} />
-              <Route path="/roadmap"   element={<ProtectedRoute><RoadmapPage /></ProtectedRoute>} />
               <Route path="/diary"     element={<ProtectedRoute><DiaryPage /></ProtectedRoute>} />
 
               <Route path="/profile" element={<Navigate to="/my-growth" replace />} />
