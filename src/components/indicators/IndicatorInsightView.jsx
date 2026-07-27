@@ -7,6 +7,7 @@ import { TrendingUp, TrendingDown, ExternalLink, Sun } from 'lucide-react';
 import RangeGauge from './RangeGauge';
 import { getBandForValue } from '../../data/indicatorInsights';
 import { getEconomicStats } from '../../services/economicStatsService';
+import { getMarketIndices } from '../../services/indicesService';
 import { fetchAndSummarizeNews } from '../../services/readingService';
 
 /* 지수 레벨(예: CPI 2020=100) 시계열에서 전년동월대비(YoY) 증감률을 계산한다.
@@ -25,14 +26,17 @@ function deriveYoYSeries(series) {
     .filter(Boolean);
 }
 
-function useLiveSeries(dataKey, { transform, deriveYoY } = {}) {
+/* dataKey는 economic-stats(ECOS/KOSIS: 기준금리·CPI·GDP 등) 전용 키다.
+   코스피/코스닥/환율은 별도 함수(indices, Yahoo Finance·환율 API)에서 오므로
+   insight.liveIndexKey가 있으면 그쪽 응답의 history를 시계열로 쓴다. */
+function useLiveSeries(dataKey, { transform, deriveYoY, liveIndexKey } = {}) {
   const [state, setState] = useState({ loading: true, series: null });
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data, error } = await getEconomicStats();
+      const { data, error } = liveIndexKey ? await getMarketIndices() : await getEconomicStats();
       if (cancelled) return;
-      let series = data?.[dataKey];
+      let series = liveIndexKey ? data?.[liveIndexKey]?.history : data?.[dataKey];
       if (error || !Array.isArray(series) || series.length === 0) {
         setState({ loading: false, series: null });
         return;
@@ -42,7 +46,7 @@ function useLiveSeries(dataKey, { transform, deriveYoY } = {}) {
       setState({ loading: false, series });
     })();
     return () => { cancelled = true; };
-  }, [dataKey]); // eslint-disable-line
+  }, [dataKey, liveIndexKey]); // eslint-disable-line
   return state;
 }
 
@@ -72,6 +76,7 @@ export default function IndicatorInsightView({ indicator, insight }) {
   const { series, loading } = useLiveSeries(indicator.dataKey, {
     transform: insight.transform,
     deriveYoY: insight.deriveYoY,
+    liveIndexKey: insight.liveIndexKey,
   });
   const matchedArticle = useMatchingNews(insight.newsQuery, insight.newsPhrases);
   const [showMore, setShowMore] = useState(false);
@@ -86,7 +91,12 @@ export default function IndicatorInsightView({ indicator, insight }) {
   const prev   = series?.[series.length - 2] ?? null;
   const today  = latest?.value ?? currentAnchor?.value ?? null;
   const delta  = latest && prev ? Math.round((latest.value - prev.value) * 100) / 100 : null;
-  const band   = today != null ? getBandForValue(insight.bands, today) : null;
+  // 실업률처럼 구간을 일부러 두지 않은 지표(insight.noBands)는 band가 없다 —
+  // "이 숫자를 그대로 판단하면 안 된다"는 게 요점이라, 임의로 구간을 만들어 채우지 않는다.
+  const band = !insight.noBands && today != null ? getBandForValue(insight.bands, today) : null;
+  const drawdownPct = insight.drawdownAnchor && today != null
+    ? Math.round(((today - insight.drawdownAnchor.value) / insight.drawdownAnchor.value) * 1000) / 10
+    : null;
 
   return (
     <div>
@@ -127,6 +137,11 @@ export default function IndicatorInsightView({ indicator, insight }) {
                   {band.label}
                 </span>
               )}
+              {drawdownPct != null && drawdownPct < 0 && (
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#fff', background: 'rgba(0,0,0,0.22)', borderRadius: 100, padding: '4px 12px' }}>
+                  고점 대비 {drawdownPct}%
+                </span>
+              )}
             </div>
           </>
         ) : (
@@ -134,8 +149,9 @@ export default function IndicatorInsightView({ indicator, insight }) {
         )}
       </div>
 
-      {/* 2. 지금은 이런 상태 */}
-      {band && (
+      {/* 2. 지금은 이런 상태 — noBandNote가 있으면(예: 실업률) 구간 판단 대신
+          "이 숫자를 그대로 믿으면 안 되는 이유"를 보여준다 */}
+      {(band || insight.noBandNote) && (
         <div style={{
           background: 'var(--c-surface)', borderLeft: '4px solid var(--c-green-500)',
           borderRadius: '4px 14px 14px 4px', padding: '18px 20px', marginBottom: 14,
@@ -145,15 +161,18 @@ export default function IndicatorInsightView({ indicator, insight }) {
             지금은 이런 상태
           </p>
           <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--c-forest-700)', lineHeight: 1.5, marginBottom: 10 }}>
-            {band.meaning}
+            {band ? band.meaning : insight.noBandNote.headline}
           </p>
-          <p style={{ fontSize: 11, color: 'var(--c-muted)', lineHeight: 1.6 }}>{insight.bandSource}</p>
+          <p style={{ fontSize: 11, color: 'var(--c-muted)', lineHeight: 1.6 }}>
+            {band ? insight.bandSource : insight.noBandNote.detail}
+          </p>
         </div>
       )}
 
       {/* 3. 범위 안에서 여기쯤 — range가 없는 지표(예: 역전 여부 자체가 핵심인 장단기
           금리 역전)는 눈금이 의미가 없어서 건너뛴다. 이때는 위 hero의 구간 배지가
-          "상태 표시"를 대신한다 */}
+          "상태 표시"를 대신한다. 실업률처럼 구간 자체가 없는 지표는 눈금 대신
+          "그때와 비교하면" — anchor 하나와 오늘 값을 나란히 보여주는 단순 비교로 대체한다 */}
       {today != null && insight.range && (
         <div style={{
           background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
@@ -164,6 +183,30 @@ export default function IndicatorInsightView({ indicator, insight }) {
             범위 안에서 여기쯤
           </p>
           <RangeGauge range={insight.range} anchors={insight.anchors} today={today} unit={unit} />
+        </div>
+      )}
+
+      {today != null && insight.noBands && insight.anchors?.length > 0 && (
+        <div style={{
+          background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
+          borderRadius: 14, padding: '18px 20px', marginBottom: 14,
+          boxShadow: 'var(--shadow-card)',
+        }}>
+          <p style={{ fontSize: 15, fontWeight: 800, color: 'var(--c-ink)', marginBottom: 16 }}>
+            그때와 비교하면
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              <p style={{ fontSize: 11, color: 'var(--c-muted)', marginBottom: 4 }}>{insight.anchors[0].when}</p>
+              <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--c-ink)' }}>{insight.anchors[0].value}{unit}</p>
+              <p style={{ fontSize: 10.5, color: 'var(--c-muted)', marginTop: 4, lineHeight: 1.4 }}>{insight.anchors[0].note}</p>
+            </div>
+            <div style={{ color: 'var(--c-muted)', fontSize: 16 }}>→</div>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              <p style={{ fontSize: 11, color: 'var(--c-forest-700)', fontWeight: 700, marginBottom: 4 }}>오늘</p>
+              <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--c-forest-700)' }}>{today}{unit}</p>
+            </div>
+          </div>
         </div>
       )}
 
@@ -220,8 +263,8 @@ export default function IndicatorInsightView({ indicator, insight }) {
         <button
           onClick={() => navigate('/coach', {
             state: {
-              question: `${indicator.title} 오늘 값(${today}${unit}, ${band?.label ?? ''})이 제 상황에서 어떤 의미인지 알려주세요.`,
-              context: `지표 읽기 · ${indicator.title} · 오늘 ${today}${unit} · 구간: ${band?.label ?? ''}`,
+              question: `${indicator.title} 오늘 값(${today}${unit}, ${band?.label ?? insight.noBandNote?.headline ?? ''})이 제 상황에서 어떤 의미인지 알려주세요.`,
+              context: `지표 읽기 · ${indicator.title} · 오늘 ${today}${unit} · 구간: ${band?.label ?? insight.noBandNote?.headline ?? ''}`,
             }
           })}
           style={{
