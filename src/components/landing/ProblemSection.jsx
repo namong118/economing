@@ -60,11 +60,12 @@ export default function ProblemSection() {
               display: 'flex', alignItems: 'center', gap: '0', flexWrap: 'wrap', justifyContent: 'center',
             }}>
               그래서&nbsp;
-              <img
-                src={`${import.meta.env.BASE_URL}logo.png`}
-                alt="ECONOMING"
-                style={{ height: 'clamp(36px, 4.5vw, 48px)', width: 'auto', display: 'inline-block', verticalAlign: 'middle', margin: '0 -14px' }}
-              />
+              <span style={{
+                fontWeight: 900, letterSpacing: '-0.02em',
+                color: 'var(--c-green-500)', display: 'inline-block', verticalAlign: 'middle',
+              }}>
+                ECON<span style={{ color: 'var(--c-yellow-500)' }}>O</span>MING
+              </span>
               &nbsp;이 만들어졌습니다.
             </p>
           </div>

@@ -271,11 +271,12 @@ export default function AboutPage() {
           borderRadius: '18px', padding: '32px 28px', marginBottom: '24px',
         }}>
           <SubHeading>이름</SubHeading>
-          <img
-            src={`${BASE}logo.png`}
-            alt="ECONOMING 로고"
-            style={{ width: '100%', maxWidth: '280px', height: 'auto', display: 'block', marginBottom: '20px' }}
-          />
+          <div style={{
+            fontSize: 'clamp(40px, 6vw, 56px)', fontWeight: 900, letterSpacing: '-0.02em',
+            color: 'var(--c-green-500)', marginBottom: '20px',
+          }}>
+            ECON<span style={{ color: 'var(--c-yellow-500)' }}>O</span>MING
+          </div>
           <p style={{
             fontSize: 'clamp(26px, 4vw, 34px)', fontWeight: '900', letterSpacing: '-0.02em',
             marginBottom: '18px',

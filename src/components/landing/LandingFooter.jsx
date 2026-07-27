@@ -17,11 +17,9 @@ export default function LandingFooter() {
           onClick={() => navigate('/')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
         >
-          <img
-            src={`${import.meta.env.BASE_URL}logo.png`}
-            alt="ECONOMING"
-            style={{ height: '56px', width: 'auto', display: 'block', filter: 'brightness(0) invert(1)' }}
-          />
+          <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.02em', color: '#fff', display: 'block' }}>
+            ECONOMING
+          </span>
         </button>
 
         {/* 슬로건 */}

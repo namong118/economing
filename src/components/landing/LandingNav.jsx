@@ -17,29 +17,13 @@ export default function LandingNav() {
       zIndex: 100,
       padding: '0 24px',
       height: '60px',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
       background: scrolled ? 'rgba(255,255,255,0.92)' : 'transparent',
       backdropFilter: scrolled ? 'blur(12px)' : 'none',
       borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : 'none',
       transition: 'background 0.25s, border-color 0.25s, backdrop-filter 0.25s',
       maxWidth: '100%',
     }}>
-      {/* 로고 */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        style={{
-          background: 'none', border: 'none', cursor: 'pointer',
-          display: 'inline-flex', alignItems: 'center',
-          padding: '4px 0',
-        }}
-      >
-        <img
-          src={`${import.meta.env.BASE_URL}logo.png`}
-          alt="ECONOMING"
-          style={{ height: 44, width: 'auto' }}
-        />
-      </button>
-
       {/* CTA 버튼들 */}
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
         <button
