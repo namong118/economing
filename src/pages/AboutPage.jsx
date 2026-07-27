@@ -1,4 +1,7 @@
 import { Check } from 'lucide-react';
+import { LEVELS } from '../data/levelData';
+
+const BASE = import.meta.env.BASE_URL;
 
 /* ── 공통 조각 ─────────────────────────────────────────── */
 
@@ -113,10 +116,90 @@ function StepBlock({ num, title, children }) {
   );
 }
 
+function SubHeading({ children, style }) {
+  return (
+    <h3 style={{
+      fontSize: '19px', fontWeight: '900', color: 'var(--c-forest-700)',
+      letterSpacing: '-0.02em', marginBottom: '16px', ...style,
+    }}>
+      {children}
+    </h3>
+  );
+}
+
+function InfoTable({ rows }) {
+  return (
+    <div style={{ border: '1.5px solid var(--c-line)', borderRadius: '14px', overflow: 'hidden', marginBottom: '18px' }}>
+      {rows.map((r, i) => (
+        <div key={i} style={{
+          display: 'flex', gap: '16px', padding: '14px 18px',
+          background: r.highlight ? 'var(--c-green-50)' : 'var(--c-surface)',
+          borderBottom: i < rows.length - 1 ? '1px solid var(--c-line-soft)' : 'none',
+        }}>
+          <span style={{
+            flex: '0 0 38%', fontSize: '14px', lineHeight: '1.6',
+            fontWeight: r.highlight ? '800' : '700',
+            color: r.highlight ? 'var(--c-forest-700)' : 'var(--c-ink)',
+          }}>
+            {r.label}
+          </span>
+          <span style={{
+            flex: 1, fontSize: '14px', lineHeight: '1.6',
+            fontWeight: r.highlight ? '600' : '400',
+            color: r.highlight ? 'var(--c-forest-700)' : 'var(--c-slate)',
+          }}>
+            {r.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* 앱 홈("내 성장" 탭)에서 실제로 쓰는 7단계 데이터를 그대로 재사용 —
+   아이콘과 XP 값이 앱 화면과 다르면 오히려 어색해지기 때문에 새로 만들지 않았다. */
+function StageFlow() {
+  return (
+    <div style={{ position: 'relative', margin: '4px 0 20px' }}>
+      <div style={{ position: 'absolute', left: '24px', right: '24px', top: '24px', height: '2px', background: 'var(--c-line)' }} />
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {LEVELS.map(l => (
+          <div key={l.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flex: '1 1 0', minWidth: 0 }}>
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '50%', flexShrink: 0,
+              background: 'var(--c-surface)', border: '2px solid var(--c-green-300)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative', zIndex: 1,
+            }}>
+              <l.Icon size={22} color="var(--c-green-500)" />
+            </div>
+            <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--c-ink)' }}>{l.label}</span>
+            <span style={{ fontSize: '10.5px', fontWeight: '700', color: 'var(--c-muted)' }}>{l.xpRequired} XP</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const CURRICULUM_CHAPTERS = [
   '자산의 기본', '저축과 보험', '물가', '금리와 통화정책', '집',
   '투자 첫걸음', '포트폴리오와 투자 위험', '나라 경제 읽기', '세금',
   '노후 준비', '시장을 움직이는 원리',
+];
+
+const DIARY_ITEMS = [
+  { label: '오늘 배운 것', value: '새로 알게 된 개념' },
+  { label: '오늘의 금융 뉴스', value: '인상 깊었던 기사' },
+  { label: '뉴스를 보고 든 생각', value: '그 기사에 대한 내 판단' },
+  { label: '아직 궁금한 것', value: '이해되지 않은 부분', highlight: true },
+  { label: '오늘의 소비 돌아보기', value: '오늘 쓴 돈', highlight: true },
+  { label: '다음에 공부할 것', value: '다음 주제' },
+];
+
+const DATA_SOURCES = [
+  { label: '실시간 시장 데이터', value: '코스피 · 코스닥 · 환율' },
+  { label: '정부 공공 데이터', value: '기준금리 · 소비자물가지수 · 실업률 · GDP 성장률 · 무역수지 · 장단기 금리 역전' },
 ];
 
 /* ── 메인 ─────────────────────────────────────────────────── */
@@ -178,7 +261,104 @@ export default function AboutPage() {
         </Body>
       </section>
 
-      {/* 4. 나의 이야기 */}
+      {/* 4. 왜 ECONOMING인가 */}
+      <section style={{ marginBottom: '96px' }}>
+        <SectionTitle>왜 ECONOMING인가</SectionTitle>
+
+        {/* 이름 */}
+        <div style={{
+          background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+          borderRadius: '18px', padding: '32px 28px', marginBottom: '24px',
+        }}>
+          <SubHeading>이름</SubHeading>
+          <img
+            src={`${BASE}logo.png`}
+            alt="ECONOMING 로고"
+            style={{ width: '100%', maxWidth: '280px', height: 'auto', display: 'block', marginBottom: '20px' }}
+          />
+          <p style={{
+            fontSize: 'clamp(26px, 4vw, 34px)', fontWeight: '900', letterSpacing: '-0.02em',
+            marginBottom: '18px',
+          }}>
+            <span style={{ color: 'var(--c-ink)' }}>ECONOMY</span>
+            <span style={{ color: 'var(--c-green-500)' }}>-ING</span>
+          </p>
+          <p style={{
+            fontSize: 'clamp(20px, 3vw, 24px)', fontWeight: '900', color: 'var(--c-forest-700)',
+            letterSpacing: '-0.02em', marginBottom: '20px',
+          }}>
+            경제를 배워가는 중.
+          </p>
+          <Body>
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>ECONOMY</b>(경제)에 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>-ING</b>를 붙였습니다.
+          </Body>
+          <Body>
+            경제를 아는 상태가 아니라 배워가는 과정을 이름에 담았습니다.{'\n'}
+            완성된 지식을 전달하는 앱이 아니라, 매일 조금씩 자라는 과정 자체를{'\n'}
+            서비스로 만들고 싶었습니다.
+          </Body>
+          <Body style={{ marginBottom: 0 }}>
+            AI 코치의 이름 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>노밍</b>도 여기서 나왔습니다. ECONO-<b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>MING</b>.
+          </Body>
+        </div>
+
+        {/* 로고 */}
+        <div style={{
+          display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap',
+          background: 'var(--c-surface)', border: '1.5px solid var(--c-line)',
+          borderRadius: '18px', padding: '28px', marginBottom: '24px',
+        }}>
+          <img
+            src={`${BASE}appicon.jpg`}
+            alt="ECONOMING 앱 아이콘 — 동전 위에 돋은 새싹"
+            style={{ width: '110px', height: '110px', borderRadius: '26px', flexShrink: 0 }}
+          />
+          <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+            <SubHeading style={{ marginBottom: '12px' }}>로고</SubHeading>
+            <Body>
+              노란 원은 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>동전</b>입니다. 화폐는 경제의 가장 기초 단위입니다.{'\n'}
+              그 위에 돋은 초록 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>새싹</b>은 성장입니다.
+            </Body>
+            <Body style={{ marginBottom: 0 }}>
+              <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>돈 위에서 지식이 자란다</b> — 씨앗을 심어 키우듯 경제를 배운다는 의미입니다.
+            </Body>
+          </div>
+        </div>
+
+        {/* 씨앗에서 숲까지 — 7단계 */}
+        <div style={{ marginBottom: '24px' }}>
+          <SubHeading>씨앗에서 숲까지 — 7단계</SubHeading>
+          <Body>학습을 쌓으면 성장 단계가 올라갑니다.</Body>
+
+          <StageFlow />
+
+          <Body>숫자는 누적 경험치입니다.</Body>
+          <Body>
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>왜 식물인가.</b>{'\n'}
+            경제 지식은 벼락치기로 늘지 않습니다. 하루아침에 나무가 되지 않듯,{'\n'}
+            매일 조금씩 쌓여야 자랍니다. 레벨 1·2·3 대신 씨앗과 새싹을 쓴 이유입니다.
+          </Body>
+          <Body style={{ marginBottom: 0 }}>
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>왜 숲인가.</b>{'\n'}
+            나무 하나로 끝나지 않습니다. 지식이 서로 연결되어 스스로 판단할 수{'\n'}
+            있게 되는 상태 — 그게 마지막 단계입니다.
+          </Body>
+        </div>
+
+        {/* 한 잎 */}
+        <div>
+          <SubHeading>한 잎</SubHeading>
+          <Body>
+            메인 학습 콘텐츠의 이름은 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>경제한잎</b>입니다.
+          </Body>
+          <Body style={{ marginBottom: 0 }}>
+            식물의 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>잎</b>이자, 한 번에 삼킬 수 있는 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>한 입</b>입니다.{'\n'}
+            하루에 한 개, 부담 없는 분량으로 잎을 늘려간다는 뜻을 겹쳐 담았습니다.
+          </Body>
+        </div>
+      </section>
+
+      {/* 5. 나의 이야기 */}
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>나의 이야기</SectionTitle>
 
@@ -220,9 +400,9 @@ export default function AboutPage() {
         </Body>
       </section>
 
-      {/* 5. 어떻게 풀었나 — 세 단계 */}
+      {/* 6. 어떻게 풀었나 — 다섯 단계 */}
       <section style={{ marginBottom: '96px' }}>
-        <SectionTitle>어떻게 풀었나 — 세 단계</SectionTitle>
+        <SectionTitle>어떻게 풀었나 — 다섯 단계</SectionTitle>
 
         <StepBlock num="1" title="AI가 수준을 진단합니다">
           <Body style={{ marginBottom: 0 }}>
@@ -253,7 +433,63 @@ export default function AboutPage() {
           </Body>
         </StepBlock>
 
-        <StepBlock num="3" title="막히면 AI 코치에게 다시 묻습니다">
+        <StepBlock num="3" title="오늘의 경제를 읽습니다">
+          <Body>배운 용어가 실제로 어떻게 쓰이는지 확인하는 자리입니다.</Body>
+
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '8px' }}>뉴스</p>
+          <Body>
+            네이버 경제 뉴스를 실시간으로 가져와 AI가 초보자 관점으로 다시 씁니다.{'\n'}
+            3문장 요약, 핵심 3가지, 왜 중요한지.{'\n'}
+            기사에 나온 어려운 용어는 따로 뽑아 설명을 붙입니다.
+          </Body>
+
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginTop: '28px', marginBottom: '8px' }}>
+            지표 — 단어를 알아도 숫자는 못 읽습니다
+          </p>
+          <Body>여기가 이 앱에서 지표를 따로 다루는 이유입니다.</Body>
+
+          <Quote>
+            {'\'기준금리\'라는 단어의 뜻을 배웠다고 해서\n"한국은행 기준금리 2.50% 동결"이라는 문장이 읽히지는 않습니다.'}
+          </Quote>
+
+          <Body>
+            뉴스는 언제나 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>숫자로</b> 말하기 때문입니다.{'\n'}
+            2.50%가 높은 건지 낮은 건지, 동결이 나에게 어떤 뜻인지는{'\n'}
+            용어 설명만으로 알 수 없습니다.
+          </Body>
+
+          <Body style={{ fontWeight: '800', color: 'var(--c-ink)', fontSize: '17px' }}>
+            경제 단어를 아는 것과 경제 지표를 읽는 것은 다른 능력입니다.
+          </Body>
+          <Body>그래서 지표 11종을 따로 만들었습니다.</Body>
+
+          <Body>각 지표는 네 단계로 풀어냅니다.</Body>
+          <Quote>
+            쉽게 설명 → 왜 중요한지 → 실제 사례 → <b style={{ fontWeight: '900' }}>내 삶에 미치는 영향</b>
+          </Quote>
+          <Body>
+            마지막 단계가 핵심입니다.{'\n'}
+            환율이 오르면 해외직구 가격이 어떻게 되는지,{'\n'}
+            금리가 오르면 내 대출 이자가 어떻게 되는지까지 이어집니다.
+          </Body>
+
+          <Body style={{ fontWeight: '800', color: 'var(--c-ink)' }}>그리고 진짜 숫자를 씁니다.</Body>
+          <InfoTable rows={DATA_SOURCES} />
+
+          <Body>한국은행 ECOS와 통계청 KOSIS에서 직접 가져옵니다.</Body>
+          <Quote emphasized>11종 중 9종이 오늘의 실제 숫자입니다.</Quote>
+
+          <Body>
+            나머지 2종(PER · 공포탐욕지수)은 무료로 쓸 수 있는 실시간 소스가 없어{'\n'}
+            개념 설명용 예시 데이터를 쓰고, 그 사실을 화면에 표시했습니다.
+          </Body>
+
+          <Quote emphasized style={{ marginBottom: 0 }}>
+            {'연습문제로 배우면 연습문제만 풀 수 있게 됩니다.\n오늘 뉴스에 나온 그 숫자로 배워야 내일 뉴스를 읽을 수 있습니다.'}
+          </Quote>
+        </StepBlock>
+
+        <StepBlock num="4" title="막히면 AI 코치에게 다시 묻습니다">
           <Body>
             {'커리큘럼 밖의 질문, 오늘 뉴스에 나온 낯선 단어,\n"그래서 내가 뭘 해야 하죠?" 같은 물음은 AI 코치 노밍이 받습니다.'}
           </Body>
@@ -262,9 +498,46 @@ export default function AboutPage() {
             모든 답변 끝에 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>"오늘 5분 안에 할 수 있는 한 가지"</b>를 붙입니다.
           </Body>
         </StepBlock>
+
+        <StepBlock num="5" title="배운 것을 남깁니다">
+          <Body>읽고 지나가면 사라집니다. 그래서 남길 자리를 만들었습니다.</Body>
+
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '8px' }}>나만의 경제 사전</p>
+          <Body style={{ marginBottom: '28px' }}>
+            뉴스를 읽다가, 코치와 대화하다가 모르는 용어를 만나면{'\n'}
+            버튼 하나로 저장할 수 있습니다. AI가 뽑아준 설명이 함께 담깁니다.{'\n'}
+            검색해서 찾아보는 사전이 아니라, <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>내가 실제로 막혔던 단어가 쌓이는</b> 사전입니다.
+          </Body>
+
+          <p style={{ fontSize: '15px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '8px' }}>경제일기</p>
+          <Body>
+            경제 공부가 어려운 이유는 배운 것과 내 삶이 따로 놀기 때문입니다.{'\n'}
+            금리를 알아도 내 통장 이자와 연결되지 않으면 남지 않습니다.
+          </Body>
+          <Body>
+            그래서 일기를 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>하루를 통째로 묶는 6개 항목</b>으로 만들었습니다.
+          </Body>
+
+          <InfoTable rows={DIARY_ITEMS} />
+
+          <Body>
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>「오늘의 소비 돌아보기」</b>가 핵심입니다.{'\n'}
+            경제 개념을 배운 날, 오늘 쓴 2만 원짜리 배달음식을 함께 적으면{'\n'}
+            지식이 남의 이야기에서 내 이야기로 바뀝니다.
+          </Body>
+          <Body>
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>「아직 궁금한 것」</b>은 모르는 채로 넘어가지 않게 합니다.{'\n'}
+            적어두면 다음에 코치에게 물어볼 거리가 되고,{'\n'}
+            그 자체가 다음에 무엇을 배울지에 대한 답이 됩니다.
+          </Body>
+
+          <Quote emphasized style={{ marginBottom: 0 }}>
+            {'빈 화면에 "오늘 배운 것을 적어보세요"라고만 두면 아무도 쓰지 않습니다.\n질문을 여섯 개로 나눠두면 채울 수 있습니다.'}
+          </Quote>
+        </StepBlock>
       </section>
 
-      {/* 6. 배우고 나면 그다음 */}
+      {/* 7. 배우고 나면 그다음 */}
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>배우고 나면 그다음</SectionTitle>
 
@@ -286,7 +559,7 @@ export default function AboutPage() {
         </Body>
       </section>
 
-      {/* 7. 만들면서 내린 판단 */}
+      {/* 8. 만들면서 내린 판단 */}
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>만들면서 내린 판단</SectionTitle>
 
