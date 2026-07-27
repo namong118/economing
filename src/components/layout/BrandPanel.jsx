@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Users, ChevronRight, Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees, Sun, Smartphone } from 'lucide-react';
+import { Users, ChevronRight, Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees, Sun } from 'lucide-react';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -179,16 +179,15 @@ export default function BrandPanel() {
         </div>
 
         {/* QR 카드 */}
-        <div className="bp-reveal" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 26 }}>
+        <div className="bp-reveal" style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 26 }}>
           <div style={{
-            width: 78, height: 78, borderRadius: 14,
+            width: 160, height: 160, borderRadius: 16,
             background: '#fff', border: '1px solid #E4ECE7',
-            padding: 7, flexShrink: 0,
+            padding: 10, flexShrink: 0,
             boxShadow: '0 4px 14px rgba(8,53,43,.05)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Smartphone size={26} color="#8A988F" />
-            <span style={{ fontSize: 9, fontWeight: 700, color: '#8A988F' }}>곧 제공 예정</span>
+            <img src={`${BASE}qr-mobile.png`} alt="모바일로 이어서 보기 QR 코드" style={{ width: '100%', height: '100%', display: 'block' }} />
           </div>
           <div>
             <div style={{ fontSize: 13.5, fontWeight: 800, color: '#14211C', marginBottom: 3 }}>모바일로 이어서</div>

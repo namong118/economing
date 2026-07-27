@@ -314,21 +314,23 @@ export default function GuidePage() {
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>모바일로 이어서 보기</SectionTitle>
         <div style={{
-          textAlign: 'center', padding: '48px 32px',
-          background: 'var(--c-surface)', border: '1.5px solid var(--c-line)', borderRadius: '20px',
+          display: 'flex', alignItems: 'center', gap: '36px', flexWrap: 'wrap',
+          padding: '40px', background: 'var(--c-surface)', border: '1.5px solid var(--c-line)', borderRadius: '20px',
         }}>
-          <div style={{
-            width: '140px', height: '140px', margin: '0 auto 24px',
-            border: '2px dashed var(--c-line)', borderRadius: '16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--c-muted)', fontSize: '13px', fontWeight: '700', textAlign: 'center', padding: '12px',
-          }}>
-            [ QR 코드 준비 중 ]
+          <img
+            src={`${BASE}qr-mobile.png`}
+            alt="모바일로 이어서 보기 QR 코드"
+            style={{
+              width: '200px', height: '200px', flexShrink: 0, display: 'block',
+              background: '#fff', border: '1px solid var(--c-line)', borderRadius: '16px', padding: '12px',
+            }}
+          />
+          <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+            <Body style={{ marginBottom: 0 }}>
+              휴대폰으로 스캔하면 바로 이어서 학습할 수 있습니다.{'\n'}
+              <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>안드로이드 앱</b>으로도 설치할 수 있습니다.
+            </Body>
           </div>
-          <Body style={{ marginBottom: 0 }}>
-            휴대폰으로 스캔하면 바로 이어서 학습할 수 있습니다.{'\n'}
-            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>안드로이드 앱</b>으로도 설치할 수 있습니다.
-          </Body>
         </div>
       </section>
 
