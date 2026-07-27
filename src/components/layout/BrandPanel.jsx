@@ -16,10 +16,10 @@ const STAGES = [
 
 /* 발표용 페이지 메뉴 — PresentationShell 라우트로 연결 (데스크톱 전용) */
 const PRESENTATION_LINKS = [
-  { to: '/about',         label: '소개 · 기획 의도' },
-  { to: '/profile-intro', label: '나의 소개' },
-  { to: '/guide',         label: '사용법' },
-  { to: '/tech',          label: '기술 스택' },
+  { to: '/profile-intro', label: 'PROFILE' },
+  { to: '/about',         label: 'ABOUT' },
+  { to: '/tech',          label: 'TECH' },
+  { to: '/guide',         label: 'GUIDE' },
 ];
 
 const PHRASES = ['경제를 쉽게,', '성장을 즐겁게,', '매일 한 잎씩.'];

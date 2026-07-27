@@ -424,7 +424,7 @@ input, textarea { font-family: var(--font); outline: none; }
 .bp-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .bp-nav-link {
   background: none; border: 1.5px solid transparent; color: #54635C;
-  font-weight: 700; font-size: 13px; padding: 8px 14px; border-radius: 100px;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.4px; padding: 8px 14px; border-radius: 100px;
   cursor: pointer; font-family: var(--font); transition: all .18s;
 }
 .bp-nav-link:hover { background: #F1FBF6; color: #0B5D49; }
