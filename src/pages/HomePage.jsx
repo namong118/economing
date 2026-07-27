@@ -549,7 +549,7 @@ export default function HomePage() {
             boxShadow: '0 2px 12px rgba(139,90,0,0.06)',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <img src={`${import.meta.env.BASE_URL}noming.png`} style={{ width: 24, height: 24, objectFit: 'contain', borderRadius: 4 }} alt="" />
+              <Sun size={16} color="#F59E0B" style={{ flexShrink: 0 }} />
               <span style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', letterSpacing: '0.3px' }}>노밍의 오늘 행동 제안</span>
             </div>
             <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.75 }}>

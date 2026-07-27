@@ -239,16 +239,19 @@ export async function generateTodayAction(userId, financialGoal, independenceLev
 - 투자 종목 추천 금지
 - 오늘 바로 실천 가능한 것만
 - 1~2문장으로 간결하게
-- 따뜻하고 응원하는 말투`
+- 따뜻하고 응원하는 말투
+- 이모지 사용 금지`
 
   const stepContext = currentStep
     ? `\n현재 진행 중인 단계: ${currentStep.title} — ${currentStep.description}`
     : ''
 
-  const content = await callSolar({
+  const raw = await callSolar({
     system,
     messages: [{ role: 'user', content: `재무 목표: ${GOAL_LABELS[financialGoal] ?? '재무 기초 다지기'}, 자립 단계: ${independenceLevel}${stepContext}` }],
   })
+  // 모델이 규칙을 무시하고 이모지를 넣는 경우를 대비한 안전장치
+  const content = raw.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/gu, '').replace(/[ \t]+$/gm, '').trim()
 
   const { error } = await supabase
     .from('profiles')

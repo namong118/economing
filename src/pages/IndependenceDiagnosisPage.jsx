@@ -4,6 +4,8 @@ import { ChevronLeft, Target, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { generateIndependenceRoadmap, generateTodayAction } from '../services/onboardingService';
+import { LEVELS, calculateLevel } from '../data/independenceLevels';
+import IndependenceGauge from '../components/common/IndependenceGauge';
 
 const QUESTIONS = [
   {
@@ -117,22 +119,6 @@ const QUESTIONS = [
     ],
   },
 ];
-
-const LEVELS = [
-  { level: 'seed',   label: '씨앗 단계',  desc: '재무 기초부터 시작해요',    color: '#78909C', bg: '#ECEFF1', maxScore: 18 },
-  { level: 'sprout', label: '새싹 단계',  desc: '기초 습관을 만들어가요',    color: '#66BB6A', bg: '#E8F5E9', maxScore: 26 },
-  { level: 'leaf',   label: '잎 단계',    desc: '안정적인 재무 구조예요',    color: '#26A69A', bg: '#E0F2F1', maxScore: 34 },
-  { level: 'flower', label: '꽃 단계',    desc: '자립 기반이 잡혔어요',      color: '#AB47BC', bg: '#F3E5F5', maxScore: 42 },
-  { level: 'fruit',  label: '열매 단계',  desc: '경제 자립에 가까워요',      color: '#FFA726', bg: '#FFF3E0', maxScore: 50 },
-];
-
-function calculateLevel(total) {
-  if (total <= 18) return LEVELS[0];
-  if (total <= 26) return LEVELS[1];
-  if (total <= 34) return LEVELS[2];
-  if (total <= 42) return LEVELS[3];
-  return LEVELS[4];
-}
 
 export default function IndependenceDiagnosisPage() {
   const navigate = useNavigate();
@@ -267,13 +253,13 @@ export default function IndependenceDiagnosisPage() {
             }}>
               <Target size={36} color={result.color} />
             </div>
-            <h2 style={{ fontSize: '24px', fontWeight: '900', color: 'var(--c-forest-700)', letterSpacing: '-0.7px', marginBottom: '6px' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--c-forest-700)', letterSpacing: '-0.7px', marginBottom: '8px' }}>
               {result.label}
             </h2>
-            <p style={{ fontSize: '15px', color: 'var(--c-slate)', marginBottom: '4px' }}>{result.desc}</p>
-            <p style={{ fontSize: '22px', fontWeight: '900', color: result.color }}>
-              {result.score} <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-muted)' }}>/ 50점</span>
-            </p>
+            <p style={{ fontSize: '16px', color: 'var(--c-slate)', marginBottom: '20px' }}>{result.desc}</p>
+            <div style={{ maxWidth: '320px', margin: '0 auto' }}>
+              <IndependenceGauge levelKey={result.level} color={result.color} />
+            </div>
           </div>
 
           {/* 카테고리별 점수 */}

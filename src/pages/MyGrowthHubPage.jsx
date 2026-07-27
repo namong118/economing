@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame, Wrench, CheckCircle2, FlaskConical, AlertTriangle, Trophy, Pencil, Check, Zap, Calendar, CalendarClock, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame, Wrench, CheckCircle2, FlaskConical, AlertTriangle, Trophy, Check, Zap, Calendar, CalendarClock, ClipboardList } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
 import { resetBiteProgress } from '../services/biteService';
 import { supabase } from '../services/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { LEVELS, getNextLevelInfo } from '../data/levelData';
+import { getLevelByKey } from '../data/independenceLevels';
 import { useDictionaryCtx } from '../context/DictionaryContext';
 import { DiaryContent } from './DiaryPage';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -19,9 +20,9 @@ const ECONOMIC_LEVEL = {
   expert:       { label: '전문가', color: '#EF4444', bg: '#FEF2F2', border: '#FECACA', desc: '경제를 깊이 이해하고 투자 전략까지 세우는 분' },
 };
 const INVESTMENT_EXP = {
-  none:  { label: '투자 경험 없음' },
-  etf:   { label: 'ETF 투자 경험 있음' },
-  stock: { label: '주식 투자 경험 있음' },
+  none:  { label: '없음' },
+  etf:   { label: 'ETF' },
+  stock: { label: '주식' },
 };
 const OCCUPATION = {
   student:    { label: '학생' },
@@ -165,6 +166,9 @@ function SummaryTab() {
   const interests   = profile?.interests ?? [];
   const isOnboarded = profile?.onboarding_completed === true;
 
+  const indepDiagnosis = profile?.independence_diagnosis ?? null;
+  const indepLevel      = indepDiagnosis?.level ? getLevelByKey(indepDiagnosis.level) : null;
+
   const handleSignOut = async () => { await signOut(); navigate('/home'); };
 
   return (
@@ -175,7 +179,7 @@ function SummaryTab() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
           <currentLevel.Icon size={36} style={{ flexShrink: 0 }} />
           <div>
-            <p style={{ fontSize: '17px', fontWeight: '900', color: 'var(--c-forest-700)', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
+            <p style={{ fontSize: '16px', fontWeight: '800', color: 'var(--c-forest-700)', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
             <p style={{ fontSize: '13px', color: 'var(--c-muted)', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
               <span>{xp} XP 획득</span>
               {nextLevel ? (
@@ -251,7 +255,7 @@ function SummaryTab() {
               onMouseEnter={e => e.currentTarget.style.color = 'var(--c-green-500)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--c-muted)'}
             >
-              <Pencil size={12} /> 수정
+              재설정하기 →
             </button>
           </div>
           <div style={{ display: 'flex', gap: '0' }}>
@@ -294,6 +298,43 @@ function SummaryTab() {
         </div>
       )}
 
+      {/* ── 4. 경제 자립 진단 ── */}
+      <div style={{ background: 'var(--c-surface)', borderRadius: '12px', border: '0.5px solid var(--c-line)', padding: '14px 16px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: indepDiagnosis ? '10px' : '4px' }}>
+          <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px' }}>경제 자립 진단</p>
+          {indepDiagnosis && (
+            <button
+              onClick={() => navigate('/independence')}
+              style={{ background: 'none', border: 'none', fontSize: '12px', color: 'var(--c-muted)', cursor: 'pointer', fontWeight: '600', padding: 0, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--c-green-500)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--c-muted)'}
+            >
+              재진단하기 →
+            </button>
+          )}
+        </div>
+
+        {indepDiagnosis ? (
+          <>
+            <p style={{ fontSize: '16px', fontWeight: '800', color: 'var(--c-forest-700)', letterSpacing: '-0.5px', marginBottom: '3px' }}>
+              {indepLevel?.label ?? indepDiagnosis.label}
+            </p>
+            <p style={{ fontSize: '13px', color: 'var(--c-muted)', fontWeight: '500' }}>
+              {indepLevel?.desc ?? indepDiagnosis.desc}
+            </p>
+          </>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '12px 0 4px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--c-muted)', marginBottom: '14px' }}>아직 자립 진단을 받지 않았어요</p>
+            <button
+              onClick={() => navigate('/independence')}
+              style={{ width: '100%', padding: '10px', borderRadius: '10px', background: 'var(--grad-action)', border: 'none', color: '#fff', fontSize: '13px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 14px rgba(33,197,142,0.3)' }}
+            >
+              경제 자립 진단 시작하기 →
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* ── 개발자 메뉴 ── */}
       <DevMenu userId={user?.id} />
@@ -462,18 +503,9 @@ function DictionaryTabContent() {
 
 
 /* ── 경제 자립 탭 ─────────────────────────────────────────── */
-const INDEPENDENCE_LEVEL_COLOR = {
-  seed:   '#78909C',
-  sprout: '#66BB6A',
-  leaf:   '#26A69A',
-  flower: '#AB47BC',
-  fruit:  '#FFA726',
-};
-
 function IndependenceTab() {
   const navigate = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
-  const BASE_URL = import.meta.env.BASE_URL;
 
   const [todayAction,    setTodayAction]    = useState(profile?.today_action ?? null);
   const [actionLoading,  setActionLoading]  = useState(false);
@@ -570,7 +602,9 @@ function IndependenceTab() {
       .finally(() => setActionLoading(false));
   }, [user?.id]); // eslint-disable-line
 
-  const levelColor = INDEPENDENCE_LEVEL_COLOR[diagnosis?.level] ?? 'var(--c-green-500)';
+  /* label/desc는 DB에 저장된 값이 아니라 항상 최신 정의(independenceLevels.js)에서
+     조회한다 — 예전 이름으로 진단받은 프로필도 화면엔 새 이름이 보이게 하기 위함 */
+  const currentLevel = diagnosis?.level ? getLevelByKey(diagnosis.level) : null;
 
   return (
     <div>
@@ -583,27 +617,51 @@ function IndependenceTab() {
 
         {diagnosis && score !== null ? (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%',
-                background: levelColor, display: 'flex',
-                alignItems: 'center', justifyContent: 'center',
-                flexDirection: 'column', flexShrink: 0,
-              }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>{score}</span>
-                <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.8)' }}>/ 50</span>
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#2A7A4B', marginBottom: 4 }}>
+                {currentLevel?.label ?? diagnosis.label}
               </div>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#2A7A4B' }}>{diagnosis.label}</div>
-                <div style={{ fontSize: 12, color: '#888780', marginTop: 2 }}>{diagnosis.desc}</div>
+              <div style={{ fontSize: 13, color: '#888780' }}>
+                {currentLevel?.desc ?? diagnosis.desc}
               </div>
             </div>
-            <button
-              onClick={() => navigate('/independence')}
-              style={{ width: '100%', padding: '8px', borderRadius: 8, background: '#F2FBF5', border: '0.5px solid #B8EBC8', color: '#2A7A4B', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
-            >
-              재진단하기 →
-            </button>
+
+            {/* 노밍 상담 — 오늘의 행동 제안 + 대화하기, 단계 표시보다 시각적 무게를 낮춤 */}
+            <div style={{
+              padding: '12px 14px', marginBottom: 12,
+              background: 'var(--noming-bg)', borderRadius: 10, border: '0.5px solid var(--noming-border)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <Sun size={14} color="#F59E0B" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--c-amber-700)', letterSpacing: '0.3px' }}>
+                  오늘의 행동 제안
+                </span>
+              </div>
+              {actionLoading ? (
+                <div style={{ height: 32, marginBottom: 10, background: 'rgba(250,199,117,0.2)', borderRadius: 6, backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg,rgba(250,199,117,0.1) 25%,rgba(250,199,117,0.3) 50%,rgba(250,199,117,0.1) 75%)', animation: 'shimmer 1.5s infinite' }} />
+              ) : (
+                <div style={{ fontSize: 12.5, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10 }}>
+                  {todayAction ?? '궁금한 게 있으면 노밍에게 물어보세요'}
+                </div>
+              )}
+              <button
+                onClick={() => navigate('/coach', {
+                  state: {
+                    question: todayAction
+                      ? `오늘의 행동 제안으로 "${todayAction}"을 받았는데, 어떻게 시작하면 좋을지 더 자세히 알려주세요.`
+                      : '자립 진단 결과를 보고 있는데, 지금 단계에서 무엇부터 챙기면 좋을지 알려주세요.',
+                    context: `자립 로드맵 · 현재 단계: ${currentLevel?.label ?? diagnosis?.label ?? ''}`,
+                  }
+                })}
+                style={{
+                  width: '100%', padding: '9px 12px', borderRadius: 8,
+                  background: 'var(--c-yellow-500)', border: 'none',
+                  color: 'var(--c-amber-700)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                노밍과 대화하기 →
+              </button>
+            </div>
           </>
         ) : (
           <button
@@ -896,7 +954,7 @@ function IndependenceTab() {
                         fontFamily: 'inherit',
                       }}
                     >
-                      <img src={`${BASE_URL}noming.png`} style={{ width: 18, height: 18, objectFit: 'contain' }} alt="" />
+                      <Sun size={14} color="#854F0B" />
                       노밍에게 이 단계 더 물어보기 →
                     </button>
                   </div>
@@ -909,20 +967,6 @@ function IndependenceTab() {
             <div style={{ marginTop: 10, padding: '8px 12px', background: '#FFF8E1', borderRadius: 8, border: '0.5px solid #FFE082', fontSize: 11, color: '#F57F17', lineHeight: 1.5 }}>
               {roadmap.warning}
             </div>
-          )}
-        </div>
-      )}
-
-      {/* 오늘의 행동 제안 */}
-      {(todayAction || actionLoading) && (
-        <div style={{ background: '#FFFBEE', borderRadius: 12, border: '0.5px solid #FAC775', padding: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', marginBottom: 8, letterSpacing: '0.3px' }}>
-            오늘의 행동 제안
-          </div>
-          {actionLoading ? (
-            <div style={{ height: 36, background: 'rgba(250,199,117,0.2)', borderRadius: 6, backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg,rgba(250,199,117,0.1) 25%,rgba(250,199,117,0.3) 50%,rgba(250,199,117,0.1) 75%)', animation: 'shimmer 1.5s infinite' }} />
-          ) : (
-            <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.7 }}>{todayAction}</div>
           )}
         </div>
       )}
