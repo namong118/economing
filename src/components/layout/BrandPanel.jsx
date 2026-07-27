@@ -106,8 +106,6 @@ export default function BrandPanel() {
       className="ds-brand"
       ref={panelRef}
     >
-      <span className="bp-grain" />
-
       <div className="bp-inner">
         {/* 발표용 페이지 메뉴 */}
         <nav className="bp-nav bp-reveal" aria-label="발표 자료">

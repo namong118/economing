@@ -8,6 +8,8 @@ export default function DesktopShell({ children }) {
       <span className="ds-blob ds-blob2" />
       <span className="ds-blob ds-blob3" />
       <span className="ds-blob ds-blob4" />
+      {/* 노이즈 그레인 — 블롭과 마찬가지로 화면 전체를 덮어야 패널 가장자리에 텍스처 경계가 안 생김 */}
+      <span className="bp-grain" />
 
       <BrandPanel />
       {/* 우측 앱 컬럼 — 480px 고정, 스크롤 컨테이너 역할 (데스크톱) */}

@@ -53,6 +53,8 @@ export default function PresentationShell() {
       <span className="ds-blob ds-blob2" />
       <span className="ds-blob ds-blob3" />
       <span className="ds-blob ds-blob4" />
+      {/* 노이즈 그레인 — 블롭과 마찬가지로 화면 전체를 덮어야 패널 가장자리에 텍스처 경계가 안 생김 */}
+      <span className="bp-grain" />
 
       <BrandPanel />
       <div className="ps-content" ref={contentRef}>
