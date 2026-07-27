@@ -107,7 +107,10 @@ async function fetchAll() {
       return rows.map(r => ({ date: r.date, value: round2(r.value) }))
     }),
     safeFetch('CPI', async () => {
-      const rows = await fetchKosisSeries('101', 'DT_1J22003', 'M', yyyymm(9), yyyymm(0))
+      // 프론트에서 전년동월대비 상승률(YoY)을 계산하려면 12개월 전 지수가 필요하므로,
+      // 화면에 보여줄 9개월치보다 12개월 더 넓게(21개월치) 지수를 받아온다.
+      // 여기서 반환하는 값은 여전히 지수 레벨(2020=100) — 변환은 프론트에서 한다.
+      const rows = await fetchKosisSeries('101', 'DT_1J22003', 'M', yyyymm(21), yyyymm(0))
       return rows.map(r => ({ date: r.date, value: round2(r.value) }))
     }),
     safeFetch('실업률', async () => {
@@ -115,7 +118,11 @@ async function fetchAll() {
       return rows.map(r => ({ date: r.date, value: round2(r.value) }))
     }),
     safeFetch('GDP 성장률', async () => {
-      const rows = await fetchKosisSeries('301', 'DT_200Y102', 'Q', yyyyq(8), yyyyq(0), '성장률')
+      // 잠재성장률(연 기준) 추정치와 직접 비교하려면 전기대비(QoQ)가 아니라
+      // 전년동기대비(YoY) 계열이 필요 — 항목명에 '전년동기'가 포함된 계열을 우선 채택.
+      // 매칭되는 항목이 없으면 fetchKosisSeries가 조용히 가장 큰 그룹(QoQ)으로 폴백하므로,
+      // 배포 후 실제 값(예: 최근 분기 ECOS 공식 발표치)과 대조해 확인이 필요하다.
+      const rows = await fetchKosisSeries('301', 'DT_200Y102', 'Q', yyyyq(8), yyyyq(0), '전년동기')
       return rows.map(r => ({ date: r.date, value: round2(r.value) }))
     }),
     safeFetch('무역수지', async () => {

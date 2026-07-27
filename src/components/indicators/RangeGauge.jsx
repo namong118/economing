@@ -30,13 +30,18 @@ export default function RangeGauge({ range, anchors, today, unit = '' }) {
         {/* 트랙 배경 — 단색 */}
         <rect x={PAD_X} y={TRACK_Y} width={innerW} height={TRACK_H} rx={TRACK_H / 2} fill="var(--c-green-500)" opacity={0.16} />
 
-        {/* 과거 기준점 — 값은 크고 진하게, 설명은 작고 옅게 대비를 준다 */}
+        {/* 과거 기준점 — 값은 크고 진하게, 설명은 작고 옅게 대비를 준다.
+            오늘 마커와 값이 가까워 라벨이 겹칠 것 같으면(픽셀 거리 기준) 한 단 더
+            위로 띄워서 "오늘" 라벨과 세로로 쌓이게 한다 — 서로 다른 시점이라는 건
+            유지하면서 겹침만 없앤다 */}
         {pastAnchors.map((a, i) => {
           const x = xFor(a.value);
+          const collidesWithToday = Math.abs(x - todayX) < 36;
+          const valueY = collidesWithToday ? TRACK_Y - 30 : TRACK_Y - 12;
           return (
             <g key={i}>
               <line x1={x} y1={TRACK_Y - 4} x2={x} y2={TRACK_Y + TRACK_H + 4} stroke="var(--c-slate)" strokeWidth={1.5} />
-              <text x={x} y={TRACK_Y - 12} fontSize="11.5" fontWeight="800" fill="var(--c-ink)" textAnchor="middle">
+              <text x={x} y={valueY} fontSize="11.5" fontWeight="800" fill="var(--c-ink)" textAnchor="middle">
                 {a.value}{unit}
               </text>
               <text x={x} y={TRACK_Y + TRACK_H + 24} fontSize="9.5" fontWeight="600" fill="var(--c-muted)" textAnchor="middle">
