@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Sprout, Leaf, TrendingUp, Zap, Star } from 'lucide-react';
 import { levelInfo } from '../data/diagnosisQuestions';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import TopNav from '../components/layout/TopNav';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import { useAuth } from '../context/AuthContext';
@@ -48,13 +47,15 @@ export default function ResultPage() {
   const LIcon = LEVEL_ICONS[level] ?? Sprout;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      <TopNav />
-
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(160deg, var(--c-green-50) 0%, var(--c-canvas) 60%, var(--c-yellow-100) 100%)',
+    }}>
       <div style={{
         maxWidth: '440px',
+        width: '100%',
         margin: '0 auto',
-        padding: '32px 20px 80px',
+        padding: 'clamp(140px, 24vh, 220px) 20px 40px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

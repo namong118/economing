@@ -4,7 +4,6 @@ import { Lightbulb, Target, TrendingUp, Home, Receipt, BarChart2, Wallet, PiggyB
 import { diagnosisQuestions, answerOptions, getLevelByScore } from '../data/diagnosisQuestions';
 import ProgressBar from '../components/common/ProgressBar';
 import Button from '../components/common/Button';
-import TopNav from '../components/layout/TopNav';
 
 const CATEGORY_ICONS = {
   '투자': TrendingUp,
@@ -45,10 +44,8 @@ export default function DiagnosisPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--c-canvas)' }}>
-      <TopNav />
-
       <div style={{
-        minHeight: 'calc(100vh - 64px)',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

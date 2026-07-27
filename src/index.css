@@ -166,54 +166,6 @@ input, textarea { font-family: var(--font); outline: none; }
   gap: 16px;
 }
 
-/* ===== 상단 네비 ===== */
-.top-nav {
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  background: var(--c-surface);
-  border-bottom: 0.5px solid var(--c-line-soft);
-  height: var(--nav-height);
-}
-
-/* 모바일 햄버거 드롭다운 패널 */
-.nav-mobile-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: var(--c-surface);
-  border: 1px solid var(--c-line);
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(8,53,43,0.12);
-  min-width: 220px;
-  overflow: hidden;
-  z-index: 300;
-}
-
-.top-nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 32px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.nav-right-desktop { display: flex; align-items: center; gap: 10px; }
-.nav-hamburger {
-  display: none;
-  align-items: center; justify-content: center;
-  padding: 6px; border-radius: 8px; background: none; border: none; cursor: pointer;
-}
-
 /* ===== DesktopShell: 브랜드 패널 + 앱 컬럼 ===== */
 
 /* 기본(모바일): 앱 컬럼이 100% 폭, 자연 스크롤 */
@@ -232,11 +184,6 @@ input, textarea { font-family: var(--font); outline: none; }
   background: var(--c-canvas);
   min-height: 100vh;
 }
-
-/* ds-root 안 TopNav는 항상 모바일 스타일 (480px 컬럼) */
-.ds-root .nav-links,
-.ds-root .nav-right-desktop { display: none !important; }
-.ds-root .nav-hamburger      { display: flex !important; }
 
 /* ≥769px: 앱 전체 1.10× 스케일업 + BottomNav 항상 하단 고정 */
 @media (min-width: 769px) {
@@ -592,7 +539,6 @@ input, textarea { font-family: var(--font); outline: none; }
 /* ===== 반응형 — 태블릿 (≤1024px) ===== */
 @media (max-width: 1024px) {
   .container       { padding: 0 24px; }
-  .top-nav-inner   { padding: 0 24px; }
   .dashboard-grid  { grid-template-columns: 1fr; }
   .roadmap-steps-grid { grid-template-columns: 1fr; }
   .home-grid       { grid-template-columns: 1fr !important; }
@@ -613,12 +559,6 @@ input, textarea { font-family: var(--font); outline: none; }
   :root { --nav-height: 56px; }
 
   .container { padding: 0 16px; }
-  .top-nav-inner { padding: 0 16px; }
-
-  .nav-links { display: none; }
-  .nav-right-desktop { display: none; }
-
-  .nav-hamburger { display: flex; }
 
   .bottom-nav { display: flex; }
 
