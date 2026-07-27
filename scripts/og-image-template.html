@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px; height: 630px; overflow: hidden;
+    font-family: 'Pretendard Variable', 'Malgun Gothic', sans-serif;
+  }
+  body {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 1200px; height: 630px;
+    background: linear-gradient(135deg, #06352B 0%, #0B5D49 100%);
+  }
+  .blob {
+    position: absolute; border-radius: 50%; pointer-events: none;
+  }
+  .blob1 {
+    top: -140px; left: -120px; width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(31,190,134,.45) 0%, rgba(31,190,134,0) 100%);
+    filter: blur(60px);
+  }
+  .blob2 {
+    bottom: -180px; right: -140px; width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(255,200,61,.35) 0%, rgba(255,200,61,0) 100%);
+    filter: blur(70px);
+  }
+  .blob3 {
+    top: 40%; right: 8%; width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(16,185,129,.30) 0%, rgba(16,185,129,0) 100%);
+    filter: blur(55px);
+  }
+  .content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .icon {
+    width: 176px; height: 176px; border-radius: 40px;
+    box-shadow: 0 20px 48px rgba(0,0,0,0.35);
+    margin-bottom: 36px;
+    display: block;
+  }
+  .title {
+    font-size: 96px; font-weight: 900; letter-spacing: -0.02em;
+    color: #ffffff; line-height: 1; margin-bottom: 28px;
+  }
+  .title span { color: #FFC83D; }
+  .tagline {
+    font-size: 34px; font-weight: 600; letter-spacing: -0.01em;
+    color: #8FE3C2;
+  }
+</style>
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <div class="content">
+    <img class="icon" src="APPICON_DATA_URI" />
+    <div class="title">ECON<span>O</span>MING</div>
+    <div class="tagline">경제 공부, 어디서부터 시작해야 할지 모르는 사람들을 위해</div>
+  </div>
+</body>
+</html>
