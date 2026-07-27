@@ -65,6 +65,17 @@ export default function PresentationShell() {
           </button>
         </div>
         <Outlet />
+
+        <footer style={{
+          textAlign: 'center',
+          padding: '40px 32px 48px',
+          marginTop: '24px',
+          borderTop: '1px solid var(--c-line)',
+        }}>
+          <p style={{ fontSize: '12px', color: 'var(--c-muted)', letterSpacing: '-0.2px', margin: 0 }}>
+            © 2026 ECONOMING. All rights reserved.
+          </p>
+        </footer>
       </div>
     </div>
   );
