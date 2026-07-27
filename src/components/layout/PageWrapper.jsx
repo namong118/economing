@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
-import TopNav from './TopNav';
 import BottomNav from './BottomNav';
 
 export default function PageWrapper({ children, showNav = true, style = {} }) {
@@ -26,7 +25,6 @@ export default function PageWrapper({ children, showNav = true, style = {} }) {
 
   return (
     <div className="page" style={style}>
-      {showNav && <TopNav />}
       <div className="page-content" ref={contentRef}>
         {children}
       </div>

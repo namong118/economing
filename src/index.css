@@ -275,6 +275,7 @@ input, textarea { font-family: var(--font); outline: none; }
     will-change: scroll-position;
     -webkit-overflow-scrolling: touch;
     transform: translateZ(0);
+    padding-top: 20px; /* 상단 로고 바 제거 후 콘텐츠가 화면 끝에 붙지 않도록 */
   }
   .ds-app .page-content::-webkit-scrollbar { display: none; }
 
@@ -611,7 +612,7 @@ input, textarea { font-family: var(--font); outline: none; }
 
   .bottom-nav { display: flex; }
 
-  .page-content { padding-bottom: 80px; }
+  .page-content { padding-top: 20px; padding-bottom: 80px; }
 
   .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
   .roadmap-steps-grid { grid-template-columns: 1fr; }
