@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LineChart, FileText, Lightbulb, MessageCircle, Heart } from 'lucide-react';
 import indicatorsData, { getIndicatorById } from '../data/indicatorsData';
+import { getIndicatorInsight } from '../data/indicatorInsights';
 import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import indicatorExampleTrends from '../data/indicatorExampleTrends';
 import StaticTrendChart from '../components/indicators/StaticTrendChart';
+import IndicatorInsightView from '../components/indicators/IndicatorInsightView';
 import { getMarketIndices } from '../services/indicesService';
 import { getEconomicStats } from '../services/economicStatsService';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -166,11 +168,16 @@ export default function IndicatorPage() {
 
   const diffStyle = DIFFICULTY_STYLE[indicator.difficulty] ?? DIFFICULTY_STYLE.medium;
   const otherIndicators = indicatorsData.filter(item => item.id !== indicator.id);
+  const insight = getIndicatorInsight(indicator.id);
 
   return (
     <PageWrapper>
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '16px 16px 80px' }}>
 
+        {insight ? (
+          <IndicatorInsightView indicator={indicator} insight={insight} />
+        ) : (
+        <>
         {/* ── 헤로: Dark Forest ── */}
         <div style={{
           background: 'linear-gradient(135deg, var(--c-forest-900) 0%, var(--c-forest-700) 100%)',
@@ -240,6 +247,8 @@ export default function IndicatorPage() {
         <InfoSection Icon={Lightbulb}     label="왜 중요한가요?"       text={indicator.whyImportant} />
         <InfoSection Icon={MessageCircle} label="실제 사례"            text={indicator.realExample} />
         <InfoSection Icon={Heart}         label="내 삶에 미치는 영향"  text={indicator.realLifeExample} highlight />
+        </>
+        )}
 
         {/* ── 다른 지표도 보기 ── */}
         <div style={{ marginBottom: 12 }}>
