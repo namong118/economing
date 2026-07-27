@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { TrendingUp, BarChart2, Globe, PiggyBank, Home, BookOpen, Leaf, Lightbulb, ArrowRight } from 'lucide-react';
 import { BITE_INFOGRAPHICS } from '../../data/biteInfographics';
 
 const DIFF_LABEL = { easy: '입문', medium: '기본', hard: '심화' };
@@ -12,15 +13,15 @@ function highlightNumbers(text) {
   );
 }
 
-const CATEGORY_EMOJI = {
-  '금리': '📊', '투자': '📈', '거시경제': '🌏',
-  '저축': '🏦', '부동산': '🏠', '기초': '💡',
+const CATEGORY_ICON = {
+  '금리': TrendingUp, '투자': BarChart2, '거시경제': Globe,
+  '저축': PiggyBank, '부동산': Home, '기초': BookOpen,
 };
 
 export default function DailyBiteCard({ bite, hideButton }) {
   const navigate = useNavigate();
   const InfographicComponent = BITE_INFOGRAPHICS[bite.id] ?? null;
-  const emoji = CATEGORY_EMOJI[bite.category] ?? '📊';
+  const CatIcon = CATEGORY_ICON[bite.category] ?? BookOpen;
 
   return (
     <div style={{
@@ -32,7 +33,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
       {/* 카드 헤더 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
         <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-forest-700)', display: 'flex', alignItems: 'center', gap: 5 }}>
-          🍃 오늘의 경제 한잎
+          <Leaf size={13} /> 오늘의 경제 한잎
         </span>
         <div style={{ display: 'flex', gap: 5 }}>
           <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: 'var(--c-green-500)', color: '#fff' }}>
@@ -68,7 +69,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             gap: 8, color: 'var(--c-forest-700)', fontSize: 13, opacity: 0.5,
           }}>
-            <span style={{ fontSize: 28 }}>{emoji}</span>
+            <CatIcon size={28} color="var(--c-forest-700)" />
             <span>{bite.title}</span>
           </div>
         )}
@@ -85,8 +86,8 @@ export default function DailyBiteCard({ bite, hideButton }) {
           background: 'var(--c-yellow-100)', borderRadius: 10, border: '0.5px solid var(--c-yellow-border)',
           padding: '14px 16px', marginBottom: 14, flexShrink: 0,
         }}>
-          <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-amber-700)', marginBottom: 8 }}>
-            💡 실생활 예시
+          <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-amber-700)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+            <Lightbulb size={13} /> 실생활 예시
           </div>
           <div style={{ fontSize: 13, color: '#2C2C2A', lineHeight: 1.7 }}>
             {highlightNumbers(bite.realLifeExample)}
@@ -108,7 +109,7 @@ export default function DailyBiteCard({ bite, hideButton }) {
           onMouseEnter={e => e.currentTarget.style.background = 'var(--c-green-500)'}
           onMouseLeave={e => e.currentTarget.style.background = 'var(--c-green-500)'}
         >
-          🍃 오늘의 한잎 배우기 →
+<Leaf size={14} /> 오늘의 한잎 배우기 <ArrowRight size={14} />
         </button>
       )}
     </div>

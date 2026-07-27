@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Check, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
 
@@ -116,8 +117,7 @@ export default function LoginPage() {
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
                     background: 'var(--c-green-500)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '10px', color: '#fff', fontWeight: '800',
-                  }}>✓</div>
+                  }}><Check size={12} color="#fff" strokeWidth={3} /></div>
                   <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
                 </div>
               ))}
@@ -131,8 +131,9 @@ export default function LoginPage() {
               borderRadius: '10px', padding: '10px 14px',
               fontSize: '13px', color: '#DC2626', fontWeight: '500',
               marginBottom: '16px',
+              display: 'flex', alignItems: 'center', gap: '6px',
             }}>
-              ⚠️ {error}
+              <AlertTriangle size={14} style={{ flexShrink: 0 }} /> {error}
             </div>
           )}
 

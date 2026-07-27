@@ -428,7 +428,7 @@ export default function EconomicBitePage() {
                 {isCorrect ? <Check size={15} color="var(--c-green-500)" style={{ flexShrink: 0, marginTop: 1 }} /> : <X size={15} color="#B91C1C" style={{ flexShrink: 0, marginTop: 1 }} />}
                 <span>
                   {isCorrect
-                    ? '정답이에요! 개념을 잘 이해했네요. 🎉'
+                    ? '정답이에요! 개념을 잘 이해했네요.'
                     : `정답은 "${quizData.quiz.options[quizData.quiz.answer]}"예요. 위 내용을 다시 읽어보면 더 잘 기억될 거예요.`}
                 </span>
               </div>
@@ -499,7 +499,7 @@ export default function EconomicBitePage() {
             <Leaf size={26} color="var(--c-green-500)" />
           </div>
           <p style={{ fontSize: 16, fontWeight: 800, color: 'var(--c-forest-700)', marginBottom: 6, letterSpacing: '-0.4px' }}>
-            오늘의 한잎 완료! 🌱
+            오늘의 한잎 완료!
           </p>
           <p style={{ fontSize: 13, color: 'var(--c-muted)', marginBottom: 18, lineHeight: 1.6 }}>
             {bite.title}를 배웠어요. 매일 한 잎씩 쌓아가요.

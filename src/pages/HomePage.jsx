@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Zap, MessageCircle, NotebookPen, Sun } from 'lucide-react';
+import { Leaf, Zap, MessageCircle, NotebookPen, Sun, Flame, TrendingUp, BarChart2, Globe, PiggyBank, Home, BookOpen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite } from '../services/biteService';
@@ -185,8 +185,8 @@ export default function HomePage() {
   const InfographicComp = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
 
   const CATEGORY_ICON = {
-    '금리': '💹', '투자': '📊', '거시경제': '🌐',
-    '저축': '🏦', '부동산': '🏠', '기초': '📚',
+    '금리': TrendingUp, '투자': BarChart2, '거시경제': Globe,
+    '저축': PiggyBank, '부동산': Home, '기초': BookOpen,
   };
 
   const { lvl, progress, needed } = xpInfo(profile?.xp ?? 0);
@@ -217,7 +217,7 @@ export default function HomePage() {
           animation: 'streakToast 2.6s ease-out forwards',
           pointerEvents: 'none', whiteSpace: 'nowrap',
         }}>
-          🔥 {streakMilestone.days}일 연속 학습! +{streakMilestone.xp} XP
+          <Flame size={16} /> {streakMilestone.days}일 연속 학습! +{streakMilestone.xp} XP
         </div>
       )}
 
@@ -394,7 +394,10 @@ export default function HomePage() {
                     <InfographicComp />
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                      <div style={{ fontSize: 36 }}>{CATEGORY_ICON[bite.category] ?? '📌'}</div>
+                      {(() => {
+                        const CatIcon = CATEGORY_ICON[bite.category] ?? BookOpen;
+                        return <CatIcon size={36} color="var(--c-forest-700)" />;
+                      })()}
                       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-forest-700)' }}>{bite.title}</div>
                     </div>
                   )}

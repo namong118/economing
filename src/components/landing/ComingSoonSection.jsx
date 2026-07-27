@@ -1,4 +1,5 @@
-﻿
+﻿import { Construction, Apple, PlayCircle, Smartphone } from 'lucide-react';
+
 export default function ComingSoonSection() {
   return (
     <section style={{
@@ -59,7 +60,7 @@ export default function ComingSoonSection() {
           fontSize: '14px', fontWeight: '700',
           letterSpacing: '-0.3px', marginBottom: '36px',
         }}>
-          🚧 모바일 앱 출시 예정
+<Construction size={16} /> 모바일 앱 출시 예정
         </div>
 
         {/* 스토어 버튼 */}
@@ -67,8 +68,8 @@ export default function ComingSoonSection() {
           display: 'flex', gap: '14px', flexWrap: 'wrap',
           justifyContent: 'center', marginBottom: '44px',
         }}>
-          <StoreButton icon="🍎" store="App Store" sub="출시 예정" />
-          <StoreButton icon="▶" store="Google Play" sub="출시 예정" />
+          <StoreButton icon={<Apple size={22} />} store="App Store" sub="출시 예정" />
+          <StoreButton icon={<PlayCircle size={22} />} store="Google Play" sub="출시 예정" />
         </div>
 
         {/* 구분선 */}
@@ -88,7 +89,7 @@ export default function ComingSoonSection() {
             alignItems: 'center', justifyContent: 'center',
             gap: '8px',
           }}>
-            <span style={{ fontSize: '32px' }}>📱</span>
+            <Smartphone size={32} color="rgba(255,255,255,0.6)" />
             <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>곧 제공 예정</span>
           </div>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', letterSpacing: '-0.2px' }}>
@@ -121,7 +122,7 @@ function StoreButton({ icon, store, sub }) {
       cursor: 'not-allowed',
       opacity: 0.7,
     }}>
-      <span style={{ fontSize: '24px', flexShrink: 0 }}>{icon}</span>
+      <span style={{ flexShrink: 0, color: '#fff', display: 'flex' }}>{icon}</span>
       <div style={{ textAlign: 'left' }}>
         <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', marginBottom: '2px' }}>{sub}</p>
         <p style={{ fontSize: '15px', fontWeight: '700', color: '#fff', letterSpacing: '-0.3px' }}>{store}</p>

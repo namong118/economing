@@ -277,7 +277,7 @@ function ListView({ journals, calYear, calMonth, onPrevMonth, onNextMonth, onDat
             </p>
             {streakCount > 0 && (
               <p style={{ fontSize: '11px', color: 'var(--c-green-500)', fontWeight: '700', marginTop: '1px' }}>
-                이 달 {streakCount}개 작성 🌱
+                이 달 {streakCount}개 작성
               </p>
             )}
           </div>

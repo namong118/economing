@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BookMarked, Search, Leaf, MessageCircle, Newspaper, Sun, Shield, ChevronRight, ChevronDown, Flame, Wrench, CheckCircle2, FlaskConical, AlertTriangle, Trophy, Pencil, Check, Zap, Calendar, CalendarClock, ClipboardList } from 'lucide-react';
 import { generateTodayAction } from '../services/onboardingService';
 import { resetBiteProgress } from '../services/biteService';
 import { supabase } from '../services/supabaseClient';
@@ -12,22 +12,22 @@ import PageWrapper from '../components/layout/PageWrapper';
 
 /* ── 정적 매핑 ────────────────────────────────────────────── */
 const ECONOMIC_LEVEL = {
-  beginner:     { label: '입문자', emoji: '🌱', color: 'var(--c-green-500)', bg: 'var(--c-green-50)', border: 'var(--c-green-100)', desc: '경제 공부를 이제 막 시작하시는 분' },
-  elementary:   { label: '초급자', emoji: '📖', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', desc: '기본 용어는 알지만 뉴스가 아직 어려운 분' },
-  intermediate: { label: '중급자', emoji: '📚', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE', desc: '기본 개념은 알고 더 깊이 배우고 싶은 분' },
-  advanced:     { label: '고급자', emoji: '🔍', color: 'var(--c-yellow-500)', bg: 'var(--c-yellow-100)', border: 'var(--c-yellow-border)', desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
-  expert:       { label: '전문가', emoji: '🏆', color: '#EF4444', bg: '#FEF2F2', border: '#FECACA', desc: '경제를 깊이 이해하고 투자 전략까지 세우는 분' },
+  beginner:     { label: '입문자', color: 'var(--c-green-500)', bg: 'var(--c-green-50)', border: 'var(--c-green-100)', desc: '경제 공부를 이제 막 시작하시는 분' },
+  elementary:   { label: '초급자', color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', desc: '기본 용어는 알지만 뉴스가 아직 어려운 분' },
+  intermediate: { label: '중급자', color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE', desc: '기본 개념은 알고 더 깊이 배우고 싶은 분' },
+  advanced:     { label: '고급자', color: 'var(--c-yellow-500)', bg: 'var(--c-yellow-100)', border: 'var(--c-yellow-border)', desc: '꾸준히 공부 중이며 심화 내용에 관심 있는 분' },
+  expert:       { label: '전문가', color: '#EF4444', bg: '#FEF2F2', border: '#FECACA', desc: '경제를 깊이 이해하고 투자 전략까지 세우는 분' },
 };
 const INVESTMENT_EXP = {
-  none:  { label: '투자 경험 없음',      emoji: '🤔' },
-  etf:   { label: 'ETF 투자 경험 있음',  emoji: '📈' },
-  stock: { label: '주식 투자 경험 있음', emoji: '💹' },
+  none:  { label: '투자 경험 없음' },
+  etf:   { label: 'ETF 투자 경험 있음' },
+  stock: { label: '주식 투자 경험 있음' },
 };
 const OCCUPATION = {
-  student:    { label: '학생',     emoji: '🎓' },
-  employee:   { label: '직장인',   emoji: '💼' },
-  freelancer: { label: '프리랜서', emoji: '💻' },
-  business:   { label: '사업자',   emoji: '🏢' },
+  student:    { label: '학생' },
+  employee:   { label: '직장인' },
+  freelancer: { label: '프리랜서' },
+  business:   { label: '사업자' },
 };
 const PROVIDER_LABEL = { google: 'Google', kakao: '카카오', email: '이메일' };
 
@@ -60,13 +60,17 @@ function DevMenu({ userId }) {
           padding: '10px 14px', cursor: 'pointer', fontFamily: 'inherit',
         }}
       >
-        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-muted)' }}>🛠 개발자 메뉴</span>
+        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--c-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          <Wrench size={12} /> 개발자 메뉴
+        </span>
         <span style={{ fontSize: '11px', color: '#CBD5E1', fontWeight: '600' }}>{open ? '닫기 ↑' : '펼치기 ↓'}</span>
       </button>
       {open && (
         <div style={{ border: '0.5px solid var(--c-line)', borderTop: 'none', borderRadius: '0 0 12px 12px', padding: '12px 14px' }}>
           {step === 'done' ? (
-            <p style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '700' }}>✅ {message}</p>
+            <p style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <CheckCircle2 size={13} /> {message}
+            </p>
           ) : step === 'confirm' ? (
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
@@ -88,11 +92,17 @@ function DevMenu({ userId }) {
               disabled={step === 'loading'}
               style={{ width: '100%', padding: '8px', borderRadius: '10px', background: 'none', color: '#DC2626', border: '1.5px solid #FECACA', fontSize: '12px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
             >
-              {step === 'loading' ? '초기화 중...' : '🧪 학습 진도 초기화 (테스트용)'}
+              {step === 'loading' ? '초기화 중...' : (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <FlaskConical size={12} /> 학습 진도 초기화 (테스트용)
+                </span>
+              )}
             </button>
           )}
           {step === 'error' && (
-            <p style={{ fontSize: '11px', color: '#DC2626', marginTop: '6px' }}>⚠️ {message}</p>
+            <p style={{ fontSize: '11px', color: '#DC2626', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <AlertTriangle size={12} /> {message}
+            </p>
           )}
         </div>
       )}
@@ -166,8 +176,13 @@ function SummaryTab() {
           <currentLevel.Icon size={36} style={{ flexShrink: 0 }} />
           <div>
             <p style={{ fontSize: '17px', fontWeight: '900', color: 'var(--c-forest-700)', letterSpacing: '-0.5px' }}>{currentLevel.label} 단계</p>
-            <p style={{ fontSize: '13px', color: 'var(--c-muted)', fontWeight: '500' }}>
-              {xp} XP 획득 {nextLevel ? `· ${nextLevel.label}까지 ${xpNeeded} XP 남음` : '· 🏆 최고 단계 달성!'}
+            <p style={{ fontSize: '13px', color: 'var(--c-muted)', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+              <span>{xp} XP 획득</span>
+              {nextLevel ? (
+                <span>· {nextLevel.label}까지 {xpNeeded} XP 남음</span>
+              ) : (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>· <Trophy size={13} /> 최고 단계 달성!</span>
+              )}
             </p>
           </div>
         </div>
@@ -232,11 +247,11 @@ function SummaryTab() {
             <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.8px' }}>경제 프로필</p>
             <button
               onClick={() => navigate('/onboarding')}
-              style={{ background: 'none', border: 'none', fontSize: '12px', color: 'var(--c-muted)', cursor: 'pointer', fontWeight: '600', padding: 0 }}
+              style={{ background: 'none', border: 'none', fontSize: '12px', color: 'var(--c-muted)', cursor: 'pointer', fontWeight: '600', padding: 0, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--c-green-500)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--c-muted)'}
             >
-              ✏️ 수정
+              <Pencil size={12} /> 수정
             </button>
           </div>
           <div style={{ display: 'flex', gap: '0' }}>
@@ -304,7 +319,7 @@ const SOURCE_STYLE = {
 /* ── 용어 카드 (새 스키마) ────────────────────────────────── */
 function TermCard({ term, onDelete, deleting }) {
   const [confirmDel, setConfirmDel] = useState(false);
-  const src = SOURCE_STYLE[term.sourceType] ?? { label: '기타', icon: '📖', bg: 'var(--c-surface)', color: 'var(--c-muted)', border: 'var(--c-line)' };
+  const src = SOURCE_STYLE[term.sourceType] ?? { label: '기타', Icon: BookOpen, bg: 'var(--c-surface)', color: 'var(--c-muted)', border: 'var(--c-line)' };
 
   return (
     <div style={{
@@ -653,7 +668,7 @@ function IndependenceTab() {
                     fontSize: 12, fontWeight: 700, flexShrink: 0,
                     border: '0.5px solid #B8EBC8', transition: 'background 0.2s',
                   }}>
-                    {isDone ? '✓' : step.order}
+                    {isDone ? <Check size={14} /> : step.order}
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -702,19 +717,19 @@ function IndependenceTab() {
                           <>
                             {step.actions.today && (
                               <div style={{ background: '#E3F9EC', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, color: '#2A7A4B', marginBottom: 4 }}>⚡ 지금 당장 (5분)</div>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#2A7A4B', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}><Zap size={11} /> 지금 당장 (5분)</div>
                                 <div style={{ fontSize: 12, color: '#2A7A4B', lineHeight: 1.65 }}>{step.actions.today}</div>
                               </div>
                             )}
                             {step.actions.this_week && (
                               <div style={{ background: '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, color: '#3A9A5C', marginBottom: 4 }}>📅 이번 주 안에</div>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#3A9A5C', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}><Calendar size={11} /> 이번 주 안에</div>
                                 <div style={{ fontSize: 12, color: '#3A9A5C', lineHeight: 1.65 }}>{step.actions.this_week}</div>
                               </div>
                             )}
                             {step.actions.this_month && (
                               <div style={{ background: '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
-                                <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 4 }}>🗓️ 이번 달 안에</div>
+                                <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}><CalendarClock size={11} /> 이번 달 안에</div>
                                 <div style={{ fontSize: 12, color: '#888780', lineHeight: 1.65 }}>{step.actions.this_month}</div>
                               </div>
                             )}
@@ -722,8 +737,8 @@ function IndependenceTab() {
                         ) : Array.isArray(step.actions) && step.actions.length > 0 && (
                           step.actions.map((action, j) => (
                             <div key={j} style={{ background: j === 0 ? '#E3F9EC' : '#F2FBF5', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
-                              <div style={{ fontSize: 10, fontWeight: 700, color: j === 0 ? '#2A7A4B' : '#3A9A5C', marginBottom: 4 }}>
-                                {j === 0 ? '⚡ 지금 당장' : j === 1 ? '📅 이번 주 안에' : '🗓️ 이번 달 안에'}
+                              <div style={{ fontSize: 10, fontWeight: 700, color: j === 0 ? '#2A7A4B' : '#3A9A5C', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                {j === 0 ? <><Zap size={11} /> 지금 당장</> : j === 1 ? <><Calendar size={11} /> 이번 주 안에</> : <><CalendarClock size={11} /> 이번 달 안에</>}
                               </div>
                               <div style={{ fontSize: 12, color: j === 0 ? '#2A7A4B' : '#3A9A5C', lineHeight: 1.65 }}>{action}</div>
                             </div>
@@ -738,7 +753,7 @@ function IndependenceTab() {
                         <div style={{ fontSize: 10, fontWeight: 700, color: '#888780', marginBottom: 8, letterSpacing: '0.3px' }}>이렇게 되면 완료예요</div>
                         {step.checkPoints.map((cp, j) => (
                           <div key={j} style={{ display: 'flex', gap: 6, alignItems: 'flex-start', marginBottom: 5 }}>
-                            <span style={{ color: '#52C97A', fontWeight: 700, fontSize: 13, flexShrink: 0, lineHeight: 1.5 }}>✓</span>
+                            <Check size={14} color="#52C97A" style={{ flexShrink: 0, marginTop: 1 }} />
                             <span style={{ fontSize: 12, color: '#2A7A4B', lineHeight: 1.6 }}>{cp}</span>
                           </div>
                         ))}
@@ -795,12 +810,14 @@ function IndependenceTab() {
                         boxShadow: isDone ? 'none' : '0 4px 14px rgba(33,197,142,0.25)',
                       }}
                     >
-                      {isDone ? '완료 취소하기' : '이 단계 완료하기 ✓'}
+                      {isDone ? '완료 취소하기' : (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>이 단계 완료하기 <Check size={13} /></span>
+                      )}
                     </button>
 
                     {/* 내 계획 추가 */}
                     <div style={{ marginTop: 12 }}>
-                      <div style={{ fontSize: 10, color: '#888780', marginBottom: 8 }}>📝 내가 추가한 계획</div>
+                      <div style={{ fontSize: 10, color: '#888780', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}><ClipboardList size={11} /> 내가 추가한 계획</div>
 
                       {(customTodos[step.order] ?? []).map(todo => (
                         <div key={todo.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: '0.5px solid #f0f7f3' }}>
@@ -814,7 +831,7 @@ function IndependenceTab() {
                               cursor: 'pointer',
                             }}
                           >
-                            {todo.done && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                            {todo.done && <Check size={11} color="#fff" />}
                           </div>
                           <span style={{ fontSize: 12, flex: 1, color: '#2A7A4B', textDecoration: todo.done ? 'line-through' : 'none', opacity: todo.done ? 0.6 : 1 }}>
                             {todo.text}

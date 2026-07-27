@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Check, Plus } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useDictionaryCtx } from '../../context/DictionaryContext';
 
@@ -71,7 +72,9 @@ export default function SaveTermButton({
         }
       }}
     >
-      {saved ? '✓ 저장됨' : loading ? '…' : '＋ 사전 저장'}
+      {saved
+        ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Check size={13} /> 저장됨</span>
+        : loading ? '…' : <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Plus size={13} /> 사전 저장</span>}
     </button>
   );
 }

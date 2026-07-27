@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen, TrendingUp, Briefcase, PiggyBank,
-  GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper, Sun, Sunset,
+  GraduationCap, Laptop, Building2, CreditCard, Home, Receipt, Newspaper, Sun, Sunset, Check,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { completeOnboarding } from '../services/onboardingService';
@@ -517,7 +517,7 @@ export default function OnboardingPage() {
                     }}
                   >
                     {selected && (
-                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800' }}>✓</div>
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', width: '20px', height: '20px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={12} color="#fff" strokeWidth={3} /></div>
                     )}
                     {opt.icon && (
                       <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--c-green-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

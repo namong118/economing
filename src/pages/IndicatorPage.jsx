@@ -281,7 +281,7 @@ export default function IndicatorPage() {
             <LineChart size={26} color="var(--c-green-500)" />
           </div>
           <p style={{ fontSize: 16, fontWeight: 800, color: 'var(--c-forest-700)', marginBottom: 6, letterSpacing: '-0.4px' }}>
-            지표 읽는법 완료! 📊
+            지표 읽는법 완료!
           </p>
           <p style={{ fontSize: 13, color: 'var(--c-muted)', marginBottom: 18, lineHeight: 1.6 }}>
             {indicator.title}, 이제 뉴스에서 봐도 의미를 알 수 있어요.

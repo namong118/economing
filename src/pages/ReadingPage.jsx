@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookMarked, Sun } from 'lucide-react';
+import { BookMarked, Sun, Pin, Check } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { fetchAndSummarizeNews, markAsRead } from '../services/readingService';
@@ -96,8 +96,8 @@ function NewsCard({ article, isSaved, onSaveKeywords, isRead, onMarkRead }) {
       {/* 핵심 포인트 */}
       {!summarizing && article.keyPoints?.length > 0 && (
         <div style={{ margin: '0 22px 14px', background: 'var(--c-canvas)', borderRadius: '10px', border: '0.5px solid var(--c-line)', padding: '14px 16px' }}>
-          <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-forest-700)', marginBottom: '10px', letterSpacing: '0.2px' }}>
-            📌 핵심 포인트
+          <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-forest-700)', marginBottom: '10px', letterSpacing: '0.2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Pin size={12} /> 핵심 포인트
           </p>
           {article.keyPoints.map((pt, j) => (
             <div key={j} style={{ display: 'flex', gap: '8px', marginBottom: j < article.keyPoints.length - 1 ? '8px' : '0' }}>
@@ -188,7 +188,7 @@ function NewsCard({ article, isSaved, onSaveKeywords, isRead, onMarkRead }) {
               boxShadow: isRead ? 'none' : '0 2px 8px rgba(31,190,134,0.3)',
             }}
           >
-            {isRead ? '✓ +5 XP 적립됨' : '읽기 완료 +5 XP'}
+            {isRead ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Check size={13} /> +5 XP 적립됨</span> : '읽기 완료 +5 XP'}
           </button>
         )}
         {!summarizing && article.keywords?.length > 0 && (
@@ -206,7 +206,7 @@ function NewsCard({ article, isSaved, onSaveKeywords, isRead, onMarkRead }) {
               transition: 'all 0.2s',
             }}
           >
-            {isSaved ? '✓ 저장됨' : '경제사전에 저장'}
+            {isSaved ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Check size={13} /> 저장됨</span> : '경제사전에 저장'}
           </button>
         )}
       </div>

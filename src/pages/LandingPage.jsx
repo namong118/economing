@@ -1,5 +1,6 @@
 ﻿import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import LandingNav from '../components/landing/LandingNav';
 import HeroSection from '../components/landing/HeroSection';
@@ -28,7 +29,7 @@ export default function LandingPage() {
         minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
         background: 'var(--c-canvas)',
       }}>
-        <div style={{ fontSize: '32px', animation: 'spin 1.2s linear infinite' }}>🌱</div>
+        <Loader2 size={32} color="var(--c-green-500)" style={{ animation: 'spin 1.2s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );

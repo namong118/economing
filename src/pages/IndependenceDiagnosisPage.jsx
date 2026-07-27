@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Target } from 'lucide-react';
+import { ChevronLeft, Target, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { generateIndependenceRoadmap, generateTodayAction } from '../services/onboardingService';
@@ -373,8 +373,8 @@ export default function IndependenceDiagnosisPage() {
                   {opt.label}
                 </span>
                 {isSelected && (
-                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800', flexShrink: 0 }}>
-                    ✓
+                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Check size={12} color="#fff" strokeWidth={3} />
                   </div>
                 )}
               </button>

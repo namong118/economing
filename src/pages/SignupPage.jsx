@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FlaskConical, Check, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
 
@@ -101,12 +102,14 @@ export default function SignupPage() {
       }}>
         <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: 'var(--c-ink)', letterSpacing: '-0.7px', marginBottom: '10px' }}>
-            환영해요! 🌱
+            환영해요!
           </h2>
           {MOCK ? (
             <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '24px' }}>
               계정이 만들어졌어요. 바로 로그인할 수 있어요!<br />
-              <span style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '600' }}>🧪 개발 모드 — 이메일 인증 없음</span>
+              <span style={{ fontSize: '12px', color: 'var(--c-green-500)', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <FlaskConical size={13} /> 개발 모드 — 이메일 인증 없음
+              </span>
             </p>
           ) : (
             <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.7', marginBottom: '24px' }}>
@@ -126,8 +129,7 @@ export default function SignupPage() {
                 <div style={{
                   width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
                   background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '9px', color: '#fff', fontWeight: '800',
-                }}>✓</div>
+                }}><Check size={11} color="#fff" strokeWidth={3} /></div>
                 <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
               </div>
             ))}
@@ -187,8 +189,7 @@ export default function SignupPage() {
                   <div style={{
                     width: '17px', height: '17px', borderRadius: '50%', flexShrink: 0,
                     background: 'var(--c-green-500)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '10px', color: '#fff', fontWeight: '800',
-                  }}>✓</div>
+                  }}><Check size={12} color="#fff" strokeWidth={3} /></div>
                   <span style={{ fontSize: '13px', color: 'var(--c-slate)', fontWeight: '500' }}>{item}</span>
                 </div>
               ))}
@@ -202,8 +203,9 @@ export default function SignupPage() {
               borderRadius: '10px', padding: '10px 14px',
               fontSize: '13px', color: '#DC2626', fontWeight: '500',
               marginBottom: '16px',
+              display: 'flex', alignItems: 'center', gap: '6px',
             }}>
-              ⚠️ {error}
+              <AlertTriangle size={14} style={{ flexShrink: 0 }} /> {error}
             </div>
           )}
 

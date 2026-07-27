@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X, Sun } from 'lucide-react';
+import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X, Sun, Lightbulb, BookOpen, AlertTriangle, Save } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse, getNomingDailyMessage } from '../services/coachService';
@@ -85,14 +85,14 @@ function NomingCard({ structured, onSend }) {
       overflow: 'hidden',
       boxShadow: 'var(--shadow-card)',
     }}>
-      {/* ─── Tier 1: 💡 한 줄 조언 — Yellow ─── */}
+      {/* ─── Tier 1: 한 줄 조언 — Yellow ─── */}
       <div style={{
         background: 'var(--c-yellow-100)',
         borderBottom: '0.5px solid var(--c-yellow-border)',
         padding: '14px 18px',
         display: 'flex', gap: '10px',
       }}>
-        <span style={{ fontSize: '17px', flexShrink: 0, marginTop: '2px' }}>💡</span>
+        <Lightbulb size={17} color="var(--c-amber-700)" style={{ flexShrink: 0, marginTop: '2px' }} />
         <div>
           <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-amber-700)', marginBottom: '4px', letterSpacing: '0.5px' }}>
             노밍의 한 줄 조언
@@ -103,10 +103,10 @@ function NomingCard({ structured, onSend }) {
         </div>
       </div>
 
-      {/* ─── Tier 2: 📚 먼저 알아두면 — White ─── */}
+      {/* ─── Tier 2: 먼저 알아두면 — White ─── */}
       <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--c-line-soft)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-          <span style={{ fontSize: '15px' }}>📚</span>
+          <BookOpen size={15} color="var(--c-muted)" />
           <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.5px' }}>
             먼저 알아두면 좋은 것
           </p>
@@ -130,7 +130,7 @@ function NomingCard({ structured, onSend }) {
         </div>
       </div>
 
-      {/* ─── Tier 3: ✅ 오늘 해볼 것 — Green ─── */}
+      {/* ─── Tier 3: 오늘 해볼 것 — Green ─── */}
       <div style={{
         padding: '11px 18px',
         background: 'var(--c-green-50)',
@@ -158,7 +158,7 @@ function NomingCard({ structured, onSend }) {
         </button>
       </div>
 
-      {/* ─── ⚠️ 경고 (있을 때만) ─── */}
+      {/* ─── 경고 (있을 때만) ─── */}
       {warning && (
         <div style={{
           margin: '0 18px 14px',
@@ -170,20 +170,20 @@ function NomingCard({ structured, onSend }) {
           color: 'var(--c-warn)',
           display: 'flex', gap: '8px', alignItems: 'flex-start',
         }}>
-          <span style={{ flexShrink: 0 }}>⚠️</span>
+          <AlertTriangle size={14} style={{ flexShrink: 0 }} />
           <span>{warning}</span>
         </div>
       )}
 
-      {/* ─── 💾 핵심 용어 ─── */}
+      {/* ─── 핵심 용어 ─── */}
       {terms && terms.length > 0 && (
         <div style={{
           padding: '12px 18px 14px',
           borderTop: '1px solid var(--c-line-soft)',
           background: 'var(--c-canvas)',
         }}>
-          <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.4px', marginBottom: '8px' }}>
-            💾 이 대화의 핵심 용어
+          <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--c-muted)', letterSpacing: '0.4px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Save size={12} /> 이 대화의 핵심 용어
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
             {terms.map(t => (

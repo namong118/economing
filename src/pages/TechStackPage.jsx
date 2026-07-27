@@ -177,7 +177,7 @@ function ApiGroup({ title, highlight, note, rows }) {
         fontSize: '12px', fontWeight: '800', letterSpacing: '0.4px',
         color: highlight ? 'var(--c-forest-700)' : 'var(--c-muted)', marginBottom: '10px',
       }}>
-        {title}{highlight && ' ★'}
+        {title}
       </p>
       <DataTable columns={['API', '엔드포인트', '용도']} rows={rows} />
       {note && <Body style={{ marginBottom: 0, fontSize: '14px' }}>{note}</Body>}

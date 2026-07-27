@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Users, ChevronRight, Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees, Sun } from 'lucide-react';
+import { Users, ChevronRight, Bean, Sprout, Leaf, Flower2, Cherry, TreeDeciduous, Trees, Sun, Smartphone } from 'lucide-react';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -187,7 +187,7 @@ export default function BrandPanel() {
             boxShadow: '0 4px 14px rgba(8,53,43,.05)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4,
           }}>
-            <span style={{ fontSize: 26 }}>📱</span>
+            <Smartphone size={26} color="#8A988F" />
             <span style={{ fontSize: 9, fontWeight: 700, color: '#8A988F' }}>곧 제공 예정</span>
           </div>
           <div>
