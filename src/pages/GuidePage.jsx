@@ -232,14 +232,16 @@ export default function GuidePage() {
           </Body>
         </SideBySide>
 
-        <SideBySide image={`${BASE}guide/06-read.png`} imageAlt="뉴스 요약과 지표 티커 화면">
+        <SideBySide image={`${BASE}guide/06-read.png`} imageAlt="경제읽기 뉴스 탭 화면">
           <ItemHeading>오늘의 경제를 봅니다</ItemHeading>
           <Body>
-            실시간 뉴스를 AI가 초보자 관점으로 요약해줍니다.
+            경제읽기는 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>뉴스</b>와{' '}
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>지표 읽는 법</b>,{'\n'}
+            두 탭으로 나뉩니다.
           </Body>
           <Body style={{ marginBottom: 0 }}>
-            지표 11종은 <i>쉽게 설명 → 왜 중요한지 → 실제 사례 → 내 삶에 미치는 영향</i>{'\n'}
-            네 단계로 풀어냅니다.
+            뉴스 탭은 실시간 뉴스를 AI가 초보자 관점으로 요약해주고,{'\n'}
+            지표 읽는 법 탭은 지표 11종을 하나씩 짚어가며 오늘의 숫자를 해석해줍니다.
           </Body>
         </SideBySide>
 
@@ -347,7 +349,7 @@ export default function GuidePage() {
             설명 · 인포그래픽 3종 · 퀴즈 · 해설이 한 장에
           </TourRow>
           <TourRow label="3. 경제읽기" path="/read">
-            AI 뉴스 요약과 정부 실데이터 기반 지표
+            뉴스 탭(AI 요약) · 지표 읽는 법 탭(정부 실데이터 기반 해석), 2개 탭
           </TourRow>
           <TourRow label="4. 노밍 코치" path="/coach">
             레벨별로 달라지는 AI 답변과 "오늘 5분 실천"
