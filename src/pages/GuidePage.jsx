@@ -161,7 +161,7 @@ export default function GuidePage() {
       <section style={{ marginBottom: '96px' }}>
         <h1 style={{
           fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: '900',
-          color: 'var(--c-ink)', letterSpacing: '-0.02em', marginBottom: '20px',
+          color: 'var(--c-ink)', letterSpacing: '-0.02em', marginBottom: '20px', wordBreak: 'keep-all',
         }}>
           ECONOMING 사용법
         </h1>

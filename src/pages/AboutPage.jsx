@@ -77,19 +77,19 @@ function ChecklistItem({ children }) {
   );
 }
 
-function CompareCard({ before, after }) {
+function CompareCard({ before, after, beforeLabel = '그때의 문제', afterLabel = '지금의 기능' }) {
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0,
       border: '1.5px solid var(--c-line)', borderRadius: '16px', overflow: 'hidden', marginBottom: '10px',
     }}>
       <div style={{ padding: '16px 18px', background: 'var(--c-surface)', borderRight: '1.5px solid var(--c-line)' }}>
-        <p style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--c-muted)', letterSpacing: '0.5px', marginBottom: '6px' }}>그때의 문제</p>
-        <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.6', margin: 0 }}>{before}</p>
+        <p style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--c-muted)', letterSpacing: '0.5px', marginBottom: '6px', whiteSpace: 'pre-line' }}>{beforeLabel}</p>
+        <p style={{ fontSize: '14px', color: 'var(--c-slate)', lineHeight: '1.6', margin: 0, whiteSpace: 'pre-line' }}>{before}</p>
       </div>
       <div style={{ padding: '16px 18px', background: 'var(--c-green-50)' }}>
-        <p style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--c-forest-700)', letterSpacing: '0.5px', marginBottom: '6px' }}>지금의 기능</p>
-        <p style={{ fontSize: '14px', color: 'var(--c-forest-700)', lineHeight: '1.6', fontWeight: '600', margin: 0 }}>{after}</p>
+        <p style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--c-forest-700)', letterSpacing: '0.5px', marginBottom: '6px', whiteSpace: 'pre-line' }}>{afterLabel}</p>
+        <p style={{ fontSize: '14px', color: 'var(--c-forest-700)', lineHeight: '1.6', fontWeight: '600', margin: 0, whiteSpace: 'pre-line' }}>{after}</p>
       </div>
     </div>
   );
@@ -212,7 +212,7 @@ export default function AboutPage() {
         <h1 style={{
           fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', lineHeight: 1.35,
-          marginBottom: '24px',
+          marginBottom: '24px', wordBreak: 'keep-all',
         }}>
           경제 공부, 어디서부터 시작해야 할지 모르는 사람들을 위해
         </h1>
@@ -467,42 +467,31 @@ export default function AboutPage() {
           <Body style={{ fontWeight: '800', color: 'var(--c-ink)', fontSize: '17px' }}>
             지표마다 읽는 법이 다릅니다.
           </Body>
-          <Body>하나의 틀에 억지로 맞추지 않았습니다.</Body>
-          <Body>
-            값이 범위 안 어디쯤인지가 중요한 지표(코스피·환율·기준금리)는{'\n'}
-            눈금 위에 오늘 값과 과거 기준점을 함께 표시합니다.
-          </Body>
-          <Body>
-            상태 전환 자체가 신호인 지표(장단기 금리 역전)는{'\n'}
-            범위 대신 <b style={{ fontWeight: '900' }}>역전 / 정상</b> 두 가지로만 보여줍니다.
-          </Body>
-          <Body>
-            그리고 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>아예 판단하지 않기로 한 지표</b>도 있습니다.
-          </Body>
-          <Body>
-            실업률은 숫자가 낮다고 좋은 신호가 아닙니다.{'\n'}
-            구직을 포기해 "쉬었음"으로 분류되면 실업자에서 빠지기 때문입니다.{'\n'}
-            최근 10년간 실업률 하락분의 상당 부분이 여기서 왔다는 분석도 있습니다.
-          </Body>
-          <Body>
-            그래서 실업률에는 "좋다 / 나쁘다"를 붙이지 않았습니다.{'\n'}
-            대신 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>이 숫자를 그대로 믿으면 안 되는 이유</b>를 설명합니다.
-          </Body>
+          <Body style={{ marginBottom: '20px' }}>하나의 틀에 억지로 맞추지 않았습니다.</Body>
 
-          <Body style={{ fontWeight: '800', color: 'var(--c-ink)', fontSize: '17px' }}>
+          <ProblemCard title="범위형 · 코스피 · 환율 · 기준금리">
+            {'값이 범위 안 어디쯤인지가 중요합니다.\n눈금 위에 오늘 값과 과거 기준점을 함께 표시합니다.'}
+          </ProblemCard>
+          <ProblemCard title="상태전환형 · 장단기 금리 역전">
+            {'상태 전환 자체가 신호입니다.\n범위 대신 역전 / 정상 두 가지로만 보여줍니다.'}
+          </ProblemCard>
+          <ProblemCard title="판단보류형 · 실업률">
+            {'숫자가 낮다고 좋은 신호가 아닙니다.\n구직을 포기해 "쉬었음"으로 분류되면 실업자에서 빠지기 때문입니다.\n그래서 "좋다 / 나쁘다"를 붙이지 않고, 이 숫자를 그대로 믿으면 안 되는 이유를 설명합니다.'}
+          </ProblemCard>
+
+          <Body style={{ fontWeight: '800', color: 'var(--c-ink)', fontSize: '17px', marginTop: '28px' }}>
             "높다 / 낮다"를 함부로 말하지 않습니다.
           </Body>
           <Body>기준금리 2.5%가 높은 건지 낮은 건지는 누가 정할까요.</Body>
-          <Body>
-            공식 기준이 있는 지표는 그것을 씁니다.{'\n'}
-            물가는 한국은행 목표 2%, 무역수지는 0을 기준으로 흑자와 적자.
-          </Body>
-          <Body>
-            공식 기준이 없는 지표는 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>과거 실제 분포</b>로 계산합니다.{'\n'}
-            기준금리는 최근 10년 이력, 코스피는 최근 2년 저점과 고점을{'\n'}
-            근거로 삼았습니다.
-          </Body>
-          <Body>
+
+          <CompareCard
+            beforeLabel="공식 기준이 있는 지표"
+            before={'물가: 한국은행 목표 2%\n무역수지: 0을 기준으로 흑자 · 적자'}
+            afterLabel={'공식 기준이 없는 지표\n과거 분포로 계산'}
+            after={'기준금리: 최근 10년 이력\n코스피: 최근 2년 저점 · 고점'}
+          />
+
+          <Body style={{ marginTop: '18px' }}>
             그리고 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>그 근거를 화면에 그대로 적어둡니다.</b>{'\n'}
             어떤 데이터로 언제 계산했는지, 그 데이터에 어떤 한계가 있는지까지.
           </Body>
