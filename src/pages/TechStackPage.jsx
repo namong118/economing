@@ -203,9 +203,9 @@ function CommitBar({ label, count, max }) {
 /* ── 데이터 ───────────────────────────────────────────────── */
 
 const STATS = [
-  { label: '커밋', value: '232개' },
-  { label: '코드', value: '17,900줄', sub: '89개 파일' },
-  { label: '개발일지', value: '1,844줄', sub: '19개 항목' },
+  { label: '커밋', value: '266개' },
+  { label: '코드', value: '20,678줄', sub: '104개 파일' },
+  { label: '개발일지', value: '1,938줄', sub: '23개 항목' },
   { label: '학습 콘텐츠', value: '96개', sub: '11챕터 · 본문·퀴즈·인포그래픽' },
   { label: 'AI 기능', value: '9개' },
   { label: '외부 API', value: '7개' },
@@ -232,17 +232,17 @@ const TECH_STACK = [
 
 const DOCS = [
   [<span key="a"><Mono>DEVLOG.md</Mono> (1,272줄)</span>, '작업 단위 개발 기록 11개 항목'],
-  [<span key="b"><Mono>개발일지.md</Mono> (572줄)</span>, '판단과 회고 중심 기록 8개 항목'],
+  [<span key="b"><Mono>개발일지.md</Mono> (666줄)</span>, '판단과 회고 중심 기록 12개 항목'],
   [<Mono key="c">docs/curriculum/</Mono>, '커리큘럼 확정본 + 초안 v1~v3 + 실패한 접근 기록'],
   [<Mono key="d">docs/content-backlog.md</Mono>, '뉴스 분석으로 검증한 콘텐츠 후보 224개'],
 ];
 
 const COMMIT_TYPES = [
-  { label: 'feat (기능 추가)', count: 70 },
-  { label: 'fix (버그 수정)', count: 62 },
-  { label: 'docs (문서)', count: 12 },
-  { label: 'design (디자인)', count: 9 },
-  { label: 'chore · style · refactor · remove', count: 18 },
+  { label: 'feat (기능 추가)', count: 87 },
+  { label: 'fix (버그 수정)', count: 66 },
+  { label: 'docs (문서)', count: 16 },
+  { label: 'design (디자인)', count: 10 },
+  { label: 'chore · style · refactor · remove', count: 25 },
 ];
 const MAX_COMMIT = Math.max(...COMMIT_TYPES.map(c => c.count));
 

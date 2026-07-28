@@ -271,7 +271,7 @@ export default function ProfileIntroPage() {
             쓰이는 걸 보고 계속 고쳐야 합니다.
           </Body>
           <Body style={{ marginBottom: 0 }}>
-            이 프로젝트의 커밋 232개 중 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>62개가 fix</b>입니다.{'\n'}
+            이 프로젝트의 커밋 266개 중 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>66개가 fix</b>입니다.{'\n'}
             만든 것을 다시 열어 검증하고 고치는 일을 당연하게 여깁니다.
           </Body>
         </PastExperienceCard>
