@@ -494,6 +494,38 @@ input, textarea { font-family: var(--font); outline: none; }
 .scroll-top-btn.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 .scroll-top-btn:hover { background: #18A870; box-shadow: 0 6px 20px rgba(31,190,134,.45); }
 
+/* ===== 상세 페이지(지표 읽기·경제한잎) 상단 헤더("← 목적지") ===== */
+/* 모바일: fixed. 뷰포트 자체가 앱 컬럼이라 문제 없음.
+   데스크톱(≥769px): sticky. .page-content가 실제 스크롤 컨테이너라 앱 컬럼
+   안에 머문다 — fixed를 쓰면 뷰포트(zoom 적용된 진짜 화면) 기준이 되어
+   앱 컬럼을 벗어나 버린다.
+   데스크톱에서도 fixed 대신 sticky를 쓰는 이유: 모바일 폭에서는 .page 등
+   중간 조상의 overflow 계산(overflow-x만 지정되면 overflow-y가 auto로
+   격상되는 CSS 규칙) 때문에 실제로 스크롤하지 않는 요소가 sticky의 기준으로
+   잡혀버려 sticky가 먹통이 된다 — 그래서 모바일은 fixed를 쓴다.
+   버튼 하나만 떠 있으면 나중에 끼워 넣은 것처럼 보여서, 옅은 배경 + 하단
+   경계선이 있는 한 줄짜리 헤더 밴드로 만든다 — sticky/fixed로 뜬 상태에서
+   아래 콘텐츠가 비쳐 보이지 않도록 불투명 배경이 꼭 필요하다.
+   left/right:0으로 폭을 채운다 — 모바일(fixed)에서는 뷰포트 전체 폭,
+   데스크톱(sticky)에서는 부모(.page-content) 폭 그대로 채워진다. */
+.detail-back-btn {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--c-canvas);
+  border-bottom: 0.5px solid var(--c-line);
+}
+/* 문서 흐름에서 빠진 만큼(모바일 fixed), 아래 콘텐츠가 헤더에 가리지 않게
+   자리를 비워둔다. 데스크톱은 sticky라 원래 자리를 그대로 차지하므로 필요 없다. */
+.detail-back-btn-spacer { height: 40px; }
+@media (min-width: 769px) {
+  .detail-back-btn {
+    position: sticky;
+    top: 0; left: auto; right: auto;
+  }
+  .detail-back-btn-spacer { height: 0; }
+}
+
 /* ===== 스크롤바 ===== */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

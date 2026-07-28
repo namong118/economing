@@ -9,22 +9,7 @@ import { getBandForValue } from '../../data/indicatorInsights';
 import { getEconomicStats } from '../../services/economicStatsService';
 import { getMarketIndices } from '../../services/indicesService';
 import { fetchAndSummarizeNews } from '../../services/readingService';
-
-/* 지수 레벨(예: CPI 2020=100) 시계열에서 전년동월대비(YoY) 증감률을 계산한다.
-   같은 달(YYYYMM) 12개월 전 값이 있는 지점만 결과에 남는다 —
-   그래서 백엔드가 화면에 보여줄 개월 수보다 12개월 더 넓게 데이터를 받아온다. */
-function deriveYoYSeries(series) {
-  const byDate = new Map(series.map(p => [p.date, p.value]));
-  return series
-    .map(p => {
-      const year = Number(p.date.slice(0, 4));
-      const month = p.date.slice(4, 6);
-      const prevValue = byDate.get(`${year - 1}${month}`);
-      if (prevValue == null) return null;
-      return { date: p.date, value: Math.round((p.value / prevValue - 1) * 10000) / 100 };
-    })
-    .filter(Boolean);
-}
+import { deriveYoYSeries } from '../../utils/liveIndicatorValue';
 
 /* dataKey는 economic-stats(ECOS/KOSIS: 기준금리·CPI·GDP 등) 전용 키다.
    코스피/코스닥/환율은 별도 함수(indices, Yahoo Finance·환율 API)에서 오므로
@@ -106,8 +91,16 @@ export default function IndicatorInsightView({ indicator, insight }) {
         borderRadius: 16, padding: '26px 20px', marginBottom: 14, textAlign: 'center',
         boxShadow: '0 4px 20px rgba(6,53,43,0.22)',
       }}>
-        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', fontWeight: 600, marginBottom: 12 }}>
-          {indicator.title} · {insight.oneLiner}
+        {/* 제목 + oneLiner를 한 줄로 이어붙이면 "코스닥 지수 읽기 · 코스닥 지수가..."처럼
+            같은 지표 이름이 두 번 나온다 — 제목은 작고 옅게, oneLiner는 그 아래
+            또렷하게 둬서 반복 없이 둘 다 살린다 */}
+        <div style={{ marginBottom: 12 }}>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', fontWeight: 600, marginBottom: 3 }}>
+            {indicator.title}
+          </p>
+          <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>
+            {insight.oneLiner}
+          </p>
         </div>
         {loading ? (
           <div style={{ height: 58 }} />

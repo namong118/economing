@@ -11,6 +11,7 @@ import IndicatorInsightView from '../components/indicators/IndicatorInsightView'
 import { getMarketIndices } from '../services/indicesService';
 import { getEconomicStats } from '../services/economicStatsService';
 import PageWrapper from '../components/layout/PageWrapper';
+import StickyBackButton from '../components/common/StickyBackButton';
 
 const DIFFICULTY_STYLE = {
   easy:   { label: '쉬움', bg: 'var(--c-green-100)',  text: 'var(--c-forest-700)' },
@@ -173,6 +174,8 @@ export default function IndicatorPage() {
   return (
     <PageWrapper>
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '16px 16px 80px' }}>
+
+        <StickyBackButton />
 
         {insight ? (
           <IndicatorInsightView indicator={indicator} insight={insight} />

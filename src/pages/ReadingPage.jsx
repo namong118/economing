@@ -1,15 +1,24 @@
 ﻿import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BookMarked, Sun, Pin, Check } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { BookMarked, Sun, Pin, Check, Newspaper, LineChart } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { fetchAndSummarizeNews, markAsRead } from '../services/readingService';
 import { saveKeywordsFromNews } from '../services/dictionaryService';
 import IndicesTicker from '../components/reading/IndicesTicker';
+import IndicatorGuideGrid from '../components/reading/IndicatorGuideGrid';
 
 const CATEGORIES = ['경제', '금리', '환율', '주식', '부동산', '미국경제', '글로벌경제'];
 
 const newsCache = {};
+
+/* 내 성장 탭(MyGrowthHubPage)의 카드형 탭과 같은 스타일 — 앱 전체에서 탭 전환은
+   이 모양으로 통일한다. "지표 읽는 법"은 "지표"라고만 하면 시세 화면처럼 들려서,
+   실제로 하는 일(오늘 이 숫자를 어떻게 읽는지 알려주는 것)이 이름에 드러나게 지었다. */
+const TAB_CARDS = [
+  { key: 'news',       label: '뉴스',        Icon: Newspaper },
+  { key: 'indicators', label: '지표 읽는 법', Icon: LineChart },
+];
 
 /* ── 요약 중 스켈레톤 ─────────────────────────────────────── */
 function SummarySkeleton() {
@@ -218,6 +227,9 @@ function NewsCard({ article, isSaved, onSaveKeywords, isRead, onMarkRead }) {
 export default function ReadingPage() {
   const navigate             = useNavigate();
   const { user }             = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') === 'indicators' ? 'indicators' : 'news';
+  const setActiveTab = key => setSearchParams(key === 'news' ? {} : { tab: key });
   const [articles, setArticles] = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [category, setCategory] = useState('경제');
@@ -289,110 +301,157 @@ export default function ReadingPage() {
       <div style={{ background: 'var(--c-canvas)', minHeight: 'calc(100vh - 64px)', paddingBottom: '64px' }}>
         <div style={{ maxWidth: '680px', margin: '0 auto', padding: '20px 20px 0' }}>
 
-          {/* 지표/지수 티커 */}
-          <IndicesTicker />
-
-          {/* 카테고리 필터 */}
+          {/* 뉴스 / 지표 읽는 법 — 내 성장 탭과 같은 카드형 탭 스타일로 통일 */}
           <div style={{
-            display: 'flex', gap: '7px', marginBottom: '20px',
-            overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '2px',
+            display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '6px', marginBottom: '16px',
           }}>
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => { setCategory(cat); setSavedMap({}); }}
-                style={{
-                  flexShrink: 0,
-                  padding: '7px 16px', borderRadius: '100px',
-                  fontSize: '13px', fontWeight: category === cat ? '700' : '500',
-                  border: '1.5px solid',
-                  background:  category === cat ? 'var(--c-green-500)' : 'var(--c-surface)',
-                  color:       category === cat ? '#fff' : 'var(--c-slate)',
-                  borderColor: category === cat ? 'var(--c-green-500)' : 'var(--c-line)',
-                  cursor: 'pointer', transition: 'all 0.15s',
-                  whiteSpace: 'nowrap',
-                  boxShadow: category === cat ? '0 2px 8px rgba(31,190,134,0.28)' : 'none',
-                }}
-              >
-                {cat}
-              </button>
-            ))}
+            {TAB_CARDS.map(({ key, label, Icon }) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  style={{
+                    borderRadius: '12px', padding: '10px 6px',
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: '6px',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    border: isActive ? 'none' : '0.5px solid var(--c-line)',
+                    background: isActive ? 'var(--c-green-500)' : 'var(--c-surface)',
+                    transition: 'background 0.15s',
+                  }}
+                >
+                  <div style={{
+                    width: '38px', height: '38px', borderRadius: '10px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isActive ? 'rgba(255,255,255,0.2)' : 'var(--c-canvas)',
+                  }}>
+                    <Icon size={20} color={isActive ? '#fff' : 'var(--c-forest-700)'} />
+                  </div>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? '#fff' : 'var(--c-forest-700)',
+                    letterSpacing: '-0.2px',
+                  }}>
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* 초기 로딩 스켈레톤 */}
-          {loading && (
+          {activeTab === 'indicators' ? (
+            <IndicatorGuideGrid />
+          ) : (
             <>
-              <NewsCardSkeleton />
-              <NewsCardSkeleton />
-              <NewsCardSkeleton />
-            </>
-          )}
+              {/* 지표/지수 티커 — "지금 시장이 어떤가"를 보고 뉴스로 들어가는 흐름 */}
+              <IndicesTicker />
 
-          {/* 에러 */}
-          {error && (
-            <div style={{
-              background: '#FEF2F2', border: '0.5px solid #FECACA',
-              borderRadius: '12px', padding: '20px 24px', textAlign: 'center',
-            }}>
-              <p style={{ fontSize: '13px', color: '#DC2626', marginBottom: '12px' }}>{error}</p>
-              <button
-                onClick={() => { delete newsCache[category]; loadNews(category); }}
-                style={{
-                  padding: '8px 20px', borderRadius: '8px',
-                  background: 'var(--c-green-500)', color: '#fff', border: 'none',
-                  fontSize: '12px', fontWeight: '700', cursor: 'pointer',
-                }}
-              >
-                다시 시도
-              </button>
-            </div>
-          )}
-
-          {/* 뉴스 카드 목록 */}
-          {articles.map((article, i) => (
-            <NewsCard
-              key={i}
-              article={article}
-              isSaved={!!savedMap[i]}
-              onSaveKeywords={() => handleSaveKeywords(article, i)}
-              isRead={!!readMap[i]}
-              onMarkRead={() => handleMarkRead(i)}
-            />
-          ))}
-
-          {/* 하단 노밍 CTA */}
-          {!loading && !error && articles.length > 0 && (
-            <div style={{
-              marginTop: '16px',
-              background: 'var(--c-yellow-100)', border: '1px solid var(--c-yellow-border)',
-              borderRadius: '14px', padding: '20px 22px', textAlign: 'center',
-            }}>
-              {/* 노밍 원형 아바타 */}
+              {/* 카테고리 필터 */}
               <div style={{
-                width: '48px', height: '48px', borderRadius: '50%', margin: '0 auto 12px',
-                background: 'rgba(255,200,61,0.25)', border: '1.5px solid var(--c-yellow-border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                display: 'flex', gap: '7px', marginBottom: '20px',
+                overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '2px',
               }}>
-                <Sun size={30} color="#F59E0B" />
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => { setCategory(cat); setSavedMap({}); }}
+                    style={{
+                      flexShrink: 0,
+                      padding: '7px 16px', borderRadius: '100px',
+                      fontSize: '13px', fontWeight: category === cat ? '700' : '500',
+                      border: '1.5px solid',
+                      background:  category === cat ? 'var(--c-green-500)' : 'var(--c-surface)',
+                      color:       category === cat ? '#fff' : 'var(--c-slate)',
+                      borderColor: category === cat ? 'var(--c-green-500)' : 'var(--c-line)',
+                      cursor: 'pointer', transition: 'all 0.15s',
+                      whiteSpace: 'nowrap',
+                      boxShadow: category === cat ? '0 2px 8px rgba(31,190,134,0.28)' : 'none',
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
-              <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-amber-700)', marginBottom: '6px' }}>
-                더 궁금한 게 생겼나요?
-              </p>
-              <p style={{ fontSize: '13px', color: 'var(--c-amber-700)', lineHeight: '1.7', marginBottom: '16px' }}>
-                노밍에게 바로 질문해봐요.
-              </p>
-              <button
-                onClick={() => navigate('/coach')}
-                style={{
-                  padding: '11px 24px', borderRadius: '100px',
-                  background: 'var(--grad-action)', color: '#fff', border: 'none',
-                  fontSize: '13px', fontWeight: '700', cursor: 'pointer',
-                  boxShadow: '0 3px 10px rgba(31,190,134,0.35)',
-                }}
-              >
-                노밍에게 질문하기 →
-              </button>
-            </div>
+
+              {/* 초기 로딩 스켈레톤 */}
+              {loading && (
+                <>
+                  <NewsCardSkeleton />
+                  <NewsCardSkeleton />
+                  <NewsCardSkeleton />
+                </>
+              )}
+
+              {/* 에러 */}
+              {error && (
+                <div style={{
+                  background: '#FEF2F2', border: '0.5px solid #FECACA',
+                  borderRadius: '12px', padding: '20px 24px', textAlign: 'center',
+                }}>
+                  <p style={{ fontSize: '13px', color: '#DC2626', marginBottom: '12px' }}>{error}</p>
+                  <button
+                    onClick={() => { delete newsCache[category]; loadNews(category); }}
+                    style={{
+                      padding: '8px 20px', borderRadius: '8px',
+                      background: 'var(--c-green-500)', color: '#fff', border: 'none',
+                      fontSize: '12px', fontWeight: '700', cursor: 'pointer',
+                    }}
+                  >
+                    다시 시도
+                  </button>
+                </div>
+              )}
+
+              {/* 뉴스 카드 목록 */}
+              {articles.map((article, i) => (
+                <NewsCard
+                  key={i}
+                  article={article}
+                  isSaved={!!savedMap[i]}
+                  onSaveKeywords={() => handleSaveKeywords(article, i)}
+                  isRead={!!readMap[i]}
+                  onMarkRead={() => handleMarkRead(i)}
+                />
+              ))}
+
+              {/* 하단 노밍 CTA */}
+              {!loading && !error && articles.length > 0 && (
+                <div style={{
+                  marginTop: '16px',
+                  background: 'var(--c-yellow-100)', border: '1px solid var(--c-yellow-border)',
+                  borderRadius: '14px', padding: '20px 22px', textAlign: 'center',
+                }}>
+                  {/* 노밍 원형 아바타 */}
+                  <div style={{
+                    width: '48px', height: '48px', borderRadius: '50%', margin: '0 auto 12px',
+                    background: 'rgba(255,200,61,0.25)', border: '1.5px solid var(--c-yellow-border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                  }}>
+                    <Sun size={30} color="#F59E0B" />
+                  </div>
+                  <p style={{ fontSize: '14px', fontWeight: '700', color: 'var(--c-amber-700)', marginBottom: '6px' }}>
+                    더 궁금한 게 생겼나요?
+                  </p>
+                  <p style={{ fontSize: '13px', color: 'var(--c-amber-700)', lineHeight: '1.7', marginBottom: '16px' }}>
+                    노밍에게 바로 질문해봐요.
+                  </p>
+                  <button
+                    onClick={() => navigate('/coach')}
+                    style={{
+                      padding: '11px 24px', borderRadius: '100px',
+                      background: 'var(--grad-action)', color: '#fff', border: 'none',
+                      fontSize: '13px', fontWeight: '700', cursor: 'pointer',
+                      boxShadow: '0 3px 10px rgba(31,190,134,0.35)',
+                    }}
+                  >
+                    노밍에게 질문하기 →
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
         </div>

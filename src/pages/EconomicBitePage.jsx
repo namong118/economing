@@ -10,6 +10,7 @@ import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import { getBiteQuiz } from '../data/biteQuizzes';
 import { CURRICULUM_CHAPTERS, getCurriculumSequence } from '../data/curriculum';
 import PageWrapper from '../components/layout/PageWrapper';
+import StickyBackButton from '../components/common/StickyBackButton';
 import SaveTermButton from '../components/common/SaveTermButton';
 import { useAuth } from '../context/AuthContext';
 import { addXp } from '../services/profileService';
@@ -159,6 +160,8 @@ export default function EconomicBitePage() {
       <style>{ANIM}</style>
 
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '16px 16px 80px' }}>
+
+        <StickyBackButton />
 
         {/* ── 헤로: Dark Forest ── */}
         <div style={{

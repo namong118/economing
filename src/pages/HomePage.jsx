@@ -532,7 +532,7 @@ export default function HomePage() {
             style={{
               width: '100%', background: 'var(--c-yellow-500)', border: 'none',
               borderRadius: 10, padding: '11px 12px', fontSize: 13, fontWeight: 700,
-              color: '#fff', cursor: 'pointer', letterSpacing: '-0.3px',
+              color: 'var(--c-amber-700)', cursor: 'pointer', letterSpacing: '-0.3px',
               display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6,
               marginTop: 14,
             }}
