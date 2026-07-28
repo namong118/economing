@@ -1,4 +1,6 @@
-﻿import { Construction, Apple, PlayCircle, Smartphone } from 'lucide-react';
+﻿import { Construction, Apple, PlayCircle } from 'lucide-react';
+
+const BASE = import.meta.env.BASE_URL;
 
 export default function ComingSoonSection() {
   return (
@@ -79,18 +81,14 @@ export default function ComingSoonSection() {
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
         }}>
-          {/* QR 플레이스홀더 */}
           <div style={{
             width: '120px', height: '120px',
-            background: 'rgba(255,255,255,0.08)',
-            border: '2px dashed rgba(255,255,255,0.25)',
-            borderRadius: '16px',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            gap: '8px',
+            background: '#fff',
+            borderRadius: '16px', padding: '10px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
           }}>
-            <Smartphone size={32} color="rgba(255,255,255,0.6)" />
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>곧 제공 예정</span>
+            <img src={`${BASE}qr-mobile.png`} alt="웹 버전 바로가기 QR 코드" style={{ width: '100%', height: '100%', display: 'block' }} />
           </div>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', letterSpacing: '-0.2px' }}>
             웹 버전 바로가기 QR

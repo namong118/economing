@@ -12,6 +12,7 @@ import AppPreviewSection from '../components/landing/AppPreviewSection';
 import ComingSoonSection from '../components/landing/ComingSoonSection';
 import FinalCTASection from '../components/landing/FinalCTASection';
 import LandingFooter from '../components/landing/LandingFooter';
+import Reveal from '../components/landing/Reveal';
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -38,14 +39,14 @@ export default function LandingPage() {
   return (
     <div style={{ background: '#fff', overflowX: 'hidden' }}>
       <LandingNav />
-      <HeroSection />
-      <ProblemSection />
-      <ValueSection />
-      <FeatureSection />
-      <GrowthFlowSection />
-      <AppPreviewSection />
-      <ComingSoonSection />
-      <FinalCTASection />
+      <Reveal><HeroSection /></Reveal>
+      <Reveal><ProblemSection /></Reveal>
+      <Reveal><ValueSection /></Reveal>
+      <Reveal><FeatureSection /></Reveal>
+      <Reveal><GrowthFlowSection /></Reveal>
+      <Reveal><AppPreviewSection /></Reveal>
+      <Reveal><ComingSoonSection /></Reveal>
+      <Reveal><FinalCTASection /></Reveal>
       <LandingFooter />
     </div>
   );

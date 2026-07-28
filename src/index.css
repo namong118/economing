@@ -368,6 +368,10 @@ input, textarea { font-family: var(--font); outline: none; }
 .bp-reveal { opacity: 0; transform: translateY(28px) scale(.97); transition: opacity .65s cubic-bezier(.2,.7,.2,1), transform .65s cubic-bezier(.2,.7,.2,1); }
 .bp-reveal.bp-visible { opacity: 1; transform: translateY(0) scale(1); }
 
+/* 스크롤 리빌 (랜딩페이지 섹션용) */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.reveal-visible { opacity: 1; transform: translateY(0); }
+
 /* 버튼 */
 .ds-outline {
   background: #fff; border: 1.5px solid #1FBE86; color: #0B5D49;
@@ -417,6 +421,7 @@ input, textarea { font-family: var(--font); outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .ds-blob,.bp-ring,.bp-app-icon,.bp-caret { animation: none !important; }
   .bp-reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+  .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
 }
 
 /* ===== PresentationShell: 브랜드 패널(고정폭) + 발표용 콘텐츠(가변폭) ===== */
