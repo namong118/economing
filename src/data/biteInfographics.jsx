@@ -1065,13 +1065,14 @@ export const BITE_INFOGRAPHICS = {
   ),
 
   83: () => (
-    <BiteInfographic
+    <CompositionInfographic
       title="순자산 계산 흐름"
-      steps={[
-        { icon: Wallet,       label: '자산',   sub: '가진 것 전체',   color: 'green' },
-        { icon: CreditCard,   label: '부채',   sub: '갚아야 할 빚',   color: 'red'   },
-        { icon: CheckCircle,  label: '순자산', sub: '자산 − 부채',    color: 'blue'  },
+      op="subtract"
+      items={[
+        { icon: Wallet,     label: '자산', sub: '가진 것 전체', color: 'green' },
+        { icon: CreditCard, label: '부채', sub: '갚아야 할 빚', color: 'red'   },
       ]}
+      total={{ icon: CheckCircle, label: '순자산', sub: '자산 − 부채', color: 'blue' }}
       result="자산에서 부채를 뺀, 진짜 내 재산"
     />
   ),

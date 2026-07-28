@@ -27,9 +27,17 @@ function Chip({ icon: Icon, label, sub, color }) {
 }
 
 // 부분이 모여 전체가 되는 개념용 — 흐름형과 같은 1단 구조를 쓰되, 화살표(순서/인과)
-// 대신 +/=를 써서 "이것 다음에 저것"으로 잘못 읽히지 않게 한다.
-// [항목1] + [항목2] + ... | (구분선) = [합계]  — 전부 한 줄, 줄바꿈 없음.
-export function CompositionInfographic({ title, items, total, result }) {
+// 대신 연산 기호를 써서 "이것 다음에 저것"으로 잘못 읽히지 않게 한다.
+// [항목1] (op) [항목2] (op) ... | (구분선) = [합계]  — 전부 한 줄, 줄바꿈 없음.
+const OP_SYMBOLS = {
+  add: '+',
+  subtract: '−',
+  multiply: '×',
+  divide: '÷',
+}
+
+export function CompositionInfographic({ title, items, total, result, op = 'add' }) {
+  const opSymbol = OP_SYMBOLS[op] ?? OP_SYMBOLS.add
   return (
     <div style={{ width: '100%', overflow: 'hidden' }}>
       <style>{`
@@ -55,7 +63,7 @@ export function CompositionInfographic({ title, items, total, result }) {
         {items.map((item, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
             <Chip {...item} />
-            {i < items.length - 1 && <div className="composition-op">+</div>}
+            {i < items.length - 1 && <div className="composition-op">{opSymbol}</div>}
           </div>
         ))}
         {total && (
