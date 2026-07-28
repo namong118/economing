@@ -173,23 +173,3 @@ export async function recordBiteView(userId, biteId) {
     // 기록 실패는 조용히 무시
   }
 }
-
-/**
- * [테스트용] 해당 유저의 user_bite_history를 전부 삭제해 학습 진도를 0으로 되돌린다.
- * recordBiteView와 달리 에러를 삼키지 않고 반환한다 — 수동 실행 버튼이라 실패를 보여줘야 한다.
- */
-export async function resetBiteProgress(userId) {
-  if (!userId) return { error: new Error('로그인이 필요해요.') };
-
-  const { error } = await supabase
-    .from('user_bite_history')
-    .delete()
-    .eq('user_id', userId);
-
-  if (!error) {
-    const today = new Date().toISOString().slice(0, 10);
-    try { localStorage.removeItem(LS_PREFIX + `${userId}__${today}`); } catch {}
-  }
-
-  return { error };
-}
