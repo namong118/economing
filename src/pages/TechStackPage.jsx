@@ -542,7 +542,67 @@ export default function TechStackPage() {
         </Body>
       </section>
 
-      {/* 9. 커밋 이력 */}
+      {/* 9. 트러블슈팅 */}
+      <section style={{ marginBottom: '96px' }}>
+        <SectionTitle>트러블슈팅</SectionTitle>
+        <Body>만들면서 실제로 막힌 문제 넷을 그대로 남깁니다. 추측이 아니라 증거로 찾았습니다.</Body>
+
+        <StepHeading num="①">안드로이드 로그인 — 실기기에서만 나타난 버그</StepHeading>
+        <Body>
+          구글 로그인 시 앱이 웹사이트로 이탈해서 못 돌아오는 문제가 실기기(갤럭시)에서만{'\n'}
+          재현됐습니다. adb logcat과 dumpsys window로 실제 포그라운드 앱을 확인한 결과,{'\n'}
+          삼성 인터넷의 Custom Tabs 구현이 커스텀 스킴 딥링크를 앱으로 넘겨주지 못한다는 걸{'\n'}
+          직접 증명했습니다.
+        </Body>
+        <Body>
+          구글은 Credential Manager 기반 네이티브 로그인으로 전면 교체해 브라우저 자체를{'\n'}
+          거치지 않도록 해결했습니다. 카카오는 커뮤니티 플러그인 소스 코드를 직접 열어{'\n'}
+          Supabase가 요구하는 OIDC id_token을 반환하지 않는다는 걸 확인했고, 이 부분은{'\n'}
+          향후 과제로 남겼습니다.
+        </Body>
+        <Quote>
+          추측 대신 로그로 증명하고, 안 되는 이유를 소스 코드까지 확인한 뒤 남은 과제로 분리했습니다.
+        </Quote>
+
+        <StepHeading num="②">AI 검증 — 76%가 아니라 13%였습니다</StepHeading>
+        <Body>
+          뉴스 기반 콘텐츠 자동생성을 검토하며 AI에게 '우리 콘텐츠와 뉴스 용어가{'\n'}
+          이름만 다른 것인가'를 물었더니 76%가 그렇다고 답했습니다. 같은 데이터를 두고{'\n'}
+          질문만 '틀렸다고 가정하고 근거를 찾아라'로 바꾸자 13%로 줄었습니다.
+        </Body>
+        <Body>
+          정답 목록을 프롬프트에 전부 넣었는데도 존재하지 않는 콘텐츠를 지어낸 경우가{'\n'}
+          7건 있었습니다. 질문 하나를 잘못 던지면 검증 결과 자체가 뒤집힐 수 있다는 걸{'\n'}
+          확인하고, 자동 발행을 포기하고 사람이 검수하는 구조로 바꿨습니다.
+        </Body>
+
+        <StepHeading num="③">퀴즈 정답 위치 편향 — 0%와 98%</StepHeading>
+        <Body>
+          <Mono>check-content.mjs</Mono>로 정답 위치 분포를 집계해보니 기존 60문항 중 1번 자리{'\n'}
+          정답이 0개, 4번이 1개였습니다. 98%가 2~3번에 몰려 있어 사실상 2지선다였습니다.
+        </Body>
+        <Body>
+          전 문항을 재배치해 25 / 25 / 26 / 25로 균등화했고, 이후 신규 문항도{'\n'}
+          이 검사를 통과해야 병합되도록 했습니다.
+        </Body>
+
+        <StepHeading num="④">미연결 코드 — 붙어 있지만 안 쓰이던 함수</StepHeading>
+        <Body>
+          <Mono>recordBiteView</Mono>가 학습 완료를 기록하는 함수인데, 실제로는 홈 화면 로딩{'\n'}
+          경로 한 곳에만 연결돼 있어서 다른 진입 경로로 카드를 봐도 진도가 오르지 않는{'\n'}
+          문제가 있었습니다.
+        </Body>
+        <Body style={{ marginBottom: 0 }}>
+          같은 패턴 — 함수는 존재하지만 호출부가 다 안 붙어 있는 경우 — 이 네 번{'\n'}
+          반복되는 걸 확인하고, <Mono>check-content.mjs</Mono>에 연결 여부를 자동으로 잡는 검사를{'\n'}
+          추가했습니다.
+        </Body>
+        <Quote emphasized style={{ marginBottom: 0 }}>
+          네 가지 모두 '왜 안 되는지'를 증거로 확인한 뒤에 고쳤다는 공통점이 있습니다.
+        </Quote>
+      </section>
+
+      {/* 10. 커밋 이력 */}
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>커밋 이력</SectionTitle>
 
@@ -553,6 +613,42 @@ export default function TechStackPage() {
         <Body style={{ marginBottom: 0 }}>
           <Mono>fix</Mono>가 <Mono>feat</Mono>에 근접하는 것은 만든 것을 계속 검증하고 고쳤다는 뜻입니다.
         </Body>
+      </section>
+
+      {/* 11. 향후 계획 */}
+      <section style={{ marginBottom: '96px' }}>
+        <SectionTitle>향후 계획</SectionTitle>
+        <Body>지금 버전은 시작점입니다. 다음 다섯 가지를 순서대로 진행할 계획입니다.</Body>
+
+        <DataTable
+          columns={['계획', '내용']}
+          rows={[
+            [
+              <ChecklistItem key="1">커리큘럼 확장</ChecklistItem>,
+              <span key="1c">검증된 콘텐츠 후보 190개(<Mono>docs/content-backlog.md</Mono>)를 순차 반영해 11챕터 96개에서 확장</span>,
+            ],
+            [
+              <ChecklistItem key="2">복습 설계</ChecklistItem>,
+              '커리큘럼을 완주한 사용자를 위한 복습/재진단 흐름 설계 — 현재는 첫 완주 이후 경험이 비어 있음',
+            ],
+            [
+              <ChecklistItem key="3">지표 데이터 실측 전환</ChecklistItem>,
+              'PER · 공포탐욕지수 2종은 현재 예시 데이터 — 무료 실시간 소스를 확보해 나머지 2종도 실제 숫자로 전환',
+            ],
+            [
+              <ChecklistItem key="4">카카오 로그인 네이티브 전환</ChecklistItem>,
+              'OIDC id_token을 반환하는 SDK/방식을 추가로 조사해 구글과 동일한 네이티브 로그인으로 전환',
+            ],
+            [
+              <ChecklistItem key="5">스토어 배포</ChecklistItem>,
+              '현재 APK 직접 설치로 실기기 검증까지 마친 상태 — Google Play 정식 등록 절차 진행',
+            ],
+          ]}
+        />
+
+        <Quote emphasized style={{ marginBottom: 0 }}>
+          기능을 늘리는 계획과, 이미 만든 걸 더 정확하게 만드는 계획을 같이 가져갑니다.
+        </Quote>
       </section>
 
     </div>
