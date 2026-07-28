@@ -212,9 +212,9 @@ export default function AboutPage() {
         <h1 style={{
           fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', lineHeight: 1.35,
-          marginBottom: '24px', wordBreak: 'keep-all',
+          marginBottom: '24px', wordBreak: 'keep-all', whiteSpace: 'pre-line',
         }}>
-          경제 공부, 어디서부터 시작해야 할지 모르는 사람들을 위해
+          {'경제 공부, 어디서부터 시작해야 할지\n모르는 사람들을 위해'}
         </h1>
         <p style={{ fontSize: '17px', color: 'var(--c-slate)', lineHeight: '1.9', whiteSpace: 'pre-line', margin: 0 }}>
           {'주식도 부동산도 뉴스도 다 어렵게 느껴질 때.\nECONOMING은 AI가 수준을 진단하고, 사람이 검증한 커리큘럼으로 배우고,\n막히면 AI 코치에게 다시 묻는 경제 학습 앱입니다.'}
