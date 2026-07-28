@@ -256,9 +256,9 @@ export default function TechStackPage() {
         <h1 style={{
           fontSize: 'clamp(28px, 4.6vw, 40px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', lineHeight: 1.35,
-          marginBottom: '14px',
+          marginBottom: '14px', wordBreak: 'keep-all', whiteSpace: 'pre-line',
         }}>
-          AI가 진단하고, 사람이 검증하고, AI가 돕습니다
+          {'AI가 진단하고, 사람이 검증하고,\nAI가 돕습니다'}
         </h1>
         <p style={{ fontSize: '16px', color: 'var(--c-slate)', marginBottom: '32px', whiteSpace: 'pre-line', lineHeight: 1.7 }}>
           {'Solar AI를 5개 탭 전부에 배치했습니다.\n다만 틀리면 안 되는 곳에는 사람의 검수를 두었습니다.'}
@@ -506,7 +506,7 @@ export default function TechStackPage() {
           실패한 시도도 남겼습니다
         </h3>
         <Body>
-          <Mono>docs/curriculum/history/</Mono> 에는 폐기된 초안 3개와{'\n'}
+          커리큘럼 작업 기록에는 폐기된 초안 3개와{'\n'}
           <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>실패로 끝난 선행 개념 분석</b>이 그대로 남아 있습니다.
         </Body>
         <Body>
@@ -550,15 +550,15 @@ export default function TechStackPage() {
         <StepHeading num="①">안드로이드 로그인 — 실기기에서만 나타난 버그</StepHeading>
         <Body>
           구글 로그인 시 앱이 웹사이트로 이탈해서 못 돌아오는 문제가 실기기(갤럭시)에서만{'\n'}
-          재현됐습니다. adb logcat과 dumpsys window로 실제 포그라운드 앱을 확인한 결과,{'\n'}
-          삼성 인터넷의 Custom Tabs 구현이 커스텀 스킴 딥링크를 앱으로 넘겨주지 못한다는 걸{'\n'}
-          직접 증명했습니다.
+          재현됐습니다. 안드로이드 실시간 로그(adb logcat)와 화면 전환 기록(dumpsys window)으로{'\n'}
+          그 순간 실제로 떠 있는 화면을 추적한 결과, 삼성 인터넷의 인앱 브라우저 기능(Custom Tabs)이{'\n'}
+          앱으로 되돌아가는 연결(딥링크)을 넘겨주지 못한다는 걸 직접 증명했습니다.
         </Body>
         <Body>
-          구글은 Credential Manager 기반 네이티브 로그인으로 전면 교체해 브라우저 자체를{'\n'}
-          거치지 않도록 해결했습니다. 카카오는 커뮤니티 플러그인 소스 코드를 직접 열어{'\n'}
-          Supabase가 요구하는 OIDC id_token을 반환하지 않는다는 걸 확인했고, 이 부분은{'\n'}
-          향후 과제로 남겼습니다.
+          구글 로그인은 브라우저를 아예 거치지 않는 안드로이드 기본 로그인 방식(Credential Manager)으로{'\n'}
+          전면 교체해 해결했습니다. 카카오 로그인은 커뮤니티 플러그인의 소스 코드를 직접 열어,{'\n'}
+          Supabase 인증이 요구하는 형식의 로그인 토큰을 카카오 SDK가 돌려주지 않는다는 걸{'\n'}
+          확인했고, 이 부분은 향후 과제로 남겼습니다.
         </Body>
         <Quote>
           추측 대신 로그로 증명하고, 안 되는 이유를 소스 코드까지 확인한 뒤 남은 과제로 분리했습니다.
@@ -578,7 +578,7 @@ export default function TechStackPage() {
 
         <StepHeading num="③">퀴즈 정답 위치 편향 — 0%와 98%</StepHeading>
         <Body>
-          <Mono>check-content.mjs</Mono>로 정답 위치 분포를 집계해보니 기존 60문항 중 1번 자리{'\n'}
+          앞서 만든 정합성 검사 스크립트로 정답 위치 분포를 집계해보니 기존 60문항 중 1번 자리{'\n'}
           정답이 0개, 4번이 1개였습니다. 98%가 2~3번에 몰려 있어 사실상 2지선다였습니다.
         </Body>
         <Body>
@@ -588,13 +588,13 @@ export default function TechStackPage() {
 
         <StepHeading num="④">미연결 코드 — 붙어 있지만 안 쓰이던 함수</StepHeading>
         <Body>
-          <Mono>recordBiteView</Mono>가 학습 완료를 기록하는 함수인데, 실제로는 홈 화면 로딩{'\n'}
+          학습 완료를 기록하는 함수가 있었는데, 실제로는 홈 화면 로딩{'\n'}
           경로 한 곳에만 연결돼 있어서 다른 진입 경로로 카드를 봐도 진도가 오르지 않는{'\n'}
           문제가 있었습니다.
         </Body>
         <Body style={{ marginBottom: 0 }}>
           같은 패턴 — 함수는 존재하지만 호출부가 다 안 붙어 있는 경우 — 이 네 번{'\n'}
-          반복되는 걸 확인하고, <Mono>check-content.mjs</Mono>에 연결 여부를 자동으로 잡는 검사를{'\n'}
+          반복되는 걸 확인하고, 그 정합성 검사 스크립트에 연결 여부를 자동으로 잡는 항목을{'\n'}
           추가했습니다.
         </Body>
         <Quote emphasized style={{ marginBottom: 0 }}>
@@ -625,7 +625,7 @@ export default function TechStackPage() {
           rows={[
             [
               <ChecklistItem key="1">커리큘럼 확장</ChecklistItem>,
-              <span key="1c">검증된 콘텐츠 후보 190개(<Mono>docs/content-backlog.md</Mono>)를 순차 반영해 11챕터 96개에서 확장</span>,
+              <span key="1c">뉴스 분석으로 검증한 콘텐츠 후보 224개를 순차 반영해 11챕터 96개에서 확장</span>,
             ],
             [
               <ChecklistItem key="2">복습 설계</ChecklistItem>,
@@ -637,7 +637,7 @@ export default function TechStackPage() {
             ],
             [
               <ChecklistItem key="4">카카오 로그인 네이티브 전환</ChecklistItem>,
-              'OIDC id_token을 반환하는 SDK/방식을 추가로 조사해 구글과 동일한 네이티브 로그인으로 전환',
+              '카카오 SDK가 Supabase 인증에 필요한 형식의 로그인 토큰을 아직 지원하지 않아, 이를 지원하는 방식을 추가로 조사해 구글과 동일한 네이티브 로그인으로 전환',
             ],
             [
               <ChecklistItem key="5">스토어 배포</ChecklistItem>,
