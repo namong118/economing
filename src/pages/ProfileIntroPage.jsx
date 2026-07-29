@@ -284,22 +284,6 @@ export default function ProfileIntroPage() {
         </PastExperienceCard>
       </section>
 
-      {/* 6. 이번에 처음 해본 것 */}
-      <section style={{ marginBottom: '112px' }}>
-        <SectionTitle>이번에 처음 해본 것</SectionTitle>
-
-        <ChecklistItem>React + Vite로 웹 앱 전체 구현</ChecklistItem>
-        <ChecklistItem>Supabase로 인증 · 데이터베이스 · 서버리스 함수 구성</ChecklistItem>
-        <ChecklistItem>Solar AI를 9개 기능에 연동하고 프롬프트 설계</ChecklistItem>
-        <ChecklistItem>외부 API 7종 연동 (한국은행 · 통계청 등 정부 공공 데이터 포함)</ChecklistItem>
-        <ChecklistItem>Capacitor로 안드로이드 앱 패키징 및 실기기 검증</ChecklistItem>
-        <ChecklistItem>학습 콘텐츠 96개 기획 · 검수</ChecklistItem>
-
-        <Quote emphasized style={{ marginBottom: 0, marginTop: '24px' }}>
-          전부 처음이었습니다.
-        </Quote>
-      </section>
-
     </div>
   );
 }
