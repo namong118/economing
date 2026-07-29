@@ -95,12 +95,6 @@ export default function BrandPanel() {
     return () => clearTimeout(timer);
   }, []);
 
-  const magnetic = (e) => {
-    const b = e.currentTarget, r = b.getBoundingClientRect();
-    b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px,${(e.clientY - r.top - r.height / 2) * .28}px)`;
-  };
-  const reset = (e) => { e.currentTarget.style.transform = 'translate(0,0)'; };
-
   return (
     <aside
       className="ds-brand"
@@ -181,9 +175,9 @@ export default function BrandPanel() {
         {/* QR 카드 */}
         <div className="bp-reveal" style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 26 }}>
           <div style={{
-            width: 160, height: 160, borderRadius: 16,
+            width: 108, height: 108, borderRadius: 14,
             background: '#fff', border: '1px solid #E4ECE7',
-            padding: 10, flexShrink: 0,
+            padding: 8, flexShrink: 0,
             boxShadow: '0 4px 14px rgba(8,53,43,.05)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
@@ -201,21 +195,9 @@ export default function BrandPanel() {
         <div className="bp-divider" />
 
         {/* 태그라인 */}
-        <div className="bp-reveal" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.4, color: '#0B5D49', marginBottom: 20 }}>
+        <div className="bp-reveal" style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.4, color: '#0B5D49', marginBottom: 0 }}>
           매일 한 잎, 경제가 자라는 습관<br />
           <span style={{ color: '#1FBE86' }}>Grow your money sense!</span>
-        </div>
-
-        {/* 마그네틱 버튼 */}
-        <div className="bp-reveal" style={{ display: 'flex', gap: 12 }}>
-          <button className="ds-outline" onMouseMove={magnetic} onMouseLeave={reset} onClick={() => navigate('/coach')}>
-            <Sun size={16} color="#F59E0B" />
-            노밍 만나기
-          </button>
-          <button className="ds-outline" onMouseMove={magnetic} onMouseLeave={reset} onClick={() => navigate('/bites')}>
-            <Leaf size={16} color="#1FBE86" />
-            오늘의 한잎
-          </button>
         </div>
       </div>
     </aside>
