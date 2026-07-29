@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronUp } from 'lucide-react';
 import BrandPanel from './BrandPanel';
 
 /*
@@ -13,6 +13,23 @@ export default function PresentationShell() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const contentRef = useRef(null);
+  const [showTop, setShowTop] = useState(false);
+
+  /* 페이지(메뉴) 이동 시 스크롤 위치 초기화 — 안 하면 이전 페이지에서
+     스크롤해 내려간 상태 그대로 다음 페이지가 열려버린다. */
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 });
+  }, [pathname]);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const check = () => setShowTop(el.scrollTop > 300);
+    el.addEventListener('scroll', check, { passive: true });
+    return () => el.removeEventListener('scroll', check);
+  }, []);
+
+  const scrollToTop = () => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
 
   useEffect(() => {
     const desktopQuery = window.matchMedia('(min-width: 1024px)');
@@ -77,6 +94,14 @@ export default function PresentationShell() {
           </p>
         </footer>
       </div>
+
+      <button
+        className={`ps-scroll-top-btn${showTop ? ' visible' : ''}`}
+        onClick={scrollToTop}
+        aria-label="맨 위로"
+      >
+        <ChevronUp size={20} />
+      </button>
     </div>
   );
 }

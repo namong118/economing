@@ -499,6 +499,23 @@ input, textarea { font-family: var(--font); outline: none; }
 .scroll-top-btn.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 .scroll-top-btn:hover { background: #18A870; box-shadow: 0 6px 20px rgba(31,190,134,.45); }
 
+/* 발표용 페이지(PresentationShell) 전용 스크롤 탑 버튼 — 하단 내비게이션이
+   없어서 .scroll-top-btn보다 더 아래(화면 모서리)에 붙인다 */
+.ps-scroll-top-btn {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--c-green-500); color: #fff; border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(31,190,134,.35);
+  z-index: 200;
+  opacity: 0; transform: translateY(8px) scale(.88);
+  transition: opacity .22s, transform .22s;
+  pointer-events: none;
+}
+.ps-scroll-top-btn.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.ps-scroll-top-btn:hover { background: #18A870; box-shadow: 0 6px 20px rgba(31,190,134,.45); }
+
 /* ===== 상세 페이지(지표 읽기·경제한잎) 상단 헤더("← 목적지") ===== */
 /* 모바일: fixed. 뷰포트 자체가 앱 컬럼이라 문제 없음.
    데스크톱(≥769px): sticky. .page-content가 실제 스크롤 컨테이너라 앱 컬럼
