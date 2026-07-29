@@ -274,8 +274,7 @@ export default function GuidePage() {
           </Body>
         </SideBySide>
 
-        {/* 이미지 없는 항목 — 스크린샷 대상에서 제외됨 */}
-        <div style={{ marginBottom: '56px' }}>
+        <SideBySide image={`${BASE}guide/13-dictionary.png`} imageAlt="내 성장 탭의 경제사전 화면" reverse>
           <ItemHeading>낯선 용어를 만나면 — 사전에 저장합니다</ItemHeading>
           <Body>
             뉴스를 읽다가, 코치와 대화하다가 모르는 단어가 나오면{'\n'}
@@ -286,7 +285,7 @@ export default function GuidePage() {
             <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>내가 실제로 막혔던 단어가 쌓이는</b> 사전입니다.{'\n'}
             내 성장 탭에서 볼 수 있습니다.
           </Body>
-        </div>
+        </SideBySide>
 
         <SideBySide image={`${BASE}guide/09-roadmap.png`} imageAlt="자립 로드맵 화면">
           <ItemHeading>돈 관리 방향을 잡고 싶으면 — 자립 진단</ItemHeading>

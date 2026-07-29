@@ -133,6 +133,7 @@ getComputedStyle(document.querySelector('.ds-app')).zoom    // 'normal' 또는 1
 | 10 | `10-my-growth.png` | `/my-growth` | 학습 진도 + 성장 단계 (요약 탭) | — | 기본 진입 탭이 "요약"이라 추가 조작 불필요. 페이지 길이가 짧아 하단 "개발자 메뉴"/"로그아웃"이 함께 잡히지 않게 프레임 조정 |
 | 11 | `11-indicators.png` | `/read?tab=indicators` | 지표 목록 여러 개, 탭이 2개라는 것이 보이게 | 하단 항목 | 경제읽기 진입 후 상단에서 "지표 읽는 법" 탭 클릭. 지표별 카드 형태가 다르다는 것(게이지형·배지형 등)이 드러나는 스크롤 위치 |
 | 12 | `12-indicator-detail.png` | `/indicator/64` (기준금리) | 오늘의 숫자 + 구간 배지 + "지금은 이런 상태" | 그 아래 섹션 | 11번 목록에서 기준금리 카드를 클릭해 상세 진입. 새 구조가 가장 잘 드러나는 지표. sticky 뒤로가기 헤더("← 지표 읽는 법")도 함께 보이면 좋음 |
+| 13 | `13-dictionary.png` | `/my-growth` → 경제사전 탭 | 저장된 용어 카드(출처 배지 + 뜻 + 날짜), 검색창 | — | 먼저 `/coach`에서 답변을 받아 "핵심 용어"의 "사전 저장" 버튼을 눌러 최소 1개 이상 저장해둘 것(빈 상태로 찍으면 기능이 안 보임). 이후 "경제사전" 탭 진입 |
 
 ---
 
@@ -172,4 +173,4 @@ getComputedStyle(document.querySelector('.ds-app')).zoom    // 'normal' 또는 1
 
 ## 저장 위치
 
-`public/guide/01-diagnosis.png` ~ `public/guide/12-indicator-detail.png`
+`public/guide/01-diagnosis.png` ~ `public/guide/13-dictionary.png`
