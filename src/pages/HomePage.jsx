@@ -6,6 +6,7 @@ import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite } from '../services/biteService';
 import { addXp, updateStreak } from '../services/profileService';
 import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
+import { getLevelByXp } from '../data/levelData';
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { getMarketIndices } from '../services/indicesService';
 import { getEconomicStats } from '../services/economicStatsService';
@@ -37,6 +38,13 @@ const LEVEL_LABEL = {
   elementary: '초급자', intermediate: '중급자',
   advanced: '고급자', expert: '전문가',
 };
+
+function xpInfo(xp = 0) {
+  const lvl      = Math.floor(xp / 100) + 1;
+  const progress = xp % 100;
+  const needed   = 100 - progress;
+  return { lvl, progress, needed };
+}
 
 const _questionsCache = {};
 
@@ -122,7 +130,7 @@ export default function HomePage() {
         const indicator = getIndicatorById(id);
         const insight   = getIndicatorInsight(id);
         const value     = getLatestInsightValue(insight, indicator?.dataKey, briefingData.statsData, briefingData.indicesData);
-        // change/changePercent는 indices 함수(코스피·코스닥)에만 존재 — 환율·economic-stats 지표는 null
+        // change/changePercent는 indices 함수(코스피·코스닥·환율)에만 존재 — economic-stats 지표는 null
         const liveEntry     = insight?.liveIndexKey ? briefingData.indicesData?.[insight.liveIndexKey] : null;
         const changePercent = typeof liveEntry?.changePercent === 'number' ? liveEntry.changePercent : null;
         return { id, label, unit: insight?.unit ?? '%', value, changePercent };
@@ -228,7 +236,7 @@ export default function HomePage() {
       return;
     }
     setNomingIntroLoading(true);
-    getNomingDailyMessage(bite.title, userLevel, profile?.nickname)
+    getNomingDailyMessage(bite.title, userLevel)
       .then(msg => {
         const result = msg || null;
         _nomingMsgCache[nomingCacheKey] = result;
@@ -237,6 +245,8 @@ export default function HomePage() {
       .catch(() => setNomingIntro(null))
       .finally(() => setNomingIntroLoading(false));
   }, [nomingCacheKey]); // eslint-disable-line
+
+  const { lvl, progress, needed } = xpInfo(profile?.xp ?? 0);
 
   return (
     <PageWrapper>
@@ -273,105 +283,73 @@ export default function HomePage() {
         {/* ── XP / 그리팅 카드 ── */}
         {user ? (
           <div style={{
-            background: 'var(--c-yellow-100)', borderRadius: 18,
-            padding: '20px', marginBottom: 9,
-            border: '1px solid var(--c-yellow-border)',
-            boxShadow: '0 4px 20px rgba(139,90,0,0.10)',
+            background: 'var(--grad-action)', borderRadius: 18,
+            padding: '20px', marginBottom: 9, color: '#fff',
+            boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
+            position: 'relative', overflow: 'hidden',
           }}>
-            {/* 노밍 라벨 + 날짜 — 한 줄 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍</span>
+            {/* 배경 장식 원 */}
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, background: 'rgba(255,255,255,0.12)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
+
+            {/* 상단: 인사 + 레벨 배지 */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
+                {profile?.nickname ? `${today} · ${profile.nickname}님, 안녕하세요!` : today}
               </div>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-amber-700)', opacity: 0.7 }}>
-                {today}
+              {(() => {
+                const { Icon: LvIcon, label } = getLevelByXp(profile?.xp ?? 0);
+                return (
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.92)',
+                    borderRadius: 100, padding: '5px 11px',
+                    border: '0.5px solid rgba(255,255,255,0.3)',
+                    fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  }}>
+                    <LvIcon size={13} color="rgba(255,255,255,0.9)" />
+                    {label}
+                  </span>
+                );
+              })()}
+            </div>
+
+            {/* XP 진행 바 + Lv/잔여 XP 한 줄 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.2)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
+                <div style={{
+                  background: '#fff', borderRadius: 99, height: '100%',
+                  width: `${progress}%`, transition: 'width 0.7s ease',
+                }} />
+              </div>
+              <span style={{ fontSize: 10, opacity: 0.8, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                Lv.{lvl} · {needed} XP 남음
               </span>
             </div>
 
-            {/* 노밍 한마디 — 카드의 주인공 */}
-            {nomingIntroLoading ? (
-              <div style={{ marginBottom: 10 }}>
-                <div style={{
-                  height: 15, borderRadius: 6, marginBottom: 8,
-                  background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
-                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-                }} />
-                <div style={{
-                  height: 15, width: '65%', borderRadius: 6,
-                  background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
-                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-                }} />
-              </div>
-            ) : nomingIntro && (
-              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px', whiteSpace: 'pre-line' }}>
-                {nomingIntro}
-              </div>
-            )}
-
-            {/* 추천 질문 칩 */}
-            {!nomingIntroLoading && nomingIntro && !questionsLoading && (
-              <div
-                onClick={() => navigate('/coach', { state: { question: (recommendedQuestions ?? fallbackQuestions)[0] } })}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
-                  background: 'rgba(255,255,255,0.6)', border: '0.5px solid rgba(250,217,138,0.9)',
-                  borderRadius: 9, padding: '9px 12px', marginBottom: 8,
-                }}
-              >
-                <span style={{ flex: 1, fontSize: 12, color: 'var(--c-amber-700)', lineHeight: 1.5, fontWeight: 500 }}>
-                  {(recommendedQuestions ?? fallbackQuestions)[0]}
-                </span>
-                <span style={{ fontSize: 12, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
-              </div>
-            )}
-
             {/* 오늘 할일 — 노밍의 추천 */}
-            <div style={{ fontSize: 12, color: 'var(--c-amber-700)', fontWeight: 500, marginBottom: 6, opacity: 0.85 }}>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500, marginTop: 14, marginBottom: 6 }}>
               {todoIntroPhrase}
             </div>
-            <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 4 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {todos.map((todo, i) => (
                 <div
                   key={i}
                   onClick={() => navigate(todo.path)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: 3, minWidth: 0, flex: '1 1 0',
-                    justifyContent: 'center',
-                    padding: '4px 7px', borderRadius: 20, cursor: 'pointer',
-                    background: todo.done ? 'var(--c-green-50)' : 'var(--c-surface)',
-                    border: `0.5px solid ${todo.done ? 'var(--c-green-100)' : 'var(--c-line)'}`,
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
+                    background: todo.done ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.18)',
+                    border: `0.5px solid ${todo.done ? 'transparent' : 'rgba(255,255,255,0.4)'}`,
                   }}
                 >
-                  <todo.Icon size={10} color={todo.done ? 'var(--c-green-500)' : 'var(--c-muted)'} style={{ flexShrink: 0 }} />
-                  <span style={{
-                    fontSize: 10, color: todo.done ? 'var(--c-forest-700)' : 'var(--c-muted)', fontWeight: todo.done ? 600 : 400,
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                  }}>
+                  <todo.Icon size={11} color={todo.done ? 'var(--c-green-500)' : 'rgba(255,255,255,0.9)'} />
+                  <span style={{ fontSize: 11, color: todo.done ? 'var(--c-forest-700)' : 'rgba(255,255,255,0.9)', fontWeight: todo.done ? 600 : 400 }}>
                     {todo.title}
                   </span>
                 </div>
               ))}
             </div>
-
-            {/* 오늘의 행동 제안 — 같은 카드 내부 섹션 */}
-            {user && profile?.today_action && (
-              <>
-                <div style={{ borderTop: '0.5px solid rgba(139,90,0,0.15)', margin: '14px 0' }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
-                    {profile.today_action}
-                  </span>
-                  <span
-                    onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
-                    style={{ fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
-                  >
-                    자립 로드맵 →
-                  </span>
-                </div>
-              </>
-            )}
-
           </div>
         ) : (
           /* 비로그인: 방문자 카드 */
@@ -380,7 +358,7 @@ export default function HomePage() {
             padding: '14px 16px', marginBottom: 9, color: '#fff',
             boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 11, opacity: 0.8, marginBottom: 2 }}>{today}</div>
                 <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
@@ -397,23 +375,6 @@ export default function HomePage() {
               >
                 로그인 →
               </div>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-              {todos.map((todo, i) => (
-                <div
-                  key={i}
-                  onClick={() => navigate(todo.path)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
-                    background: 'rgba(255,255,255,0.18)',
-                    border: '0.5px solid rgba(255,255,255,0.4)',
-                  }}
-                >
-                  <todo.Icon size={11} color="rgba(255,255,255,0.9)" />
-                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)' }}>{todo.title}</span>
-                </div>
-              ))}
             </div>
           </div>
         )}
@@ -458,7 +419,7 @@ export default function HomePage() {
                     {bite.category}
                   </span>
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
                   {bite.title}
                 </div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.65 }}>
@@ -474,6 +435,79 @@ export default function HomePage() {
                 >
                   오늘의 한잎 배우기 →
                 </button>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* ── 노밍 카드 — Yellow, 독립 카드 ── */}
+        <div style={{
+          background: 'var(--c-yellow-100)', borderRadius: 16,
+          border: '1px solid var(--c-yellow-border)', padding: 16, marginBottom: 9,
+          boxShadow: '0 4px 20px rgba(139,90,0,0.10)',
+        }}>
+          {/* 노밍 라벨 + 날짜 — 한 줄 */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍</span>
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-amber-700)', opacity: 0.7 }}>
+              {today}
+            </span>
+          </div>
+
+          {/* 노밍 한마디 */}
+          {nomingIntroLoading ? (
+            <div style={{ marginBottom: 10 }}>
+              <div style={{
+                height: 13, borderRadius: 6, marginBottom: 8,
+                background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
+                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+              }} />
+              <div style={{
+                height: 13, width: '65%', borderRadius: 6,
+                background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
+                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+              }} />
+            </div>
+          ) : nomingIntro && (
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px', whiteSpace: 'pre-line' }}>
+              {nomingIntro}
+            </div>
+          )}
+
+          {/* 추천 질문 칩 */}
+          {!nomingIntroLoading && nomingIntro && !questionsLoading && (
+            <div
+              onClick={() => navigate('/coach', { state: { question: (recommendedQuestions ?? fallbackQuestions)[0] } })}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.6)', border: '0.5px solid rgba(250,217,138,0.9)',
+                borderRadius: 9, padding: '9px 12px', marginBottom: 8,
+              }}
+            >
+              <span style={{ flex: 1, fontSize: 12, color: 'var(--c-amber-700)', lineHeight: 1.5, fontWeight: 500 }}>
+                {(recommendedQuestions ?? fallbackQuestions)[0]}
+              </span>
+              <span style={{ fontSize: 12, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
+            </div>
+          )}
+
+          {/* 오늘의 행동 제안 — 같은 카드 내부 섹션 */}
+          {user && profile?.today_action && (
+            <>
+              <div style={{ borderTop: '0.5px solid rgba(139,90,0,0.15)', margin: '14px 0' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                  {profile.today_action}
+                </span>
+                <span
+                  onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
+                  style={{ fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
+                >
+                  자립 로드맵 →
+                </span>
               </div>
             </>
           )}
