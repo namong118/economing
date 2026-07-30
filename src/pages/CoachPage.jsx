@@ -315,7 +315,7 @@ export default function CoachPage() {
   const [drawerOpen,    setDrawerOpen]    = useState(false);
   const [drawerGroups,  setDrawerGroups]  = useState({});
   const [drawerLoading, setDrawerLoading] = useState(false);
-  const bottomRef   = useRef(null);
+  const messagesScrollRef = useRef(null);
   const textareaRef = useRef(null);
   const initSent    = useRef(false);
   const contextRef  = useRef(null);
@@ -396,7 +396,8 @@ export default function CoachPage() {
 
   useEffect(() => {
     if (messages.length > 0 || loading) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const el = messagesScrollRef.current;
+      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
     }
   }, [messages, loading]);
 
@@ -546,7 +547,7 @@ export default function CoachPage() {
         )}
 
         {/* ── 메시지 영역 ──────────────────────────────── */}
-        <div style={{ flex: isEmpty ? 0 : 1, overflowY: 'auto', padding: isEmpty ? 0 : '24px 16px' }}>
+        <div ref={messagesScrollRef} style={{ flex: isEmpty ? 0 : 1, overflowY: 'auto', padding: isEmpty ? 0 : '24px 16px' }}>
           {messages.length > 0 && (
             <>
               {messages.map((msg, i) => (
@@ -604,8 +605,6 @@ export default function CoachPage() {
               {loading && <LoadingBubble BASE_URL={BASE_URL} />}
             </>
           )}
-
-          <div ref={bottomRef} />
         </div>
 
         {/* ── 입력 영역 ────────────────────────────────── */}
