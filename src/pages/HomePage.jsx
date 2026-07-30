@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Zap, MessageCircle, NotebookPen, Sun, Flame } from 'lucide-react';
+import { Leaf, MessageCircle, NotebookPen, Newspaper, Sun, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite } from '../services/biteService';
@@ -24,6 +24,15 @@ const BRIEFING_INDICATORS = [
   { id: 63, label: 'CPI' },
 ];
 
+/* 오늘 할일 인트로 문구 — AI 대신 날짜 기준으로 고정 로테이션 */
+const TODO_INTRO_PHRASES = [
+  '오늘도 이 순서로 가볍게 시작해볼까요?',
+  '이 네 가지, 오늘 안에 하나씩 해봐요',
+  '오늘의 학습, 이렇게 이어가볼까요?',
+  '순서대로 하나씩, 오늘도 함께해요',
+  '오늘 할 일은 이 정도면 충분해요',
+];
+
 const LEVEL_LABEL = {
   elementary: '초급자', intermediate: '중급자',
   advanced: '고급자', expert: '전문가',
@@ -44,6 +53,10 @@ export default function HomePage() {
   const d    = new Date();
   const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const today = `${d.getMonth() + 1}월 ${d.getDate()}일 ${days[d.getDay()]}`;
+
+  // 날짜 기준으로 인덱스를 고정 — 같은 날엔 같은 문구, 다음날엔 다른 문구
+  const dayIndex = d.getDate() % TODO_INTRO_PHRASES.length;
+  const todoIntroPhrase = TODO_INTRO_PHRASES[dayIndex];
 
   /* 맞춤 한잎 — auth 확정 후에만 실행 */
   useEffect(() => {
@@ -151,6 +164,15 @@ export default function HomePage() {
   /* 할일 완료 여부 */
   const [todoDone, setTodoDone] = useState([false, false, false, false]);
 
+  /* "경제읽기" 할일 — DB 연동 없이 오늘 /read 방문 여부를 localStorage로 판정 */
+  const [readingVisitedToday, setReadingVisitedToday] = useState(false);
+
+  useEffect(() => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const key = `economing_reading_visited_${user?.id ?? 'anon'}_${todayStr}`;
+    setReadingVisitedToday(localStorage.getItem(key) === 'true');
+  }, [user?.id]);
+
   /* 연속 학습일 마일스톤 축하 토스트 */
   const [streakMilestone, setStreakMilestone] = useState(null);
 
@@ -186,8 +208,8 @@ export default function HomePage() {
   }, [user?.id, bite?.id]); // eslint-disable-line
 
   const todos = [
-    { title: '한잎 읽기',        Icon: Leaf,          iconColor: 'var(--c-forest-700)', path: `/bite/${bite?.id}`, done: todoDone[0] },
-    { title: '한잎 퀴즈 풀기',   Icon: Zap,           iconColor: 'var(--c-amber-700)', path: `/bite/${bite?.id}`, done: todoDone[1] },
+    { title: '한잎 학습',        Icon: Leaf,          iconColor: 'var(--c-forest-700)', path: `/bite/${bite?.id}`, done: todoDone[1] },
+    { title: '경제읽기',         Icon: Newspaper,     iconColor: 'var(--c-forest-700)', path: '/read',             done: readingVisitedToday },
     { title: '노밍과 대화하기',  Icon: MessageCircle, iconColor: 'var(--c-yellow-500)', path: '/coach',            done: todoDone[2] },
     { title: '경제일기 쓰기',    Icon: NotebookPen,   iconColor: 'var(--c-slate)', path: '/diary',            done: todoDone[3] },
   ];
@@ -306,7 +328,7 @@ export default function HomePage() {
 
             {/* 오늘 할일 — 노밍의 추천 */}
             <div style={{ fontSize: 12, color: 'var(--c-amber-700)', fontWeight: 500, marginBottom: 6, opacity: 0.85 }}>
-              오늘은 이 순서로 해보는 건 어때요?
+              {todoIntroPhrase}
             </div>
             <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 4 }}>
               {todos.map((todo, i) => (
@@ -427,19 +449,18 @@ export default function HomePage() {
                 padding: '18px 16px 16px',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.3px' }}>오늘의 경제 한잎</span>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.3px' }}>
+                    {chapterInfo
+                      ? `${chapterInfo.number}장 · ${chapterInfo.name} · ${chapterLearned ?? 0}/${getChapterProgress(chapterInfo.number).completed}`
+                      : '오늘의 경제 한잎'}
+                  </span>
                   <span style={{ fontSize: 10, padding: '2px 9px', borderRadius: 20, background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '0.5px solid rgba(255,255,255,0.25)' }}>
                     {bite.category}
                   </span>
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: '-0.5px', lineHeight: 1.3 }}>
                   {bite.title}
                 </div>
-                {chapterInfo && (
-                  <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>
-                    {chapterInfo.number}장 · {chapterInfo.name} · {chapterLearned ?? 0}/{getChapterProgress(chapterInfo.number).completed}
-                  </div>
-                )}
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.65 }}>
                   {bite.description}
                 </div>

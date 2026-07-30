@@ -238,6 +238,12 @@ export default function ReadingPage() {
   const [error,    setError]    = useState(null);
   const abortRef = useRef(false);
 
+  /* 홈 화면 "경제읽기" 할일 완료 판정용 — DB 연동 없이 오늘 방문 여부만 로컬에 기록 */
+  useEffect(() => {
+    const todayStr = new Date().toISOString().slice(0, 10)
+    localStorage.setItem(`economing_reading_visited_${user?.id ?? 'anon'}_${todayStr}`, 'true')
+  }, [user?.id])
+
   const loadNews = useCallback(async (query) => {
     setLoading(true);
     setArticles([]);
