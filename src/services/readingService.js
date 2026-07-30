@@ -41,6 +41,23 @@ async function saveCachedNews(category, articles) {
   }
 }
 
+// 카테고리 라벨을 그대로 검색어로 쓰면 본문 어딘가에 그 단어만 들어가도 걸려서
+// (예: 섬유 산업 기사가 "국가 경제에 기여" 한 줄 때문에 "경제" 뉴스로 잘못 걸림)
+// 실제 검색에는 더 구체적인 복합 키워드를 쓴다. 캐시 키/UI 탭 이름은 카테고리 라벨 그대로 유지.
+const CATEGORY_SEARCH_QUERY = {
+  '경제':       '경제 금리 물가 증시 수출입',
+  '금리':       '기준금리 금리인상 금리인하',
+  '환율':       '환율 달러 원화',
+  '주식':       '증시 코스피 코스닥',
+  '부동산':     '부동산 집값 아파트 시세',
+  '미국경제':   '미국 경제 연준 FOMC',
+  '글로벌경제': '세계 경제 글로벌 경기',
+}
+
+function getSearchQuery(categoryLabel) {
+  return CATEGORY_SEARCH_QUERY[categoryLabel] ?? categoryLabel
+}
+
 // 네이버 뉴스 가져오기
 export async function fetchNews(query = '경제', display = 5) {
   const { data, error } = await supabase.functions.invoke('news', {
@@ -111,11 +128,12 @@ export async function summarizeNews(article) {
 }
 
 // 뉴스 5개 가져와서 병렬 요약 (Supabase 캐시 우선)
-export async function fetchAndSummarizeNews(query = '경제') {
-  const cached = await getCachedNews(query)
+export async function fetchAndSummarizeNews(categoryLabel = '경제') {
+  const cached = await getCachedNews(categoryLabel)
   if (cached) return cached
 
-  const articles = await fetchNews(query, 5)
+  const searchQuery = getSearchQuery(categoryLabel)
+  const articles = await fetchNews(searchQuery, 5)
 
   const results = await Promise.all(
     articles.map(article =>
@@ -131,7 +149,7 @@ export async function fetchAndSummarizeNews(query = '경제') {
     )
   )
 
-  saveCachedNews(query, results)  // 비동기, 결과 대기 안 함
+  saveCachedNews(categoryLabel, results)  // 비동기, 결과 대기 안 함
   return results
 }
 
