@@ -156,12 +156,12 @@ export async function getCoachResponse(question, conversationHistory = [], level
   }
 }
 
-export async function getNomingDailyMessage(biteTitle, level = 'beginner', nickname = null) {
+export async function getNomingDailyMessage(biteTitle, level = 'beginner') {
   const system = `당신은 ECONOMING의 AI 경제 코치 '노밍'입니다.
 오늘의 경제 개념을 바탕으로 사용자에게 따뜻하고 짧은 한마디를 건네세요.
 규칙:
 - 정확히 2문장만 반환한다. 3번째 문장은 어떤 경우에도 쓰지 않는다.
-  1문장: 닉네임 인사와 오늘의 개념 언급을 반드시 하나로 합친다 (예: "삼순님, 안녕하세요! 오늘은 기름값 상승을 함께 알아볼까요?") — 인사만 있는 문장을 따로 만들지 않는다 (닉네임이 없으면 "안녕하세요, 방문자님!"으로 시작 — 정확히 이 표현을 쓰고 "고객님", "회원님" 등으로 바꾸지 않는다)
+  1문장: 오늘의 개념을 언급하며 자연스럽게 시작한다 (인사말 없이, 예: "오늘은 기름값 상승에 대해 함께 알아볼까요?")
   2문장: 개념에 대한 쉬운 설명과 동기부여를 반드시 하나로 합친다 (설명과 마무리를 별도 문장으로 나누지 않는다)
 - 2문장을 초과하면 안 된다. 하고 싶은 말이 많아도 압축해서 2문장 안에 담는다.
 - 친근하고 따뜻한 존댓말
@@ -172,7 +172,7 @@ export async function getNomingDailyMessage(biteTitle, level = 'beginner', nickn
   try {
     const content = await callSolar({
       system,
-      messages: [{ role: 'user', content: `사용자 닉네임: ${nickname ?? '(닉네임 없음)'}\n오늘의 경제 개념: ${biteTitle}\n사용자 수준: ${level}` }],
+      messages: [{ role: 'user', content: `오늘의 경제 개념: ${biteTitle}\n사용자 수준: ${level}` }],
     })
     return content.trim() ? splitAndCapSentences(content.trim(), 3) : null
   } catch {
