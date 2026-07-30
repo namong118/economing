@@ -270,10 +270,10 @@ export default function HomePage() {
             <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, background: 'rgba(255,255,255,0.12)', borderRadius: '50%', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-            {/* 상단: 인사 + 레벨 배지 */}
+            {/* 상단: 날짜 + 레벨 배지 */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
-                {profile?.nickname ? `${today} · ${profile.nickname}님, 안녕하세요!` : today}
+                {today}
               </div>
               {(() => {
                 const { Icon: LvIcon, label } = getLevelByXp(profile?.xp ?? 0);
@@ -305,8 +305,58 @@ export default function HomePage() {
               </span>
             </div>
 
+            {/* 노밍 한마디 — 옐로우 인셋 박스 */}
+            {(nomingIntroLoading || nomingIntro) && (
+              <>
+                <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.2)', margin: '12px 0' }} />
+                <div style={{
+                  background: 'rgba(255,246,220,0.95)', borderRadius: 12,
+                  border: '0.5px solid rgba(250,217,138,0.9)', padding: '10px 12px',
+                }}>
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                    <Sun size={14} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
+                    {nomingIntroLoading ? (
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          height: 11, borderRadius: 5, marginBottom: 6,
+                          background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                          backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                        }} />
+                        <div style={{
+                          height: 11, width: '60%', borderRadius: 5,
+                          background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
+                          backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                        }} />
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: 12, color: 'var(--c-amber-700)', lineHeight: 1.6, fontWeight: 500 }}>
+                        {nomingIntro}
+                      </span>
+                    )}
+                  </div>
+
+                  {!nomingIntroLoading && !questionsLoading && (
+                    <div
+                      onClick={() => navigate('/coach', { state: { question: (recommendedQuestions ?? fallbackQuestions)[0] } })}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                        background: 'rgba(255,255,255,0.6)', border: '0.5px solid rgba(250,217,138,0.9)',
+                        borderRadius: 9, padding: '7px 10px', marginTop: 8,
+                      }}
+                    >
+                      <span style={{ flex: 1, fontSize: 11, color: 'var(--c-amber-700)', lineHeight: 1.5, fontWeight: 500 }}>
+                        {(recommendedQuestions ?? fallbackQuestions)[0]}
+                      </span>
+                      <span style={{ fontSize: 11, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
+                    </div>
+                  )}
+                </div>
+                <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.2)', margin: '12px 0' }} />
+              </>
+            )}
+
             {/* 오늘 할일 pills */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 10 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: nomingIntroLoading || nomingIntro ? 0 : 10 }}>
               {todos.map((todo, i) => (
                 <div
                   key={i}
@@ -526,105 +576,26 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* ── 카드 3: 노밍 한마디 — Yellow 테마 ── */}
-        <div style={{
-          background: 'var(--c-yellow-100)', borderRadius: 16,
-          border: '1px solid var(--c-yellow-border)', padding: 16,
-          boxShadow: '0 2px 12px rgba(139,90,0,0.08)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-            <div style={{
-              width: 42, height: 42, borderRadius: '50%',
-              background: 'rgba(255,200,61,0.25)', border: '1.5px solid var(--c-yellow-border)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}>
-              <Sun size={24} color="#F59E0B" />
-            </div>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍 한마디</div>
-              <div style={{ fontSize: 11, color: '#A57800', opacity: 0.8 }}>오늘의 경제 코칭</div>
-            </div>
-          </div>
-
+        {/* ── 오늘의 행동 제안 — 얇은 단독 카드 ── */}
+        {user && profile?.today_action && (
           <div style={{
-            background: 'rgba(255,255,255,0.6)', borderRadius: 12,
-            padding: '12px 14px', fontSize: 13, color: 'var(--c-amber-700)',
-            lineHeight: 1.75, border: '0.5px solid var(--c-yellow-border)', marginBottom: 12,
-            fontWeight: 500, minHeight: 60,
+            background: '#FFFBEE', borderRadius: 12,
+            border: '0.5px solid #FAC775', padding: '10px 14px',
+            display: 'flex', alignItems: 'center', gap: 8,
+            boxShadow: '0 1px 6px rgba(139,90,0,0.05)',
           }}>
-            {nomingIntroLoading ? (
-              <div style={{
-                height: 13, borderRadius: 6, marginBottom: 8,
-                background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
-                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-              }}>
-                <div style={{ height: 13, width: '60%', borderRadius: 6, marginTop: 6,
-                  background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
-                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-                }} />
-              </div>
-            ) : nomingIntro ? nomingIntro : (
-              <>오늘의 주제는 <strong style={{ color: 'var(--c-amber-700)' }}>{bite?.title}</strong>이에요. 궁금한 게 있으면 바로 물어보세요!</>
-            )}
-          </div>
-
-          {questionsLoading ? (
-            <div style={{
-              width: '100%', height: 36, borderRadius: 8,
-              background: 'linear-gradient(90deg,rgba(255,200,61,0.2) 25%,rgba(255,246,220,0.6) 50%,rgba(255,200,61,0.2) 75%)',
-              backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-            }} />
-          ) : (
-            (() => {
-              const q = (recommendedQuestions ?? fallbackQuestions)[0];
-              return (
-                <button
-                  onClick={() => navigate('/coach', { state: { question: q } })}
-                  style={{
-                    width: '100%', background: 'rgba(255,255,255,0.55)', border: '0.5px solid var(--c-yellow-border)',
-                    borderRadius: 9, padding: '9px 12px', fontSize: 12, color: 'var(--c-amber-700)',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    cursor: 'pointer', textAlign: 'left', fontWeight: 500,
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.85)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.55)'}
-                >
-                  <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
-                  <span style={{ color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
-                </button>
-              );
-            })()
-          )}
-
-          <div style={{ textAlign: 'right', marginTop: 6 }}>
+            <Sun size={14} color="#F59E0B" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5 }}>
+              {profile.today_action}
+            </span>
             <span
-              onClick={() => navigate('/coach')}
-              style={{ fontSize: 11, color: 'var(--c-amber-700)', opacity: 0.75, cursor: 'pointer', fontWeight: 500 }}
+              onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
+              style={{ fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
             >
-              다른 질문도 해보기 →
+              자립 로드맵 →
             </span>
           </div>
-
-          {/* ── 오늘의 행동 제안 (같은 카드 내부 섹션) ── */}
-          {user && profile?.today_action && (
-            <>
-              <div style={{ borderTop: '0.5px solid var(--c-yellow-border)', margin: '14px 0 12px' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Sun size={14} color="#F59E0B" style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', letterSpacing: '0.3px' }}>노밍의 오늘 행동 제안</span>
-              </div>
-              <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.75 }}>
-                {profile.today_action}
-              </div>
-              <button
-                onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
-                style={{ marginTop: 10, background: 'none', border: '0.5px solid #FAC775', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600 }}
-              >
-                자립 로드맵 보기 →
-              </button>
-            </>
-          )}
-        </div>
+        )}
 
       </div>
     </PageWrapper>
