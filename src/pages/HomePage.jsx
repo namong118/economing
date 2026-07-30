@@ -278,13 +278,13 @@ export default function HomePage() {
         </div>
       )}
 
-      <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 32px', boxSizing: 'border-box' }}>
+      <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '8px 20px 32px', boxSizing: 'border-box' }}>
 
         {/* ── XP / 그리팅 카드 ── */}
         {user ? (
           <div style={{
             background: 'var(--grad-action)', borderRadius: 18,
-            padding: '20px', marginBottom: 9, color: '#fff',
+            padding: '14px 20px 20px', marginBottom: 9, color: '#fff',
             boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
             position: 'relative', overflow: 'hidden',
           }}>
@@ -293,7 +293,7 @@ export default function HomePage() {
             <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             {/* 상단: 인사 + 레벨 배지 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
                 {profile?.nickname ? `${today} · ${profile.nickname}님, 안녕하세요!` : today}
               </div>
@@ -328,7 +328,7 @@ export default function HomePage() {
             </div>
 
             {/* 오늘 할일 — 노밍의 추천 */}
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500, marginTop: 14, marginBottom: 6 }}>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500, marginTop: 8, marginBottom: 6 }}>
               {todoIntroPhrase}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
