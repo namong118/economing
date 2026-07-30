@@ -206,7 +206,7 @@ export default function HomePage() {
       return;
     }
     setNomingIntroLoading(true);
-    getNomingDailyMessage(bite.title, userLevel)
+    getNomingDailyMessage(bite.title, userLevel, profile?.nickname)
       .then(msg => {
         const result = msg || null;
         _nomingMsgCache[nomingCacheKey] = result;
