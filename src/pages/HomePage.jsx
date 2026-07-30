@@ -248,33 +248,6 @@ export default function HomePage() {
 
       <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 32px', boxSizing: 'border-box' }}>
 
-        {/* ── 오늘 할일 캡슐 — 페이지 최상단 (로그인 상태) ── */}
-        {user && (
-          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 4, marginBottom: 12 }}>
-            {todos.map((todo, i) => (
-              <div
-                key={i}
-                onClick={() => navigate(todo.path)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 3, minWidth: 0, flex: '1 1 0',
-                  justifyContent: 'center',
-                  padding: '4px 7px', borderRadius: 20, cursor: 'pointer',
-                  background: todo.done ? 'var(--c-green-50)' : 'var(--c-surface)',
-                  border: `0.5px solid ${todo.done ? 'var(--c-green-100)' : 'var(--c-line)'}`,
-                }}
-              >
-                <todo.Icon size={10} color={todo.done ? 'var(--c-green-500)' : 'var(--c-muted)'} style={{ flexShrink: 0 }} />
-                <span style={{
-                  fontSize: 10, color: todo.done ? 'var(--c-forest-700)' : 'var(--c-muted)', fontWeight: todo.done ? 600 : 400,
-                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                }}>
-                  {todo.title}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* ── XP / 그리팅 카드 ── */}
         {user ? (
           <div style={{
@@ -283,9 +256,14 @@ export default function HomePage() {
             border: '1px solid var(--c-yellow-border)',
             boxShadow: '0 4px 20px rgba(139,90,0,0.10)',
           }}>
-            {/* 날짜 + 아이콘 — 노밍 메시지 헤더 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            {/* 노밍 — 카드 전체를 대표하는 라벨 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍</span>
+            </div>
+
+            {/* 날짜 — 노밍 메시지 헤더 */}
+            <div style={{ marginBottom: 6 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--c-amber-700)', opacity: 0.85 }}>
                 {today}
               </span>
@@ -326,6 +304,52 @@ export default function HomePage() {
                 </span>
                 <span style={{ fontSize: 12, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
               </div>
+            )}
+
+            {/* 오늘 할일 — 노밍의 추천 */}
+            <div style={{ fontSize: 12, color: 'var(--c-amber-700)', fontWeight: 500, marginBottom: 6, opacity: 0.85 }}>
+              오늘은 이 순서로 해보는 건 어때요?
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 4 }}>
+              {todos.map((todo, i) => (
+                <div
+                  key={i}
+                  onClick={() => navigate(todo.path)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 3, minWidth: 0, flex: '1 1 0',
+                    justifyContent: 'center',
+                    padding: '4px 7px', borderRadius: 20, cursor: 'pointer',
+                    background: todo.done ? 'var(--c-green-50)' : 'var(--c-surface)',
+                    border: `0.5px solid ${todo.done ? 'var(--c-green-100)' : 'var(--c-line)'}`,
+                  }}
+                >
+                  <todo.Icon size={10} color={todo.done ? 'var(--c-green-500)' : 'var(--c-muted)'} style={{ flexShrink: 0 }} />
+                  <span style={{
+                    fontSize: 10, color: todo.done ? 'var(--c-forest-700)' : 'var(--c-muted)', fontWeight: todo.done ? 600 : 400,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  }}>
+                    {todo.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* 오늘의 행동 제안 — 같은 카드 내부 섹션 */}
+            {user && profile?.today_action && (
+              <>
+                <div style={{ borderTop: '0.5px solid rgba(139,90,0,0.15)', margin: '14px 0' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5 }}>
+                    {profile.today_action}
+                  </span>
+                  <span
+                    onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
+                    style={{ fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
+                  >
+                    자립 로드맵 →
+                  </span>
+                </div>
+              </>
             )}
 
           </div>
@@ -528,27 +552,6 @@ export default function HomePage() {
             <div style={{ fontSize: 12, color: 'var(--c-muted)', textAlign: 'center', padding: 12 }}>뉴스를 불러올 수 없어요</div>
           )}
         </div>
-
-        {/* ── 오늘의 행동 제안 — 얇은 단독 카드 ── */}
-        {user && profile?.today_action && (
-          <div style={{
-            background: '#FFFBEE', borderRadius: 12,
-            border: '0.5px solid #FAC775', padding: '10px 14px',
-            display: 'flex', alignItems: 'center', gap: 8,
-            boxShadow: '0 1px 6px rgba(139,90,0,0.05)',
-          }}>
-            <Sun size={14} color="#F59E0B" style={{ flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5 }}>
-              {profile.today_action}
-            </span>
-            <span
-              onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
-              style={{ fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
-            >
-              자립 로드맵 →
-            </span>
-          </div>
-        )}
 
       </div>
     </PageWrapper>
