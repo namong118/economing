@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite } from '../services/biteService';
 import { addXp, updateStreak } from '../services/profileService';
-import { getLevelByXp } from '../data/levelData';
 import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
 import { getMarketIndices } from '../services/indicesService';
@@ -29,13 +28,6 @@ const LEVEL_LABEL = {
   elementary: '초급자', intermediate: '중급자',
   advanced: '고급자', expert: '전문가',
 };
-
-function xpInfo(xp = 0) {
-  const lvl      = Math.floor(xp / 100) + 1;
-  const progress = xp % 100;
-  const needed   = 100 - progress;
-  return { lvl, progress, needed };
-}
 
 const _questionsCache = {};
 
@@ -224,8 +216,6 @@ export default function HomePage() {
       .finally(() => setNomingIntroLoading(false));
   }, [nomingCacheKey]); // eslint-disable-line
 
-  const { lvl, progress, needed } = xpInfo(profile?.xp ?? 0);
-
   return (
     <PageWrapper>
       <style>{`
@@ -258,123 +248,86 @@ export default function HomePage() {
 
       <div className="anim-fade" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 20px 32px', boxSizing: 'border-box' }}>
 
+        {/* ── 오늘 할일 캡슐 — 페이지 최상단 (로그인 상태) ── */}
+        {user && (
+          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 4, marginBottom: 12 }}>
+            {todos.map((todo, i) => (
+              <div
+                key={i}
+                onClick={() => navigate(todo.path)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 3, minWidth: 0, flex: '1 1 0',
+                  justifyContent: 'center',
+                  padding: '4px 7px', borderRadius: 20, cursor: 'pointer',
+                  background: todo.done ? 'var(--c-green-50)' : 'var(--c-surface)',
+                  border: `0.5px solid ${todo.done ? 'var(--c-green-100)' : 'var(--c-line)'}`,
+                }}
+              >
+                <todo.Icon size={10} color={todo.done ? 'var(--c-green-500)' : 'var(--c-muted)'} style={{ flexShrink: 0 }} />
+                <span style={{
+                  fontSize: 10, color: todo.done ? 'var(--c-forest-700)' : 'var(--c-muted)', fontWeight: todo.done ? 600 : 400,
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                }}>
+                  {todo.title}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* ── XP / 그리팅 카드 ── */}
         {user ? (
           <div style={{
-            background: 'var(--grad-action)', borderRadius: 18,
-            padding: '20px', marginBottom: 9, color: '#fff',
-            boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
-            position: 'relative', overflow: 'hidden',
+            background: 'var(--c-yellow-100)', borderRadius: 18,
+            padding: '20px', marginBottom: 9,
+            border: '1px solid var(--c-yellow-border)',
+            boxShadow: '0 4px 20px rgba(139,90,0,0.10)',
           }}>
-            {/* 배경 장식 원 */}
-            <div style={{ position: 'absolute', right: -20, top: -20, width: 110, height: 110, background: 'rgba(255,255,255,0.12)', borderRadius: '50%', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-            {/* 상단: 날짜 + 레벨 배지 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
+            {/* 날짜 + 아이콘 — 노밍 메시지 헤더 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+              <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--c-amber-700)', opacity: 0.85 }}>
                 {today}
-              </div>
-              {(() => {
-                const { Icon: LvIcon, label } = getLevelByXp(profile?.xp ?? 0);
-                return (
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 5,
-                    background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.92)',
-                    borderRadius: 100, padding: '5px 11px',
-                    border: '0.5px solid rgba(255,255,255,0.3)',
-                    fontSize: 12, fontWeight: 700, flexShrink: 0,
-                  }}>
-                    <LvIcon size={13} color="rgba(255,255,255,0.9)" />
-                    {label}
-                  </span>
-                );
-              })()}
-            </div>
-
-            {/* XP 진행 바 + Lv/잔여 XP 한 줄 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ flex: 1, background: 'rgba(255,255,255,0.2)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
-                <div style={{
-                  background: '#fff', borderRadius: 99, height: '100%',
-                  width: `${progress}%`, transition: 'width 0.7s ease',
-                }} />
-              </div>
-              <span style={{ fontSize: 10, opacity: 0.8, flexShrink: 0, whiteSpace: 'nowrap' }}>
-                Lv.{lvl} · {needed} XP 남음
               </span>
             </div>
 
-            {/* 노밍 한마디 — 옐로우 인셋 박스 */}
-            {(nomingIntroLoading || nomingIntro) && (
-              <>
-                <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.2)', margin: '12px 0' }} />
+            {/* 노밍 한마디 — 카드의 주인공 */}
+            {nomingIntroLoading ? (
+              <div style={{ marginBottom: 10 }}>
                 <div style={{
-                  background: 'rgba(255,246,220,0.95)', borderRadius: 12,
-                  border: '0.5px solid rgba(250,217,138,0.9)', padding: '10px 12px',
-                }}>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
-                    <Sun size={14} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
-                    {nomingIntroLoading ? (
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          height: 11, borderRadius: 5, marginBottom: 6,
-                          background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
-                          backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-                        }} />
-                        <div style={{
-                          height: 11, width: '60%', borderRadius: 5,
-                          background: 'linear-gradient(90deg,rgba(255,200,61,0.25) 25%,rgba(255,246,220,0.7) 50%,rgba(255,200,61,0.25) 75%)',
-                          backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-                        }} />
-                      </div>
-                    ) : (
-                      <span style={{ fontSize: 12, color: 'var(--c-amber-700)', lineHeight: 1.6, fontWeight: 500 }}>
-                        {nomingIntro}
-                      </span>
-                    )}
-                  </div>
-
-                  {!nomingIntroLoading && !questionsLoading && (
-                    <div
-                      onClick={() => navigate('/coach', { state: { question: (recommendedQuestions ?? fallbackQuestions)[0] } })}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
-                        background: 'rgba(255,255,255,0.6)', border: '0.5px solid rgba(250,217,138,0.9)',
-                        borderRadius: 9, padding: '7px 10px', marginTop: 8,
-                      }}
-                    >
-                      <span style={{ flex: 1, fontSize: 11, color: 'var(--c-amber-700)', lineHeight: 1.5, fontWeight: 500 }}>
-                        {(recommendedQuestions ?? fallbackQuestions)[0]}
-                      </span>
-                      <span style={{ fontSize: 11, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
-                    </div>
-                  )}
-                </div>
-                <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.2)', margin: '12px 0' }} />
-              </>
+                  height: 15, borderRadius: 6, marginBottom: 8,
+                  background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                }} />
+                <div style={{
+                  height: 15, width: '65%', borderRadius: 6,
+                  background: 'linear-gradient(90deg,rgba(255,200,61,0.3) 25%,rgba(255,246,220,0.5) 50%,rgba(255,200,61,0.3) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                }} />
+              </div>
+            ) : nomingIntro && (
+              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px' }}>
+                {nomingIntro}
+              </div>
             )}
 
-            {/* 오늘 할일 pills */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: nomingIntroLoading || nomingIntro ? 0 : 10 }}>
-              {todos.map((todo, i) => (
-                <div
-                  key={i}
-                  onClick={() => navigate(todo.path)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
-                    background: todo.done ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.18)',
-                    border: `0.5px solid ${todo.done ? 'transparent' : 'rgba(255,255,255,0.4)'}`,
-                  }}
-                >
-                  <todo.Icon size={11} color={todo.done ? 'var(--c-green-500)' : 'rgba(255,255,255,0.9)'} />
-                  <span style={{ fontSize: 11, color: todo.done ? 'var(--c-forest-700)' : 'rgba(255,255,255,0.9)', fontWeight: todo.done ? 600 : 400 }}>
-                    {todo.title}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {/* 추천 질문 칩 */}
+            {!nomingIntroLoading && nomingIntro && !questionsLoading && (
+              <div
+                onClick={() => navigate('/coach', { state: { question: (recommendedQuestions ?? fallbackQuestions)[0] } })}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.6)', border: '0.5px solid rgba(250,217,138,0.9)',
+                  borderRadius: 9, padding: '9px 12px', marginBottom: 8,
+                }}
+              >
+                <span style={{ flex: 1, fontSize: 12, color: 'var(--c-amber-700)', lineHeight: 1.5, fontWeight: 500 }}>
+                  {(recommendedQuestions ?? fallbackQuestions)[0]}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
+              </div>
+            )}
+
           </div>
         ) : (
           /* 비로그인: 방문자 카드 */
