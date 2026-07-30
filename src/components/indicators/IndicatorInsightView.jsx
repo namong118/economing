@@ -56,6 +56,29 @@ function useMatchingNews(query, phrases) {
   return article;
 }
 
+/* 실시간 값(today) 로딩 중 2·3번 섹션이 나타날 자리를 미리 잡아두는 스켈레톤 —
+   안 그러면 로딩이 끝나는 순간 카드가 튀어나오며 아래 콘텐츠가 밀린다 */
+function SkeletonCard({ lines, gauge }) {
+  const bar = (width, height) => (
+    <div style={{
+      width, height, borderRadius: 6,
+      background: 'linear-gradient(90deg, var(--c-line-soft) 25%, var(--c-canvas) 50%, var(--c-line-soft) 75%)',
+      backgroundSize: '200% 100%', animation: 'indicator-chart-shimmer 1.4s infinite',
+    }} />
+  );
+  return (
+    <div style={{
+      background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
+      borderRadius: 14, padding: '20px 18px 16px', marginBottom: 14,
+      boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', gap: 10,
+    }}>
+      {lines.map((h, i) => <div key={i}>{bar(i === 0 ? '40%' : '100%', h)}</div>)}
+      {gauge && bar('100%', 48)}
+      <style>{'@keyframes indicator-chart-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }'}</style>
+    </div>
+  );
+}
+
 export default function IndicatorInsightView({ indicator, insight }) {
   const navigate = useNavigate();
   const { series, loading } = useLiveSeries(indicator.dataKey, {
@@ -143,8 +166,13 @@ export default function IndicatorInsightView({ indicator, insight }) {
       </div>
 
       {/* 2. 지금은 이런 상태 — noBandNote가 있으면(예: 실업률) 구간 판단 대신
-          "이 숫자를 그대로 믿으면 안 되는 이유"를 보여준다 */}
-      {(band || insight.noBandNote) && (
+          "이 숫자를 그대로 믿으면 안 되는 이유"를 보여준다.
+          band는 실시간 값(today) 로딩이 끝나야 계산되므로, 로딩 중에도 이 섹션이
+          결국 나타날 지표(noBands가 아닌 경우)는 자리를 미리 확보해둔다 — 안 그러면
+          로딩이 끝나는 순간 이 카드가 갑자기 튀어나오며 아래 내용이 밀린다 */}
+      {loading && !insight.noBandNote && !insight.noBands ? (
+        <SkeletonCard lines={[16, 20, 34]} />
+      ) : (band || insight.noBandNote) && (
         <div style={{
           background: 'var(--c-surface)', borderLeft: '4px solid var(--c-green-500)',
           borderRadius: '4px 14px 14px 4px', padding: '18px 20px', marginBottom: 14,
@@ -165,8 +193,12 @@ export default function IndicatorInsightView({ indicator, insight }) {
       {/* 3. 범위 안에서 여기쯤 — range가 없는 지표(예: 역전 여부 자체가 핵심인 장단기
           금리 역전)는 눈금이 의미가 없어서 건너뛴다. 이때는 위 hero의 구간 배지가
           "상태 표시"를 대신한다. 실업률처럼 구간 자체가 없는 지표는 눈금 대신
-          "그때와 비교하면" — anchor 하나와 오늘 값을 나란히 보여주는 단순 비교로 대체한다 */}
-      {today != null && insight.range && (
+          "그때와 비교하면" — anchor 하나와 오늘 값을 나란히 보여주는 단순 비교로 대체한다.
+          range가 있는 지표는 today 로딩이 끝나야 렌더링되므로, 같은 이유로 로딩 중
+          스켈레톤을 먼저 보여준다 */}
+      {loading && insight.range ? (
+        <SkeletonCard lines={[16]} gauge />
+      ) : today != null && insight.range && (
         <div style={{
           background: 'var(--c-surface)', border: '0.5px solid var(--c-line)',
           borderRadius: 14, padding: '20px 18px 16px', marginBottom: 14,
