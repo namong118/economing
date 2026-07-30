@@ -282,7 +282,7 @@ export default function HomePage() {
                 }} />
               </div>
             ) : nomingIntro && (
-              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px' }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px', whiteSpace: 'pre-line' }}>
                 {nomingIntro}
               </div>
             )}
@@ -337,7 +337,7 @@ export default function HomePage() {
               <>
                 <div style={{ borderTop: '0.5px solid rgba(139,90,0,0.15)', margin: '14px 0' }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5 }}>
+                  <span style={{ flex: 1, fontSize: 12, color: '#633806', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
                     {profile.today_action}
                   </span>
                   <span

@@ -1,5 +1,6 @@
 import { callSolar } from './solarService'
 import { supabase } from './supabaseClient'
+import { splitAndCapSentences } from '../utils/textFormat'
 
 const GOAL_LABELS = {
   home:       '내 집 마련 / 부동산 투자',
@@ -252,15 +253,16 @@ export async function generateTodayAction(userId, financialGoal, independenceLev
   })
   // 모델이 규칙을 무시하고 이모지를 넣는 경우를 대비한 안전장치
   const content = raw.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/gu, '').replace(/[ \t]+$/gm, '').trim()
+  const formatted = splitAndCapSentences(content, 2)
 
   const { error } = await supabase
     .from('profiles')
-    .update({ today_action: content, today_action_date: today })
+    .update({ today_action: formatted, today_action_date: today })
     .eq('id', userId)
 
   if (error) console.error('오늘의 행동 저장 실패:', error)
 
-  return content
+  return formatted
 }
 
 export async function completeOnboarding(userId, answers) {

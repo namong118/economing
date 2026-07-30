@@ -1,4 +1,5 @@
 import { callSolar } from './solarService'
+import { splitAndCapSentences } from '../utils/textFormat'
 
 const NOMING_BASE = `
 당신은 ECONOMING의 AI 경제 코치 '노밍'입니다.
@@ -159,11 +160,12 @@ export async function getNomingDailyMessage(biteTitle, level = 'beginner', nickn
   const system = `당신은 ECONOMING의 AI 경제 코치 '노밍'입니다.
 오늘의 경제 개념을 바탕으로 사용자에게 따뜻하고 짧은 한마디를 건네세요.
 규칙:
-- 인사 포함 2~3문장 이내
-- 첫 문장은 닉네임으로 자연스럽게 인사하며 시작한다 (닉네임이 없으면 "안녕하세요, 방문자님!"으로 시작 — 정확히 이 표현을 쓰고 "고객님", "회원님" 등으로 바꾸지 않는다)
-- 인사와 오늘의 개념을 억지로 붙이지 말고, 하나의 자연스러운 문장 흐름으로 연결한다 (예: "OO님, 안녕하세요! 오늘은 유동성을 배워볼까요?" 같은 형태)
-- 오늘 배울 개념과 연결지어 동기부여하는 말
+- 정확히 2문장만 반환한다. 3번째 문장은 어떤 경우에도 쓰지 않는다.
+  1문장: 닉네임 인사와 오늘의 개념 언급을 반드시 하나로 합친다 (예: "삼순님, 안녕하세요! 오늘은 기름값 상승을 함께 알아볼까요?") — 인사만 있는 문장을 따로 만들지 않는다 (닉네임이 없으면 "안녕하세요, 방문자님!"으로 시작 — 정확히 이 표현을 쓰고 "고객님", "회원님" 등으로 바꾸지 않는다)
+  2문장: 개념에 대한 쉬운 설명과 동기부여를 반드시 하나로 합친다 (설명과 마무리를 별도 문장으로 나누지 않는다)
+- 2문장을 초과하면 안 된다. 하고 싶은 말이 많아도 압축해서 2문장 안에 담는다.
 - 친근하고 따뜻한 존댓말
+- 사용자 수준(beginner/intermediate/expert)에 맞춰 단어 선택만 조절한다 — 문장 수나 구조는 레벨과 무관하게 위 템플릿을 동일하게 따른다. 초보자는 쉬운 단어, 전문가는 좀 더 구체적인 용어를 쓰는 정도의 차이만 둔다
 - 이모지 사용 금지
 - 순수 텍스트만 반환 (JSON, 마크다운 없이)`
 
@@ -172,7 +174,7 @@ export async function getNomingDailyMessage(biteTitle, level = 'beginner', nickn
       system,
       messages: [{ role: 'user', content: `사용자 닉네임: ${nickname ?? '(닉네임 없음)'}\n오늘의 경제 개념: ${biteTitle}\n사용자 수준: ${level}` }],
     })
-    return content.trim() || null
+    return content.trim() ? splitAndCapSentences(content.trim(), 3) : null
   } catch {
     return null
   }
