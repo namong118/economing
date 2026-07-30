@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Zap, MessageCircle, NotebookPen, Sun, Flame, TrendingUp, BarChart2, Globe, PiggyBank, Home, BookOpen } from 'lucide-react';
+import { Leaf, Zap, MessageCircle, NotebookPen, Sun, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { getTodaysBite, getRecommendedBite } from '../services/biteService';
@@ -8,10 +8,22 @@ import { addXp, updateStreak } from '../services/profileService';
 import { getLevelByXp } from '../data/levelData';
 import { getRecommendedQuestions, getNomingDailyMessage } from '../services/coachService';
 import { fetchAndSummarizeNews } from '../services/readingService';
+import { getMarketIndices } from '../services/indicesService';
+import { getEconomicStats } from '../services/economicStatsService';
 import { useUserLevel } from '../hooks/useUserLevel';
-import { BITE_INFOGRAPHICS } from '../data/biteInfographics';
 import { CURRICULUM_CHAPTERS, getChapterProgress } from '../data/curriculum';
+import { getIndicatorInsight } from '../data/indicatorInsights';
+import { getIndicatorById } from '../data/indicatorsData';
+import { getLatestInsightValue } from '../utils/liveIndicatorValue';
 import PageWrapper from '../components/layout/PageWrapper';
+
+/* 오늘의 경제 브리핑 — 코스피 · 환율 · 기준금리 · CPI */
+const BRIEFING_INDICATORS = [
+  { id: 61, label: '코스피' },
+  { id: 62, label: '환율' },
+  { id: 64, label: '기준금리' },
+  { id: 63, label: 'CPI' },
+];
 
 const LEVEL_LABEL = {
   elementary: '초급자', intermediate: '중급자',
@@ -81,6 +93,33 @@ export default function HomePage() {
       .catch(() => {})
       .finally(() => setNewsLoading(false));
   }, []);
+
+  /* 오늘의 경제 브리핑 — 지표 4개 (코스피 · 환율 · 기준금리 · CPI) */
+  const [briefingData,    setBriefingData]    = useState(null);
+  const [briefingFailed,  setBriefingFailed]  = useState(false);
+  const [briefingLoading, setBriefingLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getMarketIndices(), getEconomicStats()])
+      .then(([indices, stats]) => {
+        if (cancelled) return;
+        if (!indices.data && !stats.data) { setBriefingFailed(true); return; }
+        setBriefingData({ indicesData: indices.data, statsData: stats.data });
+      })
+      .catch(() => { if (!cancelled) setBriefingFailed(true); })
+      .finally(() => { if (!cancelled) setBriefingLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const briefingItems = briefingData
+    ? BRIEFING_INDICATORS.map(({ id, label }) => {
+        const indicator = getIndicatorById(id);
+        const insight   = getIndicatorInsight(id);
+        const value     = getLatestInsightValue(insight, indicator?.dataKey, briefingData.statsData, briefingData.indicesData);
+        return { id, label, unit: insight?.unit ?? '%', value };
+      })
+    : [];
 
   /* 추천 질문 */
   const fallbackQuestions = [
@@ -182,13 +221,6 @@ export default function HomePage() {
       .finally(() => setNomingIntroLoading(false));
   }, [nomingCacheKey]); // eslint-disable-line
 
-  const InfographicComp = bite ? (BITE_INFOGRAPHICS[bite.id] ?? null) : null;
-
-  const CATEGORY_ICON = {
-    '금리': TrendingUp, '투자': BarChart2, '거시경제': Globe,
-    '저축': PiggyBank, '부동산': Home, '기초': BookOpen,
-  };
-
   const { lvl, progress, needed } = xpInfo(profile?.xp ?? 0);
 
   return (
@@ -227,7 +259,7 @@ export default function HomePage() {
         {user ? (
           <div style={{
             background: 'var(--grad-action)', borderRadius: 18,
-            padding: '20px', marginBottom: 14, color: '#fff',
+            padding: '20px', marginBottom: 9, color: '#fff',
             boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
             position: 'relative', overflow: 'hidden',
           }}>
@@ -236,12 +268,9 @@ export default function HomePage() {
             <div style={{ position: 'absolute', right: 30, bottom: -30, width: 70, height: 70, background: 'rgba(255,255,255,0.09)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             {/* 상단: 인사 + 레벨 배지 */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4 }}>{today}</div>
-                <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.4px' }}>
-                  {profile?.nickname ? `${profile.nickname}님, 안녕하세요!` : '안녕하세요!'}
-                </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.3px' }}>
+                {profile?.nickname ? `${today} · ${profile.nickname}님, 안녕하세요!` : today}
               </div>
               {(() => {
                 const { Icon: LvIcon, label } = getLevelByXp(profile?.xp ?? 0);
@@ -260,20 +289,21 @@ export default function HomePage() {
               })()}
             </div>
 
-            {/* XP 진행 바 */}
-            <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
-              <div style={{
-                background: '#fff', borderRadius: 99, height: '100%',
-                width: `${progress}%`, transition: 'width 0.7s ease',
-              }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 11, opacity: 0.75 }}>
-              <span>Lv.{lvl}</span>
-              <span>다음 레벨까지 {needed} XP</span>
+            {/* XP 진행 바 + Lv/잔여 XP 한 줄 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.2)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
+                <div style={{
+                  background: '#fff', borderRadius: 99, height: '100%',
+                  width: `${progress}%`, transition: 'width 0.7s ease',
+                }} />
+              </div>
+              <span style={{ fontSize: 10, opacity: 0.8, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                Lv.{lvl} · {needed} XP 남음
+              </span>
             </div>
 
             {/* 오늘 할일 pills */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 14 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 10 }}>
               {todos.map((todo, i) => (
                 <div
                   key={i}
@@ -297,7 +327,7 @@ export default function HomePage() {
           /* 비로그인: 방문자 카드 */
           <div style={{
             background: 'var(--grad-action)', borderRadius: 16,
-            padding: '14px 16px', marginBottom: 14, color: '#fff',
+            padding: '14px 16px', marginBottom: 9, color: '#fff',
             boxShadow: '0 4px 20px rgba(8,53,43,0.18)',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -339,7 +369,7 @@ export default function HomePage() {
         )}
 
         {/* ── 카드 1: 오늘의 한잎 — Dark Forest Hero ── */}
-        <div style={{ background: 'var(--c-surface)', borderRadius: 16, border: '0.5px solid var(--c-line)', overflow: 'hidden', marginBottom: 12, boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ background: 'var(--c-surface)', borderRadius: 16, border: '0.5px solid var(--c-line)', overflow: 'hidden', marginBottom: 9, boxShadow: 'var(--shadow-card)' }}>
           {!bite ? (
             /* 스켈레톤 */
             <div style={{ padding: 0 }}>
@@ -387,21 +417,8 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 인포그래픽 + 버튼 */}
+              {/* 버튼 */}
               <div style={{ padding: '14px 16px 16px' }}>
-                <div style={{ background: 'var(--c-canvas)', borderRadius: 10, padding: '16px 12px', marginBottom: 12 }}>
-                  {InfographicComp ? (
-                    <InfographicComp />
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                      {(() => {
-                        const CatIcon = CATEGORY_ICON[bite.category] ?? BookOpen;
-                        return <CatIcon size={36} color="var(--c-forest-700)" />;
-                      })()}
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-forest-700)' }}>{bite.title}</div>
-                    </div>
-                  )}
-                </div>
                 <button
                   onClick={() => navigate(`/bite/${bite.id}`)}
                   style={{ width: '100%', background: 'var(--grad-action)', color: '#fff', border: 'none', borderRadius: 10, padding: '11px', fontSize: 14, fontWeight: 600, cursor: 'pointer', letterSpacing: '-0.3px' }}
@@ -413,9 +430,48 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* ── 카드 2: 오늘의 추천 뉴스 ── */}
-        <div style={{ background: 'var(--c-surface)', borderRadius: 16, border: '0.5px solid var(--c-line)', padding: 16, marginBottom: 12, boxShadow: 'var(--shadow-card)' }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-forest-700)', marginBottom: 10, letterSpacing: '0.2px' }}>오늘의 추천 뉴스</div>
+        {/* ── 카드 2: 오늘의 경제 브리핑 ── */}
+        <div style={{ background: 'var(--c-surface)', borderRadius: 16, border: '0.5px solid var(--c-line)', padding: 16, marginBottom: 9, boxShadow: 'var(--shadow-card)' }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-forest-700)', marginBottom: 10, letterSpacing: '0.2px' }}>오늘의 경제 브리핑</div>
+
+          {/* 지표 4개 — 코스피 · 환율 · 기준금리 · CPI, 한 줄 */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+            {briefingLoading ? (
+              [0, 1, 2, 3].map(i => (
+                <div key={i} style={{
+                  flex: '1 1 0', minWidth: 0, height: 46, borderRadius: 9,
+                  background: 'var(--c-green-100)',
+                  backgroundImage: 'linear-gradient(90deg,var(--c-green-100) 25%,var(--c-canvas) 50%,var(--c-green-100) 75%)',
+                  backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+                }} />
+              ))
+            ) : briefingFailed ? (
+              <div style={{ fontSize: 12, color: 'var(--c-muted)', textAlign: 'center', padding: '10px 0', width: '100%' }}>
+                지표를 불러올 수 없어요
+              </div>
+            ) : (
+              briefingItems.map(({ id, label, unit, value }) => (
+                <div
+                  key={id}
+                  onClick={() => navigate(`/indicator/${id}`)}
+                  style={{
+                    flex: '1 1 0', minWidth: 0, cursor: 'pointer',
+                    background: 'var(--c-canvas)', border: '0.5px solid var(--c-line)',
+                    borderRadius: 9, padding: '7px 6px', textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--c-muted)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {label}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--c-ink)', letterSpacing: '-0.3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {typeof value === 'number'
+                      ? `${value.toLocaleString('ko-KR', { maximumFractionDigits: value >= 100 ? 0 : 2 })}${unit}`
+                      : '—'}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
 
           {newsLoading ? (
             <div style={{ height: 60, background: 'var(--c-green-100)', borderRadius: 8, opacity: 0.5,
@@ -500,69 +556,62 @@ export default function HomePage() {
           </div>
 
           {questionsLoading ? (
-            [0, 1].map(i => (
-              <div key={i} style={{
-                width: '100%', height: 36, borderRadius: 8, marginBottom: 6,
-                background: 'linear-gradient(90deg,rgba(255,200,61,0.2) 25%,rgba(255,246,220,0.6) 50%,rgba(255,200,61,0.2) 75%)',
-                backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
-              }} />
-            ))
+            <div style={{
+              width: '100%', height: 36, borderRadius: 8,
+              background: 'linear-gradient(90deg,rgba(255,200,61,0.2) 25%,rgba(255,246,220,0.6) 50%,rgba(255,200,61,0.2) 75%)',
+              backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite',
+            }} />
           ) : (
-            (recommendedQuestions ?? fallbackQuestions).map((q, i) => (
-              <button
-                key={i}
-                onClick={() => navigate('/coach', { state: { question: q } })}
-                style={{
-                  width: '100%', background: 'rgba(255,255,255,0.55)', border: '0.5px solid var(--c-yellow-border)',
-                  borderRadius: 9, padding: '9px 12px', fontSize: 12, color: 'var(--c-amber-700)',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  marginBottom: 6, cursor: 'pointer', textAlign: 'left', fontWeight: 500,
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.85)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.55)'}
-              >
-                <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
-                <span style={{ color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
-              </button>
-            ))
+            (() => {
+              const q = (recommendedQuestions ?? fallbackQuestions)[0];
+              return (
+                <button
+                  onClick={() => navigate('/coach', { state: { question: q } })}
+                  style={{
+                    width: '100%', background: 'rgba(255,255,255,0.55)', border: '0.5px solid var(--c-yellow-border)',
+                    borderRadius: 9, padding: '9px 12px', fontSize: 12, color: 'var(--c-amber-700)',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    cursor: 'pointer', textAlign: 'left', fontWeight: 500,
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.85)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.55)'}
+                >
+                  <span style={{ flex: 1, marginRight: 8 }}>{q}</span>
+                  <span style={{ color: 'var(--c-yellow-500)', flexShrink: 0 }}>→</span>
+                </button>
+              );
+            })()
           )}
 
-          <button
-            onClick={() => navigate('/coach')}
-            style={{
-              width: '100%', background: 'var(--c-yellow-500)', border: 'none',
-              borderRadius: 10, padding: '11px 12px', fontSize: 13, fontWeight: 700,
-              color: 'var(--c-amber-700)', cursor: 'pointer', letterSpacing: '-0.3px',
-              display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6,
-              marginTop: 14,
-            }}
-          >
-            노밍에게 직접 질문하기
-          </button>
-        </div>
-
-        {/* ── 카드 4: 오늘의 행동 제안 ── */}
-        {user && profile?.today_action && (
-          <div style={{
-            background: '#FFFBEE', borderRadius: 16,
-            border: '1px solid #FAC775', padding: 16, marginTop: 12,
-            boxShadow: '0 2px 12px rgba(139,90,0,0.06)',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <Sun size={16} color="#F59E0B" style={{ flexShrink: 0 }} />
-              <span style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', letterSpacing: '0.3px' }}>노밍의 오늘 행동 제안</span>
-            </div>
-            <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.75 }}>
-              {profile.today_action}
-            </div>
-            <button
-              onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
-              style={{ marginTop: 10, background: 'none', border: '0.5px solid #FAC775', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600 }}
+          <div style={{ textAlign: 'right', marginTop: 6 }}>
+            <span
+              onClick={() => navigate('/coach')}
+              style={{ fontSize: 11, color: 'var(--c-amber-700)', opacity: 0.75, cursor: 'pointer', fontWeight: 500 }}
             >
-              자립 로드맵 보기 →
-            </button>
+              다른 질문도 해보기 →
+            </span>
           </div>
-        )}
+
+          {/* ── 오늘의 행동 제안 (같은 카드 내부 섹션) ── */}
+          {user && profile?.today_action && (
+            <>
+              <div style={{ borderTop: '0.5px solid var(--c-yellow-border)', margin: '14px 0 12px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <Sun size={14} color="#F59E0B" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#854F0B', letterSpacing: '0.3px' }}>노밍의 오늘 행동 제안</span>
+              </div>
+              <div style={{ fontSize: 13, color: '#633806', lineHeight: 1.75 }}>
+                {profile.today_action}
+              </div>
+              <button
+                onClick={() => navigate('/my-growth', { state: { tab: 'independence' } })}
+                style={{ marginTop: 10, background: 'none', border: '0.5px solid #FAC775', borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#854F0B', cursor: 'pointer', fontWeight: 600 }}
+              >
+                자립 로드맵 보기 →
+              </button>
+            </>
+          )}
+        </div>
 
       </div>
     </PageWrapper>
