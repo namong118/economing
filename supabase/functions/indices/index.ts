@@ -27,21 +27,33 @@ async function fetchYahooIndex(symbol: string) {
       throw new Error('meta.regularMarketPrice 없음')
     }
 
-    const value     = meta.regularMarketPrice
-    const prevClose = meta.previousClose ?? meta.chartPreviousClose
-
-    let change = null, changePercent = null
-    if (typeof prevClose === 'number' && prevClose !== 0) {
-      change        = round2(value - prevClose)
-      changePercent = round2(((value - prevClose) / prevClose) * 100)
-    }
-
+    const value   = meta.regularMarketPrice
     const history = buildYahooHistory(result)
+    const { change, changePercent } = computeDailyChange(value, history)
 
     return { value: round2(value), change, changePercent, history }
   } catch (error) {
     console.error(`[indices] ${symbol} 조회 실패:`, error.message)
     return null
+  }
+}
+
+// meta.previousClose가 비어 있을 때 meta.chartPreviousClose로 폴백하면, range=1mo 요청에서는
+// "어제 종가"가 아니라 "한 달 전 종가"가 반환돼 등락률이 완전히 잘못 계산된다.
+// 그래서 전일 종가는 항상 history(우리가 직접 만든 일별 종가 배열)에서 구한다.
+function computeDailyChange(value: number, history: { date: string; value: number }[]) {
+  if (!Array.isArray(history) || history.length === 0) return { change: null, changePercent: null }
+
+  const last = history[history.length - 1]
+  // history 마지막 값이 현재가(value)와 사실상 같으면 "오늘자"가 이미 포함된 것 — 그 전날이 기준
+  // 아직 반영 안 됐으면(장 마감 전 등) history 마지막 값 자체가 전일 종가
+  const todayAlreadyIncluded = Math.abs(last.value - value) < 0.005
+  const prevClose = todayAlreadyIncluded ? history[history.length - 2]?.value : last.value
+
+  if (typeof prevClose !== 'number' || prevClose === 0) return { change: null, changePercent: null }
+  return {
+    change:        round2(value - prevClose),
+    changePercent: round2(((value - prevClose) / prevClose) * 100),
   }
 }
 

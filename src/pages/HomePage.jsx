@@ -117,7 +117,10 @@ export default function HomePage() {
         const indicator = getIndicatorById(id);
         const insight   = getIndicatorInsight(id);
         const value     = getLatestInsightValue(insight, indicator?.dataKey, briefingData.statsData, briefingData.indicesData);
-        return { id, label, unit: insight?.unit ?? '%', value };
+        // change/changePercent는 indices 함수(코스피·코스닥)에만 존재 — 환율·economic-stats 지표는 null
+        const liveEntry     = insight?.liveIndexKey ? briefingData.indicesData?.[insight.liveIndexKey] : null;
+        const changePercent = typeof liveEntry?.changePercent === 'number' ? liveEntry.changePercent : null;
+        return { id, label, unit: insight?.unit ?? '%', value, changePercent };
       })
     : [];
 
@@ -450,26 +453,36 @@ export default function HomePage() {
                 지표를 불러올 수 없어요
               </div>
             ) : (
-              briefingItems.map(({ id, label, unit, value }) => (
-                <div
-                  key={id}
-                  onClick={() => navigate(`/indicator/${id}`)}
-                  style={{
-                    flex: '1 1 0', minWidth: 0, cursor: 'pointer',
-                    background: 'var(--c-canvas)', border: '0.5px solid var(--c-line)',
-                    borderRadius: 9, padding: '7px 6px', textAlign: 'center',
-                  }}
-                >
-                  <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--c-muted)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {label}
+              briefingItems.map(({ id, label, unit, value, changePercent }) => {
+                const isUp   = typeof changePercent === 'number' && changePercent > 0;
+                const isDown = typeof changePercent === 'number' && changePercent < 0;
+                const changeColor = isUp ? 'var(--c-green-500)' : isDown ? '#DC2626' : 'var(--c-muted)';
+                return (
+                  <div
+                    key={id}
+                    onClick={() => navigate(`/indicator/${id}`)}
+                    style={{
+                      flex: '1 1 0', minWidth: 0, cursor: 'pointer',
+                      background: 'var(--c-canvas)', border: '0.5px solid var(--c-line)',
+                      borderRadius: 9, padding: '7px 6px', textAlign: 'center',
+                    }}
+                  >
+                    <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--c-muted)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {label}
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--c-ink)', letterSpacing: '-0.3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {typeof value === 'number'
+                        ? `${value.toLocaleString('ko-KR', { maximumFractionDigits: value >= 100 ? 0 : 2 })}${unit}`
+                        : '—'}
+                    </div>
+                    {typeof changePercent === 'number' && (
+                      <div style={{ fontSize: 11, fontWeight: 700, color: changeColor, marginTop: 2, whiteSpace: 'nowrap' }}>
+                        {isUp ? '▲' : isDown ? '▼' : ''} {Math.abs(changePercent).toFixed(2)}%
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--c-ink)', letterSpacing: '-0.3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {typeof value === 'number'
-                      ? `${value.toLocaleString('ko-KR', { maximumFractionDigits: value >= 100 ? 0 : 2 })}${unit}`
-                      : '—'}
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
