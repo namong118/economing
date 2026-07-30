@@ -83,8 +83,9 @@ async function fetchUsdKrw() {
     // 환율은 open.er-api.com이 과거 데이터를 주지 않아 별도 무료 소스(Frankfurter, ECB 기준)로 조회
     // 실패해도 현재값은 그대로 반환 — history만 빈 배열로 빠짐 (추이 차트만 생략)
     const history = await fetchUsdKrwHistory()
+    const { change, changePercent } = computeDailyChange(value, history)
 
-    return { value: round2(value), history }
+    return { value: round2(value), change, changePercent, history }
   } catch (error) {
     console.error('[indices] 환율 조회 실패:', error.message)
     return null
