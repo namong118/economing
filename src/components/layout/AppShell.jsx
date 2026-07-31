@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import DesktopShell from './DesktopShell';
 import { recordVisit } from '../../utils/navigationHistory';
@@ -14,7 +14,9 @@ export default function AppShell() {
 
   return (
     <DesktopShell>
-      <Outlet />
+      <Suspense fallback={<div style={{ minHeight: '100vh', background: 'var(--c-canvas)' }} />}>
+        <Outlet />
+      </Suspense>
     </DesktopShell>
   );
 }

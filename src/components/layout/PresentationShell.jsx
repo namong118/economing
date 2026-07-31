@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChevronUp } from 'lucide-react';
 import BrandPanel from './BrandPanel';
@@ -81,7 +81,9 @@ export default function PresentationShell() {
             앱으로 돌아가기
           </button>
         </div>
-        <Outlet />
+        <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+          <Outlet />
+        </Suspense>
 
         <footer style={{
           textAlign: 'center',

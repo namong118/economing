@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { DictionaryProvider } from './context/DictionaryContext';
@@ -5,10 +6,6 @@ import ProtectedRoute  from './components/common/ProtectedRoute';
 import AppShell        from './components/layout/AppShell';
 import PresentationShell from './components/layout/PresentationShell';
 import LandingPage     from './pages/LandingPage';
-import AboutPage        from './pages/AboutPage';
-import ProfileIntroPage from './pages/ProfileIntroPage';
-import GuidePage        from './pages/GuidePage';
-import TechStackPage    from './pages/TechStackPage';
 import DiagnosisPage   from './pages/DiagnosisPage';
 import ResultPage      from './pages/ResultPage';
 import HomePage        from './pages/HomePage';
@@ -19,10 +16,17 @@ import SignupPage      from './pages/SignupPage';
 import OnboardingPage  from './pages/OnboardingPage';
 import ReadingPage     from './pages/ReadingPage';
 import MyGrowthHubPage       from './pages/MyGrowthHubPage';
-import EconomicBitePage      from './pages/EconomicBitePage';
 import EconomicBiteArchivePage      from './pages/EconomicBiteArchivePage';
 import IndependenceDiagnosisPage    from './pages/IndependenceDiagnosisPage';
 import IndicatorPage                from './pages/IndicatorPage';
+
+// 발표용 페이지(about/profile-intro/guide/tech)와 한잎 상세(인포그래픽 데이터 포함)는
+// 일반 사용 흐름에서 자주 안 쓰이거나 전용 레이아웃이라, 메인 번들에서 분리해 지연 로드한다.
+const AboutPage        = lazy(() => import('./pages/AboutPage'));
+const ProfileIntroPage = lazy(() => import('./pages/ProfileIntroPage'));
+const GuidePage        = lazy(() => import('./pages/GuidePage'));
+const TechStackPage    = lazy(() => import('./pages/TechStackPage'));
+const EconomicBitePage = lazy(() => import('./pages/EconomicBitePage'));
 
 export default function App() {
   return (
