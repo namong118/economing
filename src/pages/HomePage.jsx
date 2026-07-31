@@ -446,15 +446,10 @@ export default function HomePage() {
           border: '1px solid var(--c-yellow-border)', padding: 16, marginBottom: 9,
           boxShadow: '0 4px 20px rgba(139,90,0,0.10)',
         }}>
-          {/* 노밍 라벨 + 날짜 — 한 줄 */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍</span>
-            </div>
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-amber-700)', opacity: 0.7 }}>
-              {today}
-            </span>
+          {/* 노밍 라벨 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <Sun size={15} color="#F59E0B" style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-amber-700)' }}>노밍</span>
           </div>
 
           {/* 노밍 한마디 */}
@@ -472,7 +467,7 @@ export default function HomePage() {
               }} />
             </div>
           ) : nomingIntro && (
-            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px', whiteSpace: 'pre-line' }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--c-amber-700)', lineHeight: 1.6, marginBottom: 10, letterSpacing: '-0.2px' }}>
               {nomingIntro}
             </div>
           )}
