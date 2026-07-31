@@ -63,7 +63,7 @@ function SkeletonCard({ lines, gauge }) {
     <div style={{
       width, height, borderRadius: 6,
       background: 'linear-gradient(90deg, var(--c-line-soft) 25%, var(--c-canvas) 50%, var(--c-line-soft) 75%)',
-      backgroundSize: '200% 100%', animation: 'indicator-chart-shimmer 1.4s infinite',
+      backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite',
     }} />
   );
   return (
@@ -74,7 +74,6 @@ function SkeletonCard({ lines, gauge }) {
     }}>
       {lines.map((h, i) => <div key={i}>{bar(i === 0 ? '40%' : '100%', h)}</div>)}
       {gauge && bar('100%', 48)}
-      <style>{'@keyframes indicator-chart-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }'}</style>
     </div>
   );
 }

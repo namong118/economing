@@ -251,10 +251,6 @@ export default function HomePage() {
   return (
     <PageWrapper>
       <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
         @keyframes streakToast {
           0%   { opacity: 0; transform: translate(-50%, -12px); }
           10%  { opacity: 1; transform: translate(-50%, 0); }

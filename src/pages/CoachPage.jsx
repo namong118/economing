@@ -808,10 +808,6 @@ export default function CoachPage() {
       </div>
 
       <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
         @keyframes nomingBounce {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
           30% { transform: translateY(-6px); opacity: 1; }

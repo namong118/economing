@@ -51,11 +51,10 @@ function TickerSkeleton() {
   const shimmer = {
     background: 'linear-gradient(90deg, var(--c-green-100) 25%, var(--c-canvas) 50%, var(--c-green-100) 75%)',
     backgroundSize: '200% 100%',
-    animation: 'indices-shimmer 1.5s infinite',
+    animation: 'shimmer 1.5s infinite',
   };
   return (
     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-      <style>{`@keyframes indices-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
       {[0, 1, 2].map(i => (
         <div key={i} style={{
           flex: '1 1 0', minWidth: '108px', height: '66px', borderRadius: '12px',

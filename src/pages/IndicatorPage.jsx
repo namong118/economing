@@ -41,9 +41,7 @@ function formatStatsLabel(dateStr, fmt) {
 
 function ChartSkeleton() {
   return (
-    <div style={{ height: 140, borderRadius: 10, background: 'linear-gradient(90deg, var(--c-line-soft) 25%, var(--c-canvas) 50%, var(--c-line-soft) 75%)', backgroundSize: '200% 100%', animation: 'indicator-chart-shimmer 1.4s infinite' }}>
-      <style>{'@keyframes indicator-chart-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }'}</style>
-    </div>
+    <div style={{ height: 140, borderRadius: 10, background: 'linear-gradient(90deg, var(--c-line-soft) 25%, var(--c-canvas) 50%, var(--c-line-soft) 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
   );
 }
 

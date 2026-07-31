@@ -579,6 +579,12 @@ input, textarea { font-family: var(--font); outline: none; }
   50%       { opacity: 0.75; transform: scale(1.04); }
 }
 
+/* 로딩 스켈레톤 shimmer — 여러 페이지에서 공용으로 사용 (개별 인라인 정의 대신 이걸 재사용) */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .anim-fade  { animation: fadeIn  0.4s ease-out; }
 .anim-slide { animation: slideUp 0.35s ease-out; }
 .anim-scale { animation: scaleIn 0.3s ease-out; }
