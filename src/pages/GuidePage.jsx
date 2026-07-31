@@ -199,10 +199,11 @@ export default function GuidePage() {
           </Body>
         </SideBySide>
 
-        <SideBySide image={`${BASE}guide/03-today-bite.png`} imageAlt="홈의 오늘의 한잎 카드 화면">
+        <SideBySide image={`${BASE}guide/03-today-bite.png`} imageAlt="한잎 상세 화면 — 설명과 인포그래픽">
           <StepHeading num="③" title="첫 한잎을 읽습니다" />
           <Body>
             홈 화면에 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>오늘의 한잎</b>이 기다리고 있습니다.
+            카드를 누르면 이렇게 설명과 인포그래픽이 순서대로 나옵니다.
           </Body>
           <Body style={{ marginBottom: 0 }}>
             커리큘럼 1장 첫 번째 카드부터 시작합니다. 설명을 읽고, 인포그래픽으로 한 번 더 보고, 퀴즈를 풀면 끝.{'\n'}
