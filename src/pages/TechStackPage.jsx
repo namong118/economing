@@ -203,8 +203,8 @@ function CommitBar({ label, count, max }) {
 /* ── 데이터 ───────────────────────────────────────────────── */
 
 const STATS = [
-  { label: '커밋', value: '266개' },
-  { label: '코드', value: '20,678줄', sub: '104개 파일' },
+  { label: '커밋', value: '301개' },
+  { label: '코드', value: '19,864줄', sub: '105개 파일' },
   { label: '개발일지', value: '1,938줄', sub: '23개 항목' },
   { label: '학습 콘텐츠', value: '96개', sub: '11챕터 · 본문·퀴즈·인포그래픽' },
   { label: 'AI 기능', value: '9개' },
@@ -597,8 +597,32 @@ export default function TechStackPage() {
           반복되는 걸 확인하고, 그 정합성 검사 스크립트에 연결 여부를 자동으로 잡는 항목을{'\n'}
           추가했습니다.
         </Body>
+
+        <StepHeading num="⑤">등락률 계산 오류 — "어제"가 아니라 "한 달 전"이었습니다</StepHeading>
+        <Body>
+          코스피·코스닥 등락률이 이상하게 크게 나온 적이 있습니다. 데이터를{'\n'}
+          직접 찍어보니 −33% 같은 값이 나왔는데, 실제 하루 변동은 −0.8% 정도였습니다.
+        </Body>
+        <Body style={{ marginBottom: 0 }}>
+          원인은 Yahoo Finance API의 <Mono>chartPreviousClose</Mono> 필드였습니다.{'\n'}
+          1개월치 데이터를 요청할 때 이 필드가 "어제 종가"가 아니라 "한 달 전{'\n'}
+          종가"를 가리키고 있었습니다. 외부 API 응답에 이미 갖고 있던 일별{'\n'}
+          데이터(history)에서 직접 전일 대비를 계산하는 방식으로 바꿔서 해결했습니다.
+        </Body>
+
+        <StepHeading num="⑥">뉴스 검색어 — 키워드 하나로는 부족했습니다</StepHeading>
+        <Body>
+          "경제"라는 단어 하나로 뉴스를 검색하니, 본문 어딘가에 그 단어만{'\n'}
+          들어가면 다 걸렸습니다. 섬유 산업 전시회 기사가 "국가 경제에 기여한다"는{'\n'}
+          문장 하나 때문에 경제 뉴스로 분류되는 식이었습니다.
+        </Body>
+        <Body style={{ marginBottom: 0 }}>
+          카테고리마다 더 구체적인 복합 키워드(예: "경제 금리 물가 증시 수출입")로{'\n'}
+          바꾸자, 무관한 기사가 눈에 띄게 줄었습니다.
+        </Body>
+
         <Quote emphasized style={{ marginBottom: 0 }}>
-          네 가지 모두 '왜 안 되는지'를 증거로 확인한 뒤에 고쳤다는 공통점이 있습니다.
+          여섯 가지 모두 '왜 안 되는지'를 증거로 확인한 뒤에 고쳤다는 공통점이 있습니다.
         </Quote>
       </section>
 
@@ -618,7 +642,7 @@ export default function TechStackPage() {
       {/* 11. 향후 계획 */}
       <section style={{ marginBottom: '96px' }}>
         <SectionTitle>향후 계획</SectionTitle>
-        <Body>지금 버전은 시작점입니다. 다음 여섯 가지를 순서대로 진행할 계획입니다.</Body>
+        <Body>지금 버전은 시작점입니다. 다음 여덟 가지를 순서대로 진행할 계획입니다.</Body>
 
         <DataTable
           columns={['계획', '내용']}
@@ -646,6 +670,14 @@ export default function TechStackPage() {
             [
               <ChecklistItem key="6">노밍 답변 근거화(RAG 도입)</ChecklistItem>,
               '지금은 콘텐츠 규모가 작아 검색 품질을 보장하기 어려워, 커리큘럼이 충분히 확장되어 검색 대상 데이터가 늘어나는 시점에 Supabase pgvector 기반으로 노밍 답변에 경제한잎 콘텐츠를 근거로 제시하는 기능 추가 예정',
+            ],
+            [
+              <ChecklistItem key="7">개인정보처리방침·이용약관 정비</ChecklistItem>,
+              '지금은 대회 제출용 프로토타입 단계라 아직 마련하지 않았음 — 정식 서비스로 전환하는 시점에 실제 데이터 처리 방식을 정확히 반영한 개인정보처리방침과 이용약관을 갖출 예정',
+            ],
+            [
+              <ChecklistItem key="8">결제 시스템 도입</ChecklistItem>,
+              '지금은 전 기능 무료 — 사용자 기반이 쌓인 뒤, 무제한 노밍 대화·인포그래픽 생성 등을 중심으로 한 프리미엄 구독 모델 도입 예정',
             ],
           ]}
         />
