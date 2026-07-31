@@ -1,9 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders } from '../_shared/cors.ts'
+import { round2 } from '../_shared/math.ts'
 
 // Yahoo Finance 비공식 API는 기본 fetch User-Agent로는 종종 차단되므로 브라우저 UA를 지정
 const YAHOO_HEADERS = {
@@ -113,10 +110,6 @@ async function fetchUsdKrwHistory() {
     console.error('[indices] 환율 히스토리 조회 실패:', error.message)
     return []
   }
-}
-
-function round2(n: number) {
-  return Math.round(n * 100) / 100
 }
 
 serve(async (req) => {

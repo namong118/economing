@@ -1,9 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders } from '../_shared/cors.ts'
+import { round2 } from '../_shared/math.ts'
 
 const ECOS_KEY  = Deno.env.get('ECOS_API_KEY')
 const KOSIS_KEY = Deno.env.get('KOSIS_API_KEY')
@@ -14,10 +11,6 @@ const KOSIS_KEY = Deno.env.get('KOSIS_API_KEY')
 //  일별 갱신되는 실시간 시세가 아니라 월/분기 단위 통계라 정확도 손실 없음)
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 let cache: { data: unknown; fetchedAt: number } | null = null
-
-function round2(n: number) {
-  return Math.round(n * 100) / 100
-}
 
 /* YYYYMM 형식으로 n개월 전 날짜 계산 */
 function yyyymm(monthsAgo: number) {
