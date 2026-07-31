@@ -28,18 +28,6 @@ export async function updateLevel(userId, level) {
   return { data, error };
 }
 
-export async function updateCurrentStep(userId, step) {
-  if (MOCK) return { data: updateMockProfile(userId, { current_step: step }), error: null };
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ current_step: step, updated_at: new Date().toISOString() })
-    .eq('id', userId)
-    .select()
-    .single();
-  return { data, error };
-}
-
 export async function upsertProfile(userId, { nickname, avatarUrl, email, provider }) {
   if (MOCK) {
     const existing = getMockProfile(userId);
@@ -81,39 +69,6 @@ export async function upsertProfile(userId, { nickname, avatarUrl, email, provid
     .select()
     .single();
   return { data: data ?? existing, error };
-}
-
-/**
- * 온보딩 결과 저장
- * ⚠️ 이 함수는 절대 level/xp를 변경하지 않습니다.
- *    경제 수준(economic_level)과 성장 단계(level/xp)는 분리되어 있습니다.
- */
-export async function saveOnboardingData(userId, {
-  economicLevel,
-  investmentExperience,
-  occupation,
-  interests,
-}) {
-  const updates = {
-    onboarding_completed: true,
-    updated_at: new Date().toISOString(),
-  };
-  if (economicLevel)        updates.economic_level        = economicLevel;
-  if (investmentExperience) updates.investment_experience = investmentExperience;
-  if (occupation)           updates.occupation            = occupation;
-  if (interests?.length)    updates.interests             = interests;
-
-  if (MOCK) {
-    return { data: updateMockProfile(userId, updates), error: null };
-  }
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-    .single();
-  return { data, error };
 }
 
 /** XP 추가 후 레벨 자동 계산 */

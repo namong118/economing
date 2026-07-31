@@ -39,39 +39,6 @@ export function updateMockProfile(userId, updates) {
   return updated;
 }
 
-// ── 일기 ──────────────────────────────────────────────
-export function getMockDiaries(userId) {
-  return JSON.parse(localStorage.getItem(`mock_diaries_${userId}`) || '[]');
-}
-export function addMockDiary(userId, data) {
-  const diaries = getMockDiaries(userId);
-  const diary = { id: crypto.randomUUID(), user_id: userId, ...data, created_at: new Date().toISOString() };
-  diaries.unshift(diary);
-  localStorage.setItem(`mock_diaries_${userId}`, JSON.stringify(diaries));
-  return diary;
-}
-export function deleteMockDiary(userId, id) {
-  const diaries = getMockDiaries(userId).filter(d => d.id !== id);
-  localStorage.setItem(`mock_diaries_${userId}`, JSON.stringify(diaries));
-}
-
-// ── 나만의 단어장 ──────────────────────────────────────
-export function getMockVocab(userId) {
-  return JSON.parse(localStorage.getItem(`mock_vocab_${userId}`) || '[]');
-}
-export function addMockVocab(userId, data) {
-  const vocab = getMockVocab(userId);
-  if (vocab.find(v => v.term === data.term)) return { item: vocab.find(v => v.term === data.term), alreadySaved: true };
-  const item = { id: crypto.randomUUID(), user_id: userId, ...data, created_at: new Date().toISOString() };
-  vocab.unshift(item);
-  localStorage.setItem(`mock_vocab_${userId}`, JSON.stringify(vocab));
-  return { item, alreadySaved: false };
-}
-export function deleteMockVocab(userId, id) {
-  const vocab = getMockVocab(userId).filter(v => v.id !== id);
-  localStorage.setItem(`mock_vocab_${userId}`, JSON.stringify(vocab));
-}
-
 // ── 로드맵 ────────────────────────────────────────────
 export function getMockProgress(userId) {
   return JSON.parse(localStorage.getItem(`mock_roadmap_${userId}`) || '[]');

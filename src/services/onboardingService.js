@@ -32,62 +32,6 @@ const LABELS = {
   },
 }
 
-// 미사용 — 커리큘럼으로 대체 (2026-07-26). completeOnboarding에서 더 이상 호출하지 않음.
-export async function generateRoadmap(answers) {
-  const system = `당신은 ECONOMING의 AI 코치 노밍입니다.
-사용자의 경제 수준과 관심사를 바탕으로 맞춤 학습 로드맵을 생성합니다.
-
-응답 형식 (JSON만 반환, 다른 텍스트 없이):
-{
-  "currentStage": "현재 단계 한 줄 설명",
-  "goal": "최종 목표 한 줄",
-  "steps": [
-    {
-      "order": 1,
-      "title": "단계 제목",
-      "description": "이 단계에서 배울 것",
-      "topics": ["주제1", "주제2", "주제3"],
-      "estimatedDays": 7
-    }
-  ]
-}
-
-steps는 3~5개로 구성. 각 step은 현재 수준에서 목표까지 자연스럽게 이어지도록.
-경제 초보자 친화적으로, 투자 종목 추천 절대 금지.
-
-경제 수준 5단계:
-- beginner (입문): GDP, 금리도 생소한 수준
-- elementary (초급): 기본 용어는 알지만 뉴스가 어려운 수준
-- intermediate (중급): 경제 뉴스를 어느 정도 이해하는 수준
-- advanced (고급): 경제 흐름을 읽고 재무 계획에 반영하는 수준
-- expert (전문): 경제를 깊이 이해하고 투자 전략까지 세우는 수준`
-
-  const userProfile = `경제 수준: ${LABELS.economic_level[answers.economic_level]}
-투자 경험: ${LABELS.investment_experience[answers.investment_experience]}
-직업: ${LABELS.occupation[answers.occupation]}
-관심 분야: ${(answers.interests ?? []).join(', ')}`
-
-  const content = await callSolar({
-    system,
-    messages: [{ role: 'user', content: userProfile }],
-  })
-
-  try {
-    const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-    return JSON.parse(clean)
-  } catch {
-    return {
-      currentStage: '경제 기초부터 차근차근 시작해요',
-      goal: '경제 뉴스를 읽고 이해할 수 있는 수준',
-      steps: [
-        { order: 1, title: '경제 기초 다지기', description: '금리, 물가, 환율 등 기본 개념 이해', topics: ['금리', '인플레이션', '환율'], estimatedDays: 7 },
-        { order: 2, title: '저축과 투자 이해하기', description: '예금, 적금, ETF 등 기초 금융 상품 이해', topics: ['예금', '적금', 'ETF'], estimatedDays: 7 },
-        { order: 3, title: '경제 뉴스 읽기', description: '경제 뉴스를 이해하고 내 생활에 연결하기', topics: ['기준금리', '코스피', '무역수지'], estimatedDays: 14 },
-      ],
-    }
-  }
-}
-
 export async function generateNomingIntro(answers) {
   const system = `당신은 ECONOMING의 AI 코치 노밍입니다.
 사용자의 프로필을 보고 따뜻하고 친근한 첫 인사를 생성합니다.

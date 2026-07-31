@@ -1421,7 +1421,3 @@ export const BITE_INFOGRAPHICS = {
     />
   ),
 }
-
-export function getBiteInfographic(id) {
-  return BITE_INFOGRAPHICS[Number(id)] ?? null
-}

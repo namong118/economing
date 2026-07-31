@@ -29,32 +29,6 @@ export async function createConversation({ userId, question, answer }) {
 }
 
 /**
- * 사용자 전체 대화 조회 (최신순)
- */
-export async function getConversations(userId) {
-  if (!userId) return { data: [], error: null };
-
-  const { data, error } = await supabase
-    .from('coach_conversations')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-
-  return { data: data ?? [], error };
-}
-
-/**
- * 대화 단건 삭제
- */
-export async function deleteConversation(id) {
-  const { error } = await supabase
-    .from('coach_conversations')
-    .delete()
-    .eq('id', id)
-  if (error) throw error
-}
-
-/**
  * 대화 목록 — 날짜별 그룹핑 (사이드바용)
  */
 export async function getConversationList(userId) {
@@ -84,20 +58,6 @@ export async function getConversationList(userId) {
   })
 
   return groups
-}
-
-/**
- * 특정 대화 단건 조회 (사이드바 선택 시)
- */
-export async function getConversationById(id) {
-  const { data, error } = await supabase
-    .from('coach_conversations')
-    .select('*')
-    .eq('id', id)
-    .single()
-
-  if (error) throw error
-  return data
 }
 
 /**

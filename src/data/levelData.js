@@ -21,16 +21,6 @@ export function getLevelByXp(xp = 0) {
   return current;
 }
 
-/** level key → 표시명 */
-export function getLevelLabel(levelKey) {
-  return LEVELS.find(l => l.key === levelKey)?.label ?? '씨앗';
-}
-
-/** level key → 이모지 */
-export function getLevelIcon(levelKey) {
-  return LEVELS.find(l => l.key === levelKey)?.emoji ?? '🌱';
-}
-
 /**
  * 다음 단계 정보 반환
  * @returns {{

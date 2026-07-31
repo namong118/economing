@@ -73,20 +73,3 @@ export const roadmap = [
   },
 ];
 
-// 진단 레벨 → 권장 시작 스텝
-export const levelStartStep = {
-  beginner:     1,
-  elementary:   2,
-  intermediate: 3,
-  advanced:     4,
-  expert:       5,
-};
-
-// 기존 코드 호환성 유지 (HomePage 등에서 roadmaps[level] 형태로 쓰던 곳)
-export const roadmaps = {
-  beginner:     roadmap,
-  elementary:   roadmap,
-  intermediate: roadmap,
-  advanced:     roadmap,
-  expert:       roadmap,
-};
