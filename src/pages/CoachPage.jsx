@@ -4,7 +4,7 @@ import { ArrowRight, ChevronRight, History, MessageCircle, Plus, X, Sun, Lightbu
 import PageWrapper from '../components/layout/PageWrapper';
 import { useAuth } from '../context/AuthContext';
 import { getCoachResponse, getNomingDailyMessage } from '../services/coachService';
-import { getTodaysBite } from '../services/biteService';
+import { getTodaysBite, getRecommendedBite } from '../services/biteService';
 import { useUserLevel } from '../hooks/useUserLevel';
 import { createConversation, getConversationList, getRecentConversations } from '../services/conversationService';
 import { callSolar } from '../services/solarService';
@@ -320,7 +320,7 @@ export default function CoachPage() {
   const initSent    = useRef(false);
   const contextRef  = useRef(null);
 
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { userLevel } = useUserLevel();
   const isEmpty  = messages.length === 0;
   const BASE_URL = import.meta.env.BASE_URL;
@@ -330,20 +330,31 @@ export default function CoachPage() {
   const [greetingLoading, setGreetingLoading] = useState(true);
 
   useEffect(() => {
-    const bite = getTodaysBite();
-    const dateKey = new Date().toISOString().slice(0, 10);
-    const gKey = `coach__${bite?.title}__${dateKey}`;
-    if (_greetingCache[gKey] !== undefined) {
-      setGreetingMsg(_greetingCache[gKey]);
-      setGreetingLoading(false);
-      return;
-    }
+    if (authLoading) return;
+    let cancelled = false;
     setGreetingLoading(true);
-    getNomingDailyMessage(bite?.title, userLevel)
-      .then(msg => { _greetingCache[gKey] = msg ?? null; setGreetingMsg(msg ?? null); })
-      .catch(() => setGreetingMsg(null))
-      .finally(() => setGreetingLoading(false));
-  }, [userLevel]); // eslint-disable-line
+
+    const biteReady = user?.id
+      ? getRecommendedBite(user.id).catch(() => getTodaysBite())
+      : Promise.resolve(getTodaysBite());
+
+    biteReady.then(bite => {
+      if (cancelled) return;
+      const dateKey = new Date().toISOString().slice(0, 10);
+      const gKey = `coach__${bite?.title}__${dateKey}`;
+      if (_greetingCache[gKey] !== undefined) {
+        setGreetingMsg(_greetingCache[gKey]);
+        setGreetingLoading(false);
+        return;
+      }
+      getNomingDailyMessage(bite?.title, userLevel)
+        .then(msg => { if (!cancelled) { _greetingCache[gKey] = msg ?? null; setGreetingMsg(msg ?? null); } })
+        .catch(() => { if (!cancelled) setGreetingMsg(null); })
+        .finally(() => { if (!cancelled) setGreetingLoading(false); });
+    });
+
+    return () => { cancelled = true; };
+  }, [user?.id, userLevel, authLoading]); // eslint-disable-line
   const [suggestedQuestions, setSuggestedQuestions] = useState(() => _questionsCache[cacheKey] ?? null);
 
   useEffect(() => {
