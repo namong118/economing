@@ -70,9 +70,13 @@ export default function App() {
               <Route path="/profile-intro" element={<ProfileIntroPage />} />
               <Route path="/guide"         element={<GuidePage />} />
               <Route path="/tech"          element={<TechStackPage />} />
-              <Route path="/privacy"       element={<PrivacyPolicyPage />} />
-              <Route path="/terms"         element={<TermsPage />} />
             </Route>
+
+            {/* 법적 문서: 회원가입(모바일 포함) 흐름에서 링크로 연결되므로
+                PresentationShell(1024px 미만 /home 리다이렉트)에 묶지 않고
+                화면 크기와 무관하게 항상 접근 가능한 독립 레이아웃으로 둔다 */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms"   element={<TermsPage />} />
 
           </Routes>
         </DictionaryProvider>

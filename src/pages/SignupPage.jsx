@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FlaskConical, Check, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { signInWithKakao, signInWithGoogle } from '../services/authService';
+import LegalModal from '../components/legal/LegalModal';
 
 const MOCK = import.meta.env.VITE_MOCK_AUTH === 'true';
 
@@ -50,6 +51,7 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showEmail,     setShowEmail]     = useState(false);
   const [agreed,        setAgreed]        = useState(false);
+  const [modalType,     setModalType]     = useState(null);
 
   const anyLoading = loading || kakaoLoading || googleLoading;
 
@@ -217,9 +219,9 @@ export default function SignupPage() {
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--c-slate)', marginBottom: 16, cursor: 'pointer' }}>
             <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} style={{ marginTop: 2 }} />
             <span>
-              <Link to="/privacy" target="_blank" style={{ color: 'var(--c-forest-700)', fontWeight: 600 }}>개인정보처리방침</Link>
+              <button type="button" onClick={() => setModalType('privacy')} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--c-forest-700)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>개인정보처리방침</button>
               {' '}및{' '}
-              <Link to="/terms" target="_blank" style={{ color: 'var(--c-forest-700)', fontWeight: 600 }}>이용약관</Link>
+              <button type="button" onClick={() => setModalType('terms')} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--c-forest-700)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>이용약관</button>
               에 동의합니다. (필수)
             </span>
           </label>
@@ -229,7 +231,7 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleGoogle}
-            disabled={!agreed || anyLoading}
+            disabled={anyLoading}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: '10px', width: '100%', padding: '14px',
@@ -252,7 +254,7 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleKakao}
-            disabled={!agreed || anyLoading}
+            disabled={anyLoading}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: '10px', width: '100%', padding: '14px',
@@ -343,7 +345,7 @@ export default function SignupPage() {
               </div>
               <button
                 type="submit"
-                disabled={!agreed || loading}
+                disabled={loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
                   background: loading ? 'var(--c-green-100)' : 'var(--grad-action)',
@@ -374,6 +376,8 @@ export default function SignupPage() {
           </Link>
         </p>
       </div>
+
+      <LegalModal type={modalType} onClose={() => setModalType(null)} />
     </div>
   );
 }
