@@ -27,6 +27,8 @@ const ProfileIntroPage = lazy(() => import('./pages/ProfileIntroPage'));
 const GuidePage        = lazy(() => import('./pages/GuidePage'));
 const TechStackPage    = lazy(() => import('./pages/TechStackPage'));
 const EconomicBitePage = lazy(() => import('./pages/EconomicBitePage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage         = lazy(() => import('./pages/TermsPage'));
 
 export default function App() {
   return (
@@ -68,6 +70,8 @@ export default function App() {
               <Route path="/profile-intro" element={<ProfileIntroPage />} />
               <Route path="/guide"         element={<GuidePage />} />
               <Route path="/tech"          element={<TechStackPage />} />
+              <Route path="/privacy"       element={<PrivacyPolicyPage />} />
+              <Route path="/terms"         element={<TermsPage />} />
             </Route>
 
           </Routes>

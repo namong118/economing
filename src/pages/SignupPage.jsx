@@ -49,10 +49,12 @@ export default function SignupPage() {
   const [kakaoLoading,  setKakaoLoading]  = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showEmail,     setShowEmail]     = useState(false);
+  const [agreed,        setAgreed]        = useState(false);
 
   const anyLoading = loading || kakaoLoading || googleLoading;
 
   const handleGoogle = async () => {
+    if (!agreed) { setError('개인정보처리방침 및 이용약관에 동의해주세요.'); return; }
     setGoogleLoading(true);
     const { error: e } = await signInWithGoogle();
     if (e) setError('Google 로그인 중 오류가 발생했어요.');
@@ -60,6 +62,7 @@ export default function SignupPage() {
   };
 
   const handleKakao = async () => {
+    if (!agreed) { setError('개인정보처리방침 및 이용약관에 동의해주세요.'); return; }
     setKakaoLoading(true);
     const { error: e } = await signInWithKakao();
     if (e) setError('카카오 로그인 중 오류가 발생했어요.');
@@ -69,6 +72,7 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!agreed)              { setError('개인정보처리방침 및 이용약관에 동의해주세요.'); return; }
     if (!nickname.trim())     { setError('닉네임을 입력해주세요.'); return; }
     if (!email)               { setError('이메일을 입력해주세요.'); return; }
     if (password.length < 6)  { setError('비밀번호는 6자 이상이어야 해요.'); return; }
@@ -209,12 +213,23 @@ export default function SignupPage() {
             </div>
           )}
 
+          {/* 개인정보처리방침·이용약관 동의 */}
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--c-slate)', marginBottom: 16, cursor: 'pointer' }}>
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} style={{ marginTop: 2 }} />
+            <span>
+              <Link to="/privacy" target="_blank" style={{ color: 'var(--c-forest-700)', fontWeight: 600 }}>개인정보처리방침</Link>
+              {' '}및{' '}
+              <Link to="/terms" target="_blank" style={{ color: 'var(--c-forest-700)', fontWeight: 600 }}>이용약관</Link>
+              에 동의합니다. (필수)
+            </span>
+          </label>
+
           {/* ── 소셜 가입 CTA ─────────────────────────── */}
           {/* Google */}
           <button
             type="button"
             onClick={handleGoogle}
-            disabled={anyLoading}
+            disabled={!agreed || anyLoading}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: '10px', width: '100%', padding: '14px',
@@ -237,7 +252,7 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleKakao}
-            disabled={anyLoading}
+            disabled={!agreed || anyLoading}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: '10px', width: '100%', padding: '14px',
@@ -328,7 +343,7 @@ export default function SignupPage() {
               </div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={!agreed || loading}
                 style={{
                   padding: '12px', borderRadius: '12px',
                   background: loading ? 'var(--c-green-100)' : 'var(--grad-action)',
