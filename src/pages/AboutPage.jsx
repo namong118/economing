@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react';
 import { LEVELS } from '../data/levelData';
+import SectionNav from '../components/layout/SectionNav';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -207,8 +208,19 @@ export default function AboutPage() {
   return (
     <div style={{ maxWidth: 760, margin: '0 auto', padding: '88px 32px 140px' }}>
 
+      <SectionNav sections={[
+        { id: 'hero',            label: '소개' },
+        { id: 'walls',           label: '세 가지 벽' },
+        { id: 'audience',        label: '누구를 위한 앱' },
+        { id: 'why-economing',   label: '왜 ECONOMING' },
+        { id: 'my-story',        label: '나의 이야기' },
+        { id: 'five-steps',      label: '다섯 단계' },
+        { id: 'after-learning',  label: '배우고 나면' },
+        { id: 'decisions',       label: '만들면서 내린 판단' },
+      ]} />
+
       {/* 1. 히어로 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="hero" style={{ marginBottom: '112px' }}>
         <h1 style={{
           fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', lineHeight: 1.35,
@@ -222,7 +234,7 @@ export default function AboutPage() {
       </section>
 
       {/* 2. 문제 — 세 가지 벽 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="walls" style={{ marginBottom: '96px' }}>
         <SectionTitle>경제 공부를 시작하려는 사람 앞에는 세 가지 벽이 있습니다.</SectionTitle>
 
         <ProblemCard title="어렵다">
@@ -241,7 +253,7 @@ export default function AboutPage() {
       </section>
 
       {/* 3. 누구를 위한 앱인가 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="audience" style={{ marginBottom: '96px' }}>
         <SectionTitle>누구를 위한 앱인가</SectionTitle>
         <p style={{
           fontSize: 'clamp(20px, 3vw, 24px)', fontWeight: '900', color: 'var(--c-forest-700)',
@@ -262,7 +274,7 @@ export default function AboutPage() {
       </section>
 
       {/* 4. 왜 ECONOMING인가 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="why-economing" style={{ marginBottom: '96px' }}>
         <SectionTitle>왜 ECONOMING인가</SectionTitle>
 
         {/* 이름 */}
@@ -360,7 +372,7 @@ export default function AboutPage() {
       </section>
 
       {/* 5. 나의 이야기 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="my-story" style={{ marginBottom: '96px' }}>
         <SectionTitle>나의 이야기</SectionTitle>
 
         <Body>경제 공부를 시작하고 싶었습니다.</Body>
@@ -402,7 +414,7 @@ export default function AboutPage() {
       </section>
 
       {/* 6. 어떻게 풀었나 — 다섯 단계 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="five-steps" style={{ marginBottom: '96px' }}>
         <SectionTitle>어떻게 풀었나 — 다섯 단계</SectionTitle>
 
         <StepBlock num="1" title="AI가 수준을 진단합니다">
@@ -565,7 +577,7 @@ export default function AboutPage() {
       </section>
 
       {/* 7. 배우고 나면 그다음 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="after-learning" style={{ marginBottom: '96px' }}>
         <SectionTitle>배우고 나면 그다음</SectionTitle>
 
         <Body>경제 용어를 안다고 통장이 달라지지는 않습니다.</Body>
@@ -587,7 +599,7 @@ export default function AboutPage() {
       </section>
 
       {/* 8. 만들면서 내린 판단 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="decisions" style={{ marginBottom: '96px' }}>
         <SectionTitle>만들면서 내린 판단</SectionTitle>
 
         <Body style={{ fontWeight: '800', color: 'var(--c-ink)', fontSize: '17px' }}>

@@ -1,5 +1,6 @@
 import { Check, ArrowRight } from 'lucide-react';
 import ArchitectureDiagram from '../components/presentation/ArchitectureDiagram';
+import SectionNav from '../components/layout/SectionNav';
 
 /* ── 공통 조각 (About과 동일 톤) ─────────────────────────── */
 
@@ -251,8 +252,22 @@ export default function TechStackPage() {
   return (
     <div style={{ maxWidth: 760, margin: '0 auto', padding: '88px 32px 140px' }}>
 
+      <SectionNav sections={[
+        { id: 'hero',             label: '소개' },
+        { id: 'solar-placement',  label: 'Solar AI 배치' },
+        { id: 'solar-design',     label: 'AI 설계' },
+        { id: 'architecture',     label: '아키텍처' },
+        { id: 'apis',             label: '사용한 API' },
+        { id: 'tech-stack',       label: '기술 스택' },
+        { id: 'devlog',           label: '기록' },
+        { id: 'quality',          label: '품질 관리' },
+        { id: 'troubleshooting',  label: '트러블슈팅' },
+        { id: 'commits',          label: '커밋 이력' },
+        { id: 'future-plans',     label: '향후 계획' },
+      ]} />
+
       {/* 1. 히어로 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="hero" style={{ marginBottom: '96px' }}>
         <h1 style={{
           fontSize: 'clamp(28px, 4.6vw, 40px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', lineHeight: 1.35,
@@ -277,7 +292,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 2. Solar AI — 제품 전반에 배치 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="solar-placement" style={{ marginBottom: '96px' }}>
         <SectionTitle>Solar AI — 제품 전반에 배치</SectionTitle>
         <Body>
           Upstage Solar AI(<Mono>solar-1-mini-chat</Mono>)를 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>5개 탭 전부</b>에서 사용합니다.{'\n'}
@@ -292,7 +307,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 3. Solar AI를 어떻게 다뤘나 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="solar-design" style={{ marginBottom: '96px' }}>
         <SectionTitle>Solar AI의 특성에 맞춰 설계했습니다</SectionTitle>
 
         <Body>
@@ -371,7 +386,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 4. 아키텍처 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="architecture" style={{ marginBottom: '96px' }}>
         <SectionTitle>아키텍처</SectionTitle>
         <div style={{ marginBottom: '24px' }}>
           <ArchitectureDiagram />
@@ -384,7 +399,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 5. 사용한 API */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="apis" style={{ marginBottom: '96px' }}>
         <SectionTitle>사용한 API</SectionTitle>
         <Body>
           7개의 외부 API를 사용합니다. 모두 Supabase Edge Function 4개를 통해{'\n'}
@@ -425,7 +440,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 6. 기술 스택 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="tech-stack" style={{ marginBottom: '96px' }}>
         <SectionTitle>기술 스택</SectionTitle>
         <DataTable columns={['영역', '사용 기술']} rows={TECH_STACK} />
         <Body style={{ marginBottom: 0 }}>
@@ -437,7 +452,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 7. 기록을 남기며 만들었습니다 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="devlog" style={{ marginBottom: '96px' }}>
         <SectionTitle>기록을 남기며 만들었습니다</SectionTitle>
         <Body>무엇을 왜 그렇게 결정했는지 전부 기록하며 만들었습니다.</Body>
 
@@ -521,7 +536,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 8. 품질 관리 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="quality" style={{ marginBottom: '96px' }}>
         <SectionTitle>품질 관리</SectionTitle>
         <Body>콘텐츠가 늘어나면서 수동 확인이 불가능해져 검사 스크립트를 만들었습니다.</Body>
         <CodeBlock>npm run check:content</CodeBlock>
@@ -543,7 +558,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 9. 트러블슈팅 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="troubleshooting" style={{ marginBottom: '96px' }}>
         <SectionTitle>트러블슈팅</SectionTitle>
         <Body>만들면서 실제로 막힌 문제 넷을 그대로 남깁니다. 추측이 아니라 증거로 찾았습니다.</Body>
 
@@ -627,7 +642,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 10. 커밋 이력 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="commits" style={{ marginBottom: '96px' }}>
         <SectionTitle>커밋 이력</SectionTitle>
 
         <div style={{ marginBottom: '20px' }}>
@@ -640,7 +655,7 @@ export default function TechStackPage() {
       </section>
 
       {/* 11. 향후 계획 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="future-plans" style={{ marginBottom: '96px' }}>
         <SectionTitle>향후 계획</SectionTitle>
         <Body>지금 버전은 시작점입니다. 다음 여덟 가지를 순서대로 진행할 계획입니다.</Body>
 

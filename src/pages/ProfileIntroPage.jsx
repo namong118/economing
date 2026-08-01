@@ -1,4 +1,5 @@
 import { Check, Mail } from 'lucide-react';
+import SectionNav from '../components/layout/SectionNav';
 
 function GithubIcon({ size = 18 }) {
   return (
@@ -128,8 +129,16 @@ export default function ProfileIntroPage() {
   return (
     <div style={{ maxWidth: 760, margin: '0 auto', padding: '96px 32px 120px' }}>
 
+      <SectionNav sections={[
+        { id: 'hero',            label: '소개·경력' },
+        { id: 'after-quitting',  label: '퇴사 이후' },
+        { id: 'newly-learned',   label: '새로 배운 것' },
+        { id: 'what-to-build',   label: '무엇을 만들 것인가' },
+        { id: 'past-experience', label: '이전 경험' },
+      ]} />
+
       {/* 1. 히어로 + 경력 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="hero" style={{ marginBottom: '112px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', marginBottom: '20px' }}>
           <h1 style={{
             fontSize: 'clamp(36px, 6vw, 52px)', fontWeight: '900',
@@ -192,7 +201,7 @@ export default function ProfileIntroPage() {
       </section>
 
       {/* 2. 퇴사 이후 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="after-quitting" style={{ marginBottom: '112px' }}>
         <SectionTitle>퇴사 이후</SectionTitle>
 
         <Body style={{ marginBottom: '28px' }}>
@@ -207,7 +216,7 @@ export default function ProfileIntroPage() {
       </section>
 
       {/* 3. 새로 배운 것 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="newly-learned" style={{ marginBottom: '112px' }}>
         <SectionTitle>새로 배운 것</SectionTitle>
 
         <p style={{ fontSize: '17px', fontWeight: '800', color: 'var(--c-forest-700)', marginBottom: '18px', letterSpacing: '-0.2px' }}>
@@ -231,7 +240,7 @@ export default function ProfileIntroPage() {
       </section>
 
       {/* 4. 그래서 무엇을 만들 것인가 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="what-to-build" style={{ marginBottom: '112px' }}>
         <SectionTitle>그래서 무엇을 만들 것인가</SectionTitle>
 
         <Body>AI로 개발하는 법을 배우고 나니, 무엇을 만들지 정해야 했습니다.</Body>
@@ -250,7 +259,7 @@ export default function ProfileIntroPage() {
       </section>
 
       {/* 5. 이전 경험이 쓰인 곳 */}
-      <section style={{ marginBottom: '112px' }}>
+      <section id="past-experience" style={{ marginBottom: '112px' }}>
         <SectionTitle>이전 경험이 쓰인 곳</SectionTitle>
 
         <PastExperienceCard title="방치형 타이쿤 게임 → 성장과 리텐션 설계">
@@ -271,7 +280,7 @@ export default function ProfileIntroPage() {
             쓰이는 걸 보고 계속 고쳐야 합니다.
           </Body>
           <Body style={{ marginBottom: 0 }}>
-            이 프로젝트의 커밋 266개 중 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>66개가 fix</b>입니다.{'\n'}
+            이 프로젝트의 커밋 303개 중 <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>76개가 fix</b>입니다.{'\n'}
             만든 것을 다시 열어 검증하고 고치는 일을 당연하게 여깁니다.
           </Body>
         </PastExperienceCard>

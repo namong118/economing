@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Check, ArrowRight } from 'lucide-react';
+import SectionNav from '../components/layout/SectionNav';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -157,8 +158,17 @@ export default function GuidePage() {
   return (
     <div style={{ maxWidth: 780, margin: '0 auto', padding: '96px 32px 120px' }}>
 
+      <SectionNav sections={[
+        { id: 'hero',             label: '소개' },
+        { id: 'first-visit',      label: '처음 오신 분' },
+        { id: 'daily-flow',       label: '매일은 이렇게' },
+        { id: 'when-needed',      label: '필요할 때' },
+        { id: 'mobile-continue',  label: '모바일로 이어서' },
+        { id: 'quick-tour',       label: '짧게 둘러보기' },
+      ]} />
+
       {/* 1. 히어로 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="hero" style={{ marginBottom: '96px' }}>
         <h1 style={{
           fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: '900',
           color: 'var(--c-ink)', letterSpacing: '-0.02em', marginBottom: '20px', wordBreak: 'keep-all',
@@ -171,7 +181,7 @@ export default function GuidePage() {
       </section>
 
       {/* 2. 처음 오신 분은 이렇게 */}
-      <section style={{ marginBottom: '40px' }}>
+      <section id="first-visit" style={{ marginBottom: '40px' }}>
         <SectionTitle>처음 오신 분은 이렇게</SectionTitle>
 
         <SideBySide image={`${BASE}guide/01-diagnosis.png`} imageAlt="진단 문항과 5개 선택지 화면">
@@ -213,7 +223,7 @@ export default function GuidePage() {
       </section>
 
       {/* 3. 매일은 이렇게 */}
-      <section style={{ marginBottom: '40px' }}>
+      <section id="daily-flow" style={{ marginBottom: '40px' }}>
         <SectionTitle>매일은 이렇게</SectionTitle>
 
         <SideBySide image={`${BASE}guide/04-home.png`} imageAlt="홈 화면 전체">
@@ -258,7 +268,7 @@ export default function GuidePage() {
       </section>
 
       {/* 4. 필요할 때 */}
-      <section style={{ marginBottom: '40px' }}>
+      <section id="when-needed" style={{ marginBottom: '40px' }}>
         <SectionTitle>필요할 때</SectionTitle>
 
         <SideBySide image={`${BASE}guide/08-coach.png`} imageAlt="코치 답변 화면">
@@ -313,7 +323,7 @@ export default function GuidePage() {
       </section>
 
       {/* 5. 모바일로 이어서 보기 */}
-      <section style={{ marginBottom: '96px' }}>
+      <section id="mobile-continue" style={{ marginBottom: '96px' }}>
         <SectionTitle>모바일로 이어서 보기</SectionTitle>
         <div style={{
           display: 'flex', alignItems: 'center', gap: '36px', flexWrap: 'wrap',
@@ -337,7 +347,7 @@ export default function GuidePage() {
       </section>
 
       {/* 6. 짧게 둘러보실 분들을 위해 */}
-      <section>
+      <section id="quick-tour">
         <SectionTitle>짧게 둘러보실 분들을 위해</SectionTitle>
         <Body>시간이 많지 않다면 이 순서로 보시면 됩니다.</Body>
 
