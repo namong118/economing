@@ -396,6 +396,10 @@ export default function TechStackPage() {
           클라이언트에 노출되지 않습니다. 현재 4개의 Edge Function이 동작합니다 —{'\n'}
           <Mono>solar</Mono> · <Mono>news</Mono> · <Mono>indices</Mono> · <Mono>economic-stats</Mono>.
         </Body>
+        <Body style={{ marginBottom: 0, marginTop: '16px' }}>
+          개인정보처리방침·이용약관을 갖추고, 회원가입 시 실제로 동의하지 않으면
+          가입이 진행되지 않도록 막았습니다.
+        </Body>
       </section>
 
       {/* 5. 사용한 API */}
@@ -657,7 +661,7 @@ export default function TechStackPage() {
       {/* 11. 향후 계획 */}
       <section id="future-plans" style={{ marginBottom: '96px' }}>
         <SectionTitle>향후 계획</SectionTitle>
-        <Body>지금 버전은 시작점입니다. 다음 여덟 가지를 순서대로 진행할 계획입니다.</Body>
+        <Body>지금 버전은 시작점입니다. 다음 일곱 가지를 순서대로 진행할 계획입니다.</Body>
 
         <DataTable
           columns={['계획', '내용']}
@@ -685,10 +689,6 @@ export default function TechStackPage() {
             [
               <ChecklistItem key="6">노밍 답변 근거화(RAG 도입)</ChecklistItem>,
               '지금은 콘텐츠 규모가 작아 검색 품질을 보장하기 어려워, 커리큘럼이 충분히 확장되어 검색 대상 데이터가 늘어나는 시점에 Supabase pgvector 기반으로 노밍 답변에 경제한잎 콘텐츠를 근거로 제시하는 기능 추가 예정',
-            ],
-            [
-              <ChecklistItem key="7">개인정보처리방침·이용약관 정비</ChecklistItem>,
-              '지금은 대회 제출용 프로토타입 단계라 아직 마련하지 않았음 — 정식 서비스로 전환하는 시점에 실제 데이터 처리 방식을 정확히 반영한 개인정보처리방침과 이용약관을 갖출 예정',
             ],
             [
               <ChecklistItem key="8">결제 시스템 도입</ChecklistItem>,
