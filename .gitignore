@@ -33,3 +33,8 @@ supabase/.temp/
 # 콘텐츠 갭 분석 스크립트 산출물 (일회성, 커밋 대상 아님)
 scripts/.cache/
 scripts/output/
+
+# Android 릴리즈 서명 키(절대 깃에 올리면 안 됩니다! — 분실 시 앱 재서명/업데이트 불가)
+android/keystore.properties
+android/*.jks
+economing-release-key.jks
