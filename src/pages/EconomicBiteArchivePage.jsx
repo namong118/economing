@@ -247,7 +247,7 @@ export default function EconomicBiteArchivePage() {
             </div>
             <ProgressBar ratio={overallLearningRatio} height={8} />
             <p style={{ fontSize: 11, color: 'var(--c-muted)', marginTop: 10, lineHeight: 1.5 }}>
-              11개 챕터, 96개 단어로 이루어진 초보자 경제 용어 커리큘럼이에요. 아직 준비 중인 카드도
+              13개 챕터, 112개 단어로 이루어진 초보자 경제 용어 커리큘럼이에요. 아직 준비 중인 카드도
               전체 구조를 볼 수 있도록 함께 표시했어요.
             </p>
             <p style={{ fontSize: 11, color: 'var(--c-muted)', fontWeight: 600, marginTop: 4 }}>
@@ -255,7 +255,7 @@ export default function EconomicBiteArchivePage() {
             </p>
           </div>
 
-          {/* ── 11챕터 ── */}
+          {/* ── 13챕터 ── */}
           {CURRICULUM_CHAPTERS.map((chapter) => (
             <ChapterSection
               key={chapter.number}

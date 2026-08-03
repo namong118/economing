@@ -207,7 +207,7 @@ const STATS = [
   { label: '커밋', value: '301개' },
   { label: '코드', value: '19,864줄', sub: '105개 파일' },
   { label: '개발일지', value: '1,938줄', sub: '23개 항목' },
-  { label: '학습 콘텐츠', value: '96개', sub: '11챕터 · 본문·퀴즈·인포그래픽' },
+  { label: '학습 콘텐츠', value: '112개', sub: '13챕터 · 본문·퀴즈·인포그래픽' },
   { label: 'AI 기능', value: '9개' },
   { label: '외부 API', value: '7개' },
   { label: '개발 인원', value: '1인' },
@@ -668,7 +668,7 @@ export default function TechStackPage() {
           rows={[
             [
               <ChecklistItem key="1">커리큘럼 확장</ChecklistItem>,
-              <span key="1c">뉴스 분석으로 검증한 콘텐츠 후보 224개를 순차 반영해 11챕터 96개에서 확장</span>,
+              <span key="1c">뉴스 분석으로 검증한 콘텐츠 후보 224개를 순차 반영해 13챕터 112개에서 확장</span>,
             ],
             [
               <ChecklistItem key="2">복습 설계</ChecklistItem>,

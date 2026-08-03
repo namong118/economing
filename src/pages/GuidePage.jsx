@@ -236,7 +236,7 @@ export default function GuidePage() {
         <SideBySide image={`${BASE}guide/05-archive.png`} imageAlt="아카이브 챕터 목록 화면" reverse>
           <ItemHeading>한잎을 읽습니다</ItemHeading>
           <Body>
-            11챕터 96개가 순서대로 정리되어 있습니다.
+            13챕터 112개가 순서대로 정리되어 있습니다.
           </Body>
           <Body style={{ marginBottom: 0 }}>
             <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>어디까지 왔는지 진도로 보입니다.</b>
@@ -353,7 +353,7 @@ export default function GuidePage() {
 
         <div style={{ border: '1.5px solid var(--c-line)', borderRadius: '16px', overflow: 'hidden', marginBottom: '24px' }}>
           <TourRow label="1. 한잎 아카이브" path="/bites">
-            11챕터 96개 커리큘럼의 전체 구조와 학습 진도
+            13챕터 112개 커리큘럼의 전체 구조와 학습 진도
           </TourRow>
           <TourRow label="2. 한잎 하나 열기">
             설명 · 인포그래픽 3종 · 퀴즈 · 해설이 한 장에

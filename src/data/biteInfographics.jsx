@@ -6,6 +6,7 @@ import {
   AlertCircle, CheckCircle, Zap, Clock, LineChart, PieChart,
   Eye, ArrowDown, ShoppingBasket, Bell, UserX, AlertTriangle,
   Minus, Droplet, Truck, Calculator,
+  Phone, MessageSquare, Link2, ShieldAlert, Heart, Banknote, KeyRound, Smartphone,
 } from 'lucide-react'
 import { BiteInfographic } from '../components/infographic/BiteInfographic'
 import { CompositionInfographic } from '../components/infographic/CompositionInfographic'
@@ -1418,6 +1419,205 @@ export const BITE_INFOGRAPHICS = {
         { icon: Building2,  label: '새 아파트',    sub: '가치 상승 기대', color: 'green'  },
       ]}
       result="낡은 집이 새 아파트로 바뀌는 과정"
+    />
+  ),
+
+  113: () => (
+    <BiteInfographic
+      title="신용거래융자의 구조"
+      steps={[
+        { icon: Wallet,   label: '내 돈',     sub: '100만원',      color: 'green'  },
+        { icon: Banknote, label: '증권사 융자', sub: '100만원 추가', color: 'yellow' },
+        { icon: TrendingUp, label: '매수 규모', sub: '200만원',     color: 'yellow' },
+        { icon: Scale,    label: '손익',       sub: '두 배로 확대', color: 'red'    },
+      ]}
+      result="레버리지만큼 수익도 손실도 커져요"
+    />
+  ),
+
+  114: () => (
+    <CompositionInfographic
+      title="순이자마진(NIM)의 구조"
+      op="subtract"
+      items={[
+        { icon: TrendingUp, label: '대출금리', sub: '평균 6%', color: 'red'   },
+        { icon: PiggyBank,  label: '예금금리', sub: '평균 2%', color: 'green' },
+      ]}
+      total={{ icon: Percent, label: 'NIM', sub: '예대마진 4%p', color: 'blue' }}
+      result="이 차이가 은행의 핵심 수익이 돼요"
+    />
+  ),
+
+  115: () => (
+    <BiteInfographic
+      title="대환대출의 흐름"
+      steps={[
+        { icon: TrendingUp,   label: '기존 대출', sub: '금리 7%',    color: 'red'    },
+        { icon: RefreshCw,    label: '갈아타기',  sub: '대환대출 신청', color: 'yellow' },
+        { icon: TrendingDown, label: '새 대출',   sub: '금리 5%',    color: 'green'  },
+      ]}
+      result="같은 빚을 더 낮은 이자로 바꾸는 것"
+    />
+  ),
+
+  116: () => (
+    <ComparisonInfographic
+      title="고정금리 vs 변동금리"
+      branches={[
+        { icon: Scale,      label: '고정금리', sub: '만기까지 동일',     color: 'green'  },
+        { icon: ArrowUpDown, label: '변동금리', sub: '시장 금리 따라 변동', color: 'yellow' },
+      ]}
+      result="금리 방향에 따라 유불리가 갈려요"
+    />
+  ),
+
+  117: () => (
+    <BiteInfographic
+      title="채무조정(개인워크아웃)의 흐름"
+      steps={[
+        { icon: AlertTriangle, label: '여러 빚',   sub: '상환 어려움',   color: 'red'    },
+        { icon: Scale,         label: '채무조정 신청', sub: '신용회복위원회', color: 'yellow' },
+        { icon: RefreshCw,     label: '상환계획 조정', sub: '기간 연장'    , color: 'yellow' },
+        { icon: CheckCircle,   label: '상환 부담 감소', sub: '신용 회복'    , color: 'green'  },
+      ]}
+      result="갚을 수 있는 계획으로 다시 짜는 것"
+    />
+  ),
+
+  118: () => (
+    <ComparisonInfographic
+      title="카드론 vs 현금서비스"
+      branches={[
+        { icon: Clock,      label: '현금서비스', sub: '단기·소액', color: 'yellow' },
+        { icon: CreditCard, label: '카드론',    sub: '장기 분할',  color: 'yellow' },
+      ]}
+      result="둘 다 급할 때 쓰는 고금리 대출이에요"
+    />
+  ),
+
+  119: () => (
+    <BiteInfographic
+      title="중도상환수수료가 발생하는 순간"
+      steps={[
+        { icon: Banknote, label: '대출 실행',   sub: '만기까지 계획',  color: 'green'  },
+        { icon: Zap,      label: '조기 상환',   sub: '만기 전 완납',   color: 'yellow' },
+        { icon: Percent,  label: '수수료 발생', sub: '대출금의 1~2%', color: 'red'    },
+      ]}
+      result="일찍 갚아도 수수료는 따로 붙어요"
+    />
+  ),
+
+  120: () => (
+    <BiteInfographic
+      title="보이스피싱이 진행되는 방식"
+      steps={[
+        { icon: Phone,         label: '기관 사칭 전화', sub: '검찰·은행 등', color: 'red' },
+        { icon: AlertTriangle, label: '겁주기',        sub: '다급한 상황 연출', color: 'red' },
+        { icon: Wallet,        label: '송금·정보 유출', sub: '피해 발생',   color: 'red' },
+      ]}
+      result="전화로 돈·개인정보를 요구하면 100% 사기"
+    />
+  ),
+
+  121: () => (
+    <BiteInfographic
+      title="스미싱이 진행되는 방식"
+      steps={[
+        { icon: MessageSquare, label: '문자 속 링크', sub: '택배·청첩장 위장', color: 'red' },
+        { icon: Link2,         label: '링크 클릭',   sub: '무심코 접속',    color: 'yellow' },
+        { icon: Smartphone,    label: '악성 앱 설치', sub: '자동 실행',     color: 'red' },
+        { icon: Eye,           label: '정보 유출',   sub: '금융정보 탈취',  color: 'red' },
+      ]}
+      result="모르는 링크는 누르지 않는 게 최선"
+    />
+  ),
+
+  122: () => (
+    <BiteInfographic
+      title="리딩방 투자사기가 진행되는 방식"
+      steps={[
+        { icon: Users,       label: '무료 정보방', sub: '카톡·텔레그램', color: 'yellow' },
+        { icon: CheckCircle, label: '신뢰 형성',   sub: '가짜 수익 인증', color: 'yellow' },
+        { icon: Smartphone,  label: '앱·계좌 유도', sub: '제도권 밖 송금', color: 'red'    },
+        { icon: UserX,       label: '잠적',       sub: '연락 두절',     color: 'red'    },
+      ]}
+      result="제도권 밖으로의 송금 유도는 사기 신호"
+    />
+  ),
+
+  123: () => (
+    <BiteInfographic
+      title="불법사금융 피해가 커지는 과정"
+      steps={[
+        { icon: ShieldAlert,   label: '미등록 업체', sub: '금융당국 미인가', color: 'red' },
+        { icon: Percent,       label: '고금리 대출', sub: '법정 최고금리 초과', color: 'red' },
+        { icon: AlertTriangle, label: '상환 불능',   sub: '이자 눈덩이',    color: 'red' },
+        { icon: Bell,          label: '불법 추심',   sub: '협박성 독촉',    color: 'red' },
+      ]}
+      result="등록 대부업체인지 먼저 확인하세요"
+    />
+  ),
+
+  124: () => (
+    <BiteInfographic
+      title="전세사기가 벌어지는 방식"
+      steps={[
+        { icon: KeyRound, label: '이중계약·근저당 은폐', sub: '계약 전 속임수', color: 'red'    },
+        { icon: Home,     label: '전세 계약',          sub: '보증금 지급',    color: 'yellow' },
+        { icon: Wallet,   label: '보증금 미반환',       sub: '피해 발생',     color: 'red'    },
+      ]}
+      result="등기부등본 확인이 첫 번째 예방책"
+    />
+  ),
+
+  125: () => (
+    <BiteInfographic
+      title="로맨스스캠이 진행되는 방식"
+      steps={[
+        { icon: Heart,       label: '온라인 친분', sub: 'SNS·소개팅 앱', color: 'yellow' },
+        { icon: CheckCircle, label: '신뢰 형성',   sub: '장기간 대화',   color: 'yellow' },
+        { icon: TrendingUp,  label: '투자 유도',   sub: '해외 투자 앱',  color: 'red'    },
+        { icon: UserX,       label: '잠적',       sub: '연락 두절',    color: 'red'    },
+      ]}
+      result="만난 적 없는 사람의 투자 권유는 거절"
+    />
+  ),
+
+  126: () => (
+    <BiteInfographic
+      title="유사수신이 무너지는 구조"
+      steps={[
+        { icon: ShieldAlert,   label: '미인가 업체', sub: '금융당국 인가 없음', color: 'red' },
+        { icon: Percent,       label: '원금보장·고수익 약속', sub: '비정상적 조건', color: 'red' },
+        { icon: Users,         label: '자금 모집',   sub: '투자자 확대',    color: 'yellow' },
+        { icon: AlertTriangle, label: '돌려막기 붕괴', sub: '결국 파산',    color: 'red'    },
+      ]}
+      result="원금 보장 + 고수익은 동시에 불가능한 약속"
+    />
+  ),
+
+  127: () => (
+    <BiteInfographic
+      title="중고거래 사기가 벌어지는 방식"
+      steps={[
+        { icon: ShoppingCart, label: '시세보다 싼 매물', sub: '관심 유도',   color: 'yellow' },
+        { icon: Banknote,     label: '선입금 요구',    sub: '직거래 거부',  color: 'yellow' },
+        { icon: UserX,        label: '잠적·미배송',    sub: '연락 두절',   color: 'red'    },
+      ]}
+      result="안전결제로 확인한 뒤 거래하세요"
+    />
+  ),
+
+  128: () => (
+    <BiteInfographic
+      title="대포통장이 만들어지는 과정"
+      steps={[
+        { icon: Banknote,   label: '통장 양도 제안', sub: '대가 지급 약속', color: 'yellow' },
+        { icon: CreditCard, label: '통장 넘김',     sub: '본인 명의 계좌', color: 'red'    },
+        { icon: AlertCircle, label: '사기자금 인출', sub: '범죄에 이용',   color: 'red'    },
+        { icon: Scale,      label: '명의자 처벌',    sub: '몰랐어도 책임', color: 'red'    },
+      ]}
+      result="몰랐어도 통장 양도는 처벌 대상이 돼요"
     />
   ),
 }

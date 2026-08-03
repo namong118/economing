@@ -395,11 +395,11 @@ export default function AboutPage() {
         />
         <CompareCard
           before="유튜브로는 흥미를 유지하지 못했다"
-          after="하루에 한 개, 끝이 있는 96개 커리큘럼. 진도와 연속 학습일이 남습니다"
+          after="하루에 한 개, 끝이 있는 112개 커리큘럼. 진도와 연속 학습일이 남습니다"
         />
         <CompareCard
           before="무엇부터 할지 몰랐다"
-          after="순서가 정해진 11챕터. 일상에 가까운 것부터 배웁니다"
+          after="순서가 정해진 13챕터. 일상에 가까운 것부터 배웁니다"
         />
         <CompareCard
           before="자립하고 싶은데 방법을 몰랐다"
@@ -425,7 +425,7 @@ export default function AboutPage() {
 
         <StepBlock num="2" title="사람이 검증한 커리큘럼으로 배웁니다">
           <Body>
-            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>11챕터 96개 단어.</b> 순서가 있습니다.
+            <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>13챕터 112개 단어.</b> 순서가 있습니다.
           </Body>
           <div style={{
             overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch',
@@ -437,12 +437,12 @@ export default function AboutPage() {
             </span>
           </div>
           <Body>
-            {'일상에 가까운 것에서 먼 것으로 배치했습니다.\n96개 전부 설명 · 인포그래픽 · 퀴즈를 갖추고 있습니다.'}
+            {'일상에 가까운 것에서 먼 것으로 배치했습니다.\n112개 전부 설명 · 인포그래픽 · 퀴즈를 갖추고 있습니다.'}
           </Body>
           <Body style={{ marginBottom: 0 }}>
             <b style={{ color: 'var(--c-ink)', fontWeight: '800' }}>무엇을 가르칠지, 어떤 순서로 배울지는 사람이 정했습니다.</b>{'\n'}
             실제 경제 뉴스 420건을 분석해 어떤 용어가 얼마나 자주 쓰이는지 측정하고,{'\n'}
-            그 데이터를 근거로 96개를 선별하고 순서를 잡았습니다.
+            그 데이터를 근거로 112개를 선별하고 순서를 잡았습니다.
           </Body>
         </StepBlock>
 

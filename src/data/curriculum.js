@@ -1,5 +1,6 @@
 /**
- * 초보자용 경제 단어 커리큘럼 — 11챕터 96개 확정본 메타데이터.
+ * 초보자용 경제 단어 커리큘럼 — 13챕터 112개 메타데이터(기존 11챕터 96개 확정본 +
+ * 12장 "대출"·13장 "금융사기 예방" 신규 16개, 끝에 안전하게 추가).
  * 기준 문서: docs/curriculum/README.md
  *
  * 각 챕터의 items는 순서대로 정렬돼 있다. 이미 만든 카드는 { id }, 아직 안 만든
@@ -181,6 +182,36 @@ export const CURRICULUM_CHAPTERS = [
       { id: 105 },
     ],
   },
+  {
+    number: 12,
+    name: '대출',
+    subtitle: null,
+    items: [
+      { id: 113 },
+      { id: 114 },
+      { id: 115 },
+      { id: 116 },
+      { id: 117 },
+      { id: 118 },
+      { id: 119 },
+    ],
+  },
+  {
+    number: 13,
+    name: '금융사기 예방',
+    subtitle: null,
+    items: [
+      { id: 120 },
+      { id: 121 },
+      { id: 122 },
+      { id: 123 },
+      { id: 124 },
+      { id: 125 },
+      { id: 126 },
+      { id: 127 },
+      { id: 128 },
+    ],
+  },
 ]
 
 /** 챕터 하나의 { total, completed } 개수. */
@@ -192,7 +223,7 @@ export function getChapterProgress(chapterNumber) {
   return { total, completed }
 }
 
-/** 전체 11챕터의 진행 현황 배열. */
+/** 전체 13챕터의 진행 현황 배열. */
 export function getAllChaptersProgress() {
   return CURRICULUM_CHAPTERS.map((c) => ({
     number: c.number,
@@ -202,7 +233,7 @@ export function getAllChaptersProgress() {
   }))
 }
 
-/** 96개 전체를 챕터/순서 그대로 펼친 배열. 완성 카드는 id가 있고, pending 카드는 id가 null이다. */
+/** 전체를 챕터/순서 그대로 펼친 배열. 완성 카드는 id가 있고, pending 카드는 id가 null이다. */
 export function getCurriculumSequence() {
   const sequence = []
   for (const chapter of CURRICULUM_CHAPTERS) {

@@ -24,9 +24,9 @@ import { getCurriculumSequence } from '../src/data/curriculum.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const INFOGRAPHICS_PATH = path.join(__dirname, '..', 'src', 'data', 'biteInfographics.jsx')
 
-const EXPECTED_BITE_COUNT = 101
+const EXPECTED_BITE_COUNT = 117
 const EXPECTED_INDICATOR_COUNT = 11
-const EXPECTED_QUIZ_COUNT = 101
+const EXPECTED_QUIZ_COUNT = 117
 const ANSWER_POSITION_WARN_RATIO = 0.4
 
 let hasFailure = false
@@ -177,7 +177,7 @@ report('6. 퀴즈 구조 이상', structuralIssues)
 
 // ── 8. 커리큘럼(chapter/order/curriculum.js) 정합성 ─────────────────
 
-const EXPECTED_CURRICULUM_TOTAL = 96
+const EXPECTED_CURRICULUM_TOTAL = 112
 const EXPECTED_CURRICULUM_PENDING = 0
 
 report(
@@ -203,7 +203,7 @@ report('8b. 같은 챕터 안에서 order 중복', orderDupIssues)
 const curriculumSequence = getCurriculumSequence()
 
 if (curriculumSequence.length !== EXPECTED_CURRICULUM_TOTAL) {
-  report('8c. curriculum.js 총 항목 수가 96이 아님', [
+  report('8c. curriculum.js 총 항목 수가 112가 아님', [
     { id: '-', title: '-', detail: `실제 ${curriculumSequence.length}개` },
   ])
 }
@@ -217,7 +217,7 @@ report(
 
 const pendingCount = curriculumSequence.filter((item) => item.pending).length
 if (pendingCount !== EXPECTED_CURRICULUM_PENDING) {
-  report('8e. curriculum.js pending 개수가 31이 아님', [
+  report('8e. curriculum.js pending 개수가 0이 아님', [
     { id: '-', title: '-', detail: `실제 ${pendingCount}개` },
   ])
 }
