@@ -78,7 +78,11 @@ export default function PrivacyPolicyContent() {
 
       <section style={{ marginBottom: '36px' }}>
         <SectionTitle>6. 계정 및 데이터 삭제</SectionTitle>
-        <SubHeading>앱에서 직접 삭제하기</SubHeading>
+        <SubHeading>계정을 유지한 채 일부 데이터만 삭제하기</SubHeading>
+        <Body>
+          계정을 탈퇴하지 않고도 경제일기 항목, 나만의 사전에 저장한 용어를 각각 앱 안에서 개별적으로 삭제할 수 있습니다(해당 화면에서 삭제 버튼 선택).
+        </Body>
+        <SubHeading>계정 전체 삭제(회원 탈퇴)</SubHeading>
         <List items={[
           '앱 실행 후 로그인',
           '하단 메뉴에서 "내 성장" 탭 이동',
