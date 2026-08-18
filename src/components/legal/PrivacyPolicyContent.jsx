@@ -76,8 +76,25 @@ export default function PrivacyPolicyContent() {
         </Body>
       </section>
 
+      <section style={{ marginBottom: '36px' }}>
+        <SectionTitle>6. 계정 및 데이터 삭제</SectionTitle>
+        <SubHeading>앱에서 직접 삭제하기</SubHeading>
+        <List items={[
+          '앱 실행 후 로그인',
+          '하단 메뉴에서 "내 성장" 탭 이동',
+          '화면 맨 아래 "회원 탈퇴" 선택 후 확인',
+        ]} />
+        <Body>
+          탈퇴 즉시 계정과 함께 이메일·닉네임·프로필 이미지 등 개인정보, 학습 진도, 경제일기, 나만의 사전, 노밍과의 대화 내용, 경제 자립 진단 결과를 포함한 모든 데이터가 삭제되며 복구할 수 없습니다.
+        </Body>
+        <SubHeading>앱을 삭제해 접근할 수 없는 경우</SubHeading>
+        <Body style={{ marginBottom: 0 }}>
+          아래 이메일로 탈퇴하려는 계정의 이메일 주소를 포함해 삭제를 요청하시면 확인 후 처리해드립니다.
+        </Body>
+      </section>
+
       <section style={{ marginBottom: '48px' }}>
-        <SectionTitle>6. 문의처</SectionTitle>
+        <SectionTitle>7. 문의처</SectionTitle>
         <Body>
           개인정보 관련 문의사항은 아래로 연락해주세요.
         </Body>

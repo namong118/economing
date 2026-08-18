@@ -74,6 +74,22 @@ export async function signOut() {
   return { error };
 }
 
+// 회원 탈퇴: Edge Function이 auth.users를 삭제하면 모든 사용자 데이터가
+// ON DELETE CASCADE로 함께 삭제된다. 삭제 성공 후 로컬 세션도 정리한다.
+export async function deleteAccount() {
+  if (MOCK) {
+    clearMockSession();
+    return { error: null };
+  }
+
+  const { data, error } = await supabase.functions.invoke('delete-account');
+  if (error) return { error };
+  if (data?.error) return { error: { message: data.error } };
+
+  await supabase.auth.signOut();
+  return { error: null };
+}
+
 export async function getSession() {
   if (MOCK) {
     return { session: getMockSession(), error: null };

@@ -71,8 +71,11 @@ function generateAnalysis(profile) {
 /* ── 요약 탭 ──────────────────────────────────────────────── */
 function SummaryTab() {
   const navigate  = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, deleteAccount } = useAuth();
   const BASE_URL  = import.meta.env.BASE_URL;
+  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deleteAccountError, setDeleteAccountError] = useState('');
 
   const provider    = user?.app_metadata?.provider || user?.identities?.[0]?.provider || 'unknown';
   const xp          = profile?.xp ?? 0;
@@ -90,6 +93,18 @@ function SummaryTab() {
   const indepLevel      = indepDiagnosis?.level ? getLevelByKey(indepDiagnosis.level) : null;
 
   const handleSignOut = async () => { await signOut(); navigate('/home'); };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    setDeleteAccountError('');
+    const { error } = await deleteAccount();
+    setDeletingAccount(false);
+    if (error) {
+      setDeleteAccountError(error.message || '탈퇴 처리 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    navigate('/home');
+  };
 
   return (
     <div>
@@ -263,6 +278,48 @@ function SummaryTab() {
       >
         로그아웃
       </button>
+
+      {/* ── 회원 탈퇴 ── */}
+      <div style={{ marginTop: '10px' }}>
+        {confirmDeleteAccount ? (
+          <div style={{ padding: '14px', borderRadius: '12px', background: '#FEF2F2', border: '1.5px solid #FECACA' }}>
+            <p style={{ fontSize: '13px', fontWeight: '700', color: '#DC2626', marginBottom: '4px' }}>
+              정말 탈퇴하시겠어요?
+            </p>
+            <p style={{ fontSize: '12px', color: '#B91C1C', lineHeight: '1.6', marginBottom: '12px' }}>
+              학습 진도, 경제일기, 경제사전, 노밍과의 대화 등 모든 데이터가 즉시 삭제되며 복구할 수 없어요.
+            </p>
+            {deleteAccountError && (
+              <p style={{ fontSize: '12px', color: '#DC2626', fontWeight: '700', marginBottom: '10px' }}>
+                {deleteAccountError}
+              </p>
+            )}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => { setConfirmDeleteAccount(false); setDeleteAccountError(''); }}
+                disabled={deletingAccount}
+                style={{ flex: 1, padding: '10px', borderRadius: '9px', background: '#fff', border: '0.5px solid var(--c-line)', fontSize: '13px', fontWeight: '700', color: 'var(--c-muted)', cursor: 'pointer' }}
+              >
+                취소
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                style={{ flex: 1, padding: '10px', borderRadius: '9px', background: '#DC2626', border: 'none', fontSize: '13px', fontWeight: '700', color: '#fff', cursor: deletingAccount ? 'not-allowed' : 'pointer' }}
+              >
+                {deletingAccount ? '탈퇴 처리 중…' : '탈퇴하기'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmDeleteAccount(true)}
+            style={{ width: '100%', padding: '10px', borderRadius: '12px', background: 'none', color: 'var(--c-muted)', border: 'none', fontSize: '12px', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            회원 탈퇴
+          </button>
+        )}
+      </div>
     </div>
   );
 }

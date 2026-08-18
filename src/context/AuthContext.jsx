@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { supabase } from '../services/supabaseClient';
-import { signIn, signUp, signOut, NATIVE_OAUTH_REDIRECT, initNativeGoogleSignIn } from '../services/authService';
+import { signIn, signUp, signOut, deleteAccount, NATIVE_OAUTH_REDIRECT, initNativeGoogleSignIn } from '../services/authService';
 import { upsertProfile } from '../services/profileService';
 import { getMockSession } from '../services/mockStore';
 
@@ -170,6 +170,17 @@ export function AuthProvider({ children }) {
     return result;
   };
 
+  // ── 회원 탈퇴 ────────────────────────────────────────────
+  const handleDeleteAccount = async () => {
+    const result = await deleteAccount();
+    if (!result.error) {
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+    }
+    return result;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -181,6 +192,7 @@ export function AuthProvider({ children }) {
         signIn:         handleSignIn,
         signUp:         (email, password, nickname) => signUp(email, password, nickname),
         signOut:        handleSignOut,
+        deleteAccount:  handleDeleteAccount,
         refreshProfile: () => syncProfile(user),
       }}
     >
